@@ -1,0 +1,5 @@
+{
+  "model-version-id": "${model-version-id}",
+  "model-name": "${model-name}",
+  "model-version": "${model-version}"
+}

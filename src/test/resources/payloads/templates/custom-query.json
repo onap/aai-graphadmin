@@ -1,0 +1,4 @@
+{
+  "start": [ "${start}" ],
+  "query": "query/${query}"
+}

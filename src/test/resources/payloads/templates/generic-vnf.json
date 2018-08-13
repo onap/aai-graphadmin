@@ -1,0 +1,7 @@
+{
+  "vnf-id": "${vnf-id}",
+  "vnf-type": "someval",
+  "vnf-name": "someval",
+  "model-invariant-id": "${model-invariant-id}",
+  "model-version-id": "${model-version-id}"
+}

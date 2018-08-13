@@ -1,0 +1,14 @@
+/target/
+/oxm/
+.idea/
+.settings/
+debug-logs/
+.project
+/logs/
+**/oxm/**
+**/dbedgerules/**
+*.iml
+.settings/
+.project
+.classpath
+src/main/resources/etc/scriptdata/addmanualdata/tenant_isolation/payload/

@@ -1,0 +1,57 @@
+{
+  "cloud-owner": "${cloud-owner}",
+  "cloud-region-id": "${cloud-region-id}",
+  "tenants": {
+    "tenant": [
+      {
+        "tenant-id": "${tenant-id}",
+        "tenant-name": "${tenant-name}",
+        "vservers": {
+          "vserver": [
+            {
+              "vserver-id": "${vserver-id}",
+              "vserver-name": "${vserver-name}",
+              "vserver-name2": "vserver-name-2",
+              "vserver-selflink": "vserver-selflink-1",
+              "in-maint": false,
+              "is-closed-loop-disabled": false,
+              "volumes": {},
+              "l-interfaces": {
+                "l-interface": [
+                  {
+                    "interface-name": "${interface-name}",
+                    "interface-role": "role",
+                    "v6-wan-link-ip": "test-v6-wan-link-ip",
+                    "selflink": "example-selflink-val-10559",
+                    "interface-id": "example-interface-id-val",
+                    "l3-interface-ipv4-address-list" : [ {
+                      "l3-interface-ipv4-address" : "${ipv4-address}",
+                      "l3-interface-ipv4-prefix-length" : 849,
+                      "vlan-id-inner" : 174,
+                      "vlan-id-outer" : 120,
+                      "is-floating" : true
+                    }],
+                    "l3-interface-ipv6-address-list" : [ {
+                      "l3-interface-ipv6-address" : "${ipv6-address}",
+                      "l3-interface-ipv6-prefix-length" : 509,
+                      "vlan-id-inner" : 890,
+                      "vlan-id-outer" : 192,
+                      "is-floating" : false
+                    }],
+                    "vlans" : {
+                      "vlan" : [ {
+                        "vlan-interface" : "${vlan-interface}",
+                        "vlan-id-inner" : 948,
+                        "vlan-id-outer" : 722,
+                        "speed-value" : "oR8Zpuk5",
+                        "speed-units" : "lZsf2I"
+                      }]}
+                  }]}
+
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

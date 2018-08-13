@@ -1,0 +1,14 @@
+{
+  "pserver" : {
+             "cousins" : ["zone", "complex"],
+             "parents":[]
+  },
+  "complex" : {
+           "cousins":[],
+           "parents":[]
+  },
+  "zone" : {
+          "cousins":["complex"],
+          "parents":[]
+  }
+}
