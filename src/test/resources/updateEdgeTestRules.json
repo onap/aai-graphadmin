@@ -1,0 +1,60 @@
+{
+    "rules": [
+    {
+    "from": "generic-vnf",
+    "to": "l-interface",
+    "label": "hasLInterface",
+    "direction": "OUT",
+    "multiplicity": "MANY2MANY",
+    "contains-other-v": "!${direction}",
+    "delete-other-v": "!${direction}",
+    "SVC-INFRA": "${direction}",
+    "prevent-delete": "NONE",
+    "description": "An edge comment",
+    "default": "true",
+    "newProperty": "newValue"
+    },
+    {
+    "from": "pserver",
+    "to": "vnfc",
+    "label": "tosca.relationships.HostedOn",
+    "direction": "OUT",
+    "multiplicity": "MANY2MANY",
+    "contains-other-v": "!${direction}",
+    "delete-other-v": "!${direction}",
+    "SVC-INFRA": "${direction}",
+    "prevent-delete": "NONE",
+    "description": "A pserver/vnfc edge description",
+    "default": "true",
+    "newProperty": "newValue"
+    },
+    {
+    "from": "l-interface",
+    "to": "logical-link",
+    "label": "usesLogicalLink",
+    "direction": "OUT",
+    "multiplicity": "MANY2MANY",
+    "contains-other-v": "!${direction}",
+    "delete-other-v": "!${direction}",
+    "SVC-INFRA": "${direction}",
+    "prevent-delete": "NONE",
+    "description": "A l-interface/logical-link(1) edge description",
+    "default": "true",
+    "newProperty": "newValue"
+    },
+    {
+    "from": "l-interface",
+    "to": "logical-link",
+    "label": "sourceLInterface",
+    "direction": "OUT",
+    "multiplicity": "MANY2MANY",
+    "contains-other-v": "!${direction}",
+    "delete-other-v": "!${direction}",
+    "SVC-INFRA": "${direction}",
+    "prevent-delete": "NONE",
+    "description": "A l-interface/logical-link(2) edge description",
+    "default": "true",
+    "newProperty": "newValue"
+    }
+    ]
+}

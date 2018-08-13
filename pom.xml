@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.onap.oparent</groupId>
+        <artifactId>oparent</artifactId>
+        <version>1.1.0</version>
+    </parent>
+    <groupId>org.onap.aai.graphadmin</groupId>
+    <artifactId>aai-graphadmin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+
+        <!-- Start of Compiler Related Properties -->
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- End of Compiler Related Properties -->
+
+        <!-- Start of Test Related Properties -->
+        <skip.unit.tests>false</skip.unit.tests>
+        <skip.integration.tests>true</skip.integration.tests>
+        <!-- End of Test Related Properties -->
+
+        <!-- Start of Sonar Related Properties -->
+        <sonar.language>java</sonar.language>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
+        <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.jacoco.reportMissing.force.zero>false</sonar.jacoco.reportMissing.force.zero>
+        <sonar.projectVersion>${project.version}</sonar.projectVersion>
+        <!-- End of Sonar Related Properties -->
+
+        <!-- Start of Docker Related Properties -->
+        <docker.fabric.version>0.23.0</docker.fabric.version>
+        <!-- Default docker registry that maven fabric plugin will try to pull from -->
+        <docker.registry>docker.io</docker.registry>
+        <!-- Specifying the docker push registry where the image should be pushed -->
+        <!-- This value should be overwritten at runtime to wherever need to be pushed to -->
+        <docker.push.registry>localhost:5000</docker.push.registry>
+        <aai.docker.version>1.0.0</aai.docker.version>
+        <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
+        </aai.build.directory>
+        <aai.docker.namespace>onap</aai.docker.namespace>
+        <!-- End of Docker Related Properties -->
+
+        <!--
+            Nexus Proxy Properties and Snapshot Locations
+            Ideally this can be overwritten at runtime per internal environment specific values at runtime
+        -->
+        <nexusproxy>https://nexus.onap.org</nexusproxy>
+        <site.path>/content/sites/site/org/onap/aai/graphadmin/${project.artifactId}/${project.version}</site.path>
+        <release.path>/content/repositories/releases/</release.path>
+        <snapshot.path>/content/repositories/snapshots/</snapshot.path>
+        <!-- GMaven plugin uses this property to figure out the name of the docker tag -->
+        <aai.project.version>${project.version}</aai.project.version>
+
+        <!-- Start of Database Related Properties -->
+        <hbase.version>1.0.2</hbase.version>
+        <janusgraph.version>0.2.0</janusgraph.version>
+        <gremlin.driver.version>3.0.1-incubating</gremlin.driver.version>
+        <gremlin.version>3.2.2</gremlin.version>
+        <!-- End of Database Related Properties -->
+
+        <activemq.version>5.14.3</activemq.version>
+        <logback.version>1.2.3</logback.version>
+        <mockito.version>1.10.19</mockito.version>
+        <httpclient.version>4.5.1</httpclient.version>
+
+        <gson.version>2.7</gson.version>
+        <json.version>20090211</json.version>
+
+        <aai.core.version>1.3.0-SNAPSHOT</aai.core.version>
+        <aai.schema.version>1.3.0-SNAPSHOT</aai.schema.version>
+
+        <netty.handler.version>4.1.9.Final</netty.handler.version>
+        <netty.version>4.0.37.Final</netty.version>
+
+        <spring.test.version>4.3.6.RELEASE</spring.test.version>
+        <spring.web.version>4.3.6.RELEASE</spring.web.version>
+
+        <cxf.version>3.2.2</cxf.version>
+
+        <dme2.version>2.8.5</dme2.version>
+        <jsonassert.version>1.4.0</jsonassert.version>
+
+        <antlr4.visitor>true</antlr4.visitor>
+        <antlr4.listener>true</antlr4.listener>
+        <antlr.version>4.7</antlr.version>
+
+        <eelf.core.version>1.0.0</eelf.core.version>
+        <google.guava.version>16.0</google.guava.version>
+        <jaxb.version>2.2.11</jaxb.version>
+        <eclipse.persistence.version>2.6.2</eclipse.persistence.version>
+        <dmaap.client.version>0.2.12</dmaap.client.version>
+
+        <springframework.version>4.3.4.RELEASE</springframework.version>
+        <spring.jms.version>4.3.2.RELEASE</spring.jms.version>
+        <spring.security.version>1.0.3.RELEASE</spring.security.version>
+
+        <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
+        <junit.version>4.12</junit.version>
+
+        <start-class>org.onap.aai.GraphAdminApp</start-class>
+
+        <snapshot.file>${project.basedir}/snapshots/int1-data.graphson</snapshot.file>
+        <jacoco.line.coverage.limit>0.27</jacoco.line.coverage.limit>
+
+        <!-- Start of Default ONAP Schema Properties -->
+        <schema.source.name>onap</schema.source.name>
+        <schema.configuration.location>N/A</schema.configuration.location>
+        <schema.nodes.location>${project.basedir}/src/main/resources/schema/${schema.source.name}/oxm</schema.nodes.location>
+        <schema.edges.location>${project.basedir}/src/main/resources/schema/${schema.source.name}/dbedgerules</schema.edges.location>
+        <schema.version.depth.start>v9</schema.version.depth.start>
+        <schema.version.related.link.start>v10</schema.version.related.link.start>
+        <schema.version.app.root.start>v11</schema.version.app.root.start>
+        <schema.version.namespace.change.start>v12</schema.version.namespace.change.start>
+        <schema.version.edge.label.start>v12</schema.version.edge.label.start>
+        <schema.version.api.default>v14</schema.version.api.default>
+        <schema.version.list>v8,v9,v10,v11,v12,v13,v14</schema.version.list>
+        <schema.uri.base.path>/aai</schema.uri.base.path>
+        <!-- End of Default ONAP Schema Properties -->
+    </properties>
+
+    <profiles>
+        <!-- Used during verify stage in Jenkins -->
+        <profile>
+            <id>all-tests</id>
+            <properties>
+                <build.profile.id>all-tests</build.profile.id>
+
+                <!-- All tests are run. -->
+                <skip.integration.tests>false</skip.integration.tests>
+                <skip.unit.tests>false</skip.unit.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>skipTests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- All tests are skipped. -->
+                <skip.integration.tests>true</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <!-- Only integration tests are run. -->
+                <build.profile.id>integration-test</build.profile.id>
+                <skip.integration.tests>false</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+            </properties>
+        </profile>
+        <!-- Start of ONAP Profile -->
+        <profile>
+            <id>onap</id>
+            <properties>
+                <schema.source.name>onap</schema.source.name>
+                <schema.version.namespace.change.start>v12</schema.version.namespace.change.start>
+                <schema.version.list>v8,v9,v10,v11,v12,v13,v14</schema.version.list>
+            </properties>
+        </profile>
+        <!-- End of ONAP Profile -->
+        <profile>
+            <id>runAjsc</id>
+            <properties>
+                <skipTests>${skip.unit.tests}</skipTests>
+            </properties>
+            <build>
+                <defaultGoal>pre-integration-test</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>run-spring-boot</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <mainClass>${start-class}</mainClass>
+                            <systemProperties>
+                                <property>
+                                    <key>snapshot.location</key>
+                                    <value>${snapshot.file}</value>
+                                </property>
+                                <property>
+                                    <key>schema.source.name</key>
+                                    <value>${schema.source.name}</value>
+                                </property>
+                                <property>
+                                    <key>schema.configuration.location</key>
+                                    <value>${schema.configuration.location}</value>
+                                </property>
+                                <property>
+                                    <key>schema.nodes.location</key>
+                                    <value>${schema.nodes.location}</value>
+                                </property>
+                                <property>
+                                    <key>schema.edges.location</key>
+                                    <value>${schema.edges.location}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.depth.start</key>
+                                    <value>${schema.version.depth.start}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.related.link.start</key>
+                                    <value>${schema.version.related.link.start}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.app.root.start</key>
+                                    <value>${schema.version.app.root.start}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.namespace.change.start</key>
+                                    <value>${schema.version.namespace.change.start}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.edge.label.start</key>
+                                    <value>${schema.version.edge.label.start}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.api.default</key>
+                                    <value>${schema.version.api.default}</value>
+                                </property>
+                                <property>
+                                    <key>schema.version.list</key>
+                                    <value>${schema.version.list}</value>
+                                </property>
+                                <property>
+                                    <key>schema.uri.base.path</key>
+                                    <value>${schema.uri.base.path}</value>
+                                </property>
+                            </systemProperties>
+                            <executable>java</executable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Docker profile to be used for building docker image and pushing to nexus -->
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.fabric.version}</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <apiVersion>1.23</apiVersion>
+                            <images>
+                                <image>
+                                    <name>${docker.push.registry}/${aai.docker.namespace}/${project.artifactId}:%l</name>
+                                    <build>
+                                        <filter>@</filter>
+                                        <tags>
+                                            <tag>latest</tag>
+                                            <tag>${project.docker.latesttag.version}</tag>
+                                            <tag>${project.major.version}.${project.minor.version}-STAGING-${maven.build.timestamp}</tag>
+                                        </tags>
+                                        <cleanup>try</cleanup>
+                                        <dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+                                        <assembly>
+                                            <inline>
+                                                <fileSets>
+                                                    <fileSet>
+                                                        <directory>${aai.build.directory}</directory>
+                                                        <outputDirectory>/${project.artifactId}</outputDirectory>
+                                                    </fileSet>
+                                                </fileSets>
+                                            </inline>
+                                        </assembly>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>clean-images</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>remove</goal>
+                                </goals>
+                                <configuration>
+                                    <removeAll>true</removeAll>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>generate-images</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push-images</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>1.5.12.RELEASE</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Start of Logback Dependencies -->
+        <dependency>
+            <groupId>com.att.eelf</groupId>
+            <artifactId>eelf-core</artifactId>
+            <version>${eelf.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <!-- End of Logback Dependencies -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava.version}</version>
+        </dependency>
+        <!-- Start of Janus Graph Dependencies -->
+        <dependency>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-core</artifactId>
+            <version>${janusgraph.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-hbase-parent</artifactId>
+            <version>${janusgraph.version}</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-hbase</artifactId>
+            <version>${janusgraph.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-cassandra</artifactId>
+            <version>${janusgraph.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- End of Janus Graph Dependencies -->
+        <!-- Start of Tinkerpop Dependencies -->
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>tinkergraph-gremlin</artifactId>
+            <version>${gremlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-core</artifactId>
+            <version>${gremlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tinkerpop</groupId>
+            <artifactId>gremlin-driver</artifactId>
+            <version>${gremlin.version}</version>
+        </dependency>
+        <!-- End of Tinkerpop Dependencies -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
+        </dependency>
+        <!-- Start of JAXB Dependencies -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <!-- End of JAXB Dependencies -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>${eclipse.persistence.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+            <version>${eclipse.persistence.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <!--
+            Do not use activemq-all because they force you to use a specific logging
+            and they shade it so you can't simply exclude it and when you deploy the
+            jar, you will notice failure
+        -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-client</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.aai.aai-common</groupId>
+            <artifactId>aai-core</artifactId>
+            <version>${aai.core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.18</version>
+        </dependency>
+        <!-- Do not use the jersey-client since jersey client 1.0 version clashes
+            with jersey 2 which we are using -->
+        <!-- Use this to make http requests instead of jersey 1.0 client -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+        <!-- Start of Spring Framework Dependencies -->
+        <!--
+            Explicitly stating the security spring framework and
+            exclude the bouncy castle since that is somehow overwriting
+            our p12 file decryption that's built into java security
+            This will cause the password is incorrect
+            This needs to be added back if org.bouncy castle dependency
+            sneaks backs in and causing issues with the two way ssl
+        -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-rsa</artifactId>
+            <version>${spring.security.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcpkix-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+            <version>${spring.jms.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jersey</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.web.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- End of Spring Framework Dependencies -->
+        <!-- Start of Netty Dependencies -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>${netty.handler.version}</version>
+        </dependency>
+        <!-- End of Netty Dependencies -->
+        <!-- Start of Antlr dependencies for DSL -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-maven-plugin</artifactId>
+            <version>${antlr.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.sonatype.sisu</groupId>
+                    <artifactId>sisu-guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- End of Antlr dependencies for DSL -->
+        <!-- Start of Junit Test Dependencies -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-junit</artifactId>
+            <version>${hamcrest.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- End of Junit Test Dependencies -->
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings
+                    only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.github.kongchen</groupId>
+                                        <artifactId>swagger-maven-plugin</artifactId>
+                                        <versionRange>3.1.3</versionRange>
+                                        <goals>
+                                            <goal>generate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.8</version>
+                    <executions>
+                        <execution>
+                            <id>unpack-schema-dependency</id>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.onap.aai.aai-common</groupId>
+                                        <artifactId>aai-schema</artifactId>
+                                        <version>${aai.schema.version}</version>
+                                        <outputDirectory>${project.basedir}/src/main/resources/schema/</outputDirectory>
+                                        <includes>**/oxm/**/*.xml</includes>
+                                    </artifactItem>
+                                </artifactItems>
+                                <!-- other configurations here -->
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>unpack-edgerules-dependency</id>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.onap.aai.aai-common</groupId>
+                                        <artifactId>aai-schema</artifactId>
+                                        <version>${aai.schema.version}</version>
+                                        <outputDirectory>${project.basedir}/src/main/resources/schema/</outputDirectory>
+                                        <includes>**/dbedgerules/**/*.json</includes>
+                                    </artifactItem>
+                                </artifactItems>
+                                <!-- other configurations here -->
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.groovy.maven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <version>1.0</version>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <configuration>
+                                <source>
+                                    println project.properties['aai.project.version'];
+                                    def versionArray;
+                                    if (project.properties['aai.project.version'] != null) {
+                                        versionArray = project.properties['aai.project.version'].split('\\.');
+                                    }
+
+                                    project.properties["project.major.version"] = versionArray[0];
+                                    project.properties["project.minor.version"] = versionArray[1];
+                                    project.properties['project.docker.latesttag.version'] = versionArray[0] + '.' + versionArray[1] + '-STAGING-latest';
+                                    println 'New Tag for docker:' + project.properties['project.docker.latesttag.version'];
+                                </source>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>default-deploy</id>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <nexusUrl>${nexusproxy}</nexusUrl>
+                        <stagingProfileId>176c31dfe190a</stagingProfileId>
+                        <serverId>ecomp-staging</serverId>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                            <version>2.4</version>
+                            <configuration>
+                                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                            </configuration>
+                            <reports>
+                                <report>dependencies</report>
+                            </reports>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.8</version>
+                            <configuration>
+                                <additionalparam>-Xdoclint:none</additionalparam>
+                            </configuration>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId>
+                        <version>2.10</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/resources/etc/oxm</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/resources/etc/dbedgerules</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/resources/schema</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <configuration>
+                    <dumpOnExit>true</dumpOnExit>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
+                            <!-- <append>true</append> -->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                            <rules>
+                                <!--  implementation is needed only for Maven 2  -->
+                                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.line.coverage.limit}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Used for unit tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <argLine>-noverify ${argLine}</argLine>
+                    <runOrder>alphabetical</runOrder>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                    <layout>ZIP</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/descriptor.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>src/main/resources/antlr4</sourceDirectory>
+                            <!-- <outputDirectory>src/main/java/antlr4</outputDirectory> -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!-- mention the logback.xml location through system property or environment
+            variable to edit logback.xml at run time -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/swm</directory>
+                <targetPath>${project.build.directory}/swm</targetPath>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources/etc/appprops/</directory>
+                <includes>
+                    <include>janusgraph-realtime.properties</include>
+                    <include>janusgraph-cached.properties</include>
+                    <include>aaiconfig.properties</include>
+                    <include>aaiEventDMaaPPublisher.properties</include>
+                    <include>preferredRoute.txt</include>
+                    <include>datatoolscrons.properties</include>
+                </includes>
+                <targetPath>${project.build.directory}/swm/package/nix/dist_files/opt/app/${project.artifactId}/appconfig
+                </targetPath>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>application.properties</include>
+                    <include>*logback.xml</include>
+                    <include>hbase-site.xml</include>
+                </includes>
+                <targetPath>${project.build.directory}/swm/package/nix/dist_files/opt/app/${project.artifactId}/appconfig
+                </targetPath>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources/schema/</directory>
+                <includes>
+                    <include>**/oxm/**/*.xml</include>
+                    <include>**/dbedgerules/**/*.json</include>
+                </includes>
+                <targetPath>${project.build.directory}/swm/package/nix/dist_files/opt/app/${project.artifactId}/appconfig/schema</targetPath>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/docker</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <targetPath>${aai.build.directory}</targetPath>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources/etc/auth</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <targetPath>${project.build.directory}/swm/package/nix/dist_files/opt/app/${project.artifactId}/appconfig
+                </targetPath>
+                <filtering>false</filtering>
+            </resource>
+            <!--
+               Place any files related for migration related into migration-input-files
+               so they can be packaged into this location here so it can be volumed
+               into the container as one folder rather than do this for each subfolder
+           -->
+            <resource>
+                <directory>${project.basedir}/src/main/resources/migration-input-files</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <targetPath>
+                    ${project.build.directory}/swm/package/nix/dist_files/opt/app/${project.artifactId}/appconfig/migration-input-files
+                </targetPath>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ecomp-snapshots</id>
+            <name>ECOMP Snapshot Repository</name>
+            <url>${onap.nexus.url}/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>ecomp-site</id>
+            <url>dav:${onap.nexus.url}${sitePath}</url>
+        </site>
+    </distributionManagement>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+                    <docletArtifact>
+                        <groupId>org.umlgraph</groupId>
+                        <artifactId>umlgraph</artifactId>
+                        <version>5.6</version>
+                    </docletArtifact>
+                    <additionalparam>-views -Xdoclint:none</additionalparam>
+                    <excludePackageNames>org.onap.aai.domain.yang.*:org.onap.aai.util.*</excludePackageNames>
+                    <useStandardDocletOptions>true</useStandardDocletOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <!-- Start of ONAP Specific Repositories -->
+    <repositories>
+        <repository>
+            <id>AJSC</id>
+            <name>AJSC repository</name>
+            <url>https://mvnrepository.com/artifact/com.att.ajsc</url>
+        </repository>
+        <repository>
+            <id>restlet</id>
+            <name>maven reslet</name>
+            <url>https://maven.restlet.com/</url>
+        </repository>
+
+        <repository>
+            <id>central</id>
+            <name>Maven 2 repository 2</name>
+            <url>http://repo2.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>ecomp-releases</id>
+            <name>ECOMP Release Repository</name>
+            <url>${onap.nexus.url}/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>ecomp-staging</id>
+            <name>ECOMP Staging Repository</name>
+            <url>${onap.nexus.url}/content/repositories/staging/</url>
+        </repository>
+        <repository>
+            <id>ecomp-snapshots</id>
+            <name>ECOMP Snapshot Repository</name>
+            <url>${onap.nexus.url}/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+    <!-- End of ONAP Specific Repositories -->
+</project>
+

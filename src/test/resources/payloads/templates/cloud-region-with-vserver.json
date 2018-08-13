@@ -1,0 +1,32 @@
+{
+  "cloud-owner": "${cloud-owner}",
+  "cloud-region-id": "${cloud-region-id}",
+  "tenants": {
+    "tenant": [
+      {
+        "tenant-id": "${tenant-id}",
+        "tenant-name": "${tenant-name}",
+        "vservers": {
+          "vserver": [
+            {
+              "vserver-id": "${vserver-id}",
+              "vserver-name": "${vserver-name}",
+              "vserver-name2": "vserver-name-2",
+              "vserver-selflink": "vserver-selflink-1",
+              "in-maint": false,
+              "is-closed-loop-disabled": false,
+              "relationship-list": {
+                "relationship": [
+                  {
+                    "related-to": "pserver",
+                    "related-link": "${pserver-uri}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

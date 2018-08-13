@@ -1,0 +1,62 @@
+<configuration>
+	<property name="logDirectory" value="${AJSC_HOME}/logs" />
+
+	<appender name="uniquePropertyChecklog" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<!-- This is MDC value -->
+		<!-- We will assign a value to 'logFilenameAppender' via Java code -->
+		<discriminator>
+			<key>logFilenameAppender</key>
+			<defaultValue>undefined</defaultValue>
+		</discriminator>
+		<sift>
+			<!-- A standard RollingFileAppender, the log file is based on 'logFileName' 
+				at runtime -->
+			<appender name="FILE-${logFilenameAppender}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${logDirectory}/uniquePropertyCheck/${logFilenameAppender}.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${logDirectory}/uniquePropertyCheck/${logFilenameAppender}.log.%d{yyyy-MM-dd}
+					</fileNamePattern>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
+	<logger name="org.reflections" level="WARN" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="org.apache.zookeeper" level="ERROR" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="org.apache.hadoop" level="ERROR" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="com.thinkaurelius" level="WARN" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="ch.qos.logback.classic" level="WARN" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="ch.qos.logback.core" level="WARN" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="com.att.eelf" level="WARN" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+	<logger name="org.onap.aai" level="INFO" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
+
+
+	<root level="INFO">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</root>
+</configuration>

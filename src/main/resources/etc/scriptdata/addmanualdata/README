@@ -1,0 +1,17 @@
+to add manual data, two files will be populated in the release directory under this folder. 
+If the release directory does not exist, create it.
+
+The addManualData.sh script requires the release to be passed
+as a parameter. It finds and applies manual data changes under
+the release folder matching the parameter.
+
+This script is expected to be run for each installation. The script uses
+the PutTool, and flags the put to ignore 412 errors produced
+when the resource already exists.
+
+100-<file>.txt will contain the resource to be put. 
+100-<file>.json will be the json file passed to the PutTool.
+
+
+bundleconfig/etc/scriptdata/addmanualdata/1610/<file>.txt
+bundleconfig/etc/scriptdata/addmanualdata/1610/<file>.json
