@@ -1,0 +1,104 @@
+{
+  "cloud-region" : {
+        "filtered-node-type": "cloud-region",
+        "filters": [
+             {
+                "property": "cloud-owner",
+                 "regex": "att-aic"
+             },
+             {
+                "property": "cloud-region-version",
+                 "regex": "2.5|3.0|aic3.0|3.6"
+             },
+             {
+                "property": "cloud-region-id",
+                "regex": "dyh1b|DHY1A|mtn23a|mtn23b|mdt25b|mtn6|au7tx"
+             }
+        ]
+  },
+  "complex" : {
+        "filtered-node-type": "cloud-region",
+        "filters": [
+             {
+                "property": "cloud-owner",
+                 "regex": "att-aic"
+             },
+             {
+                "property": "cloud-region-version",
+                 "regex": "2.5|3.0|aic3.0|3.6"
+             },
+             {
+                "property": "cloud-region-id",
+                "regex": "dyh1b|DHY1A|mtn23a|mtn23b|mdt25b|mtn6|au7tx"
+             }
+        ]
+  },
+  "availability-zone" : {
+        "filtered-node-type": "cloud-region",
+        "filters": [
+             {
+                "property": "cloud-owner",
+                 "regex": "att-aic"
+             },
+             {
+                "property": "cloud-region-version",
+                 "regex": "2.5|3.0|aic3.0|3.6"
+             },
+             {
+                "property": "cloud-region-id",
+                "regex": "dyh1b|DHY1A|mtn23a|mtn23b|mdt25b|mtn6|au7tx"
+             }
+        ]
+  },
+  "pserver" : {
+        "filtered-node-type": "cloud-region",
+        "filters": [
+             {
+                "property": "cloud-owner",
+                 "regex": "att-aic"
+             },
+             {
+                "property": "cloud-region-version",
+                 "regex": "2.5|3.0|aic3.0|3.6"
+             },
+             {
+                "property": "cloud-region-id",
+                "regex": "dyh1b|DHY1A|mtn23a|mtn23b|mdt25b|mtn6|au7tx"
+             }
+        ]
+  },
+  "zone" : {
+        "filtered-node-type": "cloud-region",
+        "filters": [
+             {
+                "property": "cloud-owner",
+                 "regex": "att-aic"
+             },
+             {
+                "property": "cloud-region-version",
+                 "regex": "2.5|3.0|aic3.0|3.6"
+             },
+             {
+                "property": "cloud-region-id",
+                "regex": "dyh1b|DHY1A|mtn23a|mtn23b|mdt25b|mtn6|au7tx"
+             }
+        ]
+  },
+  "tenant" : {
+        "filtered-node-type": "cloud-region",
+        "filters": [
+             {
+                "property": "cloud-owner",
+                 "regex": "att-aic"
+             },
+             {
+                "property": "cloud-region-version",
+                 "regex": "2.5|3.0|aic3.0|3.6"
+             },
+             {
+                "property": "cloud-region-id",
+                "regex": "dyh1b|DHY1A|mtn23a|mtn23b|mdt25b|mtn6|au7tx"
+             }
+        ]
+  }
+}

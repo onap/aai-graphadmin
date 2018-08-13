@@ -1,0 +1,10 @@
+{
+  "pserver" : {
+             "cousins" : ["zone", "complex", "availability-zone","cloud-region"],
+             "parents":[]
+  },
+  "tenant" : {
+          "cousins":[],
+          "parents":["cloud-region"]
+  }
+}
