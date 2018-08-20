@@ -46,6 +46,8 @@
         <skip.integration.tests>true</skip.integration.tests>
         <!-- End of Test Related Properties -->
 
+        <spring.boot.version>1.5.15.RELEASE</spring.boot.version>
+
         <!-- Start of Sonar Related Properties -->
         <sonar.language>java</sonar.language>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -355,7 +357,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>
-                <version>1.5.12.RELEASE</version>
+		<version>${spring.boot.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
