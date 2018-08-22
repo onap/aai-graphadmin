@@ -25,31 +25,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.AAIConstants;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
-
-import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
-import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
-
-import com.att.eelf.configuration.EELFLogger;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
@@ -85,7 +76,7 @@ public class DataCleanupTasks {
 		
 			boolean exists = directoryExists(logDir);
 			logger.info("Directory" + logDir + "exists: " + exists);
-			if(exists == false)
+			if(!exists)
 				logger.error("The directory" + logDir +"does not exists");
 		
 			Integer ageZip = AAIConfig.getInt("aai.datagrooming.agezip");
@@ -191,20 +182,18 @@ public class DataCleanupTasks {
 	
 		boolean exists = directoryExists(archiveDir);
 		logger.info("Directory" + archiveDir + "exists: " + exists);		
-		if(exists == false) {
+		if(!exists) {
 			logger.error("The directory" + archiveDir +"does not exists so will create a new archive folder");
 			//Create an archive folder if does not exists		
 			boolean flag = dataGroomingPath.mkdirs();
-			if(flag == false)
+			if(!flag)
 				logger.error("Failed to create ARCHIVE folder");		
 		}
-		try {		
-			FileOutputStream outputstream = new FileOutputStream(zipFile + ".gz");
-			ZipOutputStream zoutputstream = new ZipOutputStream(outputstream);
+		try(FileOutputStream outputstream = new FileOutputStream(zipFile + ".gz");
+				ZipOutputStream zoutputstream = new ZipOutputStream(outputstream);
+				FileInputStream inputstream = new FileInputStream(file)) {
 			ZipEntry ze = new ZipEntry(file.getName());
 			zoutputstream.putNextEntry(ze);
-			//read the file and write to the zipOutputStream
-			FileInputStream inputstream = new FileInputStream(file);
 			byte[] buffer = new byte[1024];
 			int len;
 			while ((len = inputstream.read(buffer)) > 0) {
@@ -212,9 +201,6 @@ public class DataCleanupTasks {
 			}			
 			//close all the sources
 			zoutputstream.closeEntry();
-			zoutputstream.close();
-			inputstream.close();
-			outputstream.close();
 			//Delete the file after been added to archive folder
 			delete(file);
 			logger.info("The file archived is " + file + " at " + afterArchiveDir );
@@ -234,7 +220,7 @@ public class DataCleanupTasks {
     	
     	logger.info("Deleting the file " + file);
     	boolean deleteStatus = file.delete();
-		if(deleteStatus == false){
+		if(!deleteStatus){
 			logger.error("Failed to delete the file" +file);			
 		}
     }
@@ -266,7 +252,7 @@ public class DataCleanupTasks {
 	
     		boolean exists = directoryExists(logDir);
     		logger.info("Directory" + logDir + "exists: " + exists);
-    		if(exists == false)
+    		if(!exists)
     			logger.error("The directory" + logDir +"does not exists");
 	
     		Integer ageZipSnapshot = AAIConfig.getInt("aai.datasnapshot.agezip");
