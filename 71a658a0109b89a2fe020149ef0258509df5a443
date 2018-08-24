@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Pavel Paroulek <pavel.paroulek@orange.com>
+Code-Review+2: James Forsyth <jf2512@att.com>
+Submitted-by: James Forsyth <jf2512@att.com>
+Submitted-at: Fri, 24 Aug 2018 16:22:19 +0000
+Reviewed-on: https://gerrit.onap.org/r/61761
+Project: aai/graphadmin
+Branch: refs/heads/master
