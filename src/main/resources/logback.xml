@@ -662,6 +662,12 @@
 		<appender-ref ref="createDBSchemametric"/>
 	</logger>
 
+	<logger name="org.onap.aai.dbgen" level="DEBUG" additivity="false">
+		<appender-ref ref="createDBSchema"/>
+		<appender-ref ref="createDBSchemadebug"/>
+		<appender-ref ref="createDBSchemametric"/>
+	</logger>
+
 	<logger name="org.onap.aai.dbgen.PullInvData" level="DEBUG" additivity="false">
 		<appender-ref ref="pullInvData"/>
 		<appender-ref ref="pullInvDatadebug"/>
