@@ -47,8 +47,7 @@ import com.att.eelf.configuration.EELFManager;
 public class DataCleanupTasks {
 
 	private static final EELFLogger logger = EELFManager.getInstance().getLogger(DataCleanupTasks.class);
-	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-	
+	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 	/**The function archives/deletes files that end in .out (Ie. dataGrooming.201511111305.out) that sit in our log/data directory structure.
 		logDir is the {project_home}/logs
 		archiveDir is the ARCHIVE directory where the files will be stored after 5 days.

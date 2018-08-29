@@ -42,7 +42,7 @@ import com.att.eelf.configuration.EELFManager;
 public class DataSnapshotTasks {
 
 	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DataSnapshotTasks.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	
 	@Scheduled(cron = "${datasnapshottasks.cron}" )
 	public void snapshotScheduleTask() throws AAIException, Exception {
@@ -66,10 +66,9 @@ public class DataSnapshotTasks {
 		LOGGER.info("Started cron job dataSnapshot @ " + dateFormat.format(new Date()));
 		try {
 			if (AAIConfig.get("aai.cron.enable.dataSnapshot").equals("true")) {
-				DataSnapshot dataSnapshot = new DataSnapshot();
 				String [] dataSnapshotParms = AAIConfig.get("aai.datasnapshot.params",  "JUST_TAKE_SNAPSHOT").split("\\s+");
 				LOGGER.info("DataSnapshot Params {}", Arrays.toString(dataSnapshotParms));
-				dataSnapshot.main(dataSnapshotParms);
+				DataSnapshot.main(dataSnapshotParms);
 			}
 		}
 		catch (Exception e) {
@@ -88,12 +87,12 @@ public class DataSnapshotTasks {
 		Process process = null;
 
 		int count = 0;
+		boolean retVal=false;
 		try {
 			process = new ProcessBuilder().command("bash", "-c", "ps -ef | grep '[D]ataSnapshot'").start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
-
 			while (br.readLine() != null){
 				count++;
 			}
@@ -101,14 +100,14 @@ public class DataSnapshotTasks {
 			int exitVal = process.waitFor();
 			LOGGER.info("Exit value of the dataSnapshot check process: " + exitVal);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Exception in checkIfDataSnapshotIsRunning",e);
 		}
 
 		if(count > 0){
-			return true;
-		} else {
-			return false;
+			retVal=true;
 		}
+		
+		return retVal;
 	}
 }
 		
