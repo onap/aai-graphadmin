@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_09321df2",
+        "filename": "src/main/java/org/onap/aai/datasnapshot/DataSnapshotTasks.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 2381
+      },
+      "writtenOn": "2018-08-29T15:41:38Z",
+      "side": 1,
+      "message": "you can \"return count \u003e 0\"",
+      "revId": "e22a089894f848414c6ce5f1b2539f8d16c61b4d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
