@@ -29,6 +29,7 @@ import org.onap.aai.datagrooming.DataGrooming;
 import org.onap.aai.datagrooming.DataGroomingTasks;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.util.AAIConfig;
 import org.springframework.context.annotation.PropertySource;
@@ -42,7 +43,7 @@ import com.att.eelf.configuration.EELFManager;
 public class DataSnapshotTasks {
 
 	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DataSnapshotTasks.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	
 	@Scheduled(cron = "${datasnapshottasks.cron}" )
 	public void snapshotScheduleTask() throws AAIException, Exception {
@@ -66,10 +67,9 @@ public class DataSnapshotTasks {
 		LOGGER.info("Started cron job dataSnapshot @ " + dateFormat.format(new Date()));
 		try {
 			if (AAIConfig.get("aai.cron.enable.dataSnapshot").equals("true")) {
-				DataSnapshot dataSnapshot = new DataSnapshot();
 				String [] dataSnapshotParms = AAIConfig.get("aai.datasnapshot.params",  "JUST_TAKE_SNAPSHOT").split("\\s+");
 				LOGGER.info("DataSnapshot Params {}", Arrays.toString(dataSnapshotParms));
-				dataSnapshot.main(dataSnapshotParms);
+				DataSnapshot.main(dataSnapshotParms);
 			}
 		}
 		catch (Exception e) {
@@ -93,7 +93,6 @@ public class DataSnapshotTasks {
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
-
 			while (br.readLine() != null){
 				count++;
 			}
@@ -101,14 +100,10 @@ public class DataSnapshotTasks {
 			int exitVal = process.waitFor();
 			LOGGER.info("Exit value of the dataSnapshot check process: " + exitVal);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Exception in checkIfDataSnapshotIsRunning" + LogFormatTools.getStackTop(e));
 		}
 
-		if(count > 0){
-			return true;
-		} else {
-			return false;
-		}
+		return count > 0;
 	}
 }
 		
