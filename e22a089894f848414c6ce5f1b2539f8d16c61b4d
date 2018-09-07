@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a76adc5_3a5a8c2a",
+        "filename": "src/main/java/org/onap/aai/datasnapshot/DataSnapshotTasks.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 75
+      },
+      "writtenOn": "2018-09-07T16:23:53Z",
+      "side": 1,
+      "message": "Change it to:\n\nLOGGER.error(\"Exception in checkIfDataSnapshotIsRunning \" + LogFormatTools.getStackTop(e));",
+      "revId": "e22a089894f848414c6ce5f1b2539f8d16c61b4d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_09321df2",
         "filename": "src/main/java/org/onap/aai/datasnapshot/DataSnapshotTasks.java",
         "patchSetId": 1
