@@ -133,7 +133,7 @@
         <start-class>org.onap.aai.GraphAdminApp</start-class>
 
         <snapshot.file>${project.basedir}/snapshots/int1-data.graphson</snapshot.file>
-        <jacoco.line.coverage.limit>0.27</jacoco.line.coverage.limit>
+        <jacoco.line.coverage.limit>0.46</jacoco.line.coverage.limit>
 
         <!-- Start of Default ONAP Schema Properties -->
         <schema.source.name>onap</schema.source.name>

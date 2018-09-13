@@ -48,7 +48,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.onap.aai.GraphAdminApp;
 import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.Loader;
@@ -67,7 +66,9 @@ import org.onap.aai.logging.LoggingContext.StatusCode;
 import com.att.eelf.configuration.Configuration;
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
-import org.janusgraph.core.JanusGraphFactory;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+
 import org.janusgraph.core.JanusGraph;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -82,6 +83,16 @@ public class DataGrooming {
 
 	private LoaderFactory loaderFactory;
 	private SchemaVersions schemaVersions;
+	
+	private CommandLineArgs cArgs;
+	
+	HashMap<String, Vertex> orphanNodeHash ;
+	HashMap<String, Vertex> missingAaiNtNodeHash ;
+	HashMap<String, Edge> oneArmedEdgeHash ;
+	HashMap<String, Vertex> ghostNodeHash ;
+	ArrayList<String> dupeGroups;
+	Set<String> deleteCandidateList;
+	private int deleteCount = 0;
 
 	public DataGrooming(LoaderFactory loaderFactory, SchemaVersions schemaVersions){
 		this.loaderFactory  = loaderFactory;
@@ -91,18 +102,6 @@ public class DataGrooming {
 	public void execute(String[] args){
 
 		String ver = "version"; // Placeholder
-		Boolean doAutoFix = false;
-		Boolean edgesOnlyFlag = false;
-		Boolean dontFixOrphansFlag = false;
-		Boolean skipHostCheck = false;
-		Boolean singleCommits = false;
-		Boolean dupeCheckOff = false;
-		Boolean dupeFixOn = false;
-		Boolean ghost2CheckOff = false;
-		Boolean ghost2FixOn = false;
-		Boolean neverUseCache = false;
-		Boolean skipEdgeCheckFlag = false;
-		Boolean skipIndexUpdateFix = false;
 
 		// A value of 0 means that we will not have a time-window -- we will look
 		// at all nodes of the passed-in nodeType.
@@ -131,7 +130,26 @@ public class DataGrooming {
 		FormatDate fd = new FormatDate("yyyyMMddHHmm", "GMT");
 		String dteStr = fd.getDateTime();
 
-		if (args.length > 0) {
+		cArgs = new CommandLineArgs();
+		JCommander jCommander = new JCommander(cArgs, args);
+		jCommander.setProgramName(DataGrooming.class.getSimpleName());
+		
+		//Print Defaults
+		LOGGER.info("EdgesOnlyFlag is" + cArgs.edgesOnlyFlag);
+		LOGGER.info("DoAutoFix is" + cArgs.doAutoFix);
+		LOGGER.info("skipHostCheck is" + cArgs.skipHostCheck);
+		LOGGER.info("dontFixOrphansFlag is" + cArgs.dontFixOrphansFlag);
+		LOGGER.info("singleCommits is" + cArgs.singleCommits);
+		LOGGER.info("dupeCheckOff is" + cArgs.dupeCheckOff);
+		LOGGER.info("dupeFixOn is" + cArgs.dupeFixOn);
+		LOGGER.info("ghost2CheckOff is" + cArgs.ghost2CheckOff);
+		LOGGER.info("ghost2FixOn is" + cArgs.ghost2FixOn);
+		LOGGER.info("neverUseCache is" + cArgs.neverUseCache);
+		LOGGER.info("skipEdgeChecks is" + cArgs.skipEdgeCheckFlag);
+		LOGGER.info("skipIndexUpdateFix is" + cArgs.skipIndexUpdateFix);
+		LOGGER.info("maxFix is" + cArgs.maxRecordsToFix);
+		
+		/*if (args.length > 0) {
 			// They passed some arguments in that will affect processing
 			for (int i = 0; i < args.length; i++) {
 				String thisArg = args[i];
@@ -241,9 +259,10 @@ public class DataGrooming {
 					AAISystemExitUtil.systemExitCloseAAIGraph(0);
 				}
 			}
-		}
+		} */
 
 		String windowTag = "FULL";
+		//TODO???
 		if( timeWindowMinutes > 0 ){
 			windowTag = "PARTIAL";
 		}
@@ -267,13 +286,14 @@ public class DataGrooming {
 						+ prevFileName + "] for cleanup. ");
 				Boolean finalShutdownFlag = true;
 				Boolean cacheDbOkFlag = false;
-				doTheGrooming(prevFileName, edgesOnlyFlag, dontFixOrphansFlag,
-						maxRecordsToFix, groomOutFileName, ver, singleCommits,
-						dupeCheckOff, dupeFixOn, ghost2CheckOff, ghost2FixOn,
-						finalShutdownFlag, cacheDbOkFlag,
-						skipEdgeCheckFlag, timeWindowMinutes,
-						singleNodeType, skipIndexUpdateFix );
-			} else if (doAutoFix) {
+				doTheGrooming(prevFileName, cArgs.edgesOnlyFlag, cArgs.dontFixOrphansFlag,
+						cArgs.maxRecordsToFix, groomOutFileName, ver, cArgs.singleCommits,
+						cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
+						cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
+						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
+				
+			} else if (cArgs.doAutoFix) {
 				// They want us to run the processing twice -- first to look for
 				// delete candidates, then after
 				// napping for a while, run it again and delete any candidates
@@ -284,21 +304,21 @@ public class DataGrooming {
 				LOGGER.info(" First, Call doTheGrooming() to look at what's out there. ");
 				Boolean finalShutdownFlag = false;
 				Boolean cacheDbOkFlag = true;
-				int fixCandCount = doTheGrooming("", edgesOnlyFlag,
-						dontFixOrphansFlag, maxRecordsToFix, groomOutFileName,
-						ver, singleCommits, dupeCheckOff, dupeFixOn, ghost2CheckOff, ghost2FixOn,
-						finalShutdownFlag, cacheDbOkFlag,
-						skipEdgeCheckFlag, timeWindowMinutes,
-						singleNodeType, skipIndexUpdateFix );
+				int fixCandCount = doTheGrooming("", cArgs.edgesOnlyFlag,
+						cArgs.dontFixOrphansFlag, cArgs.maxRecordsToFix, groomOutFileName,
+						ver, cArgs.singleCommits, cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
+						cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
+						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 				if (fixCandCount == 0) {
 					LOGGER.info(" No fix-Candidates were found by the first pass, so no second/fix-pass is needed. ");
 				} else {
 					// We'll sleep a little and then run a fix-pass based on the
 					// first-run's output file.
 					try {
-						LOGGER.info("About to sleep for " + sleepMinutes
+						LOGGER.info("About to sleep for " + cArgs.sleepMinutes
 								+ " minutes.");
-						int sleepMsec = sleepMinutes * 60 * 1000;
+						int sleepMsec = cArgs.sleepMinutes * 60 * 1000;
 						Thread.sleep(sleepMsec);
 					} catch (InterruptedException ie) {
 						LOGGER.info("\n >>> Sleep Thread has been Interrupted <<< ");
@@ -312,13 +332,13 @@ public class DataGrooming {
 							+ groomOutFileName + "]");
 					finalShutdownFlag = true;
 					cacheDbOkFlag = false;
-					doTheGrooming(groomOutFileName, edgesOnlyFlag,
-							dontFixOrphansFlag, maxRecordsToFix,
-							secondGroomOutFileName, ver, singleCommits,
-							dupeCheckOff, dupeFixOn, ghost2CheckOff, ghost2FixOn,
-							finalShutdownFlag, cacheDbOkFlag,
-							skipEdgeCheckFlag, timeWindowMinutes,
-							singleNodeType, skipIndexUpdateFix );
+					doTheGrooming(groomOutFileName, cArgs.edgesOnlyFlag,
+							cArgs.dontFixOrphansFlag, cArgs.maxRecordsToFix,
+							secondGroomOutFileName, ver, cArgs.singleCommits,
+							cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
+							cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+							cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
+							cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 				}
 			} else {
 				// Do the grooming - plain vanilla (no fix-it-file, no
@@ -326,16 +346,16 @@ public class DataGrooming {
 				Boolean finalShutdownFlag = true;
 				LOGGER.info(" Call doTheGrooming() ");
 				Boolean cacheDbOkFlag = true;
-				if( neverUseCache ){
+				if( cArgs.neverUseCache ){
 					// They have forbidden us from using a cached db connection.
-					cacheDbOkFlag = false;
+					cArgs.cacheDbOkFlag = false;
 				}
-				doTheGrooming("", edgesOnlyFlag, dontFixOrphansFlag,
-						maxRecordsToFix, groomOutFileName, ver, singleCommits,
-						dupeCheckOff, dupeFixOn, ghost2CheckOff, ghost2FixOn,
-						finalShutdownFlag, cacheDbOkFlag,
-						skipEdgeCheckFlag, timeWindowMinutes,
-						singleNodeType, skipIndexUpdateFix );
+				doTheGrooming("", cArgs.edgesOnlyFlag, cArgs.dontFixOrphansFlag,
+						cArgs.maxRecordsToFix, groomOutFileName, ver, cArgs.singleCommits,
+						cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
+						cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
+						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 			}
 		} catch (Exception ex) {
 			LoggingContext.statusCode(StatusCode.ERROR);
@@ -416,10 +436,10 @@ public class DataGrooming {
 		BufferedWriter bw = null;
 		JanusGraph graph = null;
 		JanusGraph graph2 = null;
-		int deleteCount = 0;
+		deleteCount = 0;
 		int dummyUpdCount = 0;
 		boolean executeFinalCommit = false;
-		Set<String> deleteCandidateList = new LinkedHashSet<>();
+		deleteCandidateList = new LinkedHashSet<>();
 		Set<String> processedVertices = new LinkedHashSet<>();
 		Set<String> postCommitRemoveList = new LinkedHashSet<>();
 
@@ -505,12 +525,12 @@ public class DataGrooming {
 			ArrayList<String> errArr = new ArrayList<>();
 			int totalNodeCount = 0;
 			HashMap<String, String> misMatchedHash = new HashMap<String, String>();
-			HashMap<String, Vertex> orphanNodeHash = new HashMap<String, Vertex>();
-			HashMap<String, Vertex> missingAaiNtNodeHash = new HashMap<String, Vertex>();
-			HashMap<String, Edge> oneArmedEdgeHash = new HashMap<String, Edge>();
+			orphanNodeHash = new HashMap<String, Vertex>();
+			missingAaiNtNodeHash = new HashMap<String, Vertex>();
+			oneArmedEdgeHash = new HashMap<String, Edge>();
 			HashMap<String, String> emptyVertexHash = new HashMap<String, String>();
-			HashMap<String, Vertex> ghostNodeHash = new HashMap<String, Vertex>();
-			ArrayList<String> dupeGroups = new ArrayList<>();
+			ghostNodeHash = new HashMap<String, Vertex>();
+			dupeGroups = new ArrayList<>();
 
 			Loader loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, schemaVersions.getDefaultVersion());
 
@@ -1627,7 +1647,7 @@ public class DataGrooming {
 	}// end of doTheGrooming()
 	
 	
-	private void updateIndexedProps(Vertex thisVtx, String thisVidStr, String nType,
+	public void updateIndexedProps(Vertex thisVtx, String thisVidStr, String nType,
 			HashMap <String,String>propTypeHash, ArrayList <String> indexedProps) {
 		// This is a "missing-aai-node-type" scenario.
 		// Other indexes may also be messed up, so we will update all of them on
@@ -2849,5 +2869,142 @@ public class DataGrooming {
 		return returnVid;
 		
 	}// End of findJustOneUsingIndex()
+	
+class CommandLineArgs {
+
+		
+		@Parameter(names = "--help", help = true)
+		public boolean help;
+
+		@Parameter(names = "-edgesOnly", description = "Check grooming on edges only", arity = 1)
+		public Boolean edgesOnlyFlag = false;
+
+		@Parameter(names = "-autoFix", description = "doautofix", arity = 1)
+		public Boolean doAutoFix = false;
+
+		@Parameter(names = "-skipHostCheck", description = "skipHostCheck", arity = 1)
+		public Boolean skipHostCheck = false;
+
+		@Parameter(names = "-dontFixOrphans", description = "dontFixOrphans", arity = 1)
+		public Boolean dontFixOrphansFlag = false;
+
+		@Parameter(names = "-singleCommits", description = "singleCommits", arity = 1)
+		public Boolean singleCommits = false;
+
+		@Parameter(names = "-dupeCheckOff", description = "dupeCheckOff", arity = 1)
+		public Boolean dupeCheckOff = false;
+
+		@Parameter(names = "-dupeFixOn", description = "dupeFixOn", arity = 1)
+		public Boolean dupeFixOn = false;
+
+		@Parameter(names = "-ghost2CheckOff", description = "ghost2CheckOff", arity = 1)
+		public Boolean ghost2CheckOff = false;
+
+		@Parameter(names = "-ghost2FixOn", description = "ghost2FixOn", arity = 1)
+		public Boolean ghost2FixOn = false;
+		
+		@Parameter(names = "-neverUseCache", description = "neverUseCache", arity = 1)
+		public Boolean neverUseCache = false;
+		
+		@Parameter(names = "-skipEdgeChecks", description = "skipEdgeChecks", arity = 1)
+		public Boolean skipEdgeCheckFlag = false;
+		
+		@Parameter(names = "-skipIndexUpdateFix", description = "skipIndexUpdateFix", arity = 1)
+		public Boolean skipIndexUpdateFix = false;
+		
+		@Parameter(names = "-maxFix", description = "maxFix")
+		public int maxRecordsToFix = AAIConstants.AAI_GROOMING_DEFAULT_MAX_FIX;
+		
+		@Parameter(names = "-sleepMinutes", description = "sleepMinutes")
+		public int sleepMinutes = AAIConstants.AAI_GROOMING_DEFAULT_SLEEP_MINUTES;
+		
+		// A value of 0 means that we will not have a time-window -- we will look
+				// at all nodes of the passed-in nodeType.
+		@Parameter(names = "-timeWindowMinutes", description = "timeWindowMinutes")
+		public int timeWindowMinutes = 0;
+		
+		@Parameter(names = "-f", description = "file")
+		public String prevFileName = "";
+		
+		@Parameter(names = "-singleNodeType", description = "sleepMinutes")
+		public String singleNodeType = "";
+
+		Boolean finalShutdownFlag = true;
+		Boolean cacheDbOkFlag = true;
+	}
+
+	public HashMap<String, Vertex> getGhostNodeHash() {
+		return ghostNodeHash;
+	}
+
+	public void setGhostNodeHash(HashMap<String, Vertex> ghostNodeHash) {
+		this.ghostNodeHash = ghostNodeHash;
+	}
+	
+	public int getGhostNodeCount(){
+		return getGhostNodeHash().size();
+	}
+	
+	public HashMap<String, Vertex> getOrphanNodeHash() {
+		return orphanNodeHash;
+	}
+
+	public void setOrphanNodeHash(HashMap<String, Vertex> orphanNodeHash) {
+		this.orphanNodeHash = orphanNodeHash;
+	}
+	
+	public int getOrphanNodeCount(){
+		return getOrphanNodeHash().size();
+	}
+	  
+	public HashMap<String, Vertex> getMissingAaiNtNodeHash() {
+		return missingAaiNtNodeHash;
+	}
+
+	public void setMissingAaiNtNodeHash(HashMap<String, Vertex> missingAaiNtNodeHash) {
+		this.missingAaiNtNodeHash = missingAaiNtNodeHash;
+	}
+	
+	public int getMissingAaiNtNodeCount(){
+		return getMissingAaiNtNodeHash().size();
+	}
+
+	public HashMap<String, Edge> getOneArmedEdgeHash() {
+		return oneArmedEdgeHash;
+	}
+
+	public void setOneArmedEdgeHash(HashMap<String, Edge> oneArmedEdgeHash) {
+		this.oneArmedEdgeHash = oneArmedEdgeHash;
+	}
+	
+	public int getOneArmedEdgeHashCount(){
+		return getOneArmedEdgeHash().size();
+	}
+	
+	public Set<String> getDeleteCandidateList() {
+		return deleteCandidateList;
+	}
+
+	public void setDeleteCandidateList(Set<String> deleteCandidateList) {
+		this.deleteCandidateList = deleteCandidateList;
+	}
+
+	public int getDeleteCount() {
+		return deleteCount;
+	}
+
+	public void setDeleteCount(int deleteCount) {
+		this.deleteCount = deleteCount;
+	}
+	
+	public ArrayList<String> getDupeGroups() {
+		return dupeGroups;
+	}
+
+	public void setDupeGroups(ArrayList<String> dupeGroups) {
+		this.dupeGroups = dupeGroups;
+	}
+
+	
 
 }
