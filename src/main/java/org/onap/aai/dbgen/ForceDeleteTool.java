@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * org.onap.aai
  * ================================================================================
- * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright Â© 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -298,7 +298,9 @@ public class ForceDeleteTool {
 	  	   			logger.error(msg);
 	  	   			exit(0);
 	  	   		}
-	  	   		g  = graph.traversal().V();
+	  	   		if(null!=graph) {
+	  	   			g  = graph.traversal().V();
+	  	   		}
 	  	   		qStringForMsg = " graph.traversal().V()";
 	  	   		// Note - if they're only passing one parameter, there won't be any commas
 	  	   		String [] paramArr = dataString.split(",");
@@ -347,7 +349,10 @@ public class ForceDeleteTool {
 	  		logger.info( infMsg );
 	  	} 
 	  	else if( actionVal.equals("DELETE_NODE") ){
-	  		Iterator <Vertex> vtxItr = graph.vertices( vertexIdLong );
+	  		Iterator <Vertex> vtxItr=null;
+	  		if(null!=graph) {
+	  			vtxItr = graph.vertices( vertexIdLong );
+	  		} 
 	  		if( vtxItr != null && vtxItr.hasNext() ) {
 	  			Vertex vtx = vtxItr.next();
 	  			fd.showNodeInfo( logger, vtx, displayAllVidsFlag );
