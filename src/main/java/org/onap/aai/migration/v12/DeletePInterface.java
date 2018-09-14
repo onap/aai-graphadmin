@@ -69,8 +69,10 @@ public class DeletePInterface extends Migrator {
 						Collection<Vertex> children = this.engine.getQueryEngine().findChildren(pInterfV);
 						if (cousins == null || cousins.isEmpty()) {
 							if (children == null || children.isEmpty()) {
-								logger.info("Delete p-interface: " + getVertexURI(pInterfV));
-								pInterfV.remove();
+								if(null!=pInterfV) {
+									logger.info("Delete p-interface: " + getVertexURI(pInterfV));
+									pInterfV.remove();
+								}
 								count++;
 							} else {
 								skipCount++;
