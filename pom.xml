@@ -107,7 +107,6 @@
         <netty.version>4.0.37.Final</netty.version>
 
         <spring.test.version>4.3.6.RELEASE</spring.test.version>
-        <spring.web.version>4.3.6.RELEASE</spring.web.version>
 
         <cxf.version>3.2.2</cxf.version>
 
@@ -535,6 +534,22 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.jackson</groupId>
+                    <artifactId>jackson-mapper-asl</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -546,6 +561,12 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
             <version>1.18</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.jackson</groupId>
+                    <artifactId>jackson-mapper-asl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Do not use the jersey-client since jersey client 1.0 version clashes
             with jersey 2 which we are using -->
@@ -607,11 +628,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jersey</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.web.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -977,6 +993,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 
+                  Issue with the spring 1.5.15.RELEASE plugin is causing build errors
+                  due to the fact that the plugin 1.5.15.RELEASE was built using maven 3.5 while
+                  the current build version being used by our jenkins is 3.3.9
+                -->
+                <version>1.5.12.RELEASE</version>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
                     <layout>ZIP</layout>

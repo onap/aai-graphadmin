@@ -52,6 +52,10 @@ public class OneWaySslAuthorization extends AAIContainerFilter implements Contai
     public void filter(ContainerRequestContext containerRequestContext) throws IOException
     {
 
+        if(containerRequestContext.getUriInfo().getRequestUri().getPath().matches("^.*/util/echo$")){
+            return;
+        }
+
         String basicAuth = containerRequestContext.getHeaderString("Authorization");
         List<MediaType> acceptHeaderValues = containerRequestContext.getAcceptableMediaTypes();
 
