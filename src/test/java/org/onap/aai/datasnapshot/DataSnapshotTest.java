@@ -31,6 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
+import org.onap.aai.exceptions.AAIException;
 import org.springframework.boot.test.rule.OutputCapture;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class DataSnapshotTest extends AAISetup {
     public OutputCapture outputCapture = new OutputCapture();
 
     @Before
-    public void setup(){
+    public void setup() throws AAIException {
         JanusGraph graph = AAIGraph.getInstance().getGraph();
         currentTransaction = graph.newTransaction();
         g = currentTransaction.traversal();
@@ -347,7 +348,7 @@ public class DataSnapshotTest extends AAISetup {
         DataSnapshot.main(args);
     }
 
-    private List<Vertex> setupPserverData(GraphTraversalSource g){
+    private List<Vertex> setupPserverData(GraphTraversalSource g) throws AAIException {
         Vertex v1 = g.addV().property("aai-node-type", "pserver")
             .property("hostname", "somerandomhostname")
             .next();
@@ -356,6 +357,13 @@ public class DataSnapshotTest extends AAISetup {
         Vertex v2 = g.addV().property("aai-node-type", "pserver")
             .property("hostname", "somerandomhostname2")
             .next();
+        Vertex pinterface = g.addV()
+                .property("aai-node-type", "p-interface")
+                .property("interface-name", "p-interface-name")
+                .property("in-maint", false)
+                .property("source-of-truth", "JUNIT")
+                .next();
+        edgeSerializer.addTreeEdge(g, v2, pinterface);
         list.add(v2);
         return list;
     }

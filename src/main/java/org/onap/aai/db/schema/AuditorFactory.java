@@ -20,6 +20,7 @@
 package org.onap.aai.db.schema;
 
 import org.janusgraph.core.JanusGraph;
+import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
@@ -37,8 +38,8 @@ public class AuditorFactory {
 	 * @param v the v
 	 * @return the OXM auditor
 	 */
-	public Auditor getOXMAuditor (SchemaVersion v) {
-		return new AuditOXM(loaderFactory, v);
+	public Auditor getOXMAuditor (SchemaVersion v, EdgeIngestor ingestor) {
+		return new AuditOXM(loaderFactory, v, ingestor);
 	}
 	
 	/**

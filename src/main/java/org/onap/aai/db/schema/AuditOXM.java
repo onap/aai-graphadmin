@@ -53,10 +53,12 @@ public class AuditOXM extends Auditor {
 	 *
 	 * @param version the version
 	 */
-	public AuditOXM(LoaderFactory loaderFactory, SchemaVersion version) {
+	public AuditOXM(LoaderFactory loaderFactory, SchemaVersion version, EdgeIngestor ingestor) {
 		
 		Loader loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, version);
 		Set<String> objectNames = getAllObjects(loader);
+		this.ingestor = ingestor;
+
 		allObjects = new HashSet<>();
 		for (String key : objectNames) {
 			try {
@@ -219,9 +221,5 @@ public class AuditOXM extends Auditor {
 	 */
 	public Set<Introspector> getAllIntrospectors() {
 		return this.allObjects;
-	}
-
-	public void setEdgeIngestor(EdgeIngestor ingestor){
-		this.ingestor = ingestor;
 	}
 }

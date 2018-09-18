@@ -98,7 +98,7 @@ public class ManageSchemaTest extends AAISetup {
 				"    } ]\r\n" + 
 				"  }";
 		DBIndex index = mapper.readValue(content, DBIndex.class);
-		ManageJanusGraphSchema schema = new ManageJanusGraphSchema(graph, auditorFactory, schemaVersions);
+		ManageJanusGraphSchema schema = new ManageJanusGraphSchema(graph, auditorFactory, schemaVersions, edgeIngestor);
 		JanusGraphManagement mgmt = graph.openManagement();
 		Set<String> instances = mgmt.getOpenInstances();
 		System.out.println(instances);

@@ -100,7 +100,7 @@ public class DupeToolTest extends AAISetup {
     }
 
     @Test
-    public void testDupeTool(){
+    public void testDupeToolForPInterface(){
         //TODO: test does not find duplicates
         String[] args = {
                 "-userId", "testuser",
