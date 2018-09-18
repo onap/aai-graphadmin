@@ -26,6 +26,7 @@ import org.janusgraph.core.schema.JanusGraphIndex;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.core.schema.JanusGraphManagement.IndexBuilder;
 import org.janusgraph.core.schema.SchemaStatus;
+import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
 
@@ -49,9 +50,9 @@ public class ManageJanusGraphSchema {
 	 *
 	 * @param graph the graph
 	 */
-	public ManageJanusGraphSchema(final JanusGraph graph, AuditorFactory auditorFactory, SchemaVersions schemaVersions) {
+	public ManageJanusGraphSchema(final JanusGraph graph, AuditorFactory auditorFactory, SchemaVersions schemaVersions, EdgeIngestor edgeIngestor) {
 		this.graph = graph;
-		oxmInfo = auditorFactory.getOXMAuditor(schemaVersions.getDefaultVersion());
+		oxmInfo = auditorFactory.getOXMAuditor(schemaVersions.getDefaultVersion(), edgeIngestor);
 		graphInfo = auditorFactory.getGraphAuditor(graph);
 	}
 

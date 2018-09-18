@@ -27,9 +27,9 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.codehaus.jackson.JsonGenerationException;
 import org.onap.aai.dbmap.AAIGraphConfig;
+import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.util.AAIConfig;
@@ -47,7 +47,6 @@ public class ScriptDriver {
 	 * @param args the arguments
 	 * @throws AAIException the AAI exception
 	 * @throws JsonGenerationException the json generation exception
-	 * @throws JsonMappingException the json mapping exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main (String[] args) throws AAIException, IOException, ConfigurationException {
@@ -76,6 +75,7 @@ public class ScriptDriver {
 
 		AuditorFactory auditorFactory = ctx.getBean(AuditorFactory.class);
 		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		EdgeIngestor edgeIngestor     = ctx.getBean(EdgeIngestor.class);
 
 		String config = cArgs.config;
 		AAIConfig.init();
@@ -94,7 +94,7 @@ public class ScriptDriver {
 
 			AuditDoc doc = null;
 			if ("oxm".equals(cArgs.type)) {
-				doc = auditorFactory.getOXMAuditor(schemaVersions.getDefaultVersion()).getAuditDoc();
+				doc = auditorFactory.getOXMAuditor(schemaVersions.getDefaultVersion(), edgeIngestor).getAuditDoc();
 			} else if ("graph".equals(cArgs.type)) {
 				doc = auditorFactory.getGraphAuditor(graph).getAuditDoc();
 			}

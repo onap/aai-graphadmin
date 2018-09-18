@@ -19,36 +19,42 @@
  */
 package org.onap.aai.db.schema;
 
-import org.janusgraph.core.JanusGraph;
-import org.onap.aai.edges.EdgeIngestor;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.onap.aai.AAISetup;
+import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.introspection.ModelType;
 import org.onap.aai.setup.SchemaVersion;
 
-public class AuditorFactory {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalMatchers.not;
 
-	private LoaderFactory loaderFactory;
+public class AuditOXMTest extends AAISetup {
 
-    public AuditorFactory(LoaderFactory loaderFactory){
-        this.loaderFactory = loaderFactory;
-	}
-	/**
-	 * Gets the OXM auditor.
-	 *
-	 * @param v the v
-	 * @return the OXM auditor
-	 */
-	public Auditor getOXMAuditor (SchemaVersion v, EdgeIngestor ingestor) {
-		return new AuditOXM(loaderFactory, v, ingestor);
-	}
-	
-	/**
-	 * Gets the graph auditor.
-	 *
-	 * @param g the g
-	 * @return the graph auditor
-	 */
-	public Auditor getGraphAuditor (JanusGraph g) {
-		return new AuditJanusGraph(g);
-	}
+    private AuditOXM auditOXM;
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void getAllIntrospectors() {
+        auditOXM = new AuditOXM(loaderFactory, schemaVersions.getDefaultVersion(), edgeIngestor);
+        assertTrue(auditOXM.getAllIntrospectors().size() > 0);
+    }
+
+    @Test
+    public void setEdgeIngestor() {
+    }
 }
