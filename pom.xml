@@ -84,7 +84,6 @@
         <aai.project.version>${project.version}</aai.project.version>
 
         <!-- Start of Database Related Properties -->
-        <hbase.version>1.0.2</hbase.version>
         <janusgraph.version>0.2.0</janusgraph.version>
         <gremlin.driver.version>3.0.1-incubating</gremlin.driver.version>
         <gremlin.version>3.2.2</gremlin.version>
@@ -92,10 +91,10 @@
 
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
 
-        <activemq.version>5.14.3</activemq.version>
+        <activemq.version>5.15.6</activemq.version>
         <logback.version>1.2.3</logback.version>
         <mockito.version>1.10.19</mockito.version>
-        <httpclient.version>4.5.1</httpclient.version>
+        <httpclient.version>4.5.3</httpclient.version>
 
         <gson.version>2.7</gson.version>
         <json.version>20090211</json.version>
@@ -117,8 +116,10 @@
         <antlr4.listener>true</antlr4.listener>
         <antlr.version>4.7</antlr.version>
 
+        <plexus.utils.version>3.1.0</plexus.utils.version>
+
         <eelf.core.version>1.0.0</eelf.core.version>
-        <google.guava.version>16.0</google.guava.version>
+        <google.guava.version>19.0</google.guava.version>
         <jaxb.version>2.2.11</jaxb.version>
         <eclipse.persistence.version>2.6.2</eclipse.persistence.version>
         <dmaap.client.version>0.2.12</dmaap.client.version>
@@ -401,28 +402,9 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-hbase-parent</artifactId>
-            <version>${janusgraph.version}</version>
-            <type>pom</type>
-            <exclusions>
                 <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-hbase</artifactId>
-            <version>${janusgraph.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -434,6 +416,10 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -666,6 +652,13 @@
             </exclusions>
         </dependency>
         <!-- End of Antlr dependencies for DSL -->
+        <!-- Start of Plexus dependencies for DSL -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>${plexus.utils.version}</version>
+        </dependency>
+        <!-- End of Plexus dependencies for DSL -->
         <!-- Start of Junit Test Dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>
