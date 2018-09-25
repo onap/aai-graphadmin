@@ -40,7 +40,7 @@ if [ $(cat /etc/passwd | grep aaiadmin | wc -l) -eq 0 ]; then
 	}
 fi;
 
-chown -R aaiadmin:aaiadmin /opt/app /opt/aai/logroot /var/chef
+chown -R aaiadmin:aaiadmin /opt/app /opt/aai/logroot
 find /opt/app/ -name "*.sh" -exec chmod +x {} +
 
 if [ -f ${APP_HOME}/aai.sh ]; then
