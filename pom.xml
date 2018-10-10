@@ -103,7 +103,7 @@
         <aai.schema.version>1.3.0</aai.schema.version>
 
         <netty.handler.version>4.1.9.Final</netty.handler.version>
-        <netty.version>4.0.37.Final</netty.version>
+        <netty.version>4.0.56.Final</netty.version>
 
         <spring.test.version>4.3.6.RELEASE</spring.test.version>
 
