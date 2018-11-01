@@ -73,6 +73,8 @@ public class GenTester {
 		);
 
 		try {
+            LOGGER.info("GenTester uses either cql jar or Cassandra jar");
+
 			AAIConfig.init();
 	    	if (args != null && args.length > 0 ){
 	    		if( "genDbRulesOnly".equals(args[0]) ){
