@@ -30,13 +30,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.exceptions.AAIException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+
 
 public class MigrationControllerInternalTest extends AAISetup {
 
@@ -45,7 +43,7 @@ public class MigrationControllerInternalTest extends AAISetup {
     private MigrationControllerInternal migrationControllerInternal;
 
     @Before
-    public void setup() throws AAIException {
+    public void setup() {
         migrationControllerInternal = new MigrationControllerInternal(loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
         clearGraph();
         createGraph();
@@ -234,6 +232,61 @@ public class MigrationControllerInternalTest extends AAISetup {
                 "--commit"
         };
         migrationControllerInternal.run(args);
+    }
+
+    @Test
+    public void testRunSpecificMigrationWithRunDisabledAndCommit() throws Exception {
+        assertThat("rebuildAllEdges shouldn't have enabled annotation", !RebuildAllEdges.class.isAnnotationPresent(Enabled.class));
+        PrintStream oldOutputStream = System.out;
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        String [] args = {
+                "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
+                "-m", "SDWANSpeedChangeMigration",
+                "--commit",
+                "--runDisabled","RebuildAllEdges",
+                "-f"
+        };
+        migrationControllerInternal.run(args);
+        String content = myOut.toString();
+        assertThat("RebuildAllEdges didn't run", content.contains("igration RebuildAllEdges Succeeded."));
+        assertThat("SDWANSpeedChangeMigration shouldn't run", !content.contains("igration SDWANSpeedChangeMigration Succeeded."));
+        System.setOut(oldOutputStream);
+    }
+
+    @Test
+    public void testRunDisabledAndCommit() throws Exception {
+        assertThat("rebuildAllEdges shouldn't have enabled annotation", !RebuildAllEdges.class.isAnnotationPresent(Enabled.class));
+        PrintStream oldOutputStream = System.out;
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        String [] args = {
+                "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
+                "--commit",
+                "--runDisabled","RebuildAllEdges"
+        };
+        migrationControllerInternal.run(args);
+        String content = myOut.toString();
+        assertThat("RebuildAllEdges didn't run", content.contains("igration RebuildAllEdges Succeeded."));
+        System.setOut(oldOutputStream);
+    }
+
+    @Test
+    public void testRunDisabledExcludeAndCommit() throws Exception {
+        assertThat("rebuildAllEdges shouldn't have enabled annotation", !RebuildAllEdges.class.isAnnotationPresent(Enabled.class));
+        PrintStream oldOutputStream = System.out;
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        String [] args = {
+                "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
+                "--commit",
+                "--runDisabled","RebuildAllEdges",
+                "-e","RebuildAllEdges"
+        };
+        migrationControllerInternal.run(args);
+        String content = myOut.toString();
+        assertThat("RebuildAllEdges Shouldn't run", !content.contains("igration RebuildAllEdges Succeeded."));
+        System.setOut(oldOutputStream);
     }
 
     @Test
