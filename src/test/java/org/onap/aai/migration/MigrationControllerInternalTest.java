@@ -237,6 +237,17 @@ public class MigrationControllerInternalTest extends AAISetup {
     }
 
     @Test
+    public void testRunSpecificMigrationWithRebuildEdgesAndCommit() throws Exception {
+        String [] args = {
+                "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
+                "-m", "SDWANSpeedChangeMigration",
+                "--commit",
+                "--rebuildEdges"
+        };
+        migrationControllerInternal.run(args);
+    }
+
+    @Test
     public void testRunSpecificMigrationFromLoadingSnapshotAndCommit() throws Exception{
         clearGraph();
         String [] args = {
