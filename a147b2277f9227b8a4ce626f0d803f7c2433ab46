@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_60e677b6",
+        "filename": "src/main/java/org/onap/aai/migration/MigrationControllerInternal.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1043
+      },
+      "writtenOn": "2018-11-30T15:31:48Z",
+      "side": 1,
+      "message": "This logic/flag is not needed, the rebuild edges migration can be explicitly triggered using the -m flag. If the intention was to have rebuild edges run first that can be accomplished using the @MigrationPriority annotation with value int max. The MigrationPriority annotation is used to define the order the migrations will be executed by the controller.",
+      "revId": "a147b2277f9227b8a4ce626f0d803f7c2433ab46",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_20f06f66",
+        "filename": "src/main/java/org/onap/aai/migration/MigrationControllerInternal.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1043
+      },
+      "writtenOn": "2018-11-30T15:31:48Z",
+      "side": 1,
+      "message": "See comment on line 186",
+      "revId": "a147b2277f9227b8a4ce626f0d803f7c2433ab46",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
