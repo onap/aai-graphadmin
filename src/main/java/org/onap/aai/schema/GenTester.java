@@ -135,27 +135,27 @@ public class GenTester {
 			// Load the propertyKeys, indexes and edge-Labels into the DB
 			JanusGraphManagement graphMgt = graph.openManagement();
 
-	       	imsg = "-- Loading new schema elements into JanusGraph --";
-       		System.out.println(imsg);
-       		LOGGER.info(imsg);
-       		SchemaGenerator.loadSchemaIntoJanusGraph(graph, graphMgt, null);
+            imsg = "-- Loading new schema elements into JanusGraph --";
+            System.out.println(imsg);
+            LOGGER.info(imsg);
+            SchemaGenerator.loadSchemaIntoJanusGraph(graph, graphMgt, null);
+			if( graph != null ){
+				imsg = "-- graph commit";
+				System.out.println(imsg);
+				LOGGER.info(imsg);
+				graph.tx().commit();
+
+				imsg = "-- graph shutdown ";
+				System.out.println(imsg);
+				LOGGER.info(imsg);
+				graph.close();
+				throw new RuntimeException();
+			}
 	    } catch(Exception ex) {
-	    	ErrorLogHelper.logError("AAI_4000", ex.getMessage());
+            ErrorLogHelper.logError("AAI_4000", ex.getMessage());
+            System.exit(1);
 	    }
-	    
 
-	    if( graph != null ){
-		    String imsg = "-- graph commit";
-        	System.out.println(imsg);
-        	LOGGER.info(imsg);
-	        graph.tx().commit();
-
-		   	imsg = "-- graph shutdown ";
-        	System.out.println(imsg);
-        	LOGGER.info(imsg);
-	        graph.close();
-	    }
-	    
 	    LOGGER.auditEvent("-- all done, if program does not exit, please kill.");
 	    System.exit(0);
     }
