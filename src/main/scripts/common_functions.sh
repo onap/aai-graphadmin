@@ -49,7 +49,10 @@ execute_spring_jar(){
 
     JAVA_OPTS="${JAVA_OPTS} ${JAVA_POST_OPTS}";
 
-    ${JAVA_HOME}/bin/java ${JVM_OPTS} ${JAVA_OPTS} -jar ${EXECUTABLE_JAR} "$@"
+    ${JAVA_HOME}/bin/java ${JVM_OPTS} ${JAVA_OPTS} -jar ${EXECUTABLE_JAR} "$@" || {
+        echo "Failed to run the tool $0 successfully";
+        exit 1;
+    }
 }
 
 # Prints the start date and the script that the user called
