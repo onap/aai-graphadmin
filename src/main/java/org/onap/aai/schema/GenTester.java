@@ -147,7 +147,6 @@ public class GenTester {
 				System.out.println(imsg);
 				LOGGER.info(imsg);
 				graph.close();
-				throw new RuntimeException();
 			}
 	    } catch(Exception ex) {
             ErrorLogHelper.logError("AAI_4000", ex.getMessage());
