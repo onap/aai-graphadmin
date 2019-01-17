@@ -21,6 +21,7 @@ package org.onap.aai.dbgen;
 
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
+
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -30,6 +31,8 @@ import org.junit.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class DupeToolTest extends AAISetup {
@@ -53,20 +56,7 @@ public class DupeToolTest extends AAISetup {
         try {
 
             GraphTraversalSource g = transaction.traversal();
-
-            Vertex cloudRegionVertex = g.addV()
-                    .property("aai-node-type", "cloud-region")
-                    .property("cloud-owner", "test-owner")
-                    .property("cloud-region-id", "test-region")
-                    .property("source-of-truth", "JUNIT")
-                    .next();
-
-            Vertex tenantVertex = g.addV()
-                    .property("aai-node-type", "tenant")
-                    .property("tenant-id", "test-tenant")
-                    .property("source-of-truth", "JUNIT")
-                    .next();
-
+            
             Vertex pserverVertex = g.addV()
                     .property("aai-node-type", "pserver")
                     .property("hostname", "test-pserver")
@@ -74,17 +64,57 @@ public class DupeToolTest extends AAISetup {
                     .property("source-of-truth", "JUNIT")
                     .next();
 
-            for(int i = 0; i < 100; ++i){
-                g.addV()
-                        .property("aai-node-type", "p-interface")
-                        .property("interface-name", "p-interface-name")
-                        .property("in-maint", false)
-                        .property("source-of-truth", "JUNIT")
-                        .next();
-            }
-
-            edgeSerializer.addTreeEdge(g, cloudRegionVertex, tenantVertex);
-            edgeSerializer.addEdge(g, cloudRegionVertex, pserverVertex);
+            // Dupe set #1
+            Vertex pInterfaceVertex1 = g.addV()
+                    .property("aai-node-type", "p-interface")
+                    .property("interface-name", "p-interface-name1")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex1);
+                
+            Vertex pInterfaceVertex2 = g.addV()
+                    .property("aai-node-type", "p-interface")
+                    .property("interface-name", "p-interface-name1")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex2);
+            
+            // Dupe Set #2
+            Vertex pInterfaceVertex3 = g.addV()
+                    .property("aai-node-type", "p-interface")
+                    .property("interface-name", "p-interface-name2")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex3);
+                
+            Vertex pInterfaceVertex4 = g.addV()
+                    .property("aai-node-type", "p-interface")
+                    .property("interface-name", "p-interface-name2")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex4);
+            
+         // Dupe Set #3
+            Vertex pInterfaceVertex5 = g.addV()
+                    .property("aai-node-type", "p-interface")
+                    .property("interface-name", "p-interface-name3")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex5);
+                
+            Vertex pInterfaceVertex6 = g.addV()
+                    .property("aai-node-type", "p-interface")
+                    .property("interface-name", "p-interface-name3")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex6);
+      
 
         } catch(Exception ex){
             success = false;
@@ -99,19 +129,21 @@ public class DupeToolTest extends AAISetup {
         }
     }
 
-    @Test
+
+	@Test
     public void testDupeToolForPInterface(){
-        //TODO: test does not find duplicates
+        
         String[] args = {
                 "-userId", "testuser",
                 "-nodeType", "p-interface",
                 "-timeWindowMinutes", "30",
-                "-autoFix",
                 "-maxFix", "30",
                 "-sleepMinutes", "0"
         };
 
         dupeTool.execute(args);
+        assertThat(dupeTool.getDupeGroupCount(), is(3));
+        
     }
 
     @After

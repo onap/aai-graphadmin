@@ -47,6 +47,8 @@ import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.onap.aai.GraphAdminApp;
+import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.util.GraphAdminConstants;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Introspector;
@@ -60,6 +62,7 @@ import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.edges.enums.EdgeProperty;
 import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.util.*;
 import org.onap.aai.logging.LoggingContext.StatusCode;
 
@@ -107,8 +110,8 @@ public class DataGrooming {
 		// at all nodes of the passed-in nodeType.
 		int timeWindowMinutes = 0;
 
-		int maxRecordsToFix = AAIConstants.AAI_GROOMING_DEFAULT_MAX_FIX;
-		int sleepMinutes = AAIConstants.AAI_GROOMING_DEFAULT_SLEEP_MINUTES;
+		int maxRecordsToFix = GraphAdminConstants.AAI_GROOMING_DEFAULT_MAX_FIX;
+		int sleepMinutes = GraphAdminConstants.AAI_GROOMING_DEFAULT_SLEEP_MINUTES;
 		try {
 			String maxFixStr = AAIConfig.get("aai.grooming.default.max.fix");
 			if( maxFixStr != null &&  !maxFixStr.equals("") ){
@@ -121,7 +124,7 @@ public class DataGrooming {
 		}
 		catch ( Exception e ){
 			// Don't worry, we'll just use the defaults that we got from AAIConstants
-			LOGGER.warn("WARNING - could not pick up aai.grooming values from aaiconfig.properties file. ");
+			LOGGER.warn("WARNING - could not pick up aai.grooming values from aaiconfig.properties file. " + e.getMessage());
 		}
 
 		String prevFileName = "";
@@ -129,141 +132,45 @@ public class DataGrooming {
 		dupeGrpsDeleted = 0;
 		FormatDate fd = new FormatDate("yyyyMMddHHmm", "GMT");
 		String dteStr = fd.getDateTime();
-
 		cArgs = new CommandLineArgs();
+		try {
+			String maxFixStr = AAIConfig.get("aai.grooming.default.max.fix");
+			if( maxFixStr != null &&  !maxFixStr.equals("") ){
+				cArgs.maxRecordsToFix = Integer.parseInt(maxFixStr);
+			}
+			String sleepStr = AAIConfig.get("aai.grooming.default.sleep.minutes");
+			if( sleepStr != null &&  !sleepStr.equals("") ){
+				cArgs.sleepMinutes = Integer.parseInt(sleepStr);
+			}
+		}
+		catch ( Exception e ){
+			// Don't worry, we'll just use the defaults that we got from AAIConstants
+			LOGGER.warn("WARNING - could not pick up aai.grooming values from aaiconfig.properties file. " + e.getMessage());
+		}
+		
+		
 		JCommander jCommander = new JCommander(cArgs, args);
 		jCommander.setProgramName(DataGrooming.class.getSimpleName());
 		
 		//Print Defaults
-		LOGGER.info("EdgesOnlyFlag is" + cArgs.edgesOnlyFlag);
-		LOGGER.info("DoAutoFix is" + cArgs.doAutoFix);
-		LOGGER.info("skipHostCheck is" + cArgs.skipHostCheck);
-		LOGGER.info("dontFixOrphansFlag is" + cArgs.dontFixOrphansFlag);
-		LOGGER.info("singleCommits is" + cArgs.singleCommits);
-		LOGGER.info("dupeCheckOff is" + cArgs.dupeCheckOff);
-		LOGGER.info("dupeFixOn is" + cArgs.dupeFixOn);
-		LOGGER.info("ghost2CheckOff is" + cArgs.ghost2CheckOff);
-		LOGGER.info("ghost2FixOn is" + cArgs.ghost2FixOn);
-		LOGGER.info("neverUseCache is" + cArgs.neverUseCache);
-		LOGGER.info("skipEdgeChecks is" + cArgs.skipEdgeCheckFlag);
-		LOGGER.info("skipIndexUpdateFix is" + cArgs.skipIndexUpdateFix);
-		LOGGER.info("maxFix is" + cArgs.maxRecordsToFix);
+		LOGGER.info("EdgesOnlyFlag is [" + cArgs.edgesOnlyFlag + "]");
+		LOGGER.info("DoAutoFix is [" + cArgs.doAutoFix + "]");
+		LOGGER.info("skipHostCheck is [" + cArgs.skipHostCheck + "]");
+		LOGGER.info("dontFixOrphansFlag is [" + cArgs.dontFixOrphansFlag + "]");
+		LOGGER.info("dupeCheckOff is [" + cArgs.dupeCheckOff + "]");
+		LOGGER.info("dupeFixOn is [" + cArgs.dupeFixOn + "]");
+		LOGGER.info("ghost2CheckOff is [" + cArgs.ghost2CheckOff + "]");
+		LOGGER.info("ghost2FixOn is [" + cArgs.ghost2FixOn + "]");
+		LOGGER.info("neverUseCache is [" + cArgs.neverUseCache + "]");
+		LOGGER.info("singleNodeType is [" + cArgs.singleNodeType + "]");
+		LOGGER.info("skipEdgeChecks is [" + cArgs.skipEdgeCheckFlag + "]");
+		LOGGER.info("skipIndexUpdateFix is [" + cArgs.skipIndexUpdateFix + "]");
+		LOGGER.info("maxFix is [" + cArgs.maxRecordsToFix + "]");
 		
-		/*if (args.length > 0) {
-			// They passed some arguments in that will affect processing
-			for (int i = 0; i < args.length; i++) {
-				String thisArg = args[i];
-				if (thisArg.equals("-edgesOnly")) {
-					edgesOnlyFlag = true;
-				} else if (thisArg.equals("-autoFix")) {
-					doAutoFix = true;
-				} else if (thisArg.equals("-skipHostCheck")) {
-					skipHostCheck = true;
-				} else if (thisArg.equals("-dontFixOrphans")) {
-					dontFixOrphansFlag = true;
-				} else if (thisArg.equals("-singleCommits")) {
-					singleCommits = true;
-				} else if (thisArg.equals("-dupeCheckOff")) {
-					dupeCheckOff = true;
-				} else if (thisArg.equals("-dupeFixOn")) {
-					dupeFixOn = true;
-				} else if (thisArg.equals("-ghost2CheckOff")) {
-					ghost2CheckOff = true;
-				} else if (thisArg.equals("-neverUseCache")) {
-					neverUseCache = true;
-				} else if (thisArg.equals("-ghost2FixOn")) {
-					ghost2FixOn = true;
-				} else if (thisArg.equals("-skipEdgeChecks")) {
-					skipEdgeCheckFlag = true;
-				} else if (thisArg.equals("-skipIndexUpdateFix")) {
-					skipIndexUpdateFix = true;
-				} else if (thisArg.equals("-maxFix")) {
-					i++;
-					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error(" No value passed with -maxFix option.  ");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-					String nextArg = args[i];
-					try {
-						maxRecordsToFix = Integer.parseInt(nextArg);
-					} catch (Exception e) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error("Bad value passed with -maxFix option: ["
-								+ nextArg + "]");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-				} else if (thisArg.equals("-sleepMinutes")) {
-					i++;
-					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error("No value passed with -sleepMinutes option.");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-					String nextArg = args[i];
-					try {
-						sleepMinutes = Integer.parseInt(nextArg);
-					} catch (Exception e) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error("Bad value passed with -sleepMinutes option: ["
-								+ nextArg + "]");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-				} else if (thisArg.equals("-timeWindowMinutes")) {
-					i++;
-					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error("No value passed with -timeWindowMinutes option.");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-					String nextArg = args[i];
-					try {
-						timeWindowMinutes = Integer.parseInt(nextArg);
-					} catch (Exception e) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error("Bad value passed with -timeWindowMinutes option: ["
-								+ nextArg + "]");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-
-				} else if (thisArg.equals("-f")) {
-					i++;
-					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error(" No value passed with -f option. ");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-					prevFileName = args[i];
-				} else if (thisArg.equals("-singleNodeType")) {
-					i++;
-					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-						LOGGER.error(" No value passed with -onlyThisNodeType option. ");
-						AAISystemExitUtil.systemExitCloseAAIGraph(0);
-					}
-					singleNodeType = args[i];
-				} else {
-					LoggingContext.statusCode(StatusCode.ERROR);
-					LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
-					LOGGER.error(" Unrecognized argument passed to DataGrooming: ["
-							+ thisArg + "]. ");
-					LOGGER.error(" Valid values are: -f -autoFix -maxFix -edgesOnly -skipEdgeChecks -dupeFixOn -donFixOrphans -timeWindowMinutes -sleepMinutes -neverUseCache");
-					AAISystemExitUtil.systemExitCloseAAIGraph(0);
-				}
-			}
-		} */
 
 		String windowTag = "FULL";
 		//TODO???
-		if( timeWindowMinutes > 0 ){
+		if( cArgs.timeWindowMinutes > 0 ){
 			windowTag = "PARTIAL";
 		}
 		String groomOutFileName = "dataGrooming." + windowTag + "." + dteStr + ".out";
@@ -279,7 +186,7 @@ public class DataGrooming {
 		}
 
 		try {
-			if (!prevFileName.equals("")) {
+			if (!cArgs.prevFileName.equals("")) {
 				// They are trying to fix some data based on a data in a
 				// previous file.
 				LOGGER.info(" Call doTheGrooming() with a previous fileName ["
@@ -287,9 +194,9 @@ public class DataGrooming {
 				Boolean finalShutdownFlag = true;
 				Boolean cacheDbOkFlag = false;
 				doTheGrooming(prevFileName, cArgs.edgesOnlyFlag, cArgs.dontFixOrphansFlag,
-						cArgs.maxRecordsToFix, groomOutFileName, ver, cArgs.singleCommits,
+						cArgs.maxRecordsToFix, groomOutFileName, ver, 
 						cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
-						cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+						finalShutdownFlag, cacheDbOkFlag,
 						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
 						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 				
@@ -306,8 +213,8 @@ public class DataGrooming {
 				Boolean cacheDbOkFlag = true;
 				int fixCandCount = doTheGrooming("", cArgs.edgesOnlyFlag,
 						cArgs.dontFixOrphansFlag, cArgs.maxRecordsToFix, groomOutFileName,
-						ver, cArgs.singleCommits, cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
-						cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+						ver, cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
+						finalShutdownFlag, cacheDbOkFlag,
 						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
 						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 				if (fixCandCount == 0) {
@@ -334,9 +241,9 @@ public class DataGrooming {
 					cacheDbOkFlag = false;
 					doTheGrooming(groomOutFileName, cArgs.edgesOnlyFlag,
 							cArgs.dontFixOrphansFlag, cArgs.maxRecordsToFix,
-							secondGroomOutFileName, ver, cArgs.singleCommits,
+							secondGroomOutFileName, ver, 
 							cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
-							cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+							finalShutdownFlag, cacheDbOkFlag,
 							cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
 							cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 				}
@@ -348,12 +255,12 @@ public class DataGrooming {
 				Boolean cacheDbOkFlag = true;
 				if( cArgs.neverUseCache ){
 					// They have forbidden us from using a cached db connection.
-					cArgs.cacheDbOkFlag = false;
+					cacheDbOkFlag = false;
 				}
 				doTheGrooming("", cArgs.edgesOnlyFlag, cArgs.dontFixOrphansFlag,
-						cArgs.maxRecordsToFix, groomOutFileName, ver, cArgs.singleCommits,
+						cArgs.maxRecordsToFix, groomOutFileName, ver, 
 						cArgs.dupeCheckOff, cArgs.dupeFixOn, cArgs.ghost2CheckOff, cArgs.ghost2FixOn,
-						cArgs.finalShutdownFlag, cArgs.cacheDbOkFlag,
+						finalShutdownFlag, cacheDbOkFlag,
 						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
 						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 			}
@@ -371,7 +278,7 @@ public class DataGrooming {
 	 *
 	 * @param args the arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AAIException {
 
 		// Set the logging file properties to be used by EELFManager
 		System.setProperty("aai.service.name", DataGrooming.class.getSimpleName());
@@ -390,11 +297,24 @@ public class DataGrooming {
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				"org.onap.aai.config",
-				"org.onap.aai.setup"
-		);
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+		initializer.initialize(ctx);
 
+		try {
+			ctx.scan(
+					"org.onap.aai.config",
+					"org.onap.aai.setup"
+			);
+			ctx.refresh();
+
+		} catch (Exception e) {
+			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+			throw aai;
+		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
 		DataGrooming dataGrooming = new DataGrooming(loaderFactory, schemaVersions);
@@ -410,7 +330,6 @@ public class DataGrooming {
 	 * @param maxRecordsToFix the max records to fix
 	 * @param groomOutFileName the groom out file name
 	 * @param version the version
-	 * @param singleCommits the single commits
 	 * @param dupeCheckOff the dupe check off
 	 * @param dupeFixOn the dupe fix on
 	 * @param ghost2CheckOff the ghost 2 check off
@@ -422,7 +341,6 @@ public class DataGrooming {
 	private int doTheGrooming( String fileNameForFixing,
 			Boolean edgesOnlyFlag, Boolean dontFixOrphansFlag,
 			int maxRecordsToFix, String groomOutFileName, String version,
-			Boolean singleCommits, 
 			Boolean dupeCheckOff, Boolean dupeFixOn,
 			Boolean ghost2CheckOff, Boolean ghost2FixOn, 
 			Boolean finalShutdownFlag, Boolean cacheDbOkFlag,
@@ -532,8 +450,8 @@ public class DataGrooming {
 			ghostNodeHash = new HashMap<String, Vertex>();
 			dupeGroups = new ArrayList<>();
 
+			LOGGER.debug(" Using default schemaVersion = [" + schemaVersions.getDefaultVersion().toString() + "]" );
 			Loader loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, schemaVersions.getDefaultVersion());
-
 
 			// NOTE --- At one point, we tried explicitly searching for
 			// nodes that were missing their aai-node-type (which does
@@ -567,7 +485,7 @@ public class DataGrooming {
 					int thisNtDeleteCount = 0;
 					
 					if( !singleNodeType.equals("") && !singleNodeType.equals(nType) ){
-						// We are only going to process this one node type
+						// We are only going to process this one node type and this isn't it
 						continue;
 					}
 
@@ -633,12 +551,19 @@ public class DataGrooming {
 								continue;
 							}
 							totalNodeCount++;
-							List <Vertex> secondGetList = new ArrayList <> ();
+							// Note - the "secondGetList" is used one node at a time - it is populated
+							//   using either the node's defined unique key/keys (if it is not dependent on
+							//   a "parent" node, or is populated using the key/keys "under" it's parent node.
+							List <Vertex> secondGetList = new ArrayList <> ();  
+							
 							// -----------------------------------------------------------------------
 							// For each vertex of this nodeType, we want to:
-							//		a) make sure that it can be retrieved using it's AAI defined key
-							//   	b) make sure that it is not a duplicate
+							//      a) make sure it can be retrieved using its "aai-uri"
+							//		b) make sure that it can be retrieved using it's AAI defined key(s)
+							//   	c) make sure that it is not a duplicate
 							// -----------------------------------------------------------------------
+
+							Boolean aaiUriOk = checkAaiUriOk(source1, thisVtx);
 							
 							// For this instance of this nodeType, get the key properties 
 							HashMap<String, Object> propHashWithKeys = new HashMap<>();
@@ -646,7 +571,6 @@ public class DataGrooming {
 							while (keyPropI.hasNext()) {
 								String propName = keyPropI.next();
 								String propVal = "";
-								//delete an already deleted vertex
 								Object obj = thisVtx.<Object>property(propName).orElse(null);
 								if (obj != null) {
 									propVal = obj.toString();
@@ -688,7 +612,7 @@ public class DataGrooming {
 												processedVertices.add(thisVtx.id().toString());
 												Object ob = thisVtx.<Object>property("aai-node-type").orElse(null);
 												if( ob == null && !skipIndexUpdateFix ){
-													updateIndexedProps(thisVtx, thisVid, nType, propTypeHash, indexedProps);
+													updateIndexedPropsForMissingNT(thisVtx, thisVid, nType, propTypeHash, indexedProps);
 													updateOnlyFlag = true;
 													dummyUpdCount++;
 													// Since we are updating this delete candidate, not deleting it, we
@@ -767,16 +691,33 @@ public class DataGrooming {
 									}
 								}// end of -- else this is a dependent node  -- piece
 								
-								if( depNodeOk && (secondGetList == null || secondGetList.size() == 0) ){
-									// We could not get the node back using it's own key info. 
+								Boolean aaiKeysOk = true;
+								if( (secondGetList == null || secondGetList.size() == 0)
+										&& depNodeOk){
+									aaiKeysOk = false;
+								}
+								
+								if( (!aaiKeysOk || !aaiUriOk) 
+										&& !deleteCandidateList.contains(thisVid) 
+										&& !skipIndexUpdateFix ){
+									// Either the aaiKeys or aaiUri was bad.  This may
+									// be a problem with the indexes so we'll try to reset 
+									// them since this node is not on the delete list from
+									// a previous run.
+									tryToReSetIndexedProps(thisVtx, thisVid, indexedProps);
+								}
+								
+								if( !aaiKeysOk || !aaiUriOk ){
+									// We could not get the node back using it's own key info or aai-uri. 
 									// So, it's a PHANTOM
+									
 									if (deleteCandidateList.contains(thisVid)) {
 										boolean okFlag = true;
 										boolean updateOnlyFlag = false;
 										try {
 											Object ob = thisVtx.<Object>property("aai-node-type").orElse(null);
 											if( ob == null && !skipIndexUpdateFix ){
-												updateIndexedProps(thisVtx, thisVid, nType, propTypeHash, indexedProps);
+												updateIndexedPropsForMissingNT(thisVtx, thisVid, nType, propTypeHash, indexedProps);
 												dummyUpdCount++;
 												updateOnlyFlag = true;
 												// Since we are updating this delete candidate, not deleting it, we
@@ -813,7 +754,7 @@ public class DataGrooming {
 									List<String> tmpDupeGroups = checkAndProcessDupes(
 												TRANSID, FROMAPPID, g, source1, version,
 												nType, secondGetList, dupeFixOn,
-												deleteCandidateList, singleCommits,	dupeGroups, loader);
+												deleteCandidateList, dupeGroups, loader);
 									Iterator<String> dIter = tmpDupeGroups.iterator();
 									while (dIter.hasNext()) {
 										// Add in any newly found dupes to our running list
@@ -862,7 +803,7 @@ public class DataGrooming {
 							List<String> tmpDupeGroups = checkAndProcessDupes(
 										TRANSID, FROMAPPID, g, source1, version,
 										nType, dupeList, dupeFixOn,
-										deleteCandidateList, singleCommits,	dupeGroups, loader);
+										deleteCandidateList, dupeGroups, loader);
 							Iterator<String> dIter = tmpDupeGroups.iterator();
 							while (dIter.hasNext()) {
 								// Add in any newly found dupes to our running list
@@ -874,13 +815,7 @@ public class DataGrooming {
 						
 					}// end of extra dupe check for non-dependent nodes
 					
-					if ( (thisNtDeleteCount > 0) && singleCommits ) {
-						// NOTE - the singleCommits option is not used in normal processing
-						g.tx().commit();
-						g = AAIGraph.getInstance().getGraph().newTransaction();
-						
-					}
-					thisNtDeleteCount = 0;
+					thisNtDeleteCount = 0;  // Reset for the next pass
 					LOGGER.info( " Processed " + thisNtCount + " records for [" + nType + "], " + totalNodeCount + " total (in window) overall. " );
 					
 				}// While-loop for each node type
@@ -889,17 +824,16 @@ public class DataGrooming {
 
 
 		  if( !skipEdgeCheckFlag ){
-			// --------------------------------------------------------------------------------------
-			// Now, we're going to look for one-armed-edges. Ie. an edge that
-			// should have
-			// been deleted (because a vertex on one side was deleted) but
-			// somehow was not deleted.
-			// So the one end of it points to a vertexId -- but that vertex is
-			// empty.
-			// --------------------------------------------------------------------------------------
+			// ---------------------------------------------------------------
+			// Now, we're going to look for one-armed-edges. Ie. an 
+			// edge that should have been deleted (because a vertex on 
+			// one side was deleted) but somehow was not deleted.
+			// So the one end of it points to a vertexId -- but that 
+			// vertex is empty.
+			// --------------------------------------------------------------
 
 			// To do some strange checking - we need a second graph object
-			LOGGER.debug("    ---- DEBUG --- about to open a SECOND graph (takes a little while)--------\n");
+			LOGGER.debug("    ---- NOTE --- about to open a SECOND graph (takes a little while)--------\n");
 			// Note - graph2 just reads - but we want it to use a fresh connection to 
 			//      the database, so we are NOT using the CACHED DB CONFIG here.
 			
@@ -1031,6 +965,7 @@ public class DataGrooming {
 										// If we can NOT get this ghost with the SECOND graph-object, 
 										// it is still a ghost since even though we can get data about it using the FIRST graph 
 										// object.  
+										
 										try {
 											 ghost2 = g.traversal().V(vIdLong).next();
 										}
@@ -1051,6 +986,7 @@ public class DataGrooming {
 								LOGGER.warn(">>> WARNING trying to get edge's In-vertex props ", err);
 							}
 						}
+						
 						if (keysMissing || vIn == null || vNtI.equals("")
 								|| cantGetUsingVid) {
 							// this is a bad edge because it points to a vertex
@@ -1067,14 +1003,7 @@ public class DataGrooming {
 										else {
 											vIn.remove();
 										}
-										if (singleCommits) {
-											// NOTE - the singleCommits option is not used in normal processing
-											g.tx().commit();
-											g = AAIGraph.getInstance().getGraph().newTransaction();
-										}
-										else {
-											executeFinalCommit = true;
-										}
+										executeFinalCommit = true;
 										deleteCount++;
 									} catch (Exception e1) {
 										okFlag = false;
@@ -1092,14 +1021,7 @@ public class DataGrooming {
 									// vertex
 									try {
 										e.remove();
-										if (singleCommits) {
-											// NOTE - the singleCommits option is not used in normal processing
-											g.tx().commit();
-											g = AAIGraph.getInstance().getGraph().newTransaction();
-										}
-										else {
-											executeFinalCommit = true;
-										}
+										executeFinalCommit = true;
 										deleteCount++;
 									} catch (Exception ex) {
 										// NOTE - often, the exception is just
@@ -1192,14 +1114,7 @@ public class DataGrooming {
 										else if (vOut != null) {
 											vOut.remove();
 										}
-										if (singleCommits) {
-											// NOTE - the singleCommits option is not used in normal processing
-											g.tx().commit();
-											g = AAIGraph.getInstance().getGraph().newTransaction();
-										}
-										else {
-											executeFinalCommit = true;
-										}
+										executeFinalCommit = true;
 										deleteCount++;
 									} catch (Exception e1) {
 										okFlag = false;
@@ -1217,14 +1132,7 @@ public class DataGrooming {
 									// vertex
 									try {
 										e.remove();
-										if (singleCommits) {
-											// NOTE - the singleCommits option is not used in normal processing
-											g.tx().commit();
-											g = AAIGraph.getInstance().getGraph().newTransaction();
-										}
-										else {
-											executeFinalCommit = true;
-										}
+										executeFinalCommit = true;
 										deleteCount++;
 									} catch (Exception ex) {
 										// NOTE - often, the exception is just
@@ -1260,7 +1168,7 @@ public class DataGrooming {
 			
 
 			deleteCount = deleteCount + dupeGrpsDeleted;
-			if (!singleCommits && (deleteCount > 0 || dummyUpdCount > 0) ){
+			if (deleteCount > 0 || dummyUpdCount > 0){
 				executeFinalCommit = true;
 			}
 
@@ -1647,12 +1555,50 @@ public class DataGrooming {
 	}// end of doTheGrooming()
 	
 	
-	public void updateIndexedProps(Vertex thisVtx, String thisVidStr, String nType,
+	public void tryToReSetIndexedProps(Vertex thisVtx, String thisVidStr, ArrayList <String> indexedProps) {
+		// Note - This is for when a node looks to be a phantom (ie. an index/pointer problem)
+	    // We will only deal with properties that are indexed and have a value - and for those,
+	    // we will re-set them to the same value they already have, so that hopefully if their 
+	    // index was broken, it may get re-set.
+	       
+		LOGGER.info(" We will try to re-set the indexed properties for this node without changing any property values.  VID = " + thisVidStr );
+		// These reserved-prop-names are all indexed for all nodes
+		
+		ArrayList <String> propList = new ArrayList <String> ();
+		propList.addAll(indexedProps);
+		// Add in the global props that we'd also like to reset
+		propList.add("aai-node-type");
+		propList.add("aai-uri");
+		propList.add("aai-uuid");
+		Iterator<String> propNameItr = propList.iterator();
+		while( propNameItr.hasNext() ){
+			String propName = propNameItr.next();
+			try {
+				Object valObj = thisVtx.<Object>property(propName).orElse(null);
+				if( valObj != null ){
+					LOGGER.info(" We will try resetting prop [" + propName 
+							+ "], to val = [" + valObj.toString() + "] for VID = " + thisVidStr);
+					thisVtx.property(propName, valObj);
+				}
+			} catch (Exception ex ){
+				// log that we did not re-set this property
+				LOGGER.debug("DEBUG - Exception while trying to re-set the indexed properties for this node: VID = " 
+				+ thisVidStr + ".  exception msg = [" + ex.getMessage() + "]" );
+			}
+		}
+	}
+	          
+	          
+	 public void updateIndexedPropsForMissingNT(Vertex thisVtx, String thisVidStr, String nType,
 			HashMap <String,String>propTypeHash, ArrayList <String> indexedProps) {
-		// This is a "missing-aai-node-type" scenario.
+		// This is for the very specific "missing-aai-node-type" scenario.
+		// That is: a node that does not have the "aai-node-type" property, but still has
+		//     an aai-node-type Index pointing to it and is an orphan node.   Nodes like this
+		//     are (probably) the result of a delete request that got hosed.
 		// Other indexes may also be messed up, so we will update all of them on
 		//    this pass.  A future pass will just treat this node like a regular orphan
 		//    and delete it (if appropriate).
+		 
 		LOGGER.info("  We will be updating the indexed properties for this node to dummy values.  VID = " + thisVidStr );
 		String dummyPropValStr = thisVidStr + "dummy";
 		// These reserved-prop-names are all indexed for all nodes
@@ -1752,8 +1698,19 @@ public class DataGrooming {
 				Object ob = v.<Object>property(propName).orElse(null);
 				if (ob == null || ob.toString().equals("")) {
 					// It is missing a key property
+					String thisVertId = v.id().toString();
+					LOGGER.debug(" -- Vid = " + thisVertId 
+							+ ",nType = [" + nType + "], is missing keyPropName = [" + propName + "]");
 					return true;
 				}
+			}
+			Object ob = v.<Object>property("aai-uri").orElse(null);
+			if (ob == null || ob.toString().equals("")) {
+				// It is missing a key property
+				String thisVertId = v.id().toString();
+				LOGGER.debug(" -- Vid = " + thisVertId 
+						+ ",nType = [" + nType + "], is missing its [aai-uri] property");
+				return true;
 			}
 		} catch (AAIException e) {
 			// Something was wrong -- but since we weren't able to check
@@ -1829,11 +1786,11 @@ public class DataGrooming {
 			ArrayList<Vertex> dupeVertexList, String ver, Loader loader)
 			throws AAIException {
 
-		// This method assumes that it is being passed a List of vertex objects
-		// which
-		// violate our uniqueness constraints.
-
-		Vertex nullVtx = null;
+		// This method assumes that it is being passed a List of 
+		// vertex objects which violate our uniqueness constraints.
+		// Note - returning a null vertex means we could not 
+		//   safely pick one to keep (Ie. safely know which to delete.)
+		Vertex nullVtx = null;  
 
 		if (dupeVertexList == null) {
 			return nullVtx;
@@ -1846,6 +1803,31 @@ public class DataGrooming {
 			return (dupeVertexList.get(0));
 		}
 
+		// If they don't all have the same aai-uri, then we will not 
+		// choose between them - we'll need someone to manually 
+		// check to pick which one makes sense to keep.
+		Object uriOb = dupeVertexList.get(0).<Object>property("aai-uri").orElse(null);
+		if( uriOb == null || uriOb.toString().equals("") ){
+			// this is a bad node - hopefully will be picked up by phantom checker
+			return nullVtx;
+		}
+		String thisUri = uriOb.toString();
+		for (int i = 1; i < listSize; i++) {
+			uriOb = dupeVertexList.get(i).<Object>property("aai-uri").orElse(null);
+			if( uriOb == null || uriOb.toString().equals("") ){
+				// this is a bad node - hopefully will be picked up by phantom checker
+				return nullVtx;
+			}
+			String nextUri = uriOb.toString();
+			if( !thisUri.equals(nextUri)){
+				// there are different URI's on these - so we can't pick 
+				// a dupe to keep.  Someone will need to look at it.
+				return nullVtx;
+			}
+		}
+		
+		// Compare them two at a time to see if we can tell which out of 
+		// the batch to keep.
 		Vertex vtxPreferred = null;
 		Vertex currentFaveVtx = dupeVertexList.get(0);
 		for (int i = 1; i < listSize; i++) {
@@ -1860,7 +1842,14 @@ public class DataGrooming {
 			}
 		}
 
-		return (currentFaveVtx);
+		if( currentFaveVtx != null && checkAaiUriOk(g, currentFaveVtx) ){
+			return (currentFaveVtx);
+		}
+		else {
+			// We had a preferred vertex, but its aai-uri was bad, so
+			// we will not recommend one to keep.
+			return nullVtx;
+		}
 
 	} // end of getPreferredDupe()
 
@@ -2041,7 +2030,7 @@ public class DataGrooming {
 				// pointer to it, then save that one.  Otherwise, take the
 				// older one.
 				if( !onlyNodeThatIndexPointsToVidStr.equals("") ){
-					// only one is reachable via the index - choose that one.
+					// only one is reachable via the index - choose that one if its aai-uri is also good
 					if( onlyNodeThatIndexPointsToVidStr.equals(vidA.toString()) ){
 						preferredVtx = vtxA;
 					}
@@ -2049,11 +2038,13 @@ public class DataGrooming {
 						preferredVtx = vtxB;
 					}
 				}
-				else if (vidA < vidB) {
+				else if ( checkAaiUriOk(g, vtxA) ) {
 					preferredVtx = vtxA;
-				} else {
+				} 
+				else if ( checkAaiUriOk(g, vtxB) ) {
 					preferredVtx = vtxB;
 				}
+				// else we're picking neither because neither one had a working aai-uri index property
 			}
 		} else if (vtxIdsConn2A.size() > vtxIdsConn2B.size()) {
 			// 3 - VertexA is connected to more things than vtxB.
@@ -2112,14 +2103,13 @@ public class DataGrooming {
 	 * @param passedVertList the passed vert list
 	 * @param dupeFixOn the dupe fix on
 	 * @param deleteCandidateList the delete candidate list
-	 * @param singleCommits the single commits
 	 * @param alreadyFoundDupeGroups the already found dupe groups
 	 * @return the array list
 	 */
 	private List<String> checkAndProcessDupes(String transId,
 			String fromAppId, Graph g, GraphTraversalSource source, String version, String nType,
 			List<Vertex> passedVertList, Boolean dupeFixOn,
-			Set<String> deleteCandidateList, Boolean singleCommits,
+			Set<String> deleteCandidateList, 
 			ArrayList<String> alreadyFoundDupeGroups, Loader loader ) {
 		
 		ArrayList<String> returnList = new ArrayList<>();
@@ -2203,7 +2193,7 @@ public class DataGrooming {
 						if (dupeFixOn) {
 							didRemove = deleteNonKeepersIfAppropriate(g,
 									dupesStr, prefV.id().toString(),
-									deleteCandidateList, singleCommits);
+									deleteCandidateList);
 						}
 						if (didRemove) {
 							dupeGrpsDeleted++;
@@ -2255,7 +2245,7 @@ public class DataGrooming {
 									didRemove = deleteNonKeepersIfAppropriate(
 											g, dupesStr, prefV.id()
 													.toString(),
-											deleteCandidateList, singleCommits);
+											deleteCandidateList );
 								}
 								if (didRemove) {
 									dupeGrpsDeleted++;
@@ -2359,12 +2349,11 @@ public class DataGrooming {
 	 * @param dupeInfoString the dupe info string
 	 * @param vidToKeep the vid to keep
 	 * @param deleteCandidateList the delete candidate list
-	 * @param singleCommits the single commits
 	 * @return the boolean
 	 */
 	private Boolean deleteNonKeepersIfAppropriate(Graph g,
 			String dupeInfoString, String vidToKeep,
-			Set<String> deleteCandidateList, Boolean singleCommits) {
+			Set<String> deleteCandidateList ) {
 
 		Boolean deletedSomething = false;
 		// This assumes that the dupeInfoString is in the format of
@@ -2421,11 +2410,6 @@ public class DataGrooming {
 												.traversal().V(longVertId).next();
 										vtx.remove();
 
-										if (singleCommits) {
-											// NOTE - the singleCommits option is not used in normal processing
-											g.tx().commit();
-											g = AAIGraph.getInstance().getGraph().newTransaction();
-										}
 									} catch (Exception e) {
 										okFlag = false;
 										LoggingContext.statusCode(StatusCode.ERROR);
@@ -2454,6 +2438,70 @@ public class DataGrooming {
 
 	}// end of deleteNonKeepersIfAppropriate()
 
+	
+	
+	/**
+	 * makes sure aai-uri exists and can be used to get this node back
+	 *
+	 * @param transId the trans id
+	 * @param fromAppId the from app id
+	 * @param graph the graph
+	 * @param vtx
+	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
+	 * @throws AAIException the AAI exception
+	 */
+	public Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx )
+			throws AAIException{
+		String aaiUriStr = "";
+		try { 
+			Object ob = origVtx.<Object>property("aai-uri").orElse(null);
+			String origVid = origVtx.id().toString();
+			LOGGER.debug("DEBUG --- do checkAaiUriOk() for origVid = " + origVid);
+			if (ob == null || ob.toString().equals("")) {
+				// It is missing its aai-uri
+				LOGGER.debug("DEBUG No [aai-uri] property found for vid = [" 
+						+ origVid + "] " );
+				return false;
+			}
+			else {
+				aaiUriStr = ob.toString();
+				Iterator <Vertex> verts = graph.V().has("aai-uri",aaiUriStr);
+				int count = 0;
+				while( verts.hasNext() ){
+					count++;
+					Vertex foundV = verts.next();
+					String foundVid = foundV.id().toString();
+					if( !origVid.equals(foundVid) ){
+						LOGGER.debug("DEBUG aai-uri key property ["  
+								+ aaiUriStr + "] for vid = [" 
+								+ origVid + "] brought back different vertex with vid = [" 
+								+ foundVid + "]." );
+						return false;
+					}
+				}
+				if( count == 0 ){
+					LOGGER.debug("DEBUG aai-uri key property ["  
+							+ aaiUriStr + "] for vid = [" 
+							+ origVid + "] could not be used to query for that vertex. ");
+					return false;	
+				}
+				else if( count > 1 ){
+					LOGGER.debug("DEBUG aai-uri key property ["  
+							+ aaiUriStr + "] for vid = [" 
+							+ origVid + "] brought back multiple (" 
+							+ count + ") vertices instead of just one. ");
+					return false;	
+				}
+			}
+		}
+		catch( Exception ex ){
+			LoggingContext.statusCode(StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			LOGGER.error(" ERROR trying to get node with aai-uri: [" + aaiUriStr + "]" + LogFormatTools.getStackTop(ex));
+		}
+		return true;
+		
+	}// End of checkAaiUriOk() 
 	
 	/**
 	 * Gets the node just using key params.
@@ -2876,47 +2924,44 @@ class CommandLineArgs {
 		@Parameter(names = "--help", help = true)
 		public boolean help;
 
-		@Parameter(names = "-edgesOnly", description = "Check grooming on edges only", arity = 1)
+		@Parameter(names = "-edgesOnly", description = "Check grooming on edges only")
 		public Boolean edgesOnlyFlag = false;
 
-		@Parameter(names = "-autoFix", description = "doautofix", arity = 1)
+		@Parameter(names = "-autoFix", description = "doautofix")
 		public Boolean doAutoFix = false;
 
-		@Parameter(names = "-skipHostCheck", description = "skipHostCheck", arity = 1)
+		@Parameter(names = "-skipHostCheck", description = "skipHostCheck")
 		public Boolean skipHostCheck = false;
 
-		@Parameter(names = "-dontFixOrphans", description = "dontFixOrphans", arity = 1)
+		@Parameter(names = "-dontFixOrphans", description = "dontFixOrphans")
 		public Boolean dontFixOrphansFlag = false;
 
-		@Parameter(names = "-singleCommits", description = "singleCommits", arity = 1)
-		public Boolean singleCommits = false;
-
-		@Parameter(names = "-dupeCheckOff", description = "dupeCheckOff", arity = 1)
+		@Parameter(names = "-dupeCheckOff", description = "dupeCheckOff")
 		public Boolean dupeCheckOff = false;
 
-		@Parameter(names = "-dupeFixOn", description = "dupeFixOn", arity = 1)
+		@Parameter(names = "-dupeFixOn", description = "dupeFixOn")
 		public Boolean dupeFixOn = false;
 
-		@Parameter(names = "-ghost2CheckOff", description = "ghost2CheckOff", arity = 1)
+		@Parameter(names = "-ghost2CheckOff", description = "ghost2CheckOff")
 		public Boolean ghost2CheckOff = false;
 
-		@Parameter(names = "-ghost2FixOn", description = "ghost2FixOn", arity = 1)
+		@Parameter(names = "-ghost2FixOn", description = "ghost2FixOn")
 		public Boolean ghost2FixOn = false;
 		
-		@Parameter(names = "-neverUseCache", description = "neverUseCache", arity = 1)
+		@Parameter(names = "-neverUseCache", description = "neverUseCache")
 		public Boolean neverUseCache = false;
 		
-		@Parameter(names = "-skipEdgeChecks", description = "skipEdgeChecks", arity = 1)
+		@Parameter(names = "-skipEdgeChecks", description = "skipEdgeChecks")
 		public Boolean skipEdgeCheckFlag = false;
 		
-		@Parameter(names = "-skipIndexUpdateFix", description = "skipIndexUpdateFix", arity = 1)
+		@Parameter(names = "-skipIndexUpdateFix", description = "skipIndexUpdateFix")
 		public Boolean skipIndexUpdateFix = false;
 		
 		@Parameter(names = "-maxFix", description = "maxFix")
-		public int maxRecordsToFix = AAIConstants.AAI_GROOMING_DEFAULT_MAX_FIX;
+		public int maxRecordsToFix = GraphAdminConstants.AAI_GROOMING_DEFAULT_MAX_FIX;
 		
 		@Parameter(names = "-sleepMinutes", description = "sleepMinutes")
-		public int sleepMinutes = AAIConstants.AAI_GROOMING_DEFAULT_SLEEP_MINUTES;
+		public int sleepMinutes = GraphAdminConstants.AAI_GROOMING_DEFAULT_SLEEP_MINUTES;
 		
 		// A value of 0 means that we will not have a time-window -- we will look
 				// at all nodes of the passed-in nodeType.
@@ -2926,11 +2971,9 @@ class CommandLineArgs {
 		@Parameter(names = "-f", description = "file")
 		public String prevFileName = "";
 		
-		@Parameter(names = "-singleNodeType", description = "sleepMinutes")
+		@Parameter(names = "-singleNodeType", description = "singleNodeType")
 		public String singleNodeType = "";
-
-		Boolean finalShutdownFlag = true;
-		Boolean cacheDbOkFlag = true;
+		
 	}
 
 	public HashMap<String, Vertex> getGhostNodeHash() {

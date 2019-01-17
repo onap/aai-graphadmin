@@ -44,7 +44,10 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -66,6 +69,11 @@ import static org.junit.Assert.fail;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = GraphAdminApp.class)
 @ContextConfiguration(initializers = PropertyPasswordConfiguration.class)
 @Import(GraphAdminTestConfiguration.class)
+@TestPropertySource(properties = {
+        "schema.uri.base.path = /aai",
+        "schema.ingest.file = src/main/resources/application.properties",
+        "schema.translator.list = config"
+})
 public class AAIGremlinQueryTest {
 
     @ClassRule
@@ -137,9 +145,6 @@ public class AAIGremlinQueryTest {
         headers.add("X-FromAppId", "JUNIT");
         headers.add("X-TransactionId", "JUNIT");
 
-        String authorization = Base64.getEncoder().encodeToString("AAI:AAI".getBytes("UTF-8"));
-        headers.add("Authorization", "Basic " + authorization);
-        httpEntity = new HttpEntity(headers);
         baseUrl = "https://localhost:" + randomPort;
     }
 

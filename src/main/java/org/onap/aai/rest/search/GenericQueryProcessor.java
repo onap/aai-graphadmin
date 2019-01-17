@@ -27,7 +27,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.javatuples.Pair;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.rest.dsl.DslQueryProcessor;
-import org.onap.aai.restcore.search.GroovyQueryBuilderSingleton;
+import org.onap.aai.restcore.search.GroovyQueryBuilder;
 import org.onap.aai.restcore.util.URITools;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.serialization.queryformats.SubGraphStyle;
@@ -37,7 +37,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class GenericQueryProcessor {
@@ -48,7 +47,7 @@ public abstract class GenericQueryProcessor {
 	protected static Pattern p = Pattern.compile("query/(.*+)");
 	protected Optional<String> gremlin;
 	protected final TransactionalGraphEngine dbEngine;
-	protected static GroovyQueryBuilderSingleton queryBuilderSingleton = GroovyQueryBuilderSingleton.getInstance();
+	protected static GroovyQueryBuilder groovyQueryBuilder = new GroovyQueryBuilder();
 	protected final boolean isGremlin;
 	protected Optional<DslQueryProcessor> dslQueryProcessorOptional;
 	/* dsl parameters to store dsl query and to check
@@ -122,7 +121,7 @@ public abstract class GenericQueryProcessor {
 			String dslUserQuery = dsl.get();
 			if(dslQueryProcessorOptional.isPresent()){
 				String dslQuery = dslQueryProcessorOptional.get().parseAaiQuery(dslUserQuery);
-				query = queryBuilderSingleton.executeTraversal(dbEngine, dslQuery, params);
+				query = groovyQueryBuilder.executeTraversal(dbEngine, dslQuery, params);
 				String startPrefix = "g.V()";
 				query = startPrefix + query;
 			}

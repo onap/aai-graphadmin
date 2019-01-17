@@ -23,6 +23,15 @@ fi
 start_date;
 check_user;
 source_profile;
+
+# Only sourcing the file aai-graphadmin-tools-vars for dataSnapshot
+# Do not source this for dataRestore or otherwise
+# both taking a snapshot and restoring from a snapshot
+# will use the same amount of memory but restoring from snapshot
+# will use a lot more memory than taking a snapshot
+if [ -f "$PROJECT_HOME/resources/aai-graphadmin-tools-vars.sh" ]; then
+    source $PROJECT_HOME/resources/aai-graphadmin-tools-vars.sh
+fi;
 execute_spring_jar org.onap.aai.datasnapshot.DataSnapshot $PROJECT_HOME/resources/logback.xml "$@"
 end_date;
 exit 0

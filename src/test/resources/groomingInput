@@ -1,0 +1,51 @@
+ ============ Summary ==============
+Ran PARTIAL data grooming just looking at data added/updated in the last 100 minutes.
+
+Ran these nodeTypes:
+
+There were this many delete candidates from previous run =  0
+Deleted this many delete candidates =  0
+Dummy-index-update to delete candidates =  0
+Total number of nodes looked at =  0
+Ghost Nodes identified = 0
+Orphan Nodes identified =  0
+Missing aai-node-type Nodes identified =  0
+Bad Edges identified =  3
+Duplicate Groups count =  0
+MisMatching Label/aai-node-type count =  0
+
+ ------------- Delete Candidates ---------
+DeleteCandidate: Bad EDGE Edge-id = [c9c-j28-74l-izc]
+DeleteCandidate: Bad EDGE Edge-id = [8oz-cns-36d-cso]
+DeleteCandidate: Bad EDGE Edge-id = [9w5-9m0-f8d1-9i0]
+
+-- NOTE - To see DeleteCandidates for Duplicates, you need to look in the Duplicates Detail section below.
+
+ ------------- GHOST NODES - detail
+ ------------- Missing aai-node-type NODES - detail:
+ ------------- Missing Dependent Edge ORPHAN NODES - detail:
+ ------------- EDGES pointing to empty/bad vertices:
+>  Edge pointing to bad vertex (Vid = 24600) EdgeId = c9c-j28-74l-izc
+Label: [org.onap.relationships.inventory.MemberOf]
+Prop: [p[private->false]], val = [false]
+Prop: [p[aai-uuid->9eb4b690-0572-4504-9]], val = [9eb4b690-0572-4504-97d1-c4870108c7ea]
+Prop: [p[delete-other-v->NONE]], val = [NONE]
+Prop: [p[contains-other-v->NONE]], val = [NONE]
+Prop: [p[prevent-delete->IN]], val = [IN]
+
+>  Edge pointing to bad vertex (Vid = 16408) EdgeId = 8oz-cns-36d-cso
+Label: [org.onap.relationships.inventory.BelongsTo]
+Prop: [p[private->false]], val = [false]
+Prop: [p[prevent-delete->IN]], val = [IN]
+Prop: [p[contains-other-v->IN]], val = [IN]
+Prop: [p[aai-uuid->c7a0abfd-85eb-4893-8]], val = [c7a0abfd-85eb-4893-8440-a50d21eb8460]
+Prop: [p[delete-other-v->NONE]], val = [NONE]
+
+>  Edge pointing to bad vertex (Vid = 12312) EdgeId = 9w5-9m0-f8d1-9i0
+Label: [BadEdge]
+
+ ------------- Duplicates:
+ ------------- Mis-matched Label/aai-node-type Nodes:
+
+ ------------- Got these errors while processing:
+

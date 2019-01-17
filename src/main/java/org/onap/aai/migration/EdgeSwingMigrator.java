@@ -20,10 +20,12 @@
 package org.onap.aai.migration;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Direction;
@@ -31,6 +33,8 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.javatuples.Pair;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
+import org.onap.aai.edges.enums.EdgeProperty;
+import org.onap.aai.edges.enums.EdgeType;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
@@ -145,12 +149,24 @@ public abstract class EdgeSwingMigrator extends Migrator {
 			// Find and migrate any applicable OUT edges.
 			if( edgeDirRestr.equals("BOTH") || edgeDirRestr.equals("OUT") ){
 				Iterator <Edge> edgeOutIter = null;
+                Iterator <Edge> newNodeEdgeOutIter = null;
+
 				if( edgeLabelRestr == null ) {
 					edgeOutIter = oldNode.edges(Direction.OUT);
+                    newNodeEdgeOutIter = newNode.edges(Direction.OUT);
+
 				}
 				else {
 					edgeOutIter = oldNode.edges(Direction.OUT, edgeLabelRestr);
-				}
+                    newNodeEdgeOutIter = newNode.edges(Direction.OUT, edgeLabelRestr);
+                }
+                
+                List<Vertex> newNodeOtherEndVertexList = new ArrayList<Vertex>();
+                while (newNodeEdgeOutIter.hasNext()){
+                    Edge newNodeOutE = newNodeEdgeOutIter.next();
+                    Vertex otherSideNode4ThisEdgeOfNewNode = newNodeOutE.inVertex();
+                    newNodeOtherEndVertexList.add(otherSideNode4ThisEdgeOfNewNode);
+                }   
 				
 				while( edgeOutIter.hasNext() ){
 					Edge oldOutE = edgeOutIter.next();
@@ -176,14 +192,21 @@ public abstract class EdgeSwingMigrator extends Migrator {
 						// change any edge properties - just swinging one end of the edge to a new node.
 						// NOTE - addEdge adds an OUT edge to the vertex passed as a parameter, so we are 
 						//       adding from the newNode side.
-						Edge newOutE = newNode.addEdge(eLabel, otherSideNode4ThisEdge);
 						
-						Iterator it = propMap.entrySet().iterator();
-					    while (it.hasNext()) {
-					        Map.Entry pair = (Map.Entry)it.next();
-					        newOutE.property(pair.getKey().toString(), pair.getValue().toString() );
-					    }
-					    
+						EdgeType edgeType = getEdgeType(propMap);
+						if (edgeType != null && !newNodeOtherEndVertexList.contains(otherSideNode4ThisEdge)){
+//							Edge newOutE = newNode.addEdge(eLabel, otherSideNode4ThisEdge);
+							Edge newOutE = createEdgeIfPossible(edgeType, newNode, otherSideNode4ThisEdge);
+							if (newOutE != null){
+								Iterator it = propMap.entrySet().iterator();
+							    while (it.hasNext()) {
+							        Map.Entry pair = (Map.Entry)it.next();
+							        newOutE.property(pair.getKey().toString(), pair.getValue().toString() );
+							    }
+							}else {
+								logger.info("\n Edge was not swung due to Multiplicity Rule Violation...");
+							}
+						}
 					}
 				}
 			}	
@@ -191,13 +214,23 @@ public abstract class EdgeSwingMigrator extends Migrator {
 			// Find and migrate any applicable IN edges.
 			if( edgeDirRestr.equals("BOTH") || edgeDirRestr.equals("IN") ){
 				Iterator <Edge> edgeInIter = null;
+				 Iterator <Edge> newNodeEdgeOutIter = null;
 				if( edgeLabelRestr == null ) {
 					edgeInIter = oldNode.edges(Direction.IN);
+					newNodeEdgeOutIter = newNode.edges(Direction.IN);
 				}
 				else {
 					edgeInIter = oldNode.edges(Direction.IN, edgeLabelRestr);
-				}			
+					newNodeEdgeOutIter = newNode.edges(Direction.IN, edgeLabelRestr);
+				}
 				
+				List<Vertex> newNodeOtherEndVertexList = new ArrayList<Vertex>();
+                while (newNodeEdgeOutIter.hasNext()){
+                    Edge newNodeOutE = newNodeEdgeOutIter.next();
+                    Vertex otherSideNode4ThisEdgeOfNewNode = newNodeOutE.outVertex();
+                    newNodeOtherEndVertexList.add(otherSideNode4ThisEdgeOfNewNode);
+                }
+
 				while( edgeInIter.hasNext() ){
 					Edge oldInE = edgeInIter.next();
 					String eLabel = oldInE.label();
@@ -224,13 +257,20 @@ public abstract class EdgeSwingMigrator extends Migrator {
 						// NOTE - addEdge adds an OUT edge to the vertex passed as a parameter, so we are 
 						//       adding from the node on the other-end of the original edge so we'll get 
 						//       an IN-edge to the newNode.
-						Edge newInE = otherSideNode4ThisEdge.addEdge(eLabel, newNode);
-						
-						Iterator it = propMap.entrySet().iterator();
-					    while (it.hasNext()) {
-					        Map.Entry pair = (Map.Entry)it.next();
-					        newInE.property(pair.getKey().toString(), pair.getValue().toString() );
-					    } 
+						EdgeType edgeType = getEdgeType(propMap);
+						if (edgeType != null && !newNodeOtherEndVertexList.contains(otherSideNode4ThisEdge)){
+//							Edge newInE = otherSideNode4ThisEdge.addEdge(eLabel, newNode);
+							Edge newInE = createEdgeIfPossible(edgeType, otherSideNode4ThisEdge, newNode);
+							if (newInE != null){
+								Iterator it = propMap.entrySet().iterator();
+							    while (it.hasNext()) {
+							        Map.Entry pair = (Map.Entry)it.next();
+							        newInE.property(pair.getKey().toString(), pair.getValue().toString() );
+							    }
+							} else {
+								logger.info("\t Edge was not swung due to Multiplicity Rule Violation...");
+							}
+						}
 					}
 				}
 			}	
@@ -239,6 +279,17 @@ public abstract class EdgeSwingMigrator extends Migrator {
 			logger.error("error encountered", e);
 			success = false;
 		}
+	}
+	
+	private EdgeType getEdgeType(HashMap edgePropMap) {
+		EdgeType type = null;
+		String containsValue = edgePropMap.get(EdgeProperty.CONTAINS.toString()).toString();
+		if ("NONE".equalsIgnoreCase(containsValue)){
+			type = EdgeType.COUSIN;
+		} else {
+			type = EdgeType.TREE;
+		}
+		return type;
 	}
   
 	@Override

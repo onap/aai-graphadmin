@@ -19,25 +19,29 @@
  */
 package org.onap.aai.db.schema;
 
-import java.io.IOException;
-import java.util.UUID;
-
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.codehaus.jackson.JsonGenerationException;
+import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.JanusGraphFactory;
+import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.ErrorObjectFormatException;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.logging.LoggingContext.StatusCode;
+import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import org.janusgraph.core.JanusGraphFactory;
-import org.janusgraph.core.JanusGraph;
+import org.onap.aai.util.ExceptionTranslator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class ScriptDriver {
 
@@ -49,7 +53,7 @@ public class ScriptDriver {
 	 * @throws JsonGenerationException the json generation exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void main (String[] args) throws AAIException, IOException, ConfigurationException {
+	public static void main (String[] args) throws AAIException, IOException, ConfigurationException, ErrorObjectFormatException {
 		CommandLineArgs cArgs = new CommandLineArgs();
 		
 		LoggingContext.init();
@@ -61,18 +65,30 @@ public class ScriptDriver {
 		LoggingContext.targetServiceName("main");
 		LoggingContext.statusCode(StatusCode.COMPLETE);
 		LoggingContext.responseCode(LoggingContext.SUCCESS);
-		
+		ErrorLogHelper.loadProperties();
 		new JCommander(cArgs, args);
 		
 		if (cArgs.help) {
 			System.out.println("-c [path to graph configuration] -type [what you want to audit - oxm or graph]");
 		}
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				"org.onap.aai.config",
-				"org.onap.aai.setup"
-		);
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+		initializer.initialize(ctx);
+		try {
+			ctx.scan(
+					"org.onap.aai.config",
+					"org.onap.aai.setup"
+			);
+			ctx.refresh();
 
+		} catch (Exception e) {
+			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+			throw aai;
+		}
 		AuditorFactory auditorFactory = ctx.getBean(AuditorFactory.class);
 		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
 		EdgeIngestor edgeIngestor     = ctx.getBean(EdgeIngestor.class);

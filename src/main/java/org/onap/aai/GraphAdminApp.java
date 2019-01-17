@@ -19,13 +19,21 @@
  */
 package org.onap.aai;
 
+import com.att.eelf.configuration.Configuration;
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
+import java.util.Properties;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.ExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -55,6 +63,7 @@ import java.util.UUID;
         "org.onap.aai.interceptors",
         "org.onap.aai.datasnapshot",
         "org.onap.aai.datagrooming",
+        "org.onap.aai.dataexport",
         "org.onap.aai.datacleanup"
 })
 @EnableAsync
@@ -65,6 +74,9 @@ public class GraphAdminApp {
     public static final String APP_NAME = "GraphAdmin";
     private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(GraphAdminApp.class);
 
+    private static final String FROMAPPID = "AAI-GA";
+    private static final String TRANSID = UUID.randomUUID().toString();
+
     @Autowired
     private Environment env;
 
@@ -74,7 +86,10 @@ public class GraphAdminApp {
     @PostConstruct
     private void initialize(){
         loadDefaultProps();
+        initializeLoggingContext();
+    }
 
+    private static void initializeLoggingContext() {
         LoggingContext.save();
         LoggingContext.component("init");
         LoggingContext.partnerName("NA");
@@ -92,11 +107,27 @@ public class GraphAdminApp {
     public static void main(String[] args) throws Exception {
 
         loadDefaultProps();
-        SpringApplication app = new SpringApplication(GraphAdminApp.class);
-        app.setRegisterShutdownHook(true);
-        app.addInitializers(new PropertyPasswordConfiguration());
-        Environment env = app.run(args).getEnvironment();
+        ErrorLogHelper.loadProperties();
+        initializeLoggingContext();
 
+        Environment env =null;
+        AAIConfig.init();
+        try {
+            SpringApplication app = new SpringApplication(GraphAdminApp.class);
+            app.setRegisterShutdownHook(true);
+            app.addInitializers(new PropertyPasswordConfiguration());
+            env = app.run(args).getEnvironment();
+        }
+
+        catch(Exception ex){
+            AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(ex);
+            LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+            LOGGER.error("Problems starting GraphAdminApp "+aai.getMessage());
+            ErrorLogHelper.logException(aai);
+            ErrorLogHelper.logError(aai.getCode(), ex.getMessage() + ", resolve and restart GraphAdmin");
+            throw aai;
+        }
         LOGGER.info(
                 "Application '{}' is running on {}!" ,
                 env.getProperty("spring.application.name"),
@@ -106,7 +137,7 @@ public class GraphAdminApp {
         // to the SchemaGenerator needs the bean and during the constructor
         // the Spring Context is not yet initialized
 
-        AAIConfig.init();
+
         AAIGraph.getInstance();
 
         System.setProperty("org.onap.aai.graphadmin.started", "true");             
@@ -115,6 +146,8 @@ public class GraphAdminApp {
         LOGGER.debug("GraphAdmin MicroService Started");
         System.out.println("GraphAdmin Microservice Started");
     }
+
+
 
     public static void loadDefaultProps(){
 
@@ -126,4 +159,5 @@ public class GraphAdminApp {
             System.setProperty("BUNDLECONFIG_DIR", "src/main/resources");
         }
     }
+
 }

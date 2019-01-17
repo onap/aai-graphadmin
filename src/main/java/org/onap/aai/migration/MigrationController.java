@@ -19,17 +19,21 @@
  */
 package org.onap.aai.migration;
 
-import java.util.UUID;
-
+import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.edges.EdgeIngestor;
+import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.ExceptionTranslator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.UUID;
 
 /**
  * Wrapper class to allow {@link org.onap.aai.migration.MigrationControllerInternal MigrationControllerInternal}
@@ -43,7 +47,7 @@ public class MigrationController {
 	 * @param args
 	 *            the arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AAIException {
 
 		LoggingContext.init();
 		LoggingContext.partnerName("Migration");
@@ -55,11 +59,23 @@ public class MigrationController {
 		LoggingContext.statusCode(StatusCode.COMPLETE);
 		LoggingContext.responseCode(LoggingContext.SUCCESS);
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				"org.onap.aai.config",
-				"org.onap.aai.setup"
-		);
-
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+		initializer.initialize(ctx);
+		try {
+			ctx.scan(
+					"org.onap.aai.config",
+					"org.onap.aai.setup"
+			);
+			ctx.refresh();
+		} catch (Exception e) {
+			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+			System.out.println("Problems running tool "+aai.getMessage());
+			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+			throw aai;
+		}
 		LoaderFactory loaderFactory   = ctx.getBean(LoaderFactory.class);
 		EdgeIngestor   edgeIngestor   = ctx.getBean(EdgeIngestor.class);
 		EdgeSerializer edgeSerializer = ctx.getBean(EdgeSerializer.class);
