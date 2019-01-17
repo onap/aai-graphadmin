@@ -67,7 +67,7 @@ public class DataSnapshotTasks {
 		LOGGER.info("Started cron job dataSnapshot @ " + dateFormat.format(new Date()));
 		try {
 			if (AAIConfig.get("aai.cron.enable.dataSnapshot").equals("true")) {
-				String [] dataSnapshotParms = AAIConfig.get("aai.datasnapshot.params",  "JUST_TAKE_SNAPSHOT").split("\\s+");
+				String [] dataSnapshotParms = {"-c",AAIConfig.get("aai.datasnapshot.params",  "JUST_TAKE_SNAPSHOT")};
 				LOGGER.info("DataSnapshot Params {}", Arrays.toString(dataSnapshotParms));
 				DataSnapshot.main(dataSnapshotParms);
 			}

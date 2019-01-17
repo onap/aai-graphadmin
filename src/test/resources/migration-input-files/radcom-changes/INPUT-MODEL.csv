@@ -1,0 +1,9 @@
+Model-type,vnf-type,model-invariant-id,model-version-id,model-customization-id,model-name,image-name
+Service,test,new-service-inv,new-service-ver,,,
+VNF-resource,test,new-resource-inv,new-resource-ver,new-resource-cust,,
+vf-module-1,,,,,model-1,image-1
+vf-module-2,,,,,model-2,image-2
+no-invariant,,,,,model-3,
+no-ver,,,,,model-4,keep-image
+no-ids,,,,,model-5,
+

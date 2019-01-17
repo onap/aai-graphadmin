@@ -136,15 +136,15 @@ while getopts ":f:s:d:n:c:i:m:o:p:" opt; do
 
 echo 'Done'
 
-set -A nodes pserver cloud-region availability-zone tenant zone complex
-
+set -A nodes customer service-subscription service pserver cloud-region availability-zone tenant zone complex
 #Create empty partial file
  > $INPUT_DATASNAPSHOT_FILE".partial"
 
 for nodeType in ${nodes[@]}
-	do
-         grep "aai-node-type.*\"value\":\"$nodeType\"" $INPUT_DATASNAPSHOT_FILE >>$INPUT_DATASNAPSHOT_FILE'.partial'
-    done
+ do
+	 grep "aai-node-type.*\"value\":\"$nodeType\"" $INPUT_DATASNAPSHOT_FILE'.P'* >>$INPUT_DATASNAPSHOT_FILE'.out'
+     cat $INPUT_DATASNAPSHOT_FILE'.out' | cut -d':' -f2- > $INPUT_DATASNAPSHOT_FILE'.partial'
+ done
 
 
 execute_spring_jar org.onap.aai.dbgen.DynamicPayloadGenerator ${PROJECT_HOME}/resources/dynamicPayloadGenerator-logback.xml -s ${VALIDATE_SCHEMA} \

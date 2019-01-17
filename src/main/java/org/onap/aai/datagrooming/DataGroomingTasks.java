@@ -85,7 +85,6 @@ public class DataGroomingTasks {
 		append("enableedgesonly" , AAIConfig.get("aai.datagrooming.enableedgesonly"), dataGroomingFlagMap);
 		append("enableskipedgechecks" , AAIConfig.get("aai.datagrooming.enableskipedgechecks"), dataGroomingFlagMap);
 		append("enablemaxfix" , AAIConfig.get("aai.datagrooming.enablemaxfix"), dataGroomingFlagMap);
-		append("enablesinglecommits" , AAIConfig.get("aai.datagrooming.enablesinglecommits"), dataGroomingFlagMap);
 		append("enabledupecheckoff" , AAIConfig.get("aai.datagrooming.enabledupecheckoff"), dataGroomingFlagMap);
 		append("enableghost2checkoff" , AAIConfig.get("aai.datagrooming.enableghost2checkoff"), dataGroomingFlagMap);
 		append("enableghost2fixon" , AAIConfig.get("aai.datagrooming.enableghost2fixon"), dataGroomingFlagMap);
@@ -94,6 +93,7 @@ public class DataGroomingTasks {
 		append("timewindowminutesvalue" , AAIConfig.get("aai.datagrooming.timewindowminutesvalue"), dataGroomingFlagMap);
 		append("sleepminutesvalue" , AAIConfig.get("aai.datagrooming.sleepminutesvalue"), dataGroomingFlagMap);
 		append("maxfixvalue" , AAIConfig.get("aai.datagrooming.maxfixvalue"), dataGroomingFlagMap);
+		// Note: singleNodeType parameter is not used when running from the cron
 
 		if(LOGGER.isDebugEnabled()){
 			LOGGER.debug("DataGrooming Flag Values : ");
@@ -113,7 +113,7 @@ public class DataGroomingTasks {
 			}
 			if("true".equals(dataGroomingFlagMap.get("enabletimewindowminutes"))){
 				paramsArray.add("-timeWindowMinutes");			
-				paramsArray.add(dataGroomingFlagMap.get("enabletimewindowminutesvalue"));
+				paramsArray.add(dataGroomingFlagMap.get("timewindowminutesvalue"));
 			}
 			if("true".equals(dataGroomingFlagMap.get("enableskiphostcheck"))){
 				paramsArray.add("-skipHostCheck");
@@ -134,9 +134,6 @@ public class DataGroomingTasks {
 			if("true".equals(dataGroomingFlagMap.get("enablemaxfix"))) {
 				paramsArray.add("-maxFix"); 
 				paramsArray.add(dataGroomingFlagMap.get("maxfixvalue"));
-			}
-			if("true".equals(dataGroomingFlagMap.get("enablesinglecommits"))){
-				paramsArray.add("-singleCommits");
 			}
 			if("true".equals(dataGroomingFlagMap.get("enabledupecheckoff"))){
 				paramsArray.add("-dupeCheckOff");

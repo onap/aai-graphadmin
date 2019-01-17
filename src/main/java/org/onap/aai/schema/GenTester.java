@@ -24,13 +24,14 @@ import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
+import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbgen.SchemaGenerator;
 import org.onap.aai.dbmap.AAIGraph;
+import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.logging.LoggingContext.StatusCode;
-import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Properties;
@@ -46,7 +47,7 @@ public class GenTester {
 	 *
 	 * @param args the arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AAIException{
 	   
 		JanusGraph graph = null;
 		System.setProperty("aai.service.name", GenTester.class.getSimpleName());
@@ -67,11 +68,23 @@ public class GenTester {
 		LoggingContext.statusCode(StatusCode.COMPLETE);
 		LoggingContext.responseCode(LoggingContext.SUCCESS);
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				"org.onap.aai.config",
-				"org.onap.aai.setup"
-		);
-
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+		initializer.initialize(ctx);
+		try {
+			ctx.scan(
+					"org.onap.aai.config",
+					"org.onap.aai.setup"
+			);
+			ctx.refresh();
+		} catch (Exception e) {
+			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+			LOGGER.error("Problems running the tool "+aai.getMessage());
+			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+			throw aai;
+		}
 		try {
             LOGGER.info("GenTester uses either cql jar or Cassandra jar");
 
@@ -158,6 +171,5 @@ public class GenTester {
 	    LOGGER.auditEvent("-- all done, if program does not exit, please kill.");
 	    System.exit(0);
     }
-
 }
 

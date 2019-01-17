@@ -1,0 +1,9 @@
+EVC Name, PNF (PTNII), Interface AID, ivlan,UNI_NNI
+test/evc/one, pnf1,11111.1,111,UNI
+test/evc/one, pnf1, lag-interface1,222,UNI
+test/evc/one, pnf1,11111.2,333,UNI
+test/evc/one, pnf1, lag-interface2,444,UNI
+test/evc/one_2, pnf1,11111.3,555,UNI
+test/evc/one_2, pnf1, lag-interface3,666,UNI
+test/evc/two, pnf2,22222.2,777,UNI
+test/evc/two, pnf2, lag-interface2,888,UNI

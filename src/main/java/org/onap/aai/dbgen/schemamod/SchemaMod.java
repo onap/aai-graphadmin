@@ -19,27 +19,30 @@
  */
 package org.onap.aai.dbgen.schemamod;
 
-import java.util.Properties;
-
-import org.onap.aai.dbmap.DBConnectionType;
-import org.onap.aai.introspection.Loader;
-import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.introspection.ModelType;
-import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
-import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.serialization.engines.QueryStyle;
-import org.onap.aai.serialization.engines.JanusGraphDBEngine;
-import org.onap.aai.serialization.engines.TransactionalGraphEngine;
-import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
-import org.onap.aai.util.UniquePropertyCheck;
-import org.slf4j.MDC;
-
 import com.att.eelf.configuration.Configuration;
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFManager;
+import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.dbmap.DBConnectionType;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.introspection.Loader;
+import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.introspection.ModelType;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.LoggingContext;
+import org.onap.aai.serialization.engines.JanusGraphDBEngine;
+import org.onap.aai.serialization.engines.QueryStyle;
+import org.onap.aai.serialization.engines.TransactionalGraphEngine;
+import org.onap.aai.setup.SchemaVersion;
+import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.ExceptionTranslator;
+import org.onap.aai.util.UniquePropertyCheck;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.Properties;
 
 public class SchemaMod {
 
@@ -159,13 +162,25 @@ public class SchemaMod {
 		logger.info(msg);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AAIException {
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				"org.onap.aai.config",
-				"org.onap.aai.setup"
-		);
-
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+		initializer.initialize(ctx);
+		try {
+			ctx.scan(
+					"org.onap.aai.config",
+					"org.onap.aai.setup"
+			);
+			ctx.refresh();
+		} catch (Exception e) {
+			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+			System.out.println("Problems running SchemaMod "+aai.getMessage());
+			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+			throw aai;
+		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
 		SchemaMod schemaMod = new SchemaMod(loaderFactory, schemaVersions);

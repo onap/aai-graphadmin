@@ -1,0 +1,8 @@
+Region,Alias,Production,Upgrade Cycle
+akr1,,ORT,E
+akr1b,,ST,C
+all1,,TEST,D
+all1b,,ORT,G
+alp1,,E2E,G
+alp1b,,TEST,E
+ams1b,amsnl1b,ST,B

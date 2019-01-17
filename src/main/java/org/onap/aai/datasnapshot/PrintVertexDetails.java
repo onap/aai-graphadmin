@@ -25,25 +25,28 @@ import java.util.Iterator;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
+import org.apache.tinkerpop.gremlin.structure.io.GraphWriter;
 import org.janusgraph.core.JanusGraph;
 
 
 public class PrintVertexDetails implements Runnable{
-	
-	//private static EELFLogger LOGGER;
 
 	private JanusGraph jg;
 	private String fname;
 	private ArrayList<Vertex> vtxList;
 	private Boolean debugOn;
-	private int debugDelayMs;
-		
-	public PrintVertexDetails (JanusGraph graph, String fn, ArrayList<Vertex> vL, Boolean debugFlag, int debugDelay){
+	private long debugDelayMs;
+	private String snapshotType;
+
+	static final byte[] newLineBytes = "\n".getBytes();
+
+	public PrintVertexDetails (JanusGraph graph, String fn, ArrayList<Vertex> vL, Boolean debugFlag, long debugAddDelayTime, String snapshotType){
 		jg = graph;
 		fname = fn;
 		vtxList = vL;
 		debugOn = debugFlag;
-		debugDelayMs = debugDelay;
+		debugDelayMs = debugAddDelayTime;
+		this.snapshotType = snapshotType;
 	}
 		
 	public void run(){  
@@ -55,6 +58,12 @@ public class PrintVertexDetails implements Runnable{
 				Long debugDelayMsL = new Long(debugDelayMs);
 				FileOutputStream subFileStr = new FileOutputStream(fname);
 				Iterator <Vertex> vSubItr = vtxList.iterator();
+				GraphWriter graphWriter = null;
+				if("gryo".equalsIgnoreCase(snapshotType)){
+					graphWriter = jg.io(IoCore.gryo()).writer().create();
+				} else {
+					graphWriter = jg.io(IoCore.graphson()).writer().create();
+				}
 				while( vSubItr.hasNext() ){
 					Long vertexIdL = 0L;
 					String aaiNodeType = "";
@@ -68,7 +77,8 @@ public class PrintVertexDetails implements Runnable{
 						aaiUuid = (String) tmpV.property("aai-uuid").orElse(null);
 						
 						Thread.sleep(debugDelayMsL); // Make sure it doesn't bump into itself
-						jg.io(IoCore.graphson()).writer().create().writeVertex(subFileStr, tmpV, Direction.BOTH); 
+						graphWriter.writeVertex(subFileStr, tmpV, Direction.BOTH);
+						subFileStr.write(newLineBytes);
 						okCount++;
 					}
 					catch(Exception e) {
@@ -94,7 +104,11 @@ public class PrintVertexDetails implements Runnable{
 				int count = vtxList.size();
 				Iterator <Vertex> vSubItr = vtxList.iterator();
 				FileOutputStream subFileStr = new FileOutputStream(fname);
-				jg.io(IoCore.graphson()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
+				if ("gryo".equalsIgnoreCase(snapshotType)) {
+					jg.io(IoCore.gryo()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
+				} else {
+					jg.io(IoCore.graphson()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
+				}
 				subFileStr.close();
 				System.out.println(" -- Printed " + count + " vertexes out to " + fname);
 			}

@@ -66,8 +66,6 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
 		int retryFailureCount = 0;
 		HashMap <String,String> failedAttemptHash = new HashMap <String,String> ();
 		HashMap <String,String> old2NewVtxIdHash = new HashMap <String,String> ();
-		GraphSONReader gsr = GraphSONReader.build().create();
-		
 	
 		// Read this file into a JSON object
 		JsonParser parser = new JsonParser();
@@ -180,13 +178,17 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
     			}
     			try { 
     				jg.tx().commit();
-    	       		// If this worked, we can take it off of the failed list
-    	       		failedAttemptHash.remove(failedVidStr);
+	       			LOGGER.debug(" -- addVertex Successful RETRY for vtxId = " +
+    						failedVidStr + ", label = [" + failedLabel + "]");
     	       	}
     			catch ( Exception e ){
     				retryFailureCount++;
-    				LOGGER.debug(" -- COMMIT FAILED for RETRY for vtxId = " + failedVidStr 
-    						+ ", label = [" + failedLabel + "].  ErrorMsg = [" + e.getMessage() + "]" );
+    				// Note - this is a "POSSIBLE" error because the reason the commit fails may be that
+    				//    the node is a dupe or has some other legit reason that it should not be in the DB.
+    				LOGGER.debug(" --POSSIBLE ERROR-- COMMIT FAILED for RETRY for vtxId = " + failedVidStr 
+    						+ ", label = [" + failedLabel + "].  ErrorMsg = [" + e.getMessage() 
+    						+ "].  This vertex will not be tried again. ");
+
    					e.printStackTrace();
         			if( retryFailureCount > maxAllowedErrors ) {
         				LOGGER.debug(">>> Abandoning PartialVertexLoader() because " +

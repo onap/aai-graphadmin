@@ -1,0 +1,5 @@
+ptnii-name,fic,equipment-model,equipment-role,equipment-role-additional,ip-addr,subnet-mask,slot-name,card-type,card-port-lock,card-vlan-lock,port-aid,port-type,port-role,port-lock,vlan-lock,reservation-name,collector-interconnect-type,tag-mode,media-type,media-speed-value+media-speed-units,uni-cir-value+uni-cir-units,evc-name
+pnf-name-collector-1,06000D.121,5150,AED,,2001:1890:fcfe:7000:7021:0:1:2,64,,,,,"1.7	",SFP_1GE/Ethernet_10/100/1000M,ACCESS,N,N,M0651881_ST,SHARED,DOUBLE,SFP-1GE-LX,1000Mbps,,evc-name-1
+pnf-name-collector-1,06000D.121,5150,AED,,2001:1890:fcfe:7000:7021:0:1:2,64,,,,,"1.8	",SFP_1GE/Ethernet_10/100/1000M,ACCESS,N,N,M0651882_ST,SHARED,DOUBLE,SFP-1GE-LX,1000Mbps,,evc-name-3
+pnf-name-1,06000D.121,5150,AED,,2001:1890:fcfe:7000:7021:0:1:2,64,,,,,1.1,SFP_1GE/Ethernet_10/100/1000M,ACCESS,N,N,M0651882_ST,SHARED,DOUBLE,SFP-1GE-LX,1000Mbps,,evc-name-3
+pnf-name-1,06000D.121,5150,AED,,2001:1890:fcfe:7000:7021:0:1:2,64,,,,,1.2,SFP_1GE/Ethernet_10/100/1000M,ACCESS,N,N,M0651882_ST,SHARED,DOUBLE,SFP-1GE-LX,1000Mbps,,evc-name-3

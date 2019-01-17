@@ -20,7 +20,7 @@
 package org.onap.aai.rest.search;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
-import org.onap.aai.restcore.search.GremlinGroovyShellSingleton;
+import org.onap.aai.restcore.search.GremlinGroovyShell;
 
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class GroovyShellImpl extends GenericQueryProcessor {
 
 		params.put("g", this.dbEngine.asAdmin().getTraversalSource());
 		
-		GremlinGroovyShellSingleton shell = GremlinGroovyShellSingleton.getInstance();
+		GremlinGroovyShell shell = new GremlinGroovyShell();
 		
 		return shell.executeTraversal(query, params);
 	}
