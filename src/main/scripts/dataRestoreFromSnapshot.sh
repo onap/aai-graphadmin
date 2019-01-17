@@ -21,10 +21,10 @@ if [ "$#" -lt 1 ]; then
 fi
 
 source_profile;
-export PRE_JAVA_OPTS=${PRE_JAVA_OPTS:--Xms6g -Xmx8g};
+export JAVA_PRE_OPTS=${JAVA_PRE_OPTS:--Xms6g -Xmx8g};
 
 #### Step 1) clear out the database
-execute_spring_jar org.onap.aai.datasnapshot.DataSnapshot ${PROJECT_HOME}/resources/logback.xml "CLEAR_ENTIRE_DATABASE" "$1" "$2"
+execute_spring_jar org.onap.aai.datasnapshot.DataSnapshot ${PROJECT_HOME}/resources/logback.xml "-c" "CLEAR_ENTIRE_DATABASE" "-f" "$1"
 if [ "$?" -ne "0" ]; then
     echo "Problem clearing out database."
     exit 1
@@ -39,7 +39,7 @@ fi
 
 #### Step 3) reload the data from a snapshot file
 
-execute_spring_jar org.onap.aai.datasnapshot.DataSnapshot ${PROJECT_HOME}/resources/logback.xml "RELOAD_DATA" "$1"
+execute_spring_jar org.onap.aai.datasnapshot.DataSnapshot ${PROJECT_HOME}/resources/logback.xml "-c" "RELOAD_DATA" "-f" "$1"
 if [ "$?" -ne "0" ]; then
     echo "Problem reloading data into the database."
     end_date;

@@ -1,0 +1,8 @@
+ptnii-name,internal-vlan,uni-svlan,nni-svlan,evc-name
+SGSNGP2002MG2,4054,740,6,evc-name-1
+PHMKTI1002MG2,4084,486,16,evc-name-2
+N/A,,,,
+SGSNGP2002MG2,4054,740,12,evc-name-2
+SGSNGP2002MG2,4054,740,12,evc-name-2
+SGSNGP2002MG2,4054,740,12,evc-name-3
+SGSNGP2002MG2,4054,740,12,evc-name-4

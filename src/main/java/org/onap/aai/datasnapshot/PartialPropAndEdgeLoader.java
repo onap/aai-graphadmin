@@ -223,9 +223,8 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
     		LOGGER.debug(" -- Could not convert line to JsonObject [ " + graphSonLine + "]" );
     		LOGGER.debug(" -- ErrorMsg = [" +e.getMessage() + "]");
     			
-    		return(" DEBUG -a- JSON translation exception when processing this line ---");
-    		//xxxxxDEBUGxxxxx I think we put some info on the return String and then return?
-    	}
+    		return(" JSON translation or getVid exception when processing this line [" + graphSonLine + "]");
+		}
 		 	
 		// -----------------------------------------------------------------------------------------
 		// Note - this assumes that any vertices referred to by an edge will already be in the DB.
@@ -242,11 +241,9 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
     		LOGGER.debug(" -- "  + passInfo + " translate VertexId before adding edges failed for this: vtxId = " 
     				+ originalVid + ".  ErrorMsg = [" +e.getMessage() + "]");
     			
-    		return(" DEBUG -b- there VID-translation error when processing this line ---");
-    		//xxxxxDEBUGxxxxx I think we put some info on the return String and then return?
+    		return(" VID-translation error when processing this line ---");
     	}
-		
-		
+
 		try {
 			dbVtx = getVertexFromDbForVid(newVidStr);
 		}
@@ -254,8 +251,7 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
     		LOGGER.debug(" -- "  + passInfo + " READ Vertex from DB before adding edges failed for this: vtxId = " + originalVid
     				+ ", newVidId = " + newVidL + ".  ErrorMsg = [" +e.getMessage() + "]");
     			
-    		return("  --  there was an error processing this line --- Line = [" + graphSonLine + "]");
-    		//xxxxxxDEBUGxxxx I think we put some info on the return String and then return?
+    		return(" ERROR getting Vertex based on VID = " + newVidStr + "]");
     	}
 			
 		
@@ -268,8 +264,7 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 			catch ( Exception e ){
 				LOGGER.debug(" -- " + passInfo + " COMMIT FAILED adding EDGES for this vertex: vtxId = " 
 						+ originalVid + ".  ErrorMsg = [" +e.getMessage() + "]");
-				//xxxxxxxxxx I think we put some info on the return String and then return?
-	       	    return(" DEBUG -d- there was an error doing the commit while processing edges for this line ---");
+				return(" ERROR with committing edges for vertexId = " + originalVid );
 			}
 		}
 		
@@ -283,15 +278,13 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 			catch ( Exception e ){
 				LOGGER.debug(" -- " + passInfo + " COMMIT FAILED adding Properties for this vertex: vtxId = " 
 						+ originalVid + ".  ErrorMsg = [" +e.getMessage() + "]");
-				//xxxxxxxxxx I think we put some info on the return String and then return?
-	       	    return(" DEBUG -e- there was an error doing the commit while processing Properties for this line ---");
+				return(" ERROR with committing properties for vertexId = " + originalVid );
 			}
 		}
 		else {
-			LOGGER.debug("DEBUG " + passInfo + " Error processing Properties for this vertex: vtxId = " + originalVid );
-			
-			//xxxxxxxxxx I think we put some info on the return String and then return?
-       	    return(" DEBUG -f- there was an error while processing Properties for this line ---");
+			LOGGER.debug("DEBUG " + passInfo + " Error processing Properties for this vertex: vtxId = "
+					+ originalVid + ", [" + pResStr + "]");
+			return(" ERROR processing properties for vertexId = " + originalVid + ", [" + pResStr + "]");
 		}
 	}
 	
@@ -306,18 +299,15 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 				JSONArray propsDetArr = propsOb.getJSONArray(pKey);
 				for( int i=0; i< propsDetArr.length(); i++ ){
 					JSONObject prop = propsDetArr.getJSONObject(i);
-					String val = prop.getString("value");
-					dbVtx.property(pKey, val);  //DEBUGjojo -- val is always String here.. which is not right -------------------DEBUG
+					Object val = prop.get("value");
+					dbVtx.property(pKey, val);  // DEBUG - not sure if this is would handle String[] properties?
 				}
 			}
-	
 		}
 		catch ( Exception e ){
        		LOGGER.debug(" -- " + passInfo + " failure getting/setting properties for: vtxId = " 
        				+ originalVid + ".  ErrorMsg = [" + e.getMessage() + "]");
-       		//xxxDEBUGxxxxxxx I think we put some info on the return String and then return?
-       	    return(" DEBUG -g- there was an error adding properties while processing this line ---");
-       		
+       		return(" error processing properties for vtxId = " + originalVid);
        	}
        		
 		return "";
@@ -371,7 +361,6 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 			Iterator <String> edItr = edOb.keys();
 			while( edItr.hasNext() ){
 				String eLabel = edItr.next();
-				String inVid = "";   // Note - this should really be a Long?
 				JSONArray edArr = edOb.getJSONArray(eLabel);
 				for( int i=0; i< edArr.length(); i++ ){
 					JSONObject eObj = edArr.getJSONObject(i);
@@ -395,22 +384,19 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 						Iterator <String> ePropsItr = ePropsOb.keys();
 						while( ePropsItr.hasNext() ){
 							String pKey = ePropsItr.next();
-							tmpE.property(pKey, ePropsOb.getString(pKey));
+							tmpE.property(pKey, ePropsOb.get(pKey));
 						}
 					}
 				}
 			}
-
 		}
 		catch ( Exception e ){
 			String msg =  " -- " + passInfo + " failure adding edge for: original vtxId = " 
 					+ originalVid + ".  ErrorMsg = [" +e.getMessage() + "]";
 			LOGGER.debug( " -- " + msg );
-			//xxxxxxDEBUGxxxx I think we might need some better info on the return String to return?
 			LOGGER.debug(" -- now going to return/bail out of processEdgesForVtx" );
 			return(" >> " + msg );
-   		
-		}
+   		}
    			
 		return "";
 	}

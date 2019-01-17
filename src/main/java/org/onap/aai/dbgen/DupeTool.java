@@ -19,22 +19,19 @@
  */
 package org.onap.aai.dbgen;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.*;
-import java.util.Map.Entry;
-
+import com.att.eelf.configuration.Configuration;
+import com.att.eelf.configuration.EELFLogger;
+import com.att.eelf.configuration.EELFManager;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
-import org.apache.tinkerpop.gremlin.structure.Direction;
-import org.apache.tinkerpop.gremlin.structure.Edge;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.structure.VertexProperty;
-import org.onap.aai.db.props.AAIProperties;
-import org.onap.aai.dbmap.AAIGraphConfig;
+import org.apache.tinkerpop.gremlin.structure.*;
+import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.JanusGraphFactory;
+import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
+import org.onap.aai.dbmap.AAIGraphConfig;
+import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.edges.enums.EdgeProperty;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Introspector;
@@ -45,18 +42,18 @@ import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.logging.LoggingContext.StatusCode;
-import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.ExceptionTranslator;
+import org.onap.aai.util.GraphAdminConstants;
 import org.slf4j.MDC;
-
-import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-import org.janusgraph.core.JanusGraphFactory;
-import org.janusgraph.core.JanusGraph;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class DupeTool {
 
@@ -76,6 +73,7 @@ public class DupeTool {
     }
 
     private LoaderFactory loaderFactory;
+    private int dupeGroupCount = 0;
 
     public DupeTool(LoaderFactory loaderFactory, SchemaVersions schemaVersions){
         this(loaderFactory, schemaVersions, true);
@@ -89,7 +87,7 @@ public class DupeTool {
 
     public void execute(String[] args){
 
-        String defVersion = "v12";
+        String defVersion = "v15";
         try {
             defVersion = AAIConfig.get(AAIConstants.AAI_DEFAULT_API_VERSION_PROP);
         } catch (AAIException ae) {
@@ -101,7 +99,7 @@ public class DupeTool {
             exit(0);
         }
 
-
+        dupeGroupCount = 0;
         Loader loader = null;
         try {
             loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, schemaVersions.getDefaultVersion());
@@ -120,8 +118,8 @@ public class DupeTool {
 
         try {
             AAIConfig.init();
-            int maxRecordsToFix = AAIConstants.AAI_DUPETOOL_DEFAULT_MAX_FIX;
-            int sleepMinutes = AAIConstants.AAI_DUPETOOL_DEFAULT_SLEEP_MINUTES;
+            int maxRecordsToFix = GraphAdminConstants.AAI_DUPETOOL_DEFAULT_MAX_FIX;
+            int sleepMinutes = GraphAdminConstants.AAI_DUPETOOL_DEFAULT_SLEEP_MINUTES;
             int timeWindowMinutes = 0;   // A value of 0 means that we will not have a time-window -- we will look
             // at all nodes of the passed-in nodeType.
             long windowStartTime = 0;  // Translation of the window into a starting timestamp
@@ -137,7 +135,7 @@ public class DupeTool {
                 }
             } catch (Exception e) {
                 // Don't worry, we'll just use the defaults that we got from AAIConstants
-                logger.warn("WARNING - could not pick up aai.dupeTool values from aaiconfig.properties file.  Will use defaults. ");
+                logger.warn("WARNING - could not pick up aai.dupeTool values from aaiconfig.properties file.  Will use defaults. " + e.getMessage());
             }
 
             String nodeTypeVal = "";
@@ -364,7 +362,7 @@ public class DupeTool {
                     showNodeDetailsForADupeSet(gt1, firstPassDupeSets.get(x), logger);
                 }
             }
-
+            dupeGroupCount = firstPassDupeSets.size();
             boolean didSomeDeletesFlag = false;
             ArrayList<String> dupeSetsToFix = new ArrayList<String>();
             if (autoFix && firstPassDupeSets.size() == 0) {
@@ -405,6 +403,7 @@ public class DupeTool {
                         + " sets of duplicates that we think can be deleted. ";
                 logger.info(msg);
                 System.out.println(msg);
+               
                 if (dupeSetsToFix.size() > 0) {
                     msg = " Here is what the sets look like: ";
                     logger.info(msg);
@@ -492,7 +491,7 @@ public class DupeTool {
      *
      * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AAIException {
 
         System.setProperty("aai.service.name", DupeTool.class.getSimpleName());
         // Set the logging file properties to be used by EELFManager
@@ -511,11 +510,23 @@ public class DupeTool {
         LoggingContext.statusCode(StatusCode.COMPLETE);
         LoggingContext.responseCode(LoggingContext.SUCCESS);
 
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-                "org.onap.aai.config",
-                "org.onap.aai.setup"
-        );
-
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+        initializer.initialize(ctx);
+        try {
+            ctx.scan(
+                    "org.onap.aai.config",
+                    "org.onap.aai.setup"
+            );
+            ctx.refresh();
+        } catch (Exception e) {
+            AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+            logger.error("Problems running DupeTool "+aai.getMessage());
+            LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+            ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+            throw aai;
+        }
         LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
         SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
         DupeTool dupeTool = new DupeTool(loaderFactory, schemaVersions);
@@ -1080,10 +1091,12 @@ public class DupeTool {
                                           Boolean specialTenantRule, Loader loader, EELFLogger logger)
             throws AAIException {
 
-        // This method assumes that it is being passed a List of vertex objects
-        // which violate our uniqueness constraints.
-
+		// This method assumes that it is being passed a List of 
+		// vertex objects which violate our uniqueness constraints.
+		// Note - returning a null vertex means we could not 
+		//   safely pick one to keep (Ie. safely know which to delete.)
         Vertex nullVtx = null;
+        GraphTraversalSource gts = g.traversal();
 
         if (dupeVertexList == null) {
             return nullVtx;
@@ -1095,12 +1108,35 @@ public class DupeTool {
         if (listSize == 1) {
             return (dupeVertexList.get(0));
         }
+        
+		// If they don't all have the same aai-uri, then we will not 
+		// choose between them - we'll need someone to manually 
+		// check to pick which one makes sense to keep.
+		Object uriOb = dupeVertexList.get(0).<Object>property("aai-uri").orElse(null);
+		if( uriOb == null || uriOb.toString().equals("") ){
+			// this is a bad node - hopefully will be picked up by phantom checker
+			return nullVtx;
+		}
+		String thisUri = uriOb.toString();
+		for (int i = 1; i < listSize; i++) {
+			uriOb = dupeVertexList.get(i).<Object>property("aai-uri").orElse(null);
+			if( uriOb == null || uriOb.toString().equals("") ){
+				// this is a bad node - hopefully will be picked up by phantom checker
+				return nullVtx;
+			}
+			String nextUri = uriOb.toString();
+			if( !thisUri.equals(nextUri)){
+				// there are different URI's on these - so we can't pick 
+				// a dupe to keep.  Someone will need to look at it.
+				return nullVtx;
+			}
+		}
 
         Vertex vtxPreferred = null;
         Vertex currentFaveVtx = dupeVertexList.get(0);
         for (int i = 1; i < listSize; i++) {
             Vertex vtxB = dupeVertexList.get(i);
-            vtxPreferred = pickOneOfTwoDupes(transId, fromAppId, g,
+            vtxPreferred = pickOneOfTwoDupes(transId, fromAppId, gts,
                     currentFaveVtx, vtxB, ver, specialTenantRule, loader, logger);
             if (vtxPreferred == null) {
                 // We couldn't choose one
@@ -1110,7 +1146,14 @@ public class DupeTool {
             }
         }
 
-        return (currentFaveVtx);
+        if( currentFaveVtx != null && checkAaiUriOk(gts, currentFaveVtx, logger) ){
+			return (currentFaveVtx);
+		}
+		else {
+			// We had a preferred vertex, but its aai-uri was bad, so
+			// we will not recommend one to keep.
+			return nullVtx;
+		}
 
     } // end of getPreferredDupe()
 
@@ -1120,7 +1163,7 @@ public class DupeTool {
      *
      * @param transId    the trans id
      * @param fromAppId  the from app id
-     * @param g          the g
+     * @param g          the graphTraversalSource
      * @param vtxA       the vtx A
      * @param vtxB       the vtx B
      * @param ver        the ver
@@ -1130,7 +1173,7 @@ public class DupeTool {
      * @throws AAIException the AAI exception
      */
     public Vertex pickOneOfTwoDupes(String transId,
-                                           String fromAppId, Graph g, Vertex vtxA,
+                                           String fromAppId, GraphTraversalSource gts, Vertex vtxA,
                                            Vertex vtxB, String ver, Boolean specialTenantRule, Loader loader, EELFLogger logger) throws AAIException {
 
         Vertex nullVtx = null;
@@ -1289,11 +1332,13 @@ public class DupeTool {
             }
 
             if (allTheSame) {
-                if (vidA < vidB) {
-                    preferredVtx = vtxA;
-                } else {
-                    preferredVtx = vtxB;
-                }
+                if ( checkAaiUriOk(gts, vtxA, logger) ) {
+                	preferredVtx = vtxA;
+            	} 
+            	else if ( checkAaiUriOk(gts, vtxB, logger) ) {
+            		preferredVtx = vtxB;
+            	}
+            	// else we're picking neither because neither one had a working aai-uri index property
             } else if (specialTenantRule) {
                 // They asked us to apply a special rule if it applies
                 if (vtxIdsConn2A.size() == 2 && vtxANodeType.equals("tenant")) {
@@ -1575,6 +1620,71 @@ public class DupeTool {
 
     }// End of getNodeKeyVals()
 
+    
+	
+	/**
+	 * makes sure aai-uri exists and can be used to get this node back
+	 *
+	 * @param transId the trans id
+	 * @param fromAppId the from app id
+	 * @param graph the graph
+	 * @param vtx
+	 * @param EELFLogger         
+	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
+	 * @throws AAIException the AAI exception
+	 */
+	private Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx, EELFLogger eLogger )
+			throws AAIException{
+		String aaiUriStr = "";
+		try { 
+			Object ob = origVtx.<Object>property("aai-uri").orElse(null);
+			String origVid = origVtx.id().toString();
+			if (ob == null || ob.toString().equals("")) {
+				// It is missing its aai-uri
+				eLogger.debug("DEBUG No [aai-uri] property found for vid = [" 
+						+ origVid + "] " );
+				return false;
+			}
+			else {
+				aaiUriStr = ob.toString();
+				Iterator <Vertex> verts = graph.V().has("aai-uri",aaiUriStr);
+				int count = 0;
+				while( verts.hasNext() ){
+					count++;
+					Vertex foundV = verts.next();
+					String foundVid = foundV.id().toString();
+					if( !origVid.equals(foundVid) ){
+						eLogger.debug("DEBUG aai-uri key property ["  
+								+ aaiUriStr + "] for vid = [" 
+								+ origVid + "] brought back different vertex with vid = [" 
+								+ foundVid + "]." );
+						return false;
+					}
+				}
+				if( count == 0 ){
+					eLogger.debug("DEBUG aai-uri key property ["  
+							+ aaiUriStr + "] for vid = [" 
+							+ origVid + "] could not be used to query for that vertex. ");
+					return false;	
+				}
+				else if( count > 1 ){
+					eLogger.debug("DEBUG aai-uri key property ["  
+							+ aaiUriStr + "] for vid = [" 
+							+ origVid + "] brought back multiple (" 
+							+ count + ") vertices instead of just one. ");
+					return false;	
+				}
+			}
+		}
+		catch( Exception ex ){
+			LoggingContext.statusCode(StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			eLogger.error(" ERROR trying to get node with aai-uri: [" + aaiUriStr + "]" + LogFormatTools.getStackTop(ex));
+		}
+		return true;
+		
+	}// End of checkAaiUriOk() 
+	
 
     /**
      * Get values of the key properties for a node as a single string
@@ -1850,5 +1960,14 @@ public class DupeTool {
             logger.warn("WARNING from final graph.shutdown()", ex);
         }
     }
+    
+	public int getDupeGroupCount() {
+		return dupeGroupCount;
+	}
+
+	public void setDupeGroupCount(int dgCount) {
+		this.dupeGroupCount = dgCount;
+	}
+	
 }
 

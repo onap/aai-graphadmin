@@ -71,30 +71,35 @@ public class SendMigrationNotificationsTest extends AAISetup {
 			Vertex pnf1 = g.addV()
 					.property("aai-node-type", "pnf")
 					.property("pnf-name", SendMigrationNotifications.class.getSimpleName()+"-pnf-1")
+					.property("aai-uri", "/network/pnfs/pnf/" + SendMigrationNotifications.class.getSimpleName()+"-pnf-1")
 					.property(AAIProperties.RESOURCE_VERSION, "123")
 					.next();
 
 			Vertex pnf2 = g.addV()
 					.property("aai-node-type", "pnf")
 					.property("pnf-name", SendMigrationNotifications.class.getSimpleName()+"-pnf-2")
+					.property("aai-uri", "/network/pnfs/pnf/" + SendMigrationNotifications.class.getSimpleName()+"-pnf-2")
 					.property(AAIProperties.RESOURCE_VERSION, "456")
 					.next();
 
 			Vertex pnf3 = g.addV()
 					.property("aai-node-type", "pnf")
 					.property("pnf-name", SendMigrationNotifications.class.getSimpleName()+"-pnf-3")
+					.property("aai-uri", "/network/pnfs/pnf/" + SendMigrationNotifications.class.getSimpleName()+"-pnf-3")
 					.property(AAIProperties.RESOURCE_VERSION, "111")
 					.next();
 
 			Vertex pinterface1 = g.addV()
 					.property("aai-node-type", "p-interface")
 					.property("interface-name", SendMigrationNotifications.class.getSimpleName()+"-pinterface-1")
+					.property("aai-uri", "/network/pnfs/pnf/" + SendMigrationNotifications.class.getSimpleName()+"-pnf-1" + "/p-interfaces/p-interface/" + SendMigrationNotifications.class.getSimpleName()+"-pinterface-1")
 					.property(AAIProperties.RESOURCE_VERSION, "789")
 					.next();
 
 			Vertex pserver1 = g.addV()
 					.property("aai-node-type", "pserver")
 					.property("hostname", SendMigrationNotifications.class.getSimpleName()+"-pserver-1")
+					.property("aai-uri", "/cloud-infrastructure/pservers/pserver/" + SendMigrationNotifications.class.getSimpleName()+"-pserver-1")
 					.property(AAIProperties.RESOURCE_VERSION, "333")
 					.next();
 

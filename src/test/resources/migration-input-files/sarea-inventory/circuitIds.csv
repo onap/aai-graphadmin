@@ -1,0 +1,6 @@
+pnf,port-aid,existing-reservation-circuit-id,existing-alias-collector-circuit-id ,new-reservation-circuit-id,new-alias-collector-circuit-id 
+pnf-1,p-interface-1,1,,10,
+pnf-2,p-interface-2,2,,20,
+pnf-3,p-interface-3,,,30,
+pnf-4,p-interface-4,3,,,
+pnf-5,p-interface-5,,,,

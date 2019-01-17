@@ -30,7 +30,7 @@ start_date;
 check_user;
 source_profile;
 
-ARGS="-c ${PROJECT_HOME}/resources/etc/appprops/janusgraph-realtime.properties";
+ARGS="-c ${PROJECT_HOME}/resources/etc/appprops/janusgraph-migration.properties";
 
 if [ -f "$PROJECT_HOME/resources/application.properties" ]; then
     # Get the application properties file and look for all lines

@@ -1,0 +1,12 @@
+vnf-name,vnf-type
+name-1,test
+name-2,test
+no-service,test
+no-invariant,test
+no-version,test
+no-customization,test
+no ids,test
+many-service-1,test
+many-service-2,test
+multi-name,test
+wrong-type,test

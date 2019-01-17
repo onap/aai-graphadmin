@@ -64,7 +64,8 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 })
 @TestPropertySource(properties = {
         "schema.uri.base.path = /aai",
-        "schema.ingest.file = src/main/resources/application.properties"
+        "schema.ingest.file = src/main/resources/application.properties",
+        "schema.translator.list = config"
 })
 public abstract class AAISetup {
 

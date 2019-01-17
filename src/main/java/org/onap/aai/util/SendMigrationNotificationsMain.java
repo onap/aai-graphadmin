@@ -21,8 +21,11 @@ package org.onap.aai.util;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
+import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.migration.EventAction;
 import org.onap.aai.setup.SchemaVersions;
@@ -32,7 +35,7 @@ import java.util.*;
 
 public class SendMigrationNotificationsMain {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AAIException {
 
 		Arrays.asList(args).stream().forEach(System.out::println);
 
@@ -47,11 +50,23 @@ public class SendMigrationNotificationsMain {
 		LoggingContext.statusCode(LoggingContext.StatusCode.COMPLETE);
 		LoggingContext.responseCode(LoggingContext.SUCCESS);
 
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
-				"org.onap.aai.config",
-				"org.onap.aai.setup"
-		);
-
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
+		initializer.initialize(ctx);
+		try {
+			ctx.scan(
+					"org.onap.aai.config",
+					"org.onap.aai.setup"
+			);
+			ctx.refresh();
+		} catch (Exception e) {
+			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
+			System.out.println("Problems running tool "+aai.getMessage());
+			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
+			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
+			throw aai;
+		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
 		String basePath = ctx.getEnvironment().getProperty("schema.uri.base.path");

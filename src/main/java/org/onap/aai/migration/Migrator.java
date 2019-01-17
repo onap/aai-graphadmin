@@ -135,11 +135,11 @@ public abstract class Migrator implements Runnable {
 		if (dmaapMsgList.size() > 0) {
 			try {
 				Files.write(Paths.get(logDirectory+"/"+fileName), (Iterable<String>)dmaapMsgList.stream()::iterator);
-			} catch (IOException e) {
-				logger.error("Unable to generate file with dmaap msgs for MigrateHUBEvcInventory", e);
+			} catch (IOException e) {				
+				logger.error("Unable to generate file with dmaap msgs for " + getMigrationName(), e);
 			}
 		} else {
-			logger.info("No dmaap msgs detected for MigrateForwardEvcCircuitId");
+			logger.info("No dmaap msgs detected for " + getMigrationName());
 		}
 	}
 
@@ -298,6 +298,28 @@ public abstract class Migrator implements Runnable {
 				newEdge = edgeSerializer.addEdge(this.engine.asAdmin().getTraversalSource(), out, in);
 			} else {
 				newEdge = edgeSerializer.addTreeEdge(this.engine.asAdmin().getTraversalSource(), out, in);
+			}
+		} catch (NoEdgeRuleFoundException e) {
+			throw new AAIException("AAI_6129", e);
+		}
+		return newEdge;
+	}
+	
+	/**
+	 * Creates the edge
+	 *
+	 * @param type the edge type - COUSIN or TREE
+	 * @param out the out
+	 * @param in the in
+	 * @return the edge
+	 */
+	protected Edge createEdgeIfPossible(EdgeType type, Vertex out, Vertex in) throws AAIException {
+		Edge newEdge = null;
+		try {
+			if (type.equals(EdgeType.COUSIN)){
+				newEdge = edgeSerializer.addEdgeIfPossible(this.engine.asAdmin().getTraversalSource(), out, in);
+			} else {
+				newEdge = edgeSerializer.addTreeEdgeIfPossible(this.engine.asAdmin().getTraversalSource(), out, in);
 			}
 		} catch (NoEdgeRuleFoundException e) {
 			throw new AAIException("AAI_6129", e);
