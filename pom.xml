@@ -70,8 +70,6 @@
         <aai.docker.namespace>onap</aai.docker.namespace>
         <!-- End of Docker Related Properties -->
 
-        <license.goal.type>check</license.goal.type>
-
         <!--
             Nexus Proxy Properties and Snapshot Locations
             Ideally this can be overwritten at runtime per internal environment specific values at runtime
@@ -852,15 +850,6 @@
                         <skipExistingHeaders>false</skipExistingHeaders>
                         <skip>false</skip>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <!-- Set goal to "format" to auto update license headers -->
-                                <goal>${license.goal.type}</goal>
-                            </goals>
-                            <phase>process-sources</phase>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
