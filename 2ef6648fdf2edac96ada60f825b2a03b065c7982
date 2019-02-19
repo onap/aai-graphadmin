@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b655ee68_2857d9ba",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 852,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2019-02-19T15:52:46Z",
+      "side": 0,
+      "message": "Setting this to true should resolve any issues you were having with the license check.",
+      "range": {
+        "startLine": 852,
+        "startChar": 24,
+        "endLine": 852,
+        "endChar": 72
+      },
+      "revId": "2ef6648fdf2edac96ada60f825b2a03b065c7982",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1407b440_5a62837d",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 853,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2019-02-19T15:52:46Z",
+      "side": 0,
+      "message": "I don\u0027t think this is required.",
+      "range": {
+        "startLine": 853,
+        "startChar": 24,
+        "endLine": 853,
+        "endChar": 42
+      },
+      "revId": "2ef6648fdf2edac96ada60f825b2a03b065c7982",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
