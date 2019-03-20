@@ -46,7 +46,7 @@
         <skip.integration.tests>true</skip.integration.tests>
         <!-- End of Test Related Properties -->
 
-        <spring.boot.version>1.5.15.RELEASE</spring.boot.version>
+        <spring.boot.version>1.5.19.RELEASE</spring.boot.version>
 
         <!-- Start of Sonar Related Properties -->
         <sonar.language>java</sonar.language>
@@ -99,13 +99,13 @@
         <gson.version>2.7</gson.version>
         <json.version>20090211</json.version>
 
-        <aai.core.version>1.4.1-SNAPSHOT</aai.core.version>
-        <aai.schema.version>1.0.1-SNAPSHOT</aai.schema.version>
+        <aai.core.version>1.4.1</aai.core.version>
+        <aai.schema.version>1.0.1</aai.schema.version>
 
         <netty.handler.version>4.1.9.Final</netty.handler.version>
         <netty.version>4.0.56.Final</netty.version>
 
-        <spring.test.version>4.3.6.RELEASE</spring.test.version>
+        <spring.test.version>4.3.22.RELEASE</spring.test.version>
 
         <cxf.version>3.2.2</cxf.version>
 
@@ -124,7 +124,7 @@
         <eclipse.persistence.version>2.6.2</eclipse.persistence.version>
         <dmaap.client.version>0.2.12</dmaap.client.version>
 
-        <springframework.version>4.3.4.RELEASE</springframework.version>
+        <springframework.version>4.3.22.RELEASE</springframework.version>
         <spring.jms.version>4.3.2.RELEASE</spring.jms.version>
         <spring.security.version>1.0.3.RELEASE</spring.security.version>
 
@@ -849,7 +849,7 @@
                             <include>src/test/java/**</include>
                             <include>pom.xml</include>
                         </includes>
-                        <skipExistingHeaders>false</skipExistingHeaders>
+                        <skipExistingHeaders>true</skipExistingHeaders>
                         <skip>false</skip>
                     </configuration>
                     <executions>
