@@ -583,9 +583,7 @@ public class DataSnapshot {
 								+ ", failureDelayMs = " + failureDelayMs + ", retryDelayMs = " + retryDelayMs
 								+ ", maxErrorsPerThread = " + maxErrorsPerThread );
 
-						Callable  eLoader = new PartialPropAndEdgeLoader(graph1, fullSnapName,
-								edgeAddDelayMs, failureDelayMs, retryDelayMs,
-								old2NewVertIdMap, maxErrorsPerThread, LOGGER);
+						Callable  eLoader = new PartialPropAndEdgeLoader.PartialPropAndEdgeLoaderBuilder().setGraph(graph1).setFn(fullSnapName).setEdgeDelay(edgeAddDelayMs).setFailureDelay(failureDelayMs).setRetryDelay(retryDelayMs).setVidMap(old2NewVertIdMap).setMaxErrors(maxErrorsPerThread).setElfLog(LOGGER).createPartialPropAndEdgeLoader();
 						Future <ArrayList<String>> future = (Future<ArrayList<String>>) executor.submit(eLoader);
 
 						//add Future to the list, we can get return value using Future
