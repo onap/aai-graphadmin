@@ -99,7 +99,7 @@
         <gson.version>2.7</gson.version>
         <json.version>20090211</json.version>
 
-        <aai.core.version>1.4.1</aai.core.version>
+        <aai.core.version>1.4.2-SNAPSHOT</aai.core.version>
         <aai.schema.version>1.0.1</aai.schema.version>
 
         <netty.handler.version>4.1.9.Final</netty.handler.version>
