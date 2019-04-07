@@ -316,7 +316,7 @@ public class DataGrooming {
 			throw aai;
 		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		DataGrooming dataGrooming = new DataGrooming(loaderFactory, schemaVersions);
 		dataGrooming.execute(args);
 	}
