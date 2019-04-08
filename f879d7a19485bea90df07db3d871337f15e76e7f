@@ -22,6 +22,30 @@
       "revId": "f879d7a19485bea90df07db3d871337f15e76e7f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80f5feb0_31332873",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 75
+      },
+      "writtenOn": "2019-04-08T13:38:50Z",
+      "side": 1,
+      "message": "Yes that is correct. aai-common changes need to be merged first and then released for this to be worked",
+      "parentUuid": "2c533974_f82e36ad",
+      "range": {
+        "startLine": 102,
+        "startChar": 26,
+        "endLine": 102,
+        "endChar": 31
+      },
+      "revId": "f879d7a19485bea90df07db3d871337f15e76e7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
