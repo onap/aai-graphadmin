@@ -46,7 +46,7 @@
         <skip.integration.tests>true</skip.integration.tests>
         <!-- End of Test Related Properties -->
 
-        <spring.boot.version>1.5.19.RELEASE</spring.boot.version>
+        <spring.boot.version>1.5.20.RELEASE</spring.boot.version>
 
         <!-- Start of Sonar Related Properties -->
         <sonar.language>java</sonar.language>
