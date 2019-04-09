@@ -271,6 +271,7 @@ public class MigrationControllerInternalTest extends AAISetup {
         System.setOut(oldOutputStream);
     }
 
+    @Ignore
     @Test
     public void testRunDisabledExcludeAndCommit() throws Exception {
         assertThat("rebuildAllEdges shouldn't have enabled annotation", !RebuildAllEdges.class.isAnnotationPresent(Enabled.class));

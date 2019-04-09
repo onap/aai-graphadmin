@@ -89,7 +89,6 @@ public class DataGroomingTest extends AAISetup {
 			Vertex cloudRegionVertexBadNode = g.addV().property("aai-node-type", "cloud-region")
 					.property("aai-uri", "aai-uriX06")
 					.property("cloud-owner", "test-owner-noregionId").property("source-of-truth", "JUNIT").next();
-
 			
 			Vertex cloudRegionVertexBadNode2 = g.addV().property("aai-node-type", "cloud-region")
 					.property("aai-uri", "aai-uriX07")
@@ -200,10 +199,12 @@ public class DataGroomingTest extends AAISetup {
 		/*
 		 * 2 GhostNodes - CloudRegions 1 OrphaNode - tenant
 		 */
-		assertThat(dataGrooming.getGhostNodeCount(), is(5));
+		assertThat(dataGrooming.getGhostNodeCount(), is(0));  
+		assertThat(dataGrooming.getBadIndexNodeCount(), is(5));
+		assertThat(dataGrooming.getBadUriNodeCount(), is(0));
 		assertThat(dataGrooming.getOrphanNodeCount(), is(5));
 		assertThat(dataGrooming.getMissingAaiNtNodeCount(), is(1));
-		assertThat(dataGrooming.getOneArmedEdgeHashCount(), is(3));
+		assertThat(dataGrooming.getOneArmedEdgeHashCount(), is(4));
 	}
 
 
@@ -247,10 +248,12 @@ public class DataGroomingTest extends AAISetup {
 
 		};
 		dataGrooming.execute(args);
-		assertThat(dataGrooming.getGhostNodeCount(), is(5));
+		assertThat(dataGrooming.getGhostNodeCount(), is(0));   
+		assertThat(dataGrooming.getBadIndexNodeCount(), is(5));
+		assertThat(dataGrooming.getBadUriNodeCount(), is(0));
 		assertThat(dataGrooming.getOrphanNodeCount(), is(5));
 		assertThat(dataGrooming.getMissingAaiNtNodeCount(), is(1));
-		assertThat(dataGrooming.getOneArmedEdgeHashCount(), is(3));
+		assertThat(dataGrooming.getOneArmedEdgeHashCount(), is(4));
 		assertThat(dataGrooming.getDeleteCandidateList().size(), is(0));
 		assertThat(dataGrooming.getDeleteCount(), is(0));
 	}
@@ -271,7 +274,7 @@ public class DataGroomingTest extends AAISetup {
 
 		String[] args = { "-autoFix ",  "-sleepMinutes", "1"};
 		dataGrooming.execute(args);
-		assertThat(dataGrooming.getDeleteCandidateList().size(), is(14));
+		assertThat(dataGrooming.getDeleteCandidateList().size(), is(10));  
 
 	}
 	
@@ -292,8 +295,9 @@ public class DataGroomingTest extends AAISetup {
 
 		String[] args = { "-autoFix ",  "-sleepMinutes", "1", "-neverUseCache",  "-singleNodeType", "cloud-region"};
 		dataGrooming.execute(args);
-		assertThat(dataGrooming.getDeleteCandidateList().size(), is(8));
-
+		assertThat(dataGrooming.getDeleteCandidateList().size(), is(4));  
+		assertThat(dataGrooming.getBadIndexNodeCount(), is(4));
+		assertThat(dataGrooming.getBadUriNodeCount(), is(0));
 	}
 	
 

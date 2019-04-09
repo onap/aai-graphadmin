@@ -44,7 +44,7 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
-
+@Ignore
 public class MigrateServiceInstanceToConfigurationTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;

@@ -42,7 +42,7 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersions;
 
 
-@Enabled
+//@Enabled
 @MigrationPriority(20)
 @MigrationDangerRating(100)
 public class MigrateBadWidgetModelsPartOne extends EdgeSwingMigrator {

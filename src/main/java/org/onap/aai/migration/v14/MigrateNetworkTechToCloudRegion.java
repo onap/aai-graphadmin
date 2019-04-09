@@ -40,7 +40,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(20)
 @MigrationDangerRating(2)
-@Enabled
+//@Enabled
 public class MigrateNetworkTechToCloudRegion extends Migrator{
 
     protected static final String CLOUDREGION_NODETYPE = "cloud-region";

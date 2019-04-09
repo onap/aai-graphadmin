@@ -39,7 +39,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(1)
 @MigrationDangerRating(1)
-@Enabled
+//@Enabled
 public class MigrateGenericVnfMgmtOptions extends ValueMigrator {
 
 	protected static final String VNF_NODE_TYPE = "generic-vnf";

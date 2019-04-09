@@ -36,7 +36,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(20)
 @MigrationDangerRating(2)
-@Enabled
+//@Enabled
 public class MigratePserverAndPnfEquipType extends Migrator{
 
     protected static final String EQUIP_TYPE_PROPERTY = "equip-type";

@@ -56,7 +56,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(10)
 @MigrationDangerRating(100)
-@Enabled
+//@Enabled
 public class MigrateEdgesBetweenVnfcAndVfModule extends EdgeMigrator {
 
 	public MigrateEdgesBetweenVnfcAndVfModule(TransactionalGraphEngine engine, LoaderFactory loaderFactory, EdgeIngestor edgeIngestor, EdgeSerializer edgeSerializer, SchemaVersions schemaVersions) {

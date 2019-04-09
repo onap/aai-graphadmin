@@ -137,7 +137,6 @@ public class GraphAdminApp {
         // to the SchemaGenerator needs the bean and during the constructor
         // the Spring Context is not yet initialized
 
-
         AAIGraph.getInstance();
 
         System.setProperty("org.onap.aai.graphadmin.started", "true");             
@@ -151,6 +150,10 @@ public class GraphAdminApp {
 
     public static void loadDefaultProps(){
 
+        /*
+         * Required for DB connection name
+         */
+        System.setProperty("aai.service.name", GraphAdminApp.class.getSimpleName());
         if(System.getProperty("AJSC_HOME") == null){
             System.setProperty("AJSC_HOME", ".");
         }
