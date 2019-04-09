@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac8ef00b_e2f5f4b2",
+        "filename": "src/main/java/org/onap/aai/datasnapshot/DataSnapshot.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 3799
+      },
+      "writtenOn": "2019-04-09T19:00:16Z",
+      "side": 1,
+      "message": "- I do not believe this is a good use case for using builder pattern.\n- We are not supporting multiple representations of PartialPropAndEdgeLoader object.\n- I believe the method parameters are all mandatory \n- The builder is just using a bunch of setter methods \n- What is the sonar issue that we are trying to resolve here?",
+      "revId": "55d3f1c789e6d87f0af1072066a17ec939914ccc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
