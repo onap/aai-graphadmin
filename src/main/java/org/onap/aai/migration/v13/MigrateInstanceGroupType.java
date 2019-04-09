@@ -34,7 +34,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(20)
 @MigrationDangerRating(2)
-@Enabled
+//@Enabled
 public class MigrateInstanceGroupType extends PropertyMigrator{
 
     protected static final String TYPE_PROPERTY = "type";

@@ -49,7 +49,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(100)
 @MigrationDangerRating(1)
-@Enabled
+//@Enabled
 public class MigrateSdnaIvlanData extends Migrator {
 	
 	private final String CONFIGURATION_NODE_TYPE = "configuration";

@@ -88,6 +88,7 @@ public class DataGroomingTasks {
 		append("enabledupecheckoff" , AAIConfig.get("aai.datagrooming.enabledupecheckoff"), dataGroomingFlagMap);
 		append("enableghost2checkoff" , AAIConfig.get("aai.datagrooming.enableghost2checkoff"), dataGroomingFlagMap);
 		append("enableghost2fixon" , AAIConfig.get("aai.datagrooming.enableghost2fixon"), dataGroomingFlagMap);
+		append("enableskipindexupdatefix" , AAIConfig.get("aai.datagrooming.enableskipindexupdatefix"), dataGroomingFlagMap);
 		append("enablef" , AAIConfig.get("aai.datagrooming.enablef"), dataGroomingFlagMap);
 		append("fvalue" , AAIConfig.get("aai.datagrooming.fvalue"), dataGroomingFlagMap);
 		append("timewindowminutesvalue" , AAIConfig.get("aai.datagrooming.timewindowminutesvalue"), dataGroomingFlagMap);
@@ -143,6 +144,9 @@ public class DataGroomingTasks {
 			}
 			if("true".equals(dataGroomingFlagMap.get("enableghost2fixon"))){
 				paramsArray.add("-ghost2FixOn");
+			}
+			if("true".equals(dataGroomingFlagMap.get("enableskipindexupdatefix"))){
+				paramsArray.add("-skipIndexUpdateFix");
 			}
 
 			if("true".equals(dataGroomingFlagMap.get("enablef"))) {

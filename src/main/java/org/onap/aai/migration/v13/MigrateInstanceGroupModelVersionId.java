@@ -54,7 +54,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(19)
 @MigrationDangerRating(2)
-@Enabled
+//@Enabled
 public class MigrateInstanceGroupModelVersionId extends PropertyMigrator {
 
     private static final String INSTANCE_GROUP_NODE_TYPE = "instance-group";

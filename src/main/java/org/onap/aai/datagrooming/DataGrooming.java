@@ -91,6 +91,8 @@ public class DataGrooming {
 	
 	HashMap<String, Vertex> orphanNodeHash ;
 	HashMap<String, Vertex> missingAaiNtNodeHash ;
+	HashMap<String, Vertex> badUriNodeHash ;
+	HashMap<String, Vertex> badIndexNodeHash ;
 	HashMap<String, Edge> oneArmedEdgeHash ;
 	HashMap<String, Vertex> ghostNodeHash ;
 	ArrayList<String> dupeGroups;
@@ -316,7 +318,7 @@ public class DataGrooming {
 			throw aai;
 		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		DataGrooming dataGrooming = new DataGrooming(loaderFactory, schemaVersions);
 		dataGrooming.execute(args);
 	}
@@ -356,6 +358,7 @@ public class DataGrooming {
 		JanusGraph graph2 = null;
 		deleteCount = 0;
 		int dummyUpdCount = 0;
+		int indexUpdCount = 0;
 		boolean executeFinalCommit = false;
 		deleteCandidateList = new LinkedHashSet<>();
 		Set<String> processedVertices = new LinkedHashSet<>();
@@ -445,6 +448,8 @@ public class DataGrooming {
 			HashMap<String, String> misMatchedHash = new HashMap<String, String>();
 			orphanNodeHash = new HashMap<String, Vertex>();
 			missingAaiNtNodeHash = new HashMap<String, Vertex>();
+			badUriNodeHash = new HashMap<String, Vertex>();
+			badIndexNodeHash = new HashMap<String, Vertex>();
 			oneArmedEdgeHash = new HashMap<String, Edge>();
 			HashMap<String, String> emptyVertexHash = new HashMap<String, String>();
 			ghostNodeHash = new HashMap<String, Vertex>();
@@ -696,19 +701,24 @@ public class DataGrooming {
 										&& depNodeOk){
 									aaiKeysOk = false;
 								}
-								
-								if( (!aaiKeysOk || !aaiUriOk) 
-										&& !deleteCandidateList.contains(thisVid) 
-										&& !skipIndexUpdateFix ){
-									// Either the aaiKeys or aaiUri was bad.  This may
-									// be a problem with the indexes so we'll try to reset 
-									// them since this node is not on the delete list from
-									// a previous run.
-									tryToReSetIndexedProps(thisVtx, thisVid, indexedProps);
-								}
-								
-								if( !aaiKeysOk || !aaiUriOk ){
-									// We could not get the node back using it's own key info or aai-uri. 
+							
+                              	boolean bothKeysAreBad = false;
+                              	if( !aaiKeysOk && !aaiUriOk ) {
+                              		bothKeysAreBad = true;
+                              	}
+                              	else if ( !aaiKeysOk ){
+                              		// Just the key-index is bad
+                              		// We will not be putting this on the Auto-Delete list, just logging it (AAI-16252)
+                              		badIndexNodeHash.put(thisVid, thisVtx);
+                              	}
+                              	else if ( !aaiUriOk ){
+                              		// Just the aai-uri is bad
+                              		// We will not be putting this on the Auto-Delete list, just logging it (AAI-16252)
+                              		badUriNodeHash.put(thisVid, thisVtx);
+                              	}
+                               
+								if( bothKeysAreBad ){
+									// Neither the aai-uri nor key info could retrieve this node - BOTH are bad.
 									// So, it's a PHANTOM
 									
 									if (deleteCandidateList.contains(thisVid)) {
@@ -854,7 +864,7 @@ public class DataGrooming {
 			
 			ArrayList<Vertex> vertList = new ArrayList<>();
 			Iterator<Vertex> vItor3 = g.traversal().V();
-			// Gotta hold these in a List - or else HBase times out as you cycle
+			// Gotta hold these in a List - or else the DB times out as you cycle
 			// through these
 			while (vItor3.hasNext()) {
 				Vertex v = vItor3.next();
@@ -888,7 +898,7 @@ public class DataGrooming {
 						continue;
 					}
 					if (ghostNodeHash.containsKey(thisVertId)) {
-						// This is a phantom node, so don't try to use it
+						// We already know that this is a phantom node, so don't bother checking it
 						LOGGER.info(" >> Skipping edge check for edges from vertexId = "
 										+ thisVertId
 										+ ", since that guy is a Phantom Node");
@@ -1168,7 +1178,7 @@ public class DataGrooming {
 			
 
 			deleteCount = deleteCount + dupeGrpsDeleted;
-			if (deleteCount > 0 || dummyUpdCount > 0){
+			if (deleteCount > 0 || dummyUpdCount > 0 || indexUpdCount > 0){
 				executeFinalCommit = true;
 			}
 
@@ -1176,6 +1186,8 @@ public class DataGrooming {
 			int orphanNodeCount = orphanNodeHash.size();
 			int oneArmedEdgeCount = oneArmedEdgeHash.size();
 			int missingAaiNtNodeCount = missingAaiNtNodeHash.size();
+			int badUriNodeCount = badUriNodeHash.size();
+			int badIndexNodeCount = badIndexNodeHash.size();
 			int dupeCount = dupeGroups.size();
 
 			deleteCount = deleteCount + dupeGrpsDeleted;
@@ -1198,12 +1210,16 @@ public class DataGrooming {
 					+ "\n");
 			bw.write("Dummy-index-update to delete candidates =  " + dummyUpdCount
 					+ "\n");
+			bw.write("index-update-Fix Attempts to phantom nodes =  " + indexUpdCount
+					+ "\n");
 			bw.write("Total number of nodes looked at =  " + totalNodeCount
 					+ "\n");
 			bw.write("Ghost Nodes identified = " + ghostNodeCount + "\n");
 			bw.write("Orphan Nodes identified =  " + orphanNodeCount + "\n");
 			bw.write("Missing aai-node-type Nodes identified =  " + missingAaiNtNodeCount + "\n");
 			bw.write("Bad Edges identified =  " + oneArmedEdgeCount + "\n");
+			bw.write("Bad aai-uri property Nodes identified =  " + badUriNodeCount + "\n");
+			bw.write("Bad index property Nodes identified =  " + badIndexNodeCount + "\n");
 			bw.write("Duplicate Groups count =  " + dupeCount + "\n");
 			bw.write("MisMatching Label/aai-node-type count =  "
 					+ misMatchedHash.size() + "\n");
@@ -1234,6 +1250,8 @@ public class DataGrooming {
 				bw.write("DeleteCandidate: Bad EDGE Edge-id = [" + eid + "]\n");
 				cleanupCandidateCount++;
 			}
+			
+			
 
 			bw.write("\n-- NOTE - To see DeleteCandidates for Duplicates, you need to look in the Duplicates Detail section below.\n");
 
@@ -1260,7 +1278,7 @@ public class DataGrooming {
 				}
 			}
 
-			bw.write("\n ------------- Missing aai-node-type NODES - detail: ");
+			bw.write("\n ------------- Missing aai-node-type NODES - detail ");
 			for (Map.Entry<String, Vertex> entry : missingAaiNtNodeHash
 					.entrySet()) {
 				try {
@@ -1281,6 +1299,54 @@ public class DataGrooming {
 					LoggingContext.statusCode(StatusCode.ERROR);
 					LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 					LOGGER.error("error trying to print detail info for a node missing its aai-node-type  " + LogFormatTools.getStackTop(dex));
+				}
+			}
+			
+			bw.write("\n ------------- Nodes where aai-uri property is bad - detail ");
+			for (Map.Entry<String, Vertex> entry : badUriNodeHash
+					.entrySet()) {
+				try {
+					String vid = entry.getKey();
+					bw.write("\n> Has Bad aai-uri - Vid = " + vid + "\n");
+					ArrayList<String> retArr = showPropertiesForNode(
+							TRANSID, FROMAPPID, entry.getValue());
+					for (String info : retArr) {
+						bw.write(info + "\n");
+					}
+
+					retArr = showAllEdgesForNode(TRANSID, FROMAPPID,
+							entry.getValue());
+					for (String info : retArr) {
+						bw.write(info + "\n");
+					}
+				} catch (Exception dex) {
+					LoggingContext.statusCode(StatusCode.ERROR);
+					LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+					LOGGER.error("error trying to print detail info for a node with a bad aai-uri  " + LogFormatTools.getStackTop(dex));
+				}
+			}
+					
+			bw.write("\n ------------- Nodes where an indexed property is bad - detail: ");
+			for (Map.Entry<String, Vertex> entry : badIndexNodeHash
+					.entrySet()) {
+				try {
+					String vid = entry.getKey();
+					bw.write("\n> Node with bad index - Vid = " + vid + "\n");
+					ArrayList<String> retArr = showPropertiesForNode(
+							TRANSID, FROMAPPID, entry.getValue());
+					for (String info : retArr) {
+						bw.write(info + "\n");
+					}
+
+					retArr = showAllEdgesForNode(TRANSID, FROMAPPID,
+							entry.getValue());
+					for (String info : retArr) {
+						bw.write(info + "\n");
+					}
+				} catch (Exception dex) {
+					LoggingContext.statusCode(StatusCode.ERROR);
+					LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+					LOGGER.error("error trying to print detail info for a node with bad index  " + LogFormatTools.getStackTop(dex));
 				}
 			}
 
@@ -1430,7 +1496,7 @@ public class DataGrooming {
 			LOGGER.info("\n ------------- Done doing all the checks ------------ ");
 			LOGGER.info("Output will be written to " + fullOutputFileName);
 
-			if (cleanupCandidateCount > 0) {
+			if (cleanupCandidateCount > 0 || badUriNodeCount > 0 || badIndexNodeCount > 0) {
 				// Technically, this is not an error -- but we're throwing this
 				// error so that hopefully a
 				// monitoring system will pick it up and do something with it.
@@ -1560,6 +1626,8 @@ public class DataGrooming {
 	    // We will only deal with properties that are indexed and have a value - and for those,
 	    // we will re-set them to the same value they already have, so that hopefully if their 
 	    // index was broken, it may get re-set.
+		
+		// NOTE -- as of 1902-P2, this is deprecated --------------
 	       
 		LOGGER.info(" We will try to re-set the indexed properties for this node without changing any property values.  VID = " + thisVidStr );
 		// These reserved-prop-names are all indexed for all nodes
@@ -3011,7 +3079,31 @@ class CommandLineArgs {
 	public int getMissingAaiNtNodeCount(){
 		return getMissingAaiNtNodeHash().size();
 	}
+		
+	public HashMap<String, Vertex> getBadUriNodeHash() {
+		return badUriNodeHash;
+	}
 
+	public void setBadUriNodeHash(HashMap<String, Vertex> badUriNodeHash) {
+		this.badUriNodeHash = badUriNodeHash;
+	}
+	
+	public int getBadUriNodeCount(){
+		return getBadUriNodeHash().size();
+	}
+
+	public HashMap<String, Vertex> getBadIndexNodeHash() {
+		return badIndexNodeHash;
+	}
+
+	public void setBadIndexNodeHash(HashMap<String, Vertex> badIndexNodeHash) {
+		this.badIndexNodeHash = badIndexNodeHash;
+	}
+	
+	public int getBadIndexNodeCount(){
+		return getBadIndexNodeHash().size();
+	}
+	
 	public HashMap<String, Edge> getOneArmedEdgeHash() {
 		return oneArmedEdgeHash;
 	}

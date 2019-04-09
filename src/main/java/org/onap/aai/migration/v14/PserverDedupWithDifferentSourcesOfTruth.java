@@ -46,7 +46,7 @@ import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.introspection.Introspector;
 
-@Enabled
+//@Enabled
 @MigrationPriority(10)
 @MigrationDangerRating(100)
 public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {

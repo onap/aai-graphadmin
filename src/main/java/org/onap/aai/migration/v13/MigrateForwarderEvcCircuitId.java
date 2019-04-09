@@ -66,7 +66,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 @MigrationPriority(26)
 @MigrationDangerRating(100)
-@Enabled
+//@Enabled
 public class MigrateForwarderEvcCircuitId extends Migrator {
 
 	private final String PNF_NODE_TYPE = "pnf";

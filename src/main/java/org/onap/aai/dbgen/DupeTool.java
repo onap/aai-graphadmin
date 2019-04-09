@@ -87,7 +87,7 @@ public class DupeTool {
 
     public void execute(String[] args){
 
-        String defVersion = "v15";
+        String defVersion = "v16";
         try {
             defVersion = AAIConfig.get(AAIConstants.AAI_DEFAULT_API_VERSION_PROP);
         } catch (AAIException ae) {

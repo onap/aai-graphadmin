@@ -48,7 +48,7 @@ import java.util.*;
  * https://github.com/JanusGraph/janusgraph/wiki/Indexing
  */
 
-@Enabled
+//@Enabled
 
 @MigrationPriority(500)
 @MigrationDangerRating(1000)

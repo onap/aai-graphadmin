@@ -55,7 +55,7 @@ import java.util.Optional;
 
 @MigrationPriority(19)
 @MigrationDangerRating(2)
-@Enabled
+//@Enabled
 public class MigrateInstanceGroupModelInvariantId extends PropertyMigrator {
 
     private static final String INSTANCE_GROUP_NODE_TYPE = "instance-group";

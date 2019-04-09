@@ -43,7 +43,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Enabled
+//@Enabled
 @MigrationPriority(5)
 @MigrationDangerRating(100)
 public class MigrateSameSourcedRCTROPserverData extends EdgeSwingMigrator {
