@@ -90,7 +90,7 @@ public class ScriptDriver {
 			throw aai;
 		}
 		AuditorFactory auditorFactory = ctx.getBean(AuditorFactory.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		EdgeIngestor edgeIngestor     = ctx.getBean(EdgeIngestor.class);
 
 		String config = cArgs.config;
