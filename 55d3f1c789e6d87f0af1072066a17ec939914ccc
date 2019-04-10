@@ -16,6 +16,24 @@
       "revId": "55d3f1c789e6d87f0af1072066a17ec939914ccc",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6202928_aaebff17",
+        "filename": "src/main/java/org/onap/aai/datasnapshot/DataSnapshot.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 2571
+      },
+      "writtenOn": "2019-04-10T01:37:33Z",
+      "side": 1,
+      "message": "The Sonar issue which is addressed here is : https://sonar.onap.org/code?id\u003dorg.onap.aai.graphadmin%3Aaai-graphadmin\u0026selected\u003dorg.onap.aai.graphadmin%3Aaai-graphadmin%3Asrc%2Fmain%2Fjava%2Forg%2Fonap%2Faai%2Fdatasnapshot%2FPartialPropAndEdgeLoader.java\n\n\"Constructor has 8 parameters, which is greater than 7 authorized.\"",
+      "parentUuid": "ac8ef00b_e2f5f4b2",
+      "revId": "55d3f1c789e6d87f0af1072066a17ec939914ccc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
