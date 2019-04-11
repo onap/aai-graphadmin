@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f401c4fb_02d35bd0",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 4341
+      },
+      "writtenOn": "2019-04-11T06:51:19Z",
+      "side": 1,
+      "message": "should this include a schema version bump too?",
+      "range": {
+        "startLine": 103,
+        "startChar": 8,
+        "endLine": 103,
+        "endChar": 54
+      },
+      "revId": "0b83c3bb9cc094e36fdaa88e6cd333872a552386",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
