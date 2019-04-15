@@ -156,6 +156,7 @@ public class GenTester {
        		SchemaGenerator.loadSchemaIntoJanusGraph(graph, graphMgt, null);
 	    } catch(Exception ex) {
 	    	ErrorLogHelper.logError("AAI_4000", ex.getMessage());
+	    	System.exit(1);
 	    }
 	    
 
