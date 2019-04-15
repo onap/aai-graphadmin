@@ -154,23 +154,25 @@ public class GenTester {
        		System.out.println(imsg);
        		LOGGER.info(imsg);
        		SchemaGenerator.loadSchemaIntoJanusGraph(graph, graphMgt, null);
+
+            if( graph != null ){
+                String imsg = "-- graph commit";
+                System.out.println(imsg);
+                LOGGER.info(imsg);
+                graph.tx().commit();
+
+                   imsg = "-- graph shutdown ";
+                System.out.println(imsg);
+                LOGGER.info(imsg);
+                graph.close();
+            }
+
 	    } catch(Exception ex) {
 	    	ErrorLogHelper.logError("AAI_4000", ex.getMessage());
 	    	System.exit(1);
 	    }
 	    
 
-	    if( graph != null ){
-		    String imsg = "-- graph commit";
-        	System.out.println(imsg);
-        	LOGGER.info(imsg);
-	        graph.tx().commit();
-
-		   	imsg = "-- graph shutdown ";
-        	System.out.println(imsg);
-        	LOGGER.info(imsg);
-	        graph.close();
-	    }
 	    
 	    LOGGER.auditEvent("-- all done, if program does not exit, please kill.");
 	    System.exit(0);
