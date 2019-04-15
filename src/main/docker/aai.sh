@@ -23,13 +23,8 @@
 PROJECT_HOME=/opt/app/aai-graphadmin
 export PROJECT_HOME
 
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export JAVA_HOME
-
 AAIENV=dev
 export AAIENV
-
-PATH=/usr/lib/jvm/java-8-openjdk-amd64:$PATH
 
 PROJECT_OWNER=aaiadmin
 PROJECT_GROUP=aaiadmin
