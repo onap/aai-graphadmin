@@ -20,25 +20,24 @@
 # ECOMP is a trademark and service mark of AT&T Intellectual Property.
 #
 
-PROJECT_HOME=/opt/app/aai-graphadmin
-export PROJECT_HOME
+# set system related env
+# and make script compatible both with ubuntu and alpine base images
+# jre-alpine image has $JAVA_HOME set and added to $PATH
+# ubuntu image requires to set $JAVA_HOME and add java to $PATH manually
+if ( uname -v | grep -i "ubuntu" ); then
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-`dpkg --print-architecture | awk -F- '{ print $NF }'`
+    export PATH=${JAVA_HOME}:$PATH
+fi
 
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export JAVA_HOME
-
-AAIENV=dev
-export AAIENV
-
-PATH=/usr/lib/jvm/java-8-openjdk-amd64:$PATH
-
-PROJECT_OWNER=aaiadmin
-PROJECT_GROUP=aaiadmin
-PROJECT_UNIXHOMEROOT=/opt/aaihome
-export PROJECT_OWNER PROJECT_GROUP PROJECT_UNIXHOMEROOT
-umask 0022
-
+# set app related env
+export PROJECT_HOME=/opt/app/aai-graphadmin
+export AAIENV=dev
+export PROJECT_OWNER=aaiadmin
+export PROJECT_GROUP=aaiadmin
+export PROJECT_UNIXHOMEROOT=/opt/aaihome
 export idns_api_url=
 export idnscred=
 export idnstenant=
+umask 0022
 
 
