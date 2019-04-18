@@ -67,7 +67,7 @@ public class SendDeleteMigrationNotificationsMain {
 			throw aai;
 		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		String basePath = ctx.getEnvironment().getProperty("schema.uri.base.path");
 
 		CommandLineDeleteArgs cArgs = new CommandLineDeleteArgs();

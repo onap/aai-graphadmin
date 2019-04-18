@@ -528,7 +528,7 @@ public class DupeTool {
             throw aai;
         }
         LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
-        SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+        SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
         DupeTool dupeTool = new DupeTool(loaderFactory, schemaVersions);
         dupeTool.execute(args);
     }// end of main()

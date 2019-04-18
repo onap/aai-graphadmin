@@ -171,7 +171,7 @@ public class DynamicPayloadGenerator {
 		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		EdgeIngestor  edgeIngestor  = ctx.getBean(EdgeIngestor.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		run (loaderFactory, edgeIngestor, schemaVersions, args, true);
 	}
 	

@@ -182,7 +182,7 @@ public class SchemaMod {
 			throw aai;
 		}
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		SchemaMod schemaMod = new SchemaMod(loaderFactory, schemaVersions);
 		schemaMod.execute(args);
 

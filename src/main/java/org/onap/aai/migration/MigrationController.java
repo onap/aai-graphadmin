@@ -79,7 +79,7 @@ public class MigrationController {
 		LoaderFactory loaderFactory   = ctx.getBean(LoaderFactory.class);
 		EdgeIngestor   edgeIngestor   = ctx.getBean(EdgeIngestor.class);
 		EdgeSerializer edgeSerializer = ctx.getBean(EdgeSerializer.class);
-		SchemaVersions schemaVersions = ctx.getBean(SchemaVersions.class);
+		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 
 		MigrationControllerInternal internal = new MigrationControllerInternal(loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 
