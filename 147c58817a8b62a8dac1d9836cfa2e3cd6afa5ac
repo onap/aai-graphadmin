@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8af68276_95c5c2e9",
+        "filename": "src/main/docker/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 4341
+      },
+      "writtenOn": "2019-05-01T01:30:28Z",
+      "side": 1,
+      "message": "does this dockerhub image need to be bumped to a new version?\nor is the alpine container using the same version as the ubuntu container?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 29
+      },
+      "revId": "147c58817a8b62a8dac1d9836cfa2e3cd6afa5ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2a733c01_62b18ad4",
+        "filename": "src/main/docker/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4341
+      },
+      "writtenOn": "2019-05-01T01:30:28Z",
+      "side": 1,
+      "message": "reported as AAI-2389.\nshould it be fixed while you are here?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 42
+      },
+      "revId": "147c58817a8b62a8dac1d9836cfa2e3cd6afa5ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef95ab84_cfc561f6",
+        "filename": "src/main/docker/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 4341
+      },
+      "writtenOn": "2019-05-01T01:30:28Z",
+      "side": 1,
+      "message": "comment mismatch to exposed port",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 11
+      },
+      "revId": "147c58817a8b62a8dac1d9836cfa2e3cd6afa5ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
