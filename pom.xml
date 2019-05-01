@@ -100,7 +100,7 @@
         <json.version>20090211</json.version>
 
         <aai.core.version>1.4.3</aai.core.version>
-        <aai.schema.version>1.0.3</aai.schema.version>
+        <aai.schema.version>1.0.5</aai.schema.version>
 
         <netty.handler.version>4.1.9.Final</netty.handler.version>
         <netty.version>4.0.56.Final</netty.version>
