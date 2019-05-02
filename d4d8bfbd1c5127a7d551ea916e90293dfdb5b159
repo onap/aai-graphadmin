@@ -22,6 +22,30 @@
       "revId": "d4d8bfbd1c5127a7d551ea916e90293dfdb5b159",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "19e7e14a_121435f9",
+        "filename": "src/main/docker/aai.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5040
+      },
+      "writtenOn": "2019-05-02T13:25:40Z",
+      "side": 0,
+      "message": "Please look at https://gerrit.onap.org/r/#/c/85311/3/aai-resources/src/main/docker/aai.sh@a32 comment",
+      "parentUuid": "dfbffef3_378f2f82",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 44
+      },
+      "revId": "d4d8bfbd1c5127a7d551ea916e90293dfdb5b159",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
