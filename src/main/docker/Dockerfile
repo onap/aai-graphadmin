@@ -1,4 +1,4 @@
-FROM onap/aai-common-@aai.base.image@:@aai.docker.version@
+FROM @aai.docker.namespace@/aai-common-@aai.base.image@:@aai.base.image.version@
 
 RUN  mkdir -p /opt/aaihome/aaiadmin /opt/aai/logroot/AAI-GA
 
