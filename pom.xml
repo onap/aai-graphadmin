@@ -30,7 +30,7 @@
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <properties>
 
@@ -100,7 +100,7 @@
         <json.version>20090211</json.version>
 
         <aai.core.version>1.5.3</aai.core.version>
-        <aai.schema.version>1.5.0</aai.schema.version>
+        <aai.schema.version>1.5.1</aai.schema.version>
 
         <netty.handler.version>4.1.9.Final</netty.handler.version>
         <netty.version>4.0.56.Final</netty.version>
