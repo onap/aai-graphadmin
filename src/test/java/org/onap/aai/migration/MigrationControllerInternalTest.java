@@ -242,7 +242,8 @@ public class MigrationControllerInternalTest extends AAISetup {
         System.setOut(new PrintStream(myOut));
         String [] args = {
                 "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
-                "-m", "SDWANSpeedChangeMigration",
+                "-m", "MigrateBooleanDefaultsToFalse",
+                " --skipPreMigrationSnapShot",
                 "--commit",
                 "--runDisabled","RebuildAllEdges",
                 "-f"
@@ -250,7 +251,30 @@ public class MigrationControllerInternalTest extends AAISetup {
         migrationControllerInternal.run(args);
         String content = myOut.toString();
         assertThat("RebuildAllEdges didn't run", content.contains("igration RebuildAllEdges Succeeded."));
-        assertThat("SDWANSpeedChangeMigration shouldn't run", !content.contains("igration SDWANSpeedChangeMigration Succeeded."));
+        assertThat("MigrateBooleanDefaultsToFalse didn't run", content.contains("igration MigrateBooleanDefaultsToFalse Succeeded."));
+        System.setOut(oldOutputStream);
+    }
+    
+    @Test
+    public void testSkipSpecificMigrationWithRunDisabledAndCommit() throws Exception {
+        assertThat("rebuildAllEdges shouldn't have enabled annotation", !RebuildAllEdges.class.isAnnotationPresent(Enabled.class));
+        PrintStream oldOutputStream = System.out;
+        final ByteArrayOutputStream myOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(myOut));
+        String [] args = {
+                "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
+                "-e", "MigrateRadcomChanges",
+                "--skipPreMigrationSnapShot",
+                "--commit",
+                "--runDisabled","RebuildAllEdges",
+                "-f"
+        };
+        migrationControllerInternal.run(args);
+        String content = myOut.toString();
+        assertThat("RebuildAllEdges didn't run", content.contains("igration RebuildAllEdges Succeeded."));
+        //all other mirgrators should run along with rebuild edges.
+        assertThat("MigrateBooleanDefaultsToFalse didn't run", content.contains("igration MigrateBooleanDefaultsToFalse Succeeded."));
+        assertThat("MigrateRadcomChanges shouldn't run", !content.contains("igration MigrateRadcomChanges Succeeded."));
         System.setOut(oldOutputStream);
     }
 
@@ -262,8 +286,10 @@ public class MigrationControllerInternalTest extends AAISetup {
         System.setOut(new PrintStream(myOut));
         String [] args = {
                 "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
+                "--skipPreMigrationSnapShot",
                 "--commit",
-                "--runDisabled","RebuildAllEdges"
+                "--runDisabled","RebuildAllEdges",
+                "-f"
         };
         migrationControllerInternal.run(args);
         String content = myOut.toString();
@@ -282,7 +308,8 @@ public class MigrationControllerInternalTest extends AAISetup {
                 "-c", "./bundleconfig-local/etc/appprops/janusgraph-realtime.properties",
                 "--commit",
                 "--runDisabled","RebuildAllEdges",
-                "-e","RebuildAllEdges"
+                "-e","RebuildAllEdges",
+                "-f"
         };
         migrationControllerInternal.run(args);
         String content = myOut.toString();

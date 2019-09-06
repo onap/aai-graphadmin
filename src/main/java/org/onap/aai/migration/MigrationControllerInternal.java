@@ -317,7 +317,9 @@ public class MigrationControllerInternal {
 		return engine.asAdmin().getReadOnlyTraversalSource().V().has(AAIProperties.NODE_TYPE, VERTEX_TYPE).has(name, true).hasNext();
 	}
 	private Set<Class<? extends Migrator>> findClasses(Reflections reflections) {
-		Set<Class<? extends Migrator>> migratorClasses = reflections.getSubTypesOf(Migrator.class);
+		Set<Class<? extends Migrator>> migratorClasses = reflections.getSubTypesOf(Migrator.class).stream()
+				.filter(clazz -> clazz.isAnnotationPresent(MigrationPriority.class))
+				.collect(Collectors.toSet());
 		/*
 		 * TODO- Change this to make sure only classes in the specific $release are added in the runList
 		 * Or add a annotation like exclude which folks again need to remember to add ??
@@ -353,15 +355,17 @@ public class MigrationControllerInternal {
     private List<Class<? extends Migrator>> createMigratorList(CommandLineArgs cArgs,
             List<Class<? extends Migrator>> migratorClasses) {
         List<Class<? extends Migrator>> migratorClassesToRun = new ArrayList<>();
-        if (cArgs.scripts.isEmpty() && cArgs.runDisabled.isEmpty()) {
+        if (cArgs.scripts.isEmpty()) {
             return migratorClasses;
-
         }
+        
         for (Class<? extends Migrator> migratorClass : migratorClasses) {
-            if (migratorExplicitlySpecified(cArgs, migratorClass.getSimpleName()) || migratorToRunWhenDisabled(cArgs, migratorClass.getSimpleName())) {
+            if (migratorExplicitlySpecified(cArgs, migratorClass.getSimpleName()) 
+                    || migratorToRunWhenDisabled(cArgs, migratorClass.getSimpleName())) {
                 migratorClassesToRun.add(migratorClass);
             }
         }
+        
         return migratorClassesToRun;
     }
 
