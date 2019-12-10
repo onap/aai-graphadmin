@@ -24,9 +24,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.onap.oparent</groupId>
-        <artifactId>oparent</artifactId>
-        <version>2.0.0</version>
+        <groupId>org.onap.aai.aai-common</groupId>
+        <artifactId>aai-parent</artifactId>
+        <version>1.6.1-SNAPSHOT</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
@@ -45,8 +45,6 @@
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>true</skip.integration.tests>
         <!-- End of Test Related Properties -->
-
-        <spring.boot.version>1.5.21.RELEASE</spring.boot.version>
 
         <!-- Start of Sonar Related Properties -->
         <sonar.language>java</sonar.language>
@@ -88,54 +86,9 @@
         <aai.project.version>${project.version}</aai.project.version>
 
         <!-- Start of Database Related Properties -->
-        <janusgraph.version>0.2.3</janusgraph.version>
-        <jnr.ffi.version>2.1.9</jnr.ffi.version>
-        <gremlin.driver.version>3.0.1-incubating</gremlin.driver.version>
-        <gremlin.version>3.2.2</gremlin.version>
         <!-- End of Database Related Properties -->
 
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
-
-        <activemq.version>5.15.6</activemq.version>
-        <logback.version>1.2.3</logback.version>
-        <mockito.version>1.10.19</mockito.version>
-        <httpclient.version>4.5.3</httpclient.version>
-
-        <gson.version>2.7</gson.version>
-        <json.version>20090211</json.version>
-
-        <aai.core.version>1.5.3</aai.core.version>
-        <aai.schema.version>1.6.0</aai.schema.version>
-
-        <netty.handler.version>4.1.9.Final</netty.handler.version>
-        <netty.version>4.0.56.Final</netty.version>
-
-        <spring.test.version>4.3.22.RELEASE</spring.test.version>
-
-        <cxf.version>3.2.2</cxf.version>
-
-        <dme2.version>2.8.5</dme2.version>
-        <jsonassert.version>1.4.0</jsonassert.version>
-
-        <antlr4.visitor>true</antlr4.visitor>
-        <antlr4.listener>true</antlr4.listener>
-        <antlr.version>4.7</antlr.version>
-
-        <plexus.utils.version>3.1.0</plexus.utils.version>
-
-        <eelf.core.version>1.0.0</eelf.core.version>
-        <google.guava.version>19.0</google.guava.version>
-        <jaxb.version>2.2.11</jaxb.version>
-        <eclipse.persistence.version>2.6.2</eclipse.persistence.version>
-        <dmaap.client.version>0.2.12</dmaap.client.version>
-
-        <springframework.version>4.3.22.RELEASE</springframework.version>
-        <spring.jms.version>4.3.2.RELEASE</spring.jms.version>
-        <spring.security.version>1.0.3.RELEASE</spring.security.version>
-
-        <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
-        <junit.version>4.12</junit.version>
-
         <start-class>org.onap.aai.GraphAdminApp</start-class>
 
         <snapshot.file>${project.basedir}/snapshots/int1-data.graphson</snapshot.file>
@@ -405,34 +358,28 @@
         <dependency>
             <groupId>com.att.eelf</groupId>
             <artifactId>eelf-core</artifactId>
-            <version>${eelf.core.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-access</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <!-- End of Logback Dependencies -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${google.guava.version}</version>
         </dependency>
         <!-- Start of Janus Graph Dependencies -->
         <dependency>
             <groupId>org.janusgraph</groupId>
             <artifactId>janusgraph-core</artifactId>
-            <version>${janusgraph.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -447,7 +394,6 @@
         <dependency>
             <groupId>org.janusgraph</groupId>
             <artifactId>janusgraph-cassandra</artifactId>
-            <version>${janusgraph.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -467,12 +413,10 @@
         <dependency>
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-ffi</artifactId>
-            <version>${jnr.ffi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.janusgraph</groupId>
             <artifactId>janusgraph-cql</artifactId>
-            <version>${janusgraph.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -485,23 +429,19 @@
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>tinkergraph-gremlin</artifactId>
-            <version>${gremlin.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${antlr.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>gremlin-core</artifactId>
-            <version>${gremlin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>gremlin-driver</artifactId>
-            <version>${gremlin.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.groovy</groupId>
@@ -517,45 +457,25 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>${json.version}</version>
         </dependency>
         <!-- Start of JAXB Dependencies -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>${jaxb.version}</version>
         </dependency>
         <!-- End of JAXB Dependencies -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <version>${eclipse.persistence.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>${eclipse.persistence.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
         </dependency>
         <!--
             Do not use activemq-all because they force you to use a specific logging
@@ -565,17 +485,14 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
-            <version>${activemq.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
-            <version>${activemq.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.aai.aai-common</groupId>
             <artifactId>aai-core</artifactId>
-            <version>${aai.core.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.jersey</groupId>
@@ -610,12 +527,10 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.18</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
-            <version>1.18</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -629,7 +544,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
         </dependency>
         <!-- Start of Spring Framework Dependencies -->
         <!--
@@ -643,7 +557,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-rsa</artifactId>
-            <version>${spring.security.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.bouncycastle</groupId>
@@ -654,7 +567,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
-            <version>${spring.jms.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.jersey</groupId>
@@ -693,7 +605,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.test.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- End of Spring Framework Dependencies -->
@@ -701,24 +612,20 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>${netty.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>${netty.handler.version}</version>
         </dependency>
         <!-- End of Netty Dependencies -->
         <!-- Start of Antlr dependencies for DSL -->
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${antlr.version}</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-maven-plugin</artifactId>
-            <version>${antlr.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.sonatype.sisu</groupId>
@@ -731,32 +638,27 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>${plexus.utils.version}</version>
         </dependency>
         <!-- End of Plexus dependencies for DSL -->
         <!-- Start of Junit Test Dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-junit</artifactId>
-            <version>${hamcrest.junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-            <version>${jsonassert.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- End of Junit Test Dependencies -->
