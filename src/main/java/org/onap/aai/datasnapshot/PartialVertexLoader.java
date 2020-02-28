@@ -26,8 +26,10 @@ import java.util.concurrent.Callable;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.io.graphson.GraphSONReader;
 import org.janusgraph.core.JanusGraph;
-
-import com.att.eelf.configuration.EELFLogger;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -35,7 +37,7 @@ import com.google.gson.JsonParser;
 
 public class PartialVertexLoader implements Callable<HashMap<String,String>>{
 	
-	private EELFLogger LOGGER;
+	private Logger LOGGER;
 
 	private JanusGraph jg;
 	private String fName;
@@ -45,7 +47,7 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
 	private int maxAllowedErrors;
 		
 	public PartialVertexLoader (JanusGraph graph, String fn, Long vertDelay, Long failurePause, 
-			Long retryDelay, int maxErrors, EELFLogger elfLog ){
+			Long retryDelay, int maxErrors, Logger elfLog ){
 		jg = graph;
 		fName = fn;
 		vertAddDelayMs = vertDelay;
@@ -137,7 +139,8 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
 	        LOGGER.debug(" --- Failed in the main loop for Buffered-Reader item # " + entryCount +
 	        		", fName = " + fName );
 	        LOGGER.debug(" --- msg = " + e.getMessage() );
-	        	e.printStackTrace();
+	        	AAIException ae = new AAIException("AAI_6128", e , "Failed in the main loop for Buffered-Reader item");
+				ErrorLogHelper.logException(ae);
 	            throw e;
 		}	
         		
@@ -165,8 +168,9 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
     				LOGGER.debug(" -- addVertex FAILED for RETRY for vtxId = " +
     						failedVidStr + ", label = [" + failedLabel + 
     						"].  ErrorMsg = [" +e.getMessage() + "]" );
-    				e.printStackTrace();
-        			if( retryFailureCount > maxAllowedErrors ) {
+    				AAIException ae = new AAIException("AAI_6128", e , "addVertex FAILED for RETRY");
+    				ErrorLogHelper.logException(ae);
+    	            if( retryFailureCount > maxAllowedErrors ) {
         				LOGGER.debug(">>> Abandoning PartialVertexLoader() because " +
                					"Max Allowed Error count was exceeded for this thread. (max = " + 
                					maxAllowedErrors + ". ");
@@ -189,7 +193,8 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
     						+ ", label = [" + failedLabel + "].  ErrorMsg = [" + e.getMessage() 
     						+ "].  This vertex will not be tried again. ");
 
-   					e.printStackTrace();
+    				AAIException ae = new AAIException("AAI_6128", e , "--POSSIBLE ERROR-- COMMIT FAILED for RETRY");
+    				ErrorLogHelper.logException(ae);
         			if( retryFailureCount > maxAllowedErrors ) {
         				LOGGER.debug(">>> Abandoning PartialVertexLoader() because " +
                					"Max Allowed Error count was exceeded for this thread. (max = " + 
@@ -205,7 +210,8 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
 		}		
         catch ( Exception e ){
 			LOGGER.debug(" -- error in RETRY block. ErrorMsg = [" +e.getMessage() + "]" );
-			e.printStackTrace();
+			AAIException ae = new AAIException("AAI_6128", e , " -- error in RETRY block.");
+			ErrorLogHelper.logException(ae);
 			throw e;	
         }
 			

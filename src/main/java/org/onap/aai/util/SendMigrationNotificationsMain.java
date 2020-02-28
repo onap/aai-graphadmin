@@ -26,7 +26,6 @@ import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.migration.EventAction;
 import org.onap.aai.setup.SchemaVersions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -40,16 +39,7 @@ public class SendMigrationNotificationsMain {
 		Arrays.asList(args).stream().forEach(System.out::println);
 
 		String requestId = UUID.randomUUID().toString();
-		LoggingContext.init();
-		LoggingContext.partnerName("Migration");
-		LoggingContext.serviceName(AAIConstants.AAI_RESOURCES_MS);
-		LoggingContext.component("SendMigrationNotifications");
-		LoggingContext.targetEntity(AAIConstants.AAI_RESOURCES_MS);
-		LoggingContext.targetServiceName("main");
-		LoggingContext.requestId(requestId);
-		LoggingContext.statusCode(LoggingContext.StatusCode.COMPLETE);
-		LoggingContext.responseCode(LoggingContext.SUCCESS);
-
+		
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
 		initializer.initialize(ctx);
@@ -62,8 +52,6 @@ public class SendMigrationNotificationsMain {
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
 			System.out.println("Problems running tool "+aai.getMessage());
-			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}

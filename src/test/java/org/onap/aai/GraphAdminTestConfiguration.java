@@ -46,7 +46,7 @@ import java.security.KeyStore;
 @TestConfiguration
 public class GraphAdminTestConfiguration {
 
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(GraphAdminTestConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(GraphAdminTestConfiguration.class);
 
     @Autowired
     private Environment env;

@@ -38,24 +38,27 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.dbgen.DynamicPayloadGenerator;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
+import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
@@ -69,8 +72,10 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class DataExportTasks {
+
+	private AaiScheduledTaskAuditLog auditLog;
 	
-	private static final EELFLogger LOGGER;
+	private static final Logger LOGGER;
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private static final String GA_MS = "aai-graphadmin";
 	
@@ -79,7 +84,7 @@ public class DataExportTasks {
 		Properties props = System.getProperties();
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-		LOGGER = EELFManager.getInstance().getLogger(DataExportTasks.class);
+		LOGGER = LoggerFactory.getLogger(DataExportTasks.class);
 	}
 
 	private LoaderFactory loaderFactory;
@@ -98,10 +103,12 @@ public class DataExportTasks {
 	 */
 	@Scheduled(cron = "${dataexporttask.cron}" )
 	public void export() {
+		
 		try {
 			exportTask();
 		} 
 		catch (Exception e) {
+			ErrorLogHelper.logError("AAI_8002", "Exception while running export "+ LogFormatTools.getStackTop(e));
 		}
 	}
 	/**
@@ -110,27 +117,20 @@ public class DataExportTasks {
 	 * @throws AAIException, Exception
 	 */
 	public void exportTask() throws AAIException, Exception   {
-		
-		LoggingContext.init();
-		LoggingContext.requestId(UUID.randomUUID().toString());
-		LoggingContext.partnerName("AAI");
-		LoggingContext.targetEntity(GA_MS);
-		LoggingContext.component("exportTask");
-		LoggingContext.serviceName(GA_MS);
-		LoggingContext.targetServiceName("exportTask");
-		LoggingContext.statusCode(LoggingContext.StatusCode.COMPLETE);
-
+		auditLog = new AaiScheduledTaskAuditLog();
+		auditLog.logBefore("dataExportTask", ONAPComponents.AAI.toString());
+		LOGGER.info("Started exportTask: " + dateFormat.format(new Date()));
 		if (AAIConfig.get("aai.dataexport.enable").equalsIgnoreCase("false")) {
-			LOGGER.info("Data Export is not enabled");
+			LOGGER.debug("Data Export is not enabled");
 			return;
 		}
 		// Check if the process was started via command line
 		if (isDataExportRunning()) {
-			LOGGER.info("There is a dataExport process already running");
+			LOGGER.debug("There is a dataExport process already running");
 			return;
 		}
 
-		LOGGER.info("Started exportTask: " + dateFormat.format(new Date()));
+		LOGGER.debug("Started exportTask: " + dateFormat.format(new Date()));
 		
 		String enableSchemaValidation = AAIConfig.get("aai.dataexport.enable.schema.validation", "false");
 		String outputLocation =  AAIConstants.AAI_HOME_BUNDLECONFIG + AAIConfig.get("aai.dataexport.output.location");
@@ -187,20 +187,20 @@ public class DataExportTasks {
 		String[] paramsArray = paramsList.toArray(new String[0]); 
 		try {
 			DynamicPayloadGenerator.run(loaderFactory, edgeIngestor, schemaVersions, paramsArray, false);
-			LOGGER.info("DynamicPaylodGenerator completed");
+			LOGGER.debug("DynamicPaylodGenerator completed");
 			// tar/gzip payload files
 			String[] command = new String[1];
 			command[0] = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "bin" + AAIConstants.AAI_FILESEP + "dynamicPayloadArchive.sh";
 			runScript(command);
 		}
 		catch (Exception e) {
-			ErrorLogHelper.logError("AAI_8003", e.getMessage());
-			LOGGER.info("Exception running dataExport task " + e.getMessage());
-			throw e;
+			ErrorLogHelper.logError("AAI_8003", LogFormatTools.getStackTop(e));
+			LOGGER.debug("Exception running dataExport task " + LogFormatTools.getStackTop(e));
 		} finally {
-			LOGGER.info("Completed dataExport task" );
-			LoggingContext.clear();
+			LOGGER.debug("Ended exportTask: " + dateFormat.format(new Date()));
 		}
+		LOGGER.info("Ended exportTask: " + dateFormat.format(new Date()));
+		auditLog.logAfter();
 		
 	}
 	/**
@@ -223,10 +223,10 @@ public class DataExportTasks {
 			}
 
 			int exitVal = process.waitFor();
-			LOGGER.info("Check if dataExport is running returned: " + exitVal);
+			LOGGER.debug("Check if dataExport is running returned: " + exitVal);
 		} catch (Exception e) {
-			ErrorLogHelper.logError("AAI_8002", "Exception while running the check to see if dataExport is running  "+ e.getMessage());
-			LOGGER.info("Exception while running the check to see if dataExport is running "+ e.getMessage());
+			ErrorLogHelper.logError("AAI_8002", "Exception while running the check to see if dataExport is running  "+ LogFormatTools.getStackTop(e));
+			LOGGER.debug("Exception while running the check to see if dataExport is running "+ LogFormatTools.getStackTop(e));
 		}
 
 		if(count > 0){
@@ -249,7 +249,7 @@ public class DataExportTasks {
 		File[] allFilesArr = targetDirFile.listFiles((FileFilter) FileFileFilter.FILE);
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {
 			ErrorLogHelper.logError("AAI_8001", "Unable to find data snapshots at " + targetDir);
-			LOGGER.info ("Unable to find data snapshots at " + targetDir);
+			LOGGER.debug("Unable to find data snapshots at " + targetDir);
 			return (snapshot);
 		}
 		if ( allFilesArr.length > 1 ) {
@@ -287,7 +287,7 @@ public class DataExportTasks {
 		
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {
 			ErrorLogHelper.logError("AAI_8001", "Unable to find data snapshots at " + targetDir);
-			LOGGER.info ("Unable to find data snapshots at " + targetDir);
+			LOGGER.debug("Unable to find data snapshots at " + targetDir);
 			return (null);
 		}
 		
@@ -329,7 +329,7 @@ public class DataExportTasks {
 					snapshotName = snapshotName.substring(0,lastDot);
 				}
 				else {
-					LOGGER.info ("Invalid snapshot file name format " + snapshotName);
+					LOGGER.debug("Invalid snapshot file name format " + snapshotName);
 					return null;
 				}
 			}
@@ -348,7 +348,7 @@ public class DataExportTasks {
 		
 		File[] allFilesArr = targetDirFile.listFiles((FileFilter)DirectoryFileFilter.DIRECTORY);
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {
-			LOGGER.info ("No payload files found at " + targetDirFile.getPath());
+			LOGGER.debug("No payload files found at " + targetDirFile.getPath());
 			return;
 		}
 		for ( File f : allFilesArr ) {
@@ -357,7 +357,7 @@ public class DataExportTasks {
 			}
 			catch (IOException e) {
 				
-				LOGGER.info ("Unable to delete directory " + f.getAbsolutePath() + " " + e.getMessage());
+				LOGGER.debug("Unable to delete directory " + f.getAbsolutePath() + " " + e.getMessage());
 			}
 			
 		}
@@ -372,10 +372,10 @@ public class DataExportTasks {
 		try {
 			process = new ProcessBuilder().command(script).start();
 			int exitVal = process.waitFor();
-			LOGGER.info("dynamicPayloadArchive.sh returned: " + exitVal);
+			LOGGER.debug("dynamicPayloadArchive.sh returned: " + exitVal);
 		} catch (Exception e) {
-			ErrorLogHelper.logError("AAI_8002", "Exception while running dynamicPayloadArchive.sh "+ e.getMessage());
-			LOGGER.info("Exception while running dynamicPayloadArchive.sh" + e.getMessage());
+			ErrorLogHelper.logError("AAI_8002", "Exception while running dynamicPayloadArchive.sh "+ LogFormatTools.getStackTop(e));
+			LOGGER.debug("Exception while running dynamicPayloadArchive.sh" + LogFormatTools.getStackTop(e));
 		}
 		
 	}

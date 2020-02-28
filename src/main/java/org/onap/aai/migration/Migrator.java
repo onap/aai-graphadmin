@@ -55,8 +55,8 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class defines an A&AI Migration
@@ -65,7 +65,7 @@ import com.att.eelf.configuration.EELFManager;
 @MigrationDangerRating(0)
 public abstract class Migrator implements Runnable {
 	
-	protected EELFLogger logger = null;
+	protected Logger logger = null;
 
 	protected DBSerializer serializer = null;
 	protected Loader loader = null;
@@ -96,8 +96,8 @@ public abstract class Migrator implements Runnable {
 		this.schemaVersions = schemaVersions;
         initDBSerializer();
         this.notificationHelper = new NotificationHelper(loader, serializer, loaderFactory, schemaVersions, engine, "AAI-MIGRATION", this.getMigrationName());
-		logger = EELFManager.getInstance().getLogger(this.getClass().getSimpleName());
-		logger.info("\tInitilization of " + this.getClass().getSimpleName() + " migration script complete.");
+		logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+		logger.debug("\tInitilization of " + this.getClass().getSimpleName() + " migration script complete.");
 	}
 
 	/**
@@ -139,7 +139,7 @@ public abstract class Migrator implements Runnable {
 				logger.error("Unable to generate file with dmaap msgs for " + getMigrationName(), e);
 			}
 		} else {
-			logger.info("No dmaap msgs detected for " + getMigrationName());
+			logger.debug("No dmaap msgs detected for " + getMigrationName());
 		}
 	}
 

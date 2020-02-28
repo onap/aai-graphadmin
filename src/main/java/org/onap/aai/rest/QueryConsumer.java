@@ -19,19 +19,15 @@
  */
 package org.onap.aai.rest;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.onap.aai.concurrent.AaiCallable;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.ModelType;
-import org.onap.aai.rest.dsl.DslQueryProcessor;
-import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.logging.StopWatch;
 import org.onap.aai.rest.db.HttpEntry;
+import org.onap.aai.rest.dsl.DslQueryProcessor;
 import org.onap.aai.rest.search.GenericQueryProcessor;
 import org.onap.aai.rest.search.QueryProcessorType;
 import org.onap.aai.restcore.HttpMethod;
@@ -45,6 +41,8 @@ import org.onap.aai.serialization.queryformats.SubGraphStyle;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -54,7 +52,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Path("{version: v[1-9][0-9]*|latest}/dbquery")
@@ -66,7 +63,7 @@ public class QueryConsumer extends RESTAPI {
 	private QueryProcessorType processorType = QueryProcessorType.LOCAL_GROOVY;
 
 	private static final String TARGET_ENTITY = "DB";
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(QueryConsumer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(QueryConsumer.class);
 
 	private HttpEntry traversalUriHttpEntry;
 
@@ -111,15 +108,12 @@ public class QueryConsumer extends RESTAPI {
 
 	public Response processExecuteQuery(String content, @PathParam("version")String versionParam, @PathParam("uri") @Encoded String uri, @DefaultValue("graphson") @QueryParam("format") String queryFormat,@DefaultValue("no_op") @QueryParam("subgraph") String subgraph, @Context HttpHeaders headers, @Context UriInfo info, @Context HttpServletRequest req) {
 
-		String methodName = "executeQuery";
 		String sourceOfTruth = headers.getRequestHeaders().getFirst("X-FromAppId");
-		String realTime = headers.getRequestHeaders().getFirst("Real-Time");
 		String queryProcessor = headers.getRequestHeaders().getFirst("QueryProcessor");
 		QueryProcessorType processorType = this.processorType;
 		Response response = null;
 		TransactionalGraphEngine dbEngine = null;
 		try {
-			LoggingContext.save();
 			this.checkQueryParams(info.getQueryParameters());
 			Format format = Format.getFormat(queryFormat);
 			if (queryProcessor != null) {
@@ -132,13 +126,11 @@ public class QueryConsumer extends RESTAPI {
 			
 			JsonElement gremlinElement = input.get("gremlin");
 			JsonElement dslElement = input.get("dsl");
-			String queryURI = "";
 			String gremlin = "";
 			String dsl = "";
 			
 			SchemaVersion version = new SchemaVersion(versionParam);
-			DBConnectionType type = this.determineConnectionType(sourceOfTruth, realTime);
-			traversalUriHttpEntry.setHttpEntryProperties(version, type);
+			traversalUriHttpEntry.setHttpEntryProperties(version);
 			dbEngine = traversalUriHttpEntry.getDbEngine();
 
 			if (gremlinElement != null) {
@@ -147,11 +139,8 @@ public class QueryConsumer extends RESTAPI {
 			if (dslElement != null) {
 				dsl = dslElement.getAsString();
 			}
-			GenericQueryProcessor processor = null;
+			GenericQueryProcessor processor;
 			
-			LoggingContext.targetEntity(TARGET_ENTITY);
-			LoggingContext.targetServiceName(methodName);
-			LoggingContext.startTime();
 			StopWatch.conditionalStart();
 			
 			if(!dsl.equals("")){
@@ -175,9 +164,6 @@ public class QueryConsumer extends RESTAPI {
 		
 			result = formater.output(vertices).toString();
 
-			double msecs = StopWatch.stopIfStarted();
-			LoggingContext.elapsedTime((long)msecs,TimeUnit.MILLISECONDS);
-			LoggingContext.successStatusFields();
 			LOGGER.info ("Completed");
 			
 			response = Response.status(Status.OK)
@@ -190,8 +176,6 @@ public class QueryConsumer extends RESTAPI {
 			AAIException ex = new AAIException("AAI_4000", e);
 			response = consumerExceptionResponseGenerator(headers, info, HttpMethod.GET, ex);
 		} finally {
-			LoggingContext.restoreIfPossible();
-			LoggingContext.successStatusFields();
 			if (dbEngine != null) {
 				dbEngine.rollback();
 			}
@@ -205,7 +189,7 @@ public class QueryConsumer extends RESTAPI {
 		
 		if (params.containsKey("depth") && params.getFirst("depth").matches("\\d+")) {
 			String depth = params.getFirst("depth");
-			Integer i = Integer.parseInt(depth);
+			int i = Integer.parseInt(depth);
 			if (i > 1) {
 				throw new AAIException("AAI_3303");
 			}

@@ -20,16 +20,16 @@
 package org.onap.aai;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.onap.aai.aailog.logs.AaiDebugLog;
 import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import java.util.Properties;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
@@ -54,17 +54,19 @@ import java.util.UUID;
 // This will add the ScheduledTask that was created in aai-common
 // Add more packages where you would need to scan for files
 @ComponentScan(basePackages = {
-        "org.onap.aai.tasks",
-        "org.onap.aai.config",
-        "org.onap.aai.service",
-        "org.onap.aai.setup",
-        "org.onap.aai.rest",
-        "org.onap.aai.web",
-        "org.onap.aai.interceptors",
-        "org.onap.aai.datasnapshot",
-        "org.onap.aai.datagrooming",
-        "org.onap.aai.dataexport",
-        "org.onap.aai.datacleanup"
+    "org.onap.aai.tasks",
+    "org.onap.aai.config",
+    "org.onap.aai.service",
+    "org.onap.aai.setup",
+    "org.onap.aai.aaf",
+    "org.onap.aai.rest",
+    "org.onap.aai.web",
+    "org.onap.aai.interceptors",
+    "org.onap.aai.datasnapshot",
+    "org.onap.aai.datagrooming",
+    "org.onap.aai.dataexport",
+    "org.onap.aai.datacleanup",
+    "org.onap.aai.aailog"
 })
 @EnableAsync
 @EnableScheduling
@@ -72,10 +74,16 @@ import java.util.UUID;
 public class GraphAdminApp {
 
     public static final String APP_NAME = "GraphAdmin";
-    private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(GraphAdminApp.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphAdminApp.class);
 
     private static final String FROMAPPID = "AAI-GA";
     private static final String TRANSID = UUID.randomUUID().toString();
+    
+    private static AaiDebugLog debugLog = new AaiDebugLog();
+	static {
+		debugLog.setupMDC();
+	}
+
 
     @Autowired
     private Environment env;
@@ -86,17 +94,6 @@ public class GraphAdminApp {
     @PostConstruct
     private void initialize(){
         loadDefaultProps();
-        initializeLoggingContext();
-    }
-
-    private static void initializeLoggingContext() {
-        LoggingContext.save();
-        LoggingContext.component("init");
-        LoggingContext.partnerName("NA");
-        LoggingContext.targetEntity(APP_NAME);
-        LoggingContext.requestId(UUID.randomUUID().toString());
-        LoggingContext.serviceName(APP_NAME);
-        LoggingContext.targetServiceName("contextInitialized");
     }
 
     @PreDestroy
@@ -107,8 +104,8 @@ public class GraphAdminApp {
     public static void main(String[] args) throws Exception {
 
         loadDefaultProps();
+
         ErrorLogHelper.loadProperties();
-        initializeLoggingContext();
 
         Environment env =null;
         AAIConfig.init();
@@ -121,9 +118,6 @@ public class GraphAdminApp {
 
         catch(Exception ex){
             AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(ex);
-            LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
-            LOGGER.error("Problems starting GraphAdminApp "+aai.getMessage());
             ErrorLogHelper.logException(aai);
             ErrorLogHelper.logError(aai.getCode(), ex.getMessage() + ", resolve and restart GraphAdmin");
             throw aai;
@@ -141,7 +135,6 @@ public class GraphAdminApp {
 
         System.setProperty("org.onap.aai.graphadmin.started", "true");             
         LOGGER.info("GraphAdmin MicroService Started");
-        LOGGER.error("GraphAdmin MicroService Started");
         LOGGER.debug("GraphAdmin MicroService Started");
         System.out.println("GraphAdmin Microservice Started");
     }

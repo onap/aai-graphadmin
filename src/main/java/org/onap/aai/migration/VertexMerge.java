@@ -41,8 +41,8 @@ import org.onap.aai.serialization.db.DBSerializer;
 import org.onap.aai.edges.enums.EdgeType;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class recursively merges two vertices passed in.
@@ -52,7 +52,7 @@ import com.att.eelf.configuration.EELFManager;
  */
 public class VertexMerge {
 
-	private final EELFLogger logger = EELFManager.getInstance().getLogger(this.getClass().getSimpleName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
 	private final GraphTraversalSource g;
 	private final TransactionalGraphEngine engine;
@@ -98,7 +98,7 @@ public class VertexMerge {
 		Collection<Vertex> primaryCousins = this.engine.getQueryEngine().findCousinVertices(primary);
 		
 		secondaryCousins.removeAll(primaryCousins);
-		logger.info("removing vertex after merge: " + secondary );
+		logger.debug("removing vertex after merge: " + secondary );
 		if (this.hasNotifications && secondarySnapshot.isPresent()) {
 			this.notificationHelper.addEvent(secondary, secondarySnapshot.get(), EventAction.DELETE, this.serializer.getURIForVertex(secondary, false), basePath);
 		}

@@ -19,8 +19,6 @@
  */
 package org.onap.aai.dbgen;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
@@ -34,7 +32,6 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.type.TypeReference;
 import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.db.props.AAIProperties;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.dbmap.InMemoryGraph;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.EdgeRule;
@@ -51,7 +48,6 @@ import org.onap.aai.introspection.ModelType;
 import org.onap.aai.introspection.exceptions.AAIUnknownObjectException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.parsers.uri.URIToObject;
 import org.onap.aai.serialization.db.DBSerializer;
 import org.onap.aai.serialization.engines.InMemoryDBEngine;
@@ -63,6 +59,8 @@ import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.AAISystemExitUtil;
 import org.onap.aai.util.ExceptionTranslator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -101,10 +99,9 @@ public class DynamicPayloadGenerator {
 	private boolean exitFlag = true;
 	private CommandLineArgs cArgs;
 
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DynamicPayloadGenerator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DynamicPayloadGenerator.class);
 
 	private static final QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private static final DBConnectionType type = DBConnectionType.CACHED;
 	private static final ModelType introspectorFactoryType = ModelType.MOXY;
 	private final LoaderFactory loaderFactory;
 	private final EdgeIngestor edgeRules;
@@ -137,10 +134,8 @@ public class DynamicPayloadGenerator {
 			payloadgen.init(args);
 
 			payloadgen.generatePayloads();
-		} catch (AAIException e) {
-			LOGGER.error("Exception " + LogFormatTools.getStackTop(e));
-		} catch (IOException e) {
-			LOGGER.error("Exception " + LogFormatTools.getStackTop(e));
+		} catch (AAIException | IOException e) {
+			LOGGER.error("Exception {}", LogFormatTools.getStackTop(e));
 		}
 		if ( isSystemExit ) {
 			AAISystemExitUtil.systemExitCloseAAIGraph(1);
@@ -162,9 +157,7 @@ public class DynamicPayloadGenerator {
 			ctx.refresh();
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
-			LOGGER.error("Problems running tool "+aai.getMessage());
-			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+			LOGGER.error("Problems running tool {}", aai.getMessage());
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 
@@ -188,28 +181,28 @@ public class DynamicPayloadGenerator {
 		cArgs = new CommandLineArgs();
 		JCommander jCommander = new JCommander(cArgs, args);
 		jCommander.setProgramName(DynamicPayloadGenerator.class.getSimpleName());
-		LOGGER.info("Snapshot file " + cArgs.dataSnapshot);
+		LOGGER.debug("Snapshot file " + cArgs.dataSnapshot);
 
 
 		// TODO- How to add dynamic.properties
 
-		LOGGER.info("output file " + cArgs.output);
-		LOGGER.info("format file " + cArgs.format);
-		LOGGER.info("schema enabled " + cArgs.schemaEnabled);
-		LOGGER.info("Multiple snapshots " + cArgs.isMultipleSnapshot);
-		LOGGER.info("Is Partial Graph " + cArgs.isPartialGraph);
+		LOGGER.debug("output file " + cArgs.output);
+		LOGGER.debug("format file " + cArgs.format);
+		LOGGER.debug("schema enabled " + cArgs.schemaEnabled);
+		LOGGER.debug("Multiple snapshots " + cArgs.isMultipleSnapshot);
+		LOGGER.debug("Is Partial Graph " + cArgs.isPartialGraph);
 		
 		if (cArgs.config.isEmpty())
 			cArgs.config = AAIConstants.AAI_HOME_ETC_APP_PROPERTIES + "dynamic.properties";
 
-		LOGGER.info("config file " + cArgs.config);
+		LOGGER.debug("config file " + cArgs.config);
 		if (cArgs.nodePropertyFile.isEmpty())
 			cArgs.nodePropertyFile = AAIConstants.AAI_HOME_ETC_SCRIPT + "/tenant_isolation/nodes.json";
-		LOGGER.info("nodePropertyFile file " + cArgs.nodePropertyFile);
+		LOGGER.debug("nodePropertyFile file " + cArgs.nodePropertyFile);
 
 		if (cArgs.inputFilterPropertyFile.isEmpty())
 			cArgs.inputFilterPropertyFile = AAIConstants.AAI_HOME_ETC_SCRIPT + "/tenant_isolation/inputFilters.json";
-		LOGGER.info("inputFilterPropertyFile file " + cArgs.inputFilterPropertyFile);
+		LOGGER.debug("inputFilterPropertyFile file " + cArgs.inputFilterPropertyFile);
 
 		if (cArgs.isPartialGraph)
 			cArgs.dataSnapshot = cArgs.dataSnapshot+".partial";
@@ -222,7 +215,7 @@ public class DynamicPayloadGenerator {
 			sequenceInputStreams = validateMultipleSnapshots(cArgs.dataSnapshot);
 		}
 
-		LOGGER.info("Datasnapshot file " + cArgs.dataSnapshot);
+		LOGGER.debug("Datasnapshot file " + cArgs.dataSnapshot);
 		AAIConfig.init();
 
 		urlBase = AAIConfig.get("aai.server.url.base", "");
@@ -258,12 +251,12 @@ public class DynamicPayloadGenerator {
 		Map<String, Map<String, String>> inputFilters = readInputFilterPropertyFile(cArgs.inputFilterPropertyFile);
 		Map<String, String> filteredNodeTypes = findFilteredNodeTypes(cArgs.inputFilterPropertyFile);
 		// Read the input filter criteria
-		LOGGER.info("Load the Graph");
+		LOGGER.debug("Load the Graph");
 
 		this.loadGraph();
-		LOGGER.info("Generate payload");
+		LOGGER.debug("Generate payload");
 		this.generatePayload(nodeFilters, inputFilters, filteredNodeTypes);
-		LOGGER.info("Close graph");
+		LOGGER.debug("Close graph");
 		this.closeGraph();
 
 	}
@@ -303,10 +296,10 @@ public class DynamicPayloadGenerator {
 					new TypeReference<ArrayList<String>>() {
 					});
 			for (String cousin : cousins) {
-				LOGGER.info("Cousins-Filtered " + cousin);
+				LOGGER.debug("Cousins-Filtered " + cousin);
 			}
 			for (String parent : parents) {
-				LOGGER.info("Parents-Filtered " + parent);
+				LOGGER.debug("Parents-Filtered " + parent);
 			}
 			filterCousins.put(nodeType, cousins);
 			filterParents.put(nodeType, parents);
@@ -431,7 +424,7 @@ public class DynamicPayloadGenerator {
 		// TODO : parametrise version
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, version);
 
-		dbEngine = new InMemoryDBEngine(queryStyle, type, loader, inMemGraph.getGraph());
+		dbEngine = new InMemoryDBEngine(queryStyle, loader, inMemGraph.getGraph());
 		dbEngine.startTransaction();
 	}
 
@@ -456,7 +449,7 @@ public class DynamicPayloadGenerator {
 			readVertices(nodeType, filterCousins, filterParents, nodeInputFilterMap, filteredNodeType);
 			if(bw != null)
 				bw.close();
-			LOGGER.info("All Done-" + nodeType);
+			LOGGER.debug("All Done-" + nodeType);
 		}
 
 	}
@@ -466,7 +459,7 @@ public class DynamicPayloadGenerator {
 		String fileName = outfileName;
 		File outFile = new File(fileName);
 		FileWriter fw = null;
-		LOGGER.info(" Will write to " + fileName);
+		LOGGER.debug(" Will write to " + fileName);
 		try {
 			fw = new FileWriter(outFile.getAbsoluteFile());
 		} catch (IOException i) {
@@ -787,11 +780,11 @@ public class DynamicPayloadGenerator {
 		String targetDir = ".";
 		int lastSeparator = filenamePrefix.lastIndexOf(File.separator);
 
-		LOGGER.info("File separator=[" + File.separator + "] lastSeparator=" + lastSeparator + " filenamePrefix="
+		LOGGER.debug("File separator=[" + File.separator + "] lastSeparator=" + lastSeparator + " filenamePrefix="
 				+ filenamePrefix);
 		if (lastSeparator >= 0) {
 			targetDir = filenamePrefix.substring(0, lastSeparator);
-			LOGGER.info("targetDir=" + targetDir);
+			LOGGER.debug("targetDir=" + targetDir);
 		}
 		if (targetDir.length() == 0) {
 			String emsg = "No snapshot directory was found in path:" + filenamePrefix;

@@ -19,8 +19,8 @@
  */
 package org.onap.aai.dbgen;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -42,7 +42,7 @@ import static org.junit.Assert.fail;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ForceDeleteToolTest extends AAISetup {
 
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(ForceDeleteToolTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForceDeleteToolTest.class);
 
     private ForceDeleteTool deleteTool;
 

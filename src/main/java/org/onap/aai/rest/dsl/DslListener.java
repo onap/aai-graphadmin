@@ -19,8 +19,8 @@
  */
 package org.onap.aai.rest.dsl;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.onap.aai.AAIDslBaseListener;
 import org.onap.aai.AAIDslParser;
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class DslListener extends AAIDslBaseListener {
 
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DslQueryProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DslQueryProcessor.class);
 	private final EdgeIngestor edgeRules;
 
 	//TODO Use StringBuilder to build the query than concat

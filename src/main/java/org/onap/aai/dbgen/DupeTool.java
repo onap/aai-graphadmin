@@ -20,8 +20,8 @@
 package org.onap.aai.dbgen;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
@@ -40,8 +40,6 @@ import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
@@ -57,7 +55,7 @@ import java.util.Map.Entry;
 
 public class DupeTool {
 
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(DupeTool.class.getSimpleName());
+    private static final Logger logger = LoggerFactory.getLogger(DupeTool.class.getSimpleName());
     private static final String FROMAPPID = "AAI-DB";
     private static final String TRANSID = UUID.randomUUID().toString();
 
@@ -87,14 +85,12 @@ public class DupeTool {
 
     public void execute(String[] args){
 
-        String defVersion = "v16";
+        String defVersion = "v18";
         try {
             defVersion = AAIConfig.get(AAIConstants.AAI_DEFAULT_API_VERSION_PROP);
         } catch (AAIException ae) {
             String emsg = "Error trying to get default API Version property \n";
             System.out.println(emsg);
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
             logger.error(emsg);
             exit(0);
         }
@@ -104,8 +100,6 @@ public class DupeTool {
         try {
             loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, schemaVersions.getDefaultVersion());
         } catch (Exception ex) {
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
             logger.error("ERROR - Could not do the moxyMod.init() " + LogFormatTools.getStackTop(ex));
             exit(1);
         }
@@ -155,8 +149,6 @@ public class DupeTool {
                     if (thisArg.equals("-nodeType")) {
                         i++;
                         if (i >= args.length) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error(" No value passed with -nodeType option.  ");
                             exit(0);
                         }
@@ -165,8 +157,6 @@ public class DupeTool {
                     } else if (thisArg.equals("-sleepMinutes")) {
                         i++;
                         if (i >= args.length) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error("No value passed with -sleepMinutes option.");
                             exit(0);
                         }
@@ -174,8 +164,6 @@ public class DupeTool {
                         try {
                             sleepMinutes = Integer.parseInt(nextArg);
                         } catch (Exception e) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error("Bad value passed with -sleepMinutes option: ["
                                     + nextArg + "]");
                             exit(0);
@@ -184,8 +172,6 @@ public class DupeTool {
                     } else if (thisArg.equals("-maxFix")) {
                         i++;
                         if (i >= args.length) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error("No value passed with -maxFix option.");
                             exit(0);
                         }
@@ -193,8 +179,6 @@ public class DupeTool {
                         try {
                             maxRecordsToFix = Integer.parseInt(nextArg);
                         } catch (Exception e) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error("Bad value passed with -maxFix option: ["
                                     + nextArg + "]");
                             exit(0);
@@ -203,8 +187,6 @@ public class DupeTool {
                     } else if (thisArg.equals("-timeWindowMinutes")) {
                         i++;
                         if (i >= args.length) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error("No value passed with -timeWindowMinutes option.");
                             exit(0);
                         }
@@ -212,8 +194,6 @@ public class DupeTool {
                         try {
                             timeWindowMinutes = Integer.parseInt(nextArg);
                         } catch (Exception e) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error("Bad value passed with -timeWindowMinutes option: ["
                                     + nextArg + "]");
                             exit(0);
@@ -228,8 +208,6 @@ public class DupeTool {
                     } else if (thisArg.equals("-userId")) {
                         i++;
                         if (i >= args.length) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error(" No value passed with -userId option.  ");
                             exit(0);
                         }
@@ -238,16 +216,12 @@ public class DupeTool {
                     } else if (thisArg.equals("-params4Collect")) {
                         i++;
                         if (i >= args.length) {
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                             logger.error(" No value passed with -params4Collect option.  ");
                             exit(0);
                         }
                         filterParams = args[i];
                         argStr4Msg = argStr4Msg + " " + filterParams;
                     } else {
-                        LoggingContext.statusCode(StatusCode.ERROR);
-                        LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                         logger.error(" Unrecognized argument passed to DupeTool: ["
                                 + thisArg + "]. ");
                         logger.error(" Valid values are: -action -userId -vertexId -edgeId -overRideProtection ");
@@ -260,8 +234,6 @@ public class DupeTool {
             if ((userIdVal.length() < 6) || userIdVal.toUpperCase().equals("AAIADMIN")) {
                 String emsg = "userId parameter is required.  [" + userIdVal + "] passed to DupeTool(). userId must be not empty and not aaiadmin \n";
                 System.out.println(emsg);
-                LoggingContext.statusCode(StatusCode.ERROR);
-                LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                 logger.error(emsg);
                 exit(0);
             }
@@ -270,8 +242,6 @@ public class DupeTool {
             if (nodeTypeVal.equals("")) {
                 String emsg = " nodeType is a required parameter for DupeTool().\n";
                 System.out.println(emsg);
-                LoggingContext.statusCode(StatusCode.ERROR);
-                LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
                 logger.error(emsg);
                 exit(0);
             } else {
@@ -287,7 +257,7 @@ public class DupeTool {
             String msg = "";
             msg = "DupeTool called with these params: [" + argStr4Msg + "]";
             System.out.println(msg);
-            logger.info(msg);
+            logger.debug(msg);
 
             // Determine what the key fields are for this nodeType (and we want them ordered)
             ArrayList<String> keyPropNamesArr = new ArrayList<String>(obj.getKeys());
@@ -311,8 +281,6 @@ public class DupeTool {
             } catch (AAIException ae) {
                 String emsg = "Error trying to get initial set of nodes to check. \n";
                 System.out.println(emsg);
-                LoggingContext.statusCode(StatusCode.ERROR);
-                LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                 logger.error(emsg);
                 exit(0);
             }
@@ -321,13 +289,13 @@ public class DupeTool {
                 msg = " No vertices found to check.  Used nodeType = [" + nodeTypeVal
                         + "], windowMinutes = " + timeWindowMinutes
                         + ", filterData = [" + filterParams + "].";
-                logger.info(msg);
+                logger.debug(msg);
                 System.out.println(msg);
                 exit(0);
             } else {
                 msg = " Found " + verts2Check.size() + " nodes of type " + nodeTypeVal
                         + " to check using passed filterParams and windowStartTime. ";
-                logger.info(msg);
+                logger.debug(msg);
                 System.out.println(msg);
             }
 
@@ -349,15 +317,15 @@ public class DupeTool {
             }
 
             msg = " Found " + firstPassDupeSets.size() + " sets of duplicates for this request. ";
-            logger.info(msg);
+            logger.debug(msg);
             System.out.println(msg);
             if (firstPassDupeSets.size() > 0) {
                 msg = " Here is what they look like: ";
-                logger.info(msg);
+                logger.debug(msg);
                 System.out.println(msg);
                 for (int x = 0; x < firstPassDupeSets.size(); x++) {
                     msg = " Set " + x + ": [" + firstPassDupeSets.get(x) + "] ";
-                    logger.info(msg);
+                    logger.debug(msg);
                     System.out.println(msg);
                     showNodeDetailsForADupeSet(gt1, firstPassDupeSets.get(x), logger);
                 }
@@ -367,7 +335,7 @@ public class DupeTool {
             ArrayList<String> dupeSetsToFix = new ArrayList<String>();
             if (autoFix && firstPassDupeSets.size() == 0) {
                 msg = "AutoFix option is on, but no dupes were found on the first pass.  Nothing to fix.";
-                logger.info(msg);
+                logger.debug(msg);
                 System.out.println(msg);
             } else if (autoFix) {
                 // We will try to fix any dupes that we can - but only after sleeping for a
@@ -375,13 +343,13 @@ public class DupeTool {
                 try {
                     msg = "\n\n-----------  About to sleep for " + sleepMinutes + " minutes."
                             + "  -----------\n\n";
-                    logger.info(msg);
+                    logger.debug(msg);
                     System.out.println(msg);
                     int sleepMsec = sleepMinutes * 60 * 1000;
                     Thread.sleep(sleepMsec);
                 } catch (InterruptedException ie) {
                     msg = "\n >>> Sleep Thread has been Interrupted <<< ";
-                    logger.info(msg);
+                    logger.debug(msg);
                     System.out.println(msg);
                     exit(0);
                 }
@@ -401,16 +369,16 @@ public class DupeTool {
                 dupeSetsToFix = figureWhichDupesStillNeedFixing(firstPassDupeSets, secondPassDupeSets, logger);
                 msg = "\nAfter running a second pass, there were " + dupeSetsToFix.size()
                         + " sets of duplicates that we think can be deleted. ";
-                logger.info(msg);
+                logger.debug(msg);
                 System.out.println(msg);
                
                 if (dupeSetsToFix.size() > 0) {
                     msg = " Here is what the sets look like: ";
-                    logger.info(msg);
+                    logger.debug(msg);
                     System.out.println(msg);
                     for (int x = 0; x < dupeSetsToFix.size(); x++) {
                         msg = " Set " + x + ": [" + dupeSetsToFix.get(x) + "] ";
-                        logger.info(msg);
+                        logger.debug(msg);
                         System.out.println(msg);
                         showNodeDetailsForADupeSet(gt2, dupeSetsToFix.get(x), logger);
                     }
@@ -425,7 +393,7 @@ public class DupeTool {
                                 + ".  No nodes will be deleted. (use the"
                                 + " -maxFix option to override this limit.)";
                         System.out.println(infMsg);
-                        logger.info(infMsg);
+                       logger.debug(infMsg);
                     } else {
                         // Call the routine that fixes known dupes
                         didSomeDeletesFlag = deleteNonKeepers(gt2, dupeSetsToFix, logger);
@@ -500,15 +468,6 @@ public class DupeTool {
         props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
         MDC.put("logFilenameAppender", DupeTool.class.getSimpleName());
 
-        LoggingContext.init();
-        LoggingContext.partnerName(FROMAPPID);
-        LoggingContext.serviceName(AAIConstants.AAI_RESOURCES_MS);
-        LoggingContext.component("dupeTool");
-        LoggingContext.targetEntity(AAIConstants.AAI_RESOURCES_MS);
-        LoggingContext.targetServiceName("main");
-        LoggingContext.requestId(TRANSID);
-        LoggingContext.statusCode(StatusCode.COMPLETE);
-        LoggingContext.responseCode(LoggingContext.SUCCESS);
 
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
@@ -522,8 +481,6 @@ public class DupeTool {
         } catch (Exception e) {
             AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
             logger.error("Problems running DupeTool "+aai.getMessage());
-            LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
             ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
             throw aai;
         }
@@ -550,7 +507,7 @@ public class DupeTool {
                                                              String fromAppId, Graph g, String version, String nType,
                                                              ArrayList<Vertex> passedVertList,
                                                              ArrayList<String> keyPropNamesArr,
-                                                             Boolean specialTenantRule, Loader loader, EELFLogger logger) {
+                                                             Boolean specialTenantRule, Loader loader, Logger logger) {
 
         ArrayList<String> returnList = new ArrayList<String>();
 
@@ -643,14 +600,14 @@ public class DupeTool {
      * @param dbMaps            the db maps
      * @param keyPropNamesArr   Array (ordered) of keyProperty names
      * @param specialTenantRule flag
-     * @param EELFLogger        the logger
+     * @param Logger        the logger
      * @return the array list
      */
     private ArrayList<String> getDupeSets4DependentNodes(String transId,
                                                                 String fromAppId, Graph g, String version, String nType,
                                                                 ArrayList<Vertex> passedVertList,
                                                                 ArrayList<String> keyPropNamesArr, Loader loader,
-                                                                Boolean specialTenantRule, EELFLogger logger) {
+                                                                Boolean specialTenantRule, Logger logger) {
 
         // This is for nodeTypes that DEPEND ON A PARENT NODE FOR UNIQUNESS
 
@@ -766,15 +723,13 @@ public class DupeTool {
     }// End of getDupeSets4DependentNodes()
 
 
-    private Graph getGraphTransaction(JanusGraph graph, EELFLogger logger) {
+    private Graph getGraphTransaction(JanusGraph graph, Logger logger) {
 
         Graph gt = null;
         try {
             if (graph == null) {
                 String emsg = "could not get graph object in DupeTool.  \n";
                 System.out.println(emsg);
-                LoggingContext.statusCode(StatusCode.ERROR);
-                LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
                 logger.error(emsg);
                 exit(0);
             }
@@ -787,15 +742,11 @@ public class DupeTool {
         } catch (AAIException e1) {
             String msg = e1.getErrorObject().toString();
             System.out.println(msg);
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
             logger.error(msg);
             exit(0);
         } catch (Exception e2) {
             String msg = e2.toString();
             System.out.println(msg);
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
             logger.error(msg);
             exit(0);
         }
@@ -805,39 +756,35 @@ public class DupeTool {
     }// End of getGraphTransaction()
 
 
-    public void showNodeInfo(EELFLogger logger, Vertex tVert, Boolean displayAllVidsFlag) {
+    public void showNodeInfo(Logger logger, Vertex tVert, Boolean displayAllVidsFlag) {
 
         try {
             Iterator<VertexProperty<Object>> pI = tVert.properties();
             String infStr = ">>> Found Vertex with VertexId = " + tVert.id() + ", properties:    ";
             System.out.println(infStr);
-            logger.info(infStr);
+            logger.debug(infStr);
             while (pI.hasNext()) {
                 VertexProperty<Object> tp = pI.next();
                 infStr = " [" + tp.key() + "|" + tp.value() + "] ";
                 System.out.println(infStr);
-                logger.info(infStr);
+                logger.debug(infStr);
             }
 
             ArrayList<String> retArr = collectEdgeInfoForNode(logger, tVert, displayAllVidsFlag);
             for (String infoStr : retArr) {
                 System.out.println(infoStr);
-                logger.info(infoStr);
+                logger.debug(infoStr);
             }
         } catch (Exception e) {
             String warnMsg = " -- Error -- trying to display edge info. [" + e.getMessage() + "]";
             System.out.println(warnMsg);
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
             logger.warn(warnMsg);
-            LoggingContext.statusCode(StatusCode.COMPLETE);
-            LoggingContext.responseCode(LoggingContext.SUCCESS);
         }
 
     }// End of showNodeInfo()
 
 
-    public ArrayList<String> collectEdgeInfoForNode(EELFLogger logger, Vertex tVert, boolean displayAllVidsFlag) {
+    public ArrayList<String> collectEdgeInfoForNode(Logger logger, Vertex tVert, boolean displayAllVidsFlag) {
         ArrayList<String> retArr = new ArrayList<String>();
         Direction dir = Direction.OUT;
         for (int i = 0; i <= 1; i++) {
@@ -909,7 +856,7 @@ public class DupeTool {
      * @throws AAIException the AAI exception
      */
     public ArrayList<Vertex> getNodeJustUsingKeyParams(String transId, String fromAppId, Graph graph, String nodeType,
-                                                              HashMap<String, Object> keyPropsHash, String apiVersion, EELFLogger logger) throws AAIException {
+                                                              HashMap<String, Object> keyPropsHash, String apiVersion, Logger logger) throws AAIException {
 
         ArrayList<Vertex> retVertList = new ArrayList<Vertex>();
 
@@ -956,11 +903,7 @@ public class DupeTool {
                 throw new AAIException("AAI_6114", " We only support 4 keys per nodeType for now \n");
             }
         } catch (Exception ex) {
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
             logger.error(" ERROR trying to get node for: [" + propsAndValuesForMsg + "] " + LogFormatTools.getStackTop(ex));
-            LoggingContext.statusCode(StatusCode.COMPLETE);
-            LoggingContext.responseCode(LoggingContext.SUCCESS);
         }
 
         if (verts != null) {
@@ -995,7 +938,7 @@ public class DupeTool {
      */
     public ArrayList<Vertex> figureOutNodes2Check(String transId, String fromAppId,
                                                          Graph graph, String nodeType, long windowStartTime,
-                                                         String propsString, EELFLogger logger) throws AAIException {
+                                                         String propsString, Logger logger) throws AAIException {
 
         ArrayList<Vertex> retVertList = new ArrayList<Vertex>();
         String msg = "";
@@ -1008,8 +951,6 @@ public class DupeTool {
             if (firstPipeLoc <= 0) {
                 msg = "Bad props4Collect passed: [" + propsString + "].  \n Expecting a format like, 'propName1|propVal1,propName2|propVal2'";
                 System.out.println(msg);
-                LoggingContext.statusCode(StatusCode.ERROR);
-                LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                 logger.error(msg);
                 exit(0);
             }
@@ -1021,8 +962,6 @@ public class DupeTool {
                 if (pipeLoc <= 0) {
                     msg = "Bad propsString passed: [" + propsString + "].  \n Expecting a format like, 'propName1|propVal1,propName2|propVal2'";
                     System.out.println(msg);
-                    LoggingContext.statusCode(StatusCode.ERROR);
-                    LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                     logger.error(msg);
                     exit(0);
                 } else {
@@ -1037,8 +976,6 @@ public class DupeTool {
         if (tgQ == null) {
             msg = "Bad JanusGraphQuery object.  ";
             System.out.println(msg);
-            LoggingContext.statusCode(StatusCode.ERROR);
-            LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
             logger.error(msg);
             exit(0);
         } else {
@@ -1081,14 +1018,14 @@ public class DupeTool {
      * @param g              the g
      * @param dupeVertexList the dupe vertex list
      * @param ver            the ver
-     * @param EELFLogger     the logger
+     * @param Logger     the logger
      * @return Vertex
      * @throws AAIException the AAI exception
      */
     public Vertex getPreferredDupe(String transId,
                                           String fromAppId, Graph g,
                                           ArrayList<Vertex> dupeVertexList, String ver,
-                                          Boolean specialTenantRule, Loader loader, EELFLogger logger)
+                                          Boolean specialTenantRule, Loader loader, Logger logger)
             throws AAIException {
 
 		// This method assumes that it is being passed a List of 
@@ -1168,13 +1105,13 @@ public class DupeTool {
      * @param vtxB       the vtx B
      * @param ver        the ver
      * @param boolean    specialTenantRuleFlag flag
-     * @param EELFLogger the logger
+     * @param Logger the logger
      * @return Vertex
      * @throws AAIException the AAI exception
      */
     public Vertex pickOneOfTwoDupes(String transId,
                                            String fromAppId, GraphTraversalSource gts, Vertex vtxA,
-                                           Vertex vtxB, String ver, Boolean specialTenantRule, Loader loader, EELFLogger logger) throws AAIException {
+                                           Vertex vtxB, String ver, Boolean specialTenantRule, Loader loader, Logger logger) throws AAIException {
 
         Vertex nullVtx = null;
         Vertex preferredVtx = null;
@@ -1352,13 +1289,13 @@ public class DupeTool {
                         String infMsg = " WARNING >>> we are using the special tenant rule to choose to " +
                                 " delete tenant vtxId = " + vidA + ", and keep tenant vtxId = " + vidB;
                         System.out.println(infMsg);
-                        logger.info(infMsg);
+                        logger.debug(infMsg);
                         preferredVtx = vtxB;
                     } else if (nodeTypesConn2B.containsKey("vserver") && nodeTypesConn2A.containsKey("service-subscription")) {
                         String infMsg = " WARNING >>> we are using the special tenant rule to choose to " +
                                 " delete tenant vtxId = " + vidB + ", and keep tenant vtxId = " + vidA;
                         System.out.println(infMsg);
-                        logger.info(infMsg);
+                        logger.debug(infMsg);
                         preferredVtx = vtxA;
                     }
                 }
@@ -1474,11 +1411,11 @@ public class DupeTool {
      *
      * @param g            the g
      * @param dupeInfoList the dupe info string
-     * @param logger       the EELFLogger
+     * @param logger       the Logger
      * @return the boolean
      */
     private Boolean deleteNonKeepers(Graph g,
-                                            ArrayList<String> dupeInfoList, EELFLogger logger) {
+                                            ArrayList<String> dupeInfoList, Logger logger) {
 
         // This assumes that each dupeInfoString is in the format of
         // pipe-delimited vid's followed by either "keepVid=xyz" or "keepVid=UNDETERMINED"
@@ -1501,11 +1438,11 @@ public class DupeTool {
      *
      * @param g          the g
      * @param dupeSetStr the dupe string
-     * @param logger     the EELFLogger
+     * @param logger     the Logger
      * @return the boolean
      */
     private Boolean deleteNonKeeperForOneSet(Graph g,
-                                                    String dupeInfoString, EELFLogger logger) {
+                                                    String dupeInfoString, Logger logger) {
 
         Boolean deletedSomething = false;
         // This assumes that each dupeInfoString is in the format of
@@ -1536,11 +1473,7 @@ public class DupeTool {
                     if (prefArr.length != 2 || (!prefArr[0].equals("KeepVid"))) {
                         String emsg = "Bad format. Expecting KeepVid=999999";
                         System.out.println(emsg);
-                        LoggingContext.statusCode(StatusCode.ERROR);
-                        LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                         logger.error(emsg);
-                        LoggingContext.statusCode(StatusCode.COMPLETE);
-                        LoggingContext.responseCode(LoggingContext.SUCCESS);
                         return false;
                     } else {
                         String keepVidStr = prefArr[1];
@@ -1556,21 +1489,17 @@ public class DupeTool {
                                     Vertex vtx = g.traversal().V(longVertId).next();
                                     String msg = "--->>>   We will delete node with VID = " + thisVid + " <<<---";
                                     System.out.println(msg);
-                                    logger.info(msg);
+                                    logger.debug(msg);
                                     vtx.remove();
                                 } catch (Exception e) {
                                     okFlag = false;
                                     String emsg = "ERROR trying to delete VID = " + thisVid + ", [" + e + "]";
                                     System.out.println(emsg);
-                                    LoggingContext.statusCode(StatusCode.ERROR);
-                                    LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                                     logger.error(emsg);
-                                    LoggingContext.statusCode(StatusCode.COMPLETE);
-                                    LoggingContext.responseCode(LoggingContext.SUCCESS);
                                 }
                                 if (okFlag) {
                                     String infMsg = " DELETED VID = " + thisVid;
-                                    logger.info(infMsg);
+                                    logger.debug(infMsg);
                                     System.out.println(infMsg);
                                     deletedSomething = true;
                                 }
@@ -1578,11 +1507,7 @@ public class DupeTool {
                         } else {
                             String emsg = "ERROR - Vertex Id to keep not found in list of dupes.  dupeInfoString = ["
                                     + dupeInfoString + "]";
-                            LoggingContext.statusCode(StatusCode.ERROR);
-                            LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                             logger.error(emsg);
-                            LoggingContext.statusCode(StatusCode.COMPLETE);
-                            LoggingContext.responseCode(LoggingContext.SUCCESS);
                             System.out.println(emsg);
                             return false;
                         }
@@ -1601,11 +1526,11 @@ public class DupeTool {
      *
      * @param tvx              the vertex to pull the properties from
      * @param keyPropertyNames ArrayList (ordered) of key prop names
-     * @param logger           the EELFLogger
+     * @param logger           the Logger
      * @return a hashMap of the propertyNames/values
      */
     private HashMap<String, Object> getNodeKeyVals(Vertex tvx,
-                                                          ArrayList<String> keyPropNamesArr, EELFLogger logger) {
+                                                          ArrayList<String> keyPropNamesArr, Logger logger) {
 
         HashMap<String, Object> retHash = new HashMap<String, Object>();
         Iterator<String> propItr = keyPropNamesArr.iterator();
@@ -1629,11 +1554,11 @@ public class DupeTool {
 	 * @param fromAppId the from app id
 	 * @param graph the graph
 	 * @param vtx
-	 * @param EELFLogger         
+	 * @param Logger         
 	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
 	 * @throws AAIException the AAI exception
 	 */
-	private Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx, EELFLogger eLogger )
+	private Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx, Logger eLogger )
 			throws AAIException{
 		String aaiUriStr = "";
 		try { 
@@ -1677,8 +1602,6 @@ public class DupeTool {
 			}
 		}
 		catch( Exception ex ){
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			eLogger.error(" ERROR trying to get node with aai-uri: [" + aaiUriStr + "]" + LogFormatTools.getStackTop(ex));
 		}
 		return true;
@@ -1691,11 +1614,11 @@ public class DupeTool {
      *
      * @param tvx              the vertex to pull the properties from
      * @param keyPropertyNames collection of key prop names
-     * @param logger           the EELFLogger
+     * @param logger           the Logger
      * @return a String of concatenated values
      */
     private String getNodeKeyValString(Vertex tvx,
-                                              ArrayList<String> keyPropNamesArr, EELFLogger logger) {
+                                              ArrayList<String> keyPropNamesArr, Logger logger) {
 
         // -- NOTE -- for what we're using this for, we would need to
         // guarantee that the properties are always in the same order
@@ -1719,11 +1642,11 @@ public class DupeTool {
      *
      * @param firstPassDupeSets  from the first pass
      * @param secondPassDupeSets from the second pass
-     * @param EELFLogger         logger
+     * @param Logger         logger
      * @return commonDupeSets that are common to both passes and have a determined keeper
      */
     private ArrayList<String> figureWhichDupesStillNeedFixing(ArrayList<String> firstPassDupeSets,
-                                                                     ArrayList<String> secondPassDupeSets, EELFLogger logger) {
+                                                                     ArrayList<String> secondPassDupeSets, Logger logger) {
 
         ArrayList<String> common2BothSet = new ArrayList<String>();
 
@@ -1815,7 +1738,7 @@ public class DupeTool {
 
 
     private HashMap<String, ArrayList<String>> makeKeeperHashOfDupeStrings(ArrayList<String> dupeSets,
-                                                                                  ArrayList<String> excludeSets, EELFLogger logger) {
+                                                                                  ArrayList<String> excludeSets, Logger logger) {
 
         HashMap<String, ArrayList<String>> keeperHash = new HashMap<String, ArrayList<String>>();
 
@@ -1852,7 +1775,7 @@ public class DupeTool {
                             String infMsg = "Bad format in figureWhichDupesStillNeedFixing(). Expecting " +
                                     " KeepVid=999999 but string looks like: [" + tmpSetStr + "]";
                             System.out.println(infMsg);
-                            logger.info(infMsg);
+                            logger.debug(infMsg);
                         } else {
                             keeperHash.put(prefArr[0], delIdArr);
                         }
@@ -1871,10 +1794,10 @@ public class DupeTool {
      *
      * @param g              the g
      * @param dupeInfoString
-     * @param logger         the EELFLogger
+     * @param logger         the Logger
      * @return void
      */
-    private void showNodeDetailsForADupeSet(Graph g, String dupeInfoString, EELFLogger logger) {
+    private void showNodeDetailsForADupeSet(Graph g, String dupeInfoString, Logger logger) {
 
         // dang...   parsing this string once again...
 
@@ -1894,7 +1817,7 @@ public class DupeTool {
                 if (prefString.equals("KeepVid=UNDETERMINED")) {
                     String msg = " Our algorithm cannot choose from among these, so they will all be kept. -------\n";
                     System.out.println(msg);
-                    logger.info(msg);
+                    logger.debug(msg);
                 } else {
                     // If we know which to keep, then the prefString should look
                     // like, "KeepVid=12345"
@@ -1902,16 +1825,12 @@ public class DupeTool {
                     if (prefArr.length != 2 || (!prefArr[0].equals("KeepVid"))) {
                         String emsg = "Bad format. Expecting KeepVid=999999";
                         System.out.println(emsg);
-                        LoggingContext.statusCode(StatusCode.ERROR);
-                        LoggingContext.responseCode(LoggingContext.DATA_ERROR);
                         logger.error(emsg);
-                        LoggingContext.statusCode(StatusCode.COMPLETE);
-                        LoggingContext.responseCode(LoggingContext.SUCCESS);
                     } else {
                         String keepVidStr = prefArr[1];
                         String msg = " vid = " + keepVidStr + " is the one that we would KEEP. ------\n";
                         System.out.println(msg);
-                        logger.info(msg);
+                        logger.debug(msg);
                     }
                 }
             }
@@ -1921,7 +1840,7 @@ public class DupeTool {
 
     private int graphIndex = 1;
 
-    public JanusGraph setupGraph(EELFLogger logger) {
+    public JanusGraph setupGraph(Logger logger) {
 
         JanusGraph JanusGraph = null;
 
@@ -1945,7 +1864,7 @@ public class DupeTool {
         return JanusGraph;
     }
 
-    public void closeGraph(JanusGraph graph, EELFLogger logger) {
+    public void closeGraph(JanusGraph graph, Logger logger) {
 
         try {
             if ("inmemory".equals(graphType)) {

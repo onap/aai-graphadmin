@@ -31,14 +31,15 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.att.eelf.configuration.EELFLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 
 public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 	
-	private EELFLogger LOGGER;
+	private Logger LOGGER;
 
 	private JanusGraph jg;
 	private String fName;
@@ -51,7 +52,7 @@ public class PartialPropAndEdgeLoader implements Callable <ArrayList<String>>{
 
 		
 	public PartialPropAndEdgeLoader (JanusGraph graph, String fn, Long edgeDelay, Long failureDelay, Long retryDelay, 
-			 HashMap<String,String> vidMap, int maxErrors, EELFLogger elfLog ){
+			 HashMap<String,String> vidMap, int maxErrors, Logger elfLog ){
 		jg = graph;
 		fName = fn;
 		edgeAddDelayMs = edgeDelay;

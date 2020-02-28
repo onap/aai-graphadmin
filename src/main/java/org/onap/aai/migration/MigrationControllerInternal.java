@@ -20,6 +20,33 @@
 
 package org.onap.aai.migration;
 
+import com.att.eelf.configuration.Configuration;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.onap.aai.datasnapshot.DataSnapshot;
+import org.onap.aai.db.props.AAIProperties;
+import org.onap.aai.dbmap.AAIGraph;
+import org.onap.aai.edges.EdgeIngestor;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.introspection.Loader;
+import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.introspection.ModelType;
+import org.onap.aai.serialization.db.EdgeSerializer;
+import org.onap.aai.serialization.engines.JanusGraphDBEngine;
+import org.onap.aai.serialization.engines.QueryStyle;
+import org.onap.aai.serialization.engines.TransactionalGraphEngine;
+import org.onap.aai.setup.SchemaVersion;
+import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.FormatDate;
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -27,44 +54,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.apache.tinkerpop.gremlin.structure.io.IoCore;
-import org.onap.aai.datasnapshot.DataSnapshot;
-import org.onap.aai.db.props.AAIProperties;
-import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.dbmap.DBConnectionType;
-import org.onap.aai.edges.EdgeIngestor;
-import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.introspection.Loader;
-import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.introspection.ModelType;
-import org.onap.aai.serialization.db.EdgeSerializer;
-import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
-import org.onap.aai.serialization.engines.QueryStyle;
-import org.onap.aai.serialization.engines.JanusGraphDBEngine;
-import org.onap.aai.serialization.engines.TransactionalGraphEngine;
-import org.onap.aai.util.AAIConstants;
-import org.onap.aai.util.FormatDate;
-import org.reflections.Reflections;
-import org.slf4j.MDC;
-
-import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 
 /**
  * Runs a series of migrations from a defined directory based on the presence of
@@ -74,8 +67,7 @@ import com.beust.jcommander.Parameter;
  */
 public class MigrationControllerInternal {
 
-	private EELFLogger logger;
-	private final int DANGER_ZONE = 10;
+	private Logger logger;
 	public static final String VERTEX_TYPE = "migration-list-1707";
 	private final List<String> resultsSummary = new ArrayList<>();
 	private final List<NotificationHelper> notifications = new ArrayList<>();
@@ -107,10 +99,8 @@ public class MigrationControllerInternal {
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "migration-logback.xml");
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_ETC_APP_PROPERTIES);
 
-		logger = EELFManager.getInstance().getLogger(MigrationControllerInternal.class.getSimpleName());
+		logger = LoggerFactory.getLogger(MigrationControllerInternal.class.getSimpleName());
 		MDC.put("logFilenameAppender", MigrationController.class.getSimpleName());
-
-		boolean loadSnapshot = false;
 
 		CommandLineArgs cArgs = new CommandLineArgs();
 
@@ -123,8 +113,6 @@ public class MigrationControllerInternal {
 			try {
 				PropertiesConfiguration config = new PropertiesConfiguration(cArgs.config);
 				if (config.getString("storage.backend").equals("inmemory")) {
-					loadSnapshot = true;
-//					System.setProperty("load.snapshot.file", "true");
 					System.setProperty("snapshot.location", cArgs.dataSnapshot);
 					String snapshotLocation =cArgs.dataSnapshot;
 					String snapshotDir;
@@ -136,15 +124,13 @@ public class MigrationControllerInternal {
 						snapshotFile = snapshotLocation;
 					} else {
 						snapshotDir = snapshotLocation.substring(0, index+1);
-						snapshotFile = snapshotLocation.substring(index+1, snapshotLocation.length()) ;
+						snapshotFile = snapshotLocation.substring(index+1) ;
 					}
 					String [] dataSnapShotArgs = {"-c","MULTITHREAD_RELOAD","-f", snapshotFile, "-oldFileDir",snapshotDir, "-caller","migration"};
 					DataSnapshot dataSnapshot = new DataSnapshot();
 					dataSnapshot.executeCommand(dataSnapShotArgs, true, false, null, "MULTITHREAD_RELOAD", snapshotFile);
 				}
 			} catch (ConfigurationException e) {
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logAndPrint("ERROR: Could not load janusgraph configuration.\n" + ExceptionUtils.getFullStackTrace(e));
 				return;
 			}
@@ -160,7 +146,7 @@ public class MigrationControllerInternal {
 		QueryStyle queryStyle = QueryStyle.TRAVERSAL;
 		ModelType introspectorFactoryType = ModelType.MOXY;
 		Loader loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, version);
-		TransactionalGraphEngine engine = new JanusGraphDBEngine(queryStyle, DBConnectionType.REALTIME, loader);
+		TransactionalGraphEngine engine = new JanusGraphDBEngine(queryStyle, loader);
 
 		if (cArgs.help) {
 			jCommander.usage();
@@ -172,7 +158,7 @@ public class MigrationControllerInternal {
 		List<Class<? extends Migrator>> migratorClasses = new ArrayList<>(findClasses(reflections));
 		//Displays list of migration classes which needs to be executed.Pass flag "-l" following by the class names
 		if (cArgs.list) {
-			listMigrationWithStatus(cArgs, migratorClasses, engine);
+			listMigrationWithStatus(migratorClasses, engine);
 			return;
 		}
 
@@ -180,18 +166,15 @@ public class MigrationControllerInternal {
 		//Excluding any migration class when run migration from script.Pass flag "-e" following by the class names
 		if (!cArgs.excludeClasses.isEmpty()) {
 			migratorClasses = filterMigrationClasses(cArgs.excludeClasses, migratorClasses);
-			listMigrationWithStatus(cArgs, migratorClasses, engine);
+			listMigrationWithStatus(migratorClasses, engine);
 		}
 		List<Class<? extends Migrator>> migratorClassesToRun = createMigratorList(cArgs, migratorClasses);
 
 		sortList(migratorClassesToRun);
 
 		if (!cArgs.scripts.isEmpty() && migratorClassesToRun.isEmpty()) {
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 			logAndPrint("\tERROR: Failed to find migrations " + cArgs.scripts + ".");
 			logAndPrint("---------- Done ----------");
-			LoggingContext.successStatusFields();
 		}
 
 		logAndPrint("\tFound " + migratorClassesToRun.size() + " migration scripts.");
@@ -199,7 +182,7 @@ public class MigrationControllerInternal {
 
 
 		if (!cArgs.skipPreMigrationSnapShot) {
-			takePreSnapshotIfRequired(engine, cArgs, migratorClassesToRun);
+			takePreSnapshotIfRequired(engine);
 		}
 
 		for (Class<? extends Migrator> migratorClass : migratorClassesToRun) {
@@ -222,10 +205,7 @@ public class MigrationControllerInternal {
 							SchemaVersions.class
 						).newInstance(engine, loaderFactory, edgeIngestor, edgeSerializer,schemaVersions);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-					LoggingContext.statusCode(StatusCode.ERROR);
-					LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 					logAndPrint("EXCEPTION caught initalizing migration class " + migratorClass.getSimpleName() + ".\n" + ExceptionUtils.getFullStackTrace(e));
-					LoggingContext.successStatusFields();
 					engine.rollback();
 					continue;
 				}
@@ -245,11 +225,8 @@ public class MigrationControllerInternal {
 			try {
 				notificationHelper.triggerEvents();
 			} catch (AAIException e) {
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
 				logAndPrint("\tcould not event");
 				logger.error("could not event", e);
-				LoggingContext.successStatusFields();
 			}
 		}
 		logAndPrint("---------- Done ----------");
@@ -276,16 +253,13 @@ public class MigrationControllerInternal {
 			List<String> excludeClasses,
 			List<Class<? extends Migrator>> migratorClasses) {
 
-		List<Class<? extends Migrator>> filteredMigratorClasses = migratorClasses
+		return migratorClasses
 				.stream()
 				.filter(migratorClass -> !excludeClasses.contains(migratorClass
 						.getSimpleName())).collect(Collectors.toList());
-
-		return filteredMigratorClasses;
 	}
 
-	private void listMigrationWithStatus(CommandLineArgs cArgs,
-			List<Class<? extends Migrator>> migratorClasses, TransactionalGraphEngine engine) {
+	private void listMigrationWithStatus(List<Class<? extends Migrator>> migratorClasses, TransactionalGraphEngine engine) {
 			sortList(migratorClasses);
 			engine.startTransaction();
 			System.out.println("---------- List of all migrations ----------");
@@ -317,9 +291,10 @@ public class MigrationControllerInternal {
 		return engine.asAdmin().getReadOnlyTraversalSource().V().has(AAIProperties.NODE_TYPE, VERTEX_TYPE).has(name, true).hasNext();
 	}
 	private Set<Class<? extends Migrator>> findClasses(Reflections reflections) {
-		Set<Class<? extends Migrator>> migratorClasses = reflections.getSubTypesOf(Migrator.class).stream()
-				.filter(clazz -> clazz.isAnnotationPresent(MigrationPriority.class))
-				.collect(Collectors.toSet());
+		Set<Class<? extends Migrator>> migratorClasses = reflections.getSubTypesOf(Migrator.class);
+        Set<Class<? extends Migrator>> migratorClasses = reflections.getSubTypesOf(Migrator.class).stream()
+                       .filter(clazz -> clazz.isAnnotationPresent(MigrationPriority.class))
+                       .collect(Collectors.toSet());
 		/*
 		 * TODO- Change this to make sure only classes in the specific $release are added in the runList
 		 * Or add a annotation like exclude which folks again need to remember to add ??
@@ -331,22 +306,7 @@ public class MigrationControllerInternal {
 	}
 
 
-	private void takePreSnapshotIfRequired(TransactionalGraphEngine engine, CommandLineArgs cArgs, List<Class<? extends Migrator>> migratorClassesToRun) {
-
-		/*int sum = 0;
-		for (Class<? extends Migrator> migratorClass : migratorClassesToRun) {
-			if (migratorClass.isAnnotationPresent(Enabled.class)) {
-				sum += migratorClass.getAnnotation(MigrationPriority.class).value();
-			}
-		}
-
-		if (sum >= DANGER_ZONE) {
-
-			logAndPrint("Entered Danger Zone. Taking snapshot.");
-		}*/
-
-		//always take snapshot for now
-
+	private void takePreSnapshotIfRequired(TransactionalGraphEngine engine) {
 		generateSnapshot(engine, "pre");
 
 	}
@@ -357,15 +317,13 @@ public class MigrationControllerInternal {
         List<Class<? extends Migrator>> migratorClassesToRun = new ArrayList<>();
         if (cArgs.scripts.isEmpty()) {
             return migratorClasses;
+
         }
-        
         for (Class<? extends Migrator> migratorClass : migratorClasses) {
-            if (migratorExplicitlySpecified(cArgs, migratorClass.getSimpleName()) 
-                    || migratorToRunWhenDisabled(cArgs, migratorClass.getSimpleName())) {
+            if (migratorExplicitlySpecified(cArgs, migratorClass.getSimpleName()) || migratorToRunWhenDisabled(cArgs, migratorClass.getSimpleName())) {
                 migratorClassesToRun.add(migratorClass);
             }
         }
-        
         return migratorClassesToRun;
     }
 
@@ -377,7 +335,7 @@ public class MigrationControllerInternal {
     }
 
 	private void sortList(List<Class<? extends Migrator>> migratorClasses) {
-		Collections.sort(migratorClasses, (m1, m2) -> {
+		migratorClasses.sort((m1, m2) -> {
 			try {
 				if (m1.getAnnotation(MigrationPriority.class).value() > m2.getAnnotation(MigrationPriority.class).value()) {
 					return 1;
@@ -399,7 +357,6 @@ public class MigrationControllerInternal {
 		String dateStr= fd.getDateTime();
 		String fileName = SNAPSHOT_LOCATION + File.separator + phase + "Migration." + dateStr + ".graphson";
 		logAndPrint("Saving snapshot of graph " + phase + " migration to " + fileName);
-		Graph transaction = null;
 		try {
 
 			Path pathToFile = Paths.get(fileName);
@@ -409,14 +366,8 @@ public class MigrationControllerInternal {
 			String [] dataSnapshotArgs = {"-c","THREADED_SNAPSHOT", "-fileName",fileName, "-caller","migration"};
 			DataSnapshot dataSnapshot = new DataSnapshot();
 			dataSnapshot.executeCommand(dataSnapshotArgs, true, false, null, "THREADED_SNAPSHOT", null);
-//			transaction = engine.startTransaction();
-//			transaction.io(IoCore.graphson()).writeGraph(fileName);
-//			engine.rollback();
 		} catch (IOException e) {
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
 			logAndPrint("ERROR: Could not write in memory graph to " + phase + "Migration file. \n" + ExceptionUtils.getFullStackTrace(e));
-			LoggingContext.successStatusFields();
 			engine.rollback();
 		}
 
@@ -430,7 +381,7 @@ public class MigrationControllerInternal {
 	 */
 	protected void logAndPrint(String msg) {
 		System.out.println(msg);
-		logger.info(msg);
+		logger.debug(msg);
 	}
 
 	/**
@@ -448,24 +399,18 @@ public class MigrationControllerInternal {
 		String message;
 		if (migrator.getStatus().equals(Status.FAILURE)) {
 			message = "Migration " + simpleName + " Failed. Rolling back.";
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			logAndPrint("\t" + message);
-			LoggingContext.successStatusFields();
 			migrator.rollback();
 		} else if (migrator.getStatus().equals(Status.CHECK_LOGS)) {
 			message = "Migration " + simpleName + " encountered an anomaly, check logs. Rolling back.";
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			logAndPrint("\t" + message);
-			LoggingContext.successStatusFields();
 			migrator.rollback();
 		} else {
 			MDC.put("logFilenameAppender", simpleName + "/" + simpleName);
 
 			if (cArgs.commit) {
 				if (!engine.asAdmin().getTraversalSource().V().has(AAIProperties.NODE_TYPE, VERTEX_TYPE).hasNext()) {
-					engine.asAdmin().getTraversalSource().addV(AAIProperties.NODE_TYPE, VERTEX_TYPE).iterate();
+					engine.asAdmin().getTraversalSource().addV(VERTEX_TYPE).property(AAIProperties.NODE_TYPE, VERTEX_TYPE).iterate();
 				}
 				engine.asAdmin().getTraversalSource().V().has(AAIProperties.NODE_TYPE, VERTEX_TYPE)
 				.property(simpleName, true).iterate();

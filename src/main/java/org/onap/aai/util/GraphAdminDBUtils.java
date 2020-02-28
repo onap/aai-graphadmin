@@ -21,12 +21,12 @@ package org.onap.aai.util;
 
 import java.util.Iterator;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GraphAdminDBUtils {
 
-	private static EELFLogger LOGGER = EELFManager.getInstance().getLogger(GraphAdminDBUtils.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(GraphAdminDBUtils.class);
 
 	public static void logConfigs(org.apache.commons.configuration.Configuration configuration) {
 

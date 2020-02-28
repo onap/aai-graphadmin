@@ -19,37 +19,34 @@
  */
 package org.onap.aai.migration;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-import org.janusgraph.core.Cardinality;
-import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.janusgraph.core.Cardinality;
+import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.serialization.db.EdgeSerializer;
-import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
-import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
+import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
+import org.onap.aai.setup.SchemaVersions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class PropertyMigratorTest extends AAISetup {
 
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(PropertyMigratorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertyMigratorTest.class);
 
     public static class PserverPropMigrator extends PropertyMigrator {
 
@@ -109,7 +106,7 @@ public class PropertyMigratorTest extends AAISetup {
         String newPropName = "inventory-status";
 
         Loader loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, schemaVersions.getDefaultVersion());
-        JanusGraphDBEngine dbEngine = new JanusGraphDBEngine(QueryStyle.TRAVERSAL, DBConnectionType.REALTIME, loader);
+        JanusGraphDBEngine dbEngine = new JanusGraphDBEngine(QueryStyle.TRAVERSAL, loader);
         dbEngine.startTransaction();
 
         PropertyMigrator propertyMigrator = new PserverPropMigrator(dbEngine, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions, oldPropName, newPropName, String.class, Cardinality.SINGLE);

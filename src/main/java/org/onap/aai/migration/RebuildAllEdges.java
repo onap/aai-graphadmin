@@ -61,20 +61,20 @@ public class RebuildAllEdges extends EdgeMigrator {
     @Override
     protected void executeModifyOperation() {
         Instant started = Instant.now();
-        logger.info("Started at: " + started);
+        logger.debug("Started at: " + started);
         GraphTraversalSource graphTraversalSource = engine.asAdmin().getTraversalSource();
         Set<Edge> edges = graphTraversalSource.E().toSet();
         rebuildEdges(edges);
         Instant completed = Instant.now();
-        logger.info("Completed at: " + completed + ". Total time taken in ms : "
+        logger.debug("Completed at: " + completed + ". Total time taken in ms : "
                 + (completed.toEpochMilli() - started.toEpochMilli()));
-        logger.info(MIGRATION_SUMMARY_COUNT + " Total Edges : " + edges.size() + " . Processed count " + processed
+        logger.debug(MIGRATION_SUMMARY_COUNT + " Total Edges : " + edges.size() + " . Processed count " + processed
                 + " . Skipped count: " + skipped + ".");
-        logger.info(MIGRATION_SUMMARY_COUNT + "Edge Missing Parent Property Count: " 
+        logger.debug(MIGRATION_SUMMARY_COUNT + "Edge Missing Parent Property Count: " 
                 + edgeMissingParentProperty.size());
-        logger.info(MIGRATION_ERROR + "Edge Multiplicity Exception Count : "
+        logger.debug(MIGRATION_ERROR + "Edge Multiplicity Exception Count : "
                 + edgeMultiplicityExceptionCtr.values().stream().mapToInt(Number::intValue).sum());
-        logger.info(MIGRATION_ERROR + "Edge Multiplicity Exception Breakdown : " + edgeMultiplicityExceptionCtr);
+        logger.debug(MIGRATION_ERROR + "Edge Multiplicity Exception Breakdown : " + edgeMultiplicityExceptionCtr);
     }
     
     @Override

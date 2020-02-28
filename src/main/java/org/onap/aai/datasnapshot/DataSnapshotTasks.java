@@ -25,61 +25,58 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.datagrooming.DataGrooming;
 import org.onap.aai.datagrooming.DataGroomingTasks;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.util.AAIConfig;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class DataSnapshotTasks {
-
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DataSnapshotTasks.class);
+	
+	private AaiScheduledTaskAuditLog auditLog;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSnapshotTasks.class);
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
 	
 	@Scheduled(cron = "${datasnapshottasks.cron}" )
 	public void snapshotScheduleTask() throws AAIException, Exception {
-
-		LoggingContext.init();
-		LoggingContext.requestId(UUID.randomUUID().toString());
-		LoggingContext.partnerName("AAI");
-		LoggingContext.targetEntity("CronApp");
-		LoggingContext.component("dataSnapshot");
-		LoggingContext.serviceName("snapshotScheduleTask");
-		LoggingContext.targetServiceName("snapshotScheduleTask");
-		LoggingContext.statusCode(LoggingContext.StatusCode.COMPLETE);
-
+		auditLog = new AaiScheduledTaskAuditLog();
+		auditLog.logBefore("dataSnapshotTask", ONAPComponents.AAI.toString() );
 		if(!"true".equals(AAIConfig.get("aai.disable.check.snapshot.running", "false"))){
 			if(checkIfDataSnapshotIsRunning()){
-				LOGGER.info("Data Snapshot is already running on the system");
+				LOGGER.debug("Data Snapshot is already running on the system");
 				return;
 			}
 		}
-
-		LOGGER.info("Started cron job dataSnapshot @ " + dateFormat.format(new Date()));
+		LOGGER.debug("Started cron job dataSnapshot @ " + dateFormat.format(new Date()));
 		try {
 			if (AAIConfig.get("aai.cron.enable.dataSnapshot").equals("true")) {
 				String [] dataSnapshotParms = {"-c",AAIConfig.get("aai.datasnapshot.params",  "JUST_TAKE_SNAPSHOT")};
-				LOGGER.info("DataSnapshot Params {}", Arrays.toString(dataSnapshotParms));
+				LOGGER.debug("DataSnapshot Params {}", Arrays.toString(dataSnapshotParms));
 				DataSnapshot.main(dataSnapshotParms);
 			}
 		}
 		catch (Exception e) {
-			ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataSnapshot"+e.toString());
-			LOGGER.info("AAI_4000", "Exception running cron job for DataSnapshot"+e.toString());
-			throw e;
+			ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataSnapshot"+LogFormatTools.getStackTop(e));
+			LOGGER.debug("AAI_4000", "Exception running cron job for DataSnapshot"+LogFormatTools.getStackTop(e));
 		} finally {
-			LOGGER.info("Ended cron job dataSnapshot @ " + dateFormat.format(new Date()));
-			LoggingContext.clear();
+			LOGGER.debug("Ended cron job dataSnapshot @ " + dateFormat.format(new Date()));
 		}
+		auditLog.logAfter();
 
 	}
 
@@ -98,9 +95,9 @@ public class DataSnapshotTasks {
 			}
 
 			int exitVal = process.waitFor();
-			LOGGER.info("Exit value of the dataSnapshot check process: " + exitVal);
+			LOGGER.debug("Exit value of the dataSnapshot check process: " + exitVal);
 		} catch (Exception e) {
-			LOGGER.error("Exception in checkIfDataSnapshotIsRunning" + LogFormatTools.getStackTop(e));
+			ErrorLogHelper.logError("AAI_4000", "Exception in checkIfDataSnapshotIsRunning" + LogFormatTools.getStackTop(e));
 		}
 
 		return count > 0;

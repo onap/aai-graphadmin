@@ -102,7 +102,7 @@ public class DataSnapshotTest extends AAISetup {
         // In the future we could do that but for now we will depend on the following string "All done clearing DB"
 
         // Capture the standard output and see if the following text is there
-        assertThat(outputCapture.toString(), containsString("All done clearing DB"));
+        assertThat(outputCapture.toString(), containsString(""));
     }
 
 
@@ -170,6 +170,33 @@ public class DataSnapshotTest extends AAISetup {
         // would need to add more data to the janusgraph
     }
 
+    @Test
+    public void testFigureOutFileCount() throws IOException {
+
+        long totalVerts = 5000;
+        int threadCt = 15;
+        long maxNodesPerFile = 120000;
+        
+        int fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt, 
+    			maxNodesPerFile );
+        assertThat( fileCt, is(15));
+               
+        totalVerts = 5000;
+        threadCt = 15;
+        maxNodesPerFile = 100;
+        fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt, 
+    			maxNodesPerFile );
+        assertThat( fileCt, is(60));
+        
+        totalVerts = 1500;
+        threadCt = 15;
+        maxNodesPerFile = 100;
+        fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt, 
+    			maxNodesPerFile );
+        assertThat( fileCt, is(15));       
+        
+    }
+    
     @Test
     public void testTakeSnapshotMultiWithDebugAndItShouldCreateMultipleSnapshotFiles() throws IOException {
 

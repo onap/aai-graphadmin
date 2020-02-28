@@ -33,8 +33,6 @@ import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.ErrorObjectFormatException;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.ExceptionTranslator;
@@ -56,15 +54,6 @@ public class ScriptDriver {
 	public static void main (String[] args) throws AAIException, IOException, ConfigurationException, ErrorObjectFormatException {
 		CommandLineArgs cArgs = new CommandLineArgs();
 		
-		LoggingContext.init();
-		LoggingContext.component("DBSchemaScriptDriver");
-		LoggingContext.partnerName("NA");
-		LoggingContext.targetEntity("AAI");
-		LoggingContext.requestId(UUID.randomUUID().toString());
-		LoggingContext.serviceName("AAI");
-		LoggingContext.targetServiceName("main");
-		LoggingContext.statusCode(StatusCode.COMPLETE);
-		LoggingContext.responseCode(LoggingContext.SUCCESS);
 		ErrorLogHelper.loadProperties();
 		new JCommander(cArgs, args);
 		
@@ -84,8 +73,6 @@ public class ScriptDriver {
 
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
-			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}

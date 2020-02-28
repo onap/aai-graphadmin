@@ -19,8 +19,8 @@
  */
 package org.onap.aai.datagrooming;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
@@ -47,7 +47,7 @@ import static org.junit.Assert.*;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DataGroomingTest extends AAISetup {
 
-	private static final EELFLogger logger = EELFManager.getInstance().getLogger(DataGroomingTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataGroomingTest.class);
 
 	private DataGrooming dataGrooming;
 

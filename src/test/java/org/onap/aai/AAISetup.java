@@ -19,17 +19,14 @@
  */
 package org.onap.aai;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.onap.aai.config.*;
 import org.onap.aai.db.schema.AuditorFactory;
 import org.onap.aai.edges.EdgeIngestor;
@@ -39,15 +36,20 @@ import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.rest.db.HttpEntry;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.AAIConfigTranslator;
-import org.onap.aai.setup.SchemaLocationsBean;
-import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
+import org.onap.aai.setup.SchemaVersions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
 
 @ContextConfiguration(classes = {
         ConfigConfiguration.class,
@@ -59,6 +61,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
         AuditorConfiguration.class,
         DslConfiguration.class,
         IntrospectionConfig.class,
+        XmlFormatTransformerConfiguration.class,
         RestBeanConfig.class
 })
 @TestPropertySource(properties = {

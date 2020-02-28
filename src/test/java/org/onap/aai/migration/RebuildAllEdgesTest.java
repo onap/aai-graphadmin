@@ -30,26 +30,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RebuildAllEdgesTest extends AAISetup {
 
 	private static final ModelType introspectorFactoryType = ModelType.MOXY;
 	private static final QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private static final DBConnectionType type = DBConnectionType.REALTIME;
 	private JanusGraph graph;
 	private GraphTraversalSource g;
 	private Graph tx;
@@ -65,7 +58,6 @@ public class RebuildAllEdgesTest extends AAISetup {
                 loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
 		TransactionalGraphEngine dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 		TransactionalGraphEngine spy = spy(dbEngine);
 		TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());

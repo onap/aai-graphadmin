@@ -1,0 +1,148 @@
+<!--
+
+    ============LICENSE_START=======================================================
+    org.onap.aai
+    ================================================================================
+    Copyright © 2017 AT&T Intellectual Property. All rights reserved.
+    ================================================================================
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    ============LICENSE_END=========================================================
+
+    ECOMP is a trademark and service mark of AT&T Intellectual Property.
+
+-->
+<configuration>
+	<property name="logDirectory" value="${AJSC_HOME}/logs" />
+
+	<appender name="updatePropertyToollog" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<!-- This is MDC value -->
+		<!-- We will assign a value to 'logFilenameAppender' via Java code -->
+		<discriminator>
+			<key>logFilenameAppender</key>
+			<defaultValue>console</defaultValue>
+		</discriminator>
+		<sift>
+			<!-- A standard RollingFileAppender, the log file is based on 'logFileName'
+				at runtime -->
+			<appender name="FILE-${logFilenameAppender}"
+					  class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${logDirectory}/updatePropertyTool/${logFilenameAppender}.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${logDirectory}/updatePropertyTool/${logFilenameAppender}.log.%d{yyyy-MM-dd}
+					</fileNamePattern>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
+	<appender name="updatePropertyToolError"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<File>${logDirectory}/updatePropertyTool/error.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/updatePropertyTool/error.log.%d{yyyy-MM-dd}
+			</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="updatePropertyToolDebug"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logDirectory}/updatePropertyTool/debug.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/updatePropertyTool/debug.log.%d{yyyy-MM-dd}
+			</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="updatePropertyToolMetric"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logDirectory}/updatePropertyTool/metrics.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/updatePropertyTool/metrics.log.%d{yyyy-MM-dd}
+			</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.reflections" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+	</logger>
+	<logger name="org.apache.zookeeper" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+	</logger>
+	<logger name="org.apache.hadoop" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+	</logger>
+	<logger name="org.janusgraph" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+	</logger>
+	<logger name="ch.qos.logback.classic" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+	</logger>
+	<logger name="ch.qos.logback.core" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+	</logger>
+	<logger name="com.att.eelf" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+		<appender-ref ref="updatePropertyToolError" />
+		<appender-ref ref="updatePropertyToolMetric" />
+	</logger>
+	<logger name="org.onap.aai" level="ERROR" additivity="false">
+		<appender-ref ref="updatePropertyToollog" />
+		<appender-ref ref="updatePropertyToolError" />
+		<appender-ref ref="updatePropertyToolMetric" />
+		<appender-ref ref="updatePropertyToolDebug" />
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="updatePropertyToollog" />
+		<appender-ref ref="updatePropertyToolMetric" />
+	</root>
+	<root level="ERROR">
+		<appender-ref ref="updatePropertyToolError" />
+	</root>
+	<root level="DEBUG">
+		<appender-ref ref="updatePropertyToolDebug" />
+	</root>
+	<root level="WARN">
+		<appender-ref ref="updatePropertyToolMetric" />
+	</root>
+</configuration>

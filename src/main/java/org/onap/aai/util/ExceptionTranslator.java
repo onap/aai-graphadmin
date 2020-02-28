@@ -19,27 +19,33 @@
  */
 package org.onap.aai.util;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.onap.aai.GraphAdminApp;
 import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.logging.LogFormatTools;
 
 public class ExceptionTranslator {
-    private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(ExceptionTranslator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionTranslator.class);
     public static AAIException schemaServiceExceptionTranslator(Exception ex) {
         AAIException aai = null;
-        LOGGER.info("Exception is " + ExceptionUtils.getRootCause(ex).getMessage() + "Root cause is"+ ExceptionUtils.getRootCause(ex).toString());
-        if(ExceptionUtils.getRootCause(ex).getMessage().contains("NodeIngestor")){
-            aai = new  AAIException("AAI_3026","Error reading OXM from SchemaService - Investigate");
-        }
-        else if(ExceptionUtils.getRootCause(ex).getMessage().contains("EdgeIngestor")){
-            aai = new  AAIException("AAI_3027","Error reading EdgeRules from SchemaService - Investigate");
-        }
-        else if(ExceptionUtils.getRootCause(ex).getMessage().contains("Connection refused")){
-            aai = new  AAIException("AAI_3025","Error connecting to SchemaService - Investigate");
-        }else {
-            aai = new  AAIException("AAI_3025","Error connecting to SchemaService - Please Investigate");
+        if ( ExceptionUtils.getRootCause(ex) == null || ExceptionUtils.getRootCause(ex).getMessage() == null ) {
+        	aai = new  AAIException("AAI_3025","Error parsing exception - Please Investigate" + 
+                	LogFormatTools.getStackTop(ex));
+        } else {
+	        LOGGER.info("Exception is " + ExceptionUtils.getRootCause(ex).getMessage() + "Root cause is"+ ExceptionUtils.getRootCause(ex).toString());
+	        if(ExceptionUtils.getRootCause(ex).getMessage().contains("NodeIngestor")){
+	            aai = new  AAIException("AAI_3026","Error reading OXM from SchemaService - Investigate");
+	        }
+	        else if(ExceptionUtils.getRootCause(ex).getMessage().contains("EdgeIngestor")){
+	            aai = new  AAIException("AAI_3027","Error reading EdgeRules from SchemaService - Investigate");
+	        }
+	        else if(ExceptionUtils.getRootCause(ex).getMessage().contains("Connection refused")){
+	            aai = new  AAIException("AAI_3025","Error connecting to SchemaService - Investigate");
+	        }else {
+	            aai = new  AAIException("AAI_3025","Error connecting to SchemaService - Please Investigate");
+	        }
         }
 
         return aai;

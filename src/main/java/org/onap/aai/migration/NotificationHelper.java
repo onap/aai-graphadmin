@@ -37,8 +37,8 @@ import org.onap.aai.serialization.db.DBSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.serialization.engines.query.QueryEngine;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.aai.setup.SchemaVersions;
 
 /**
@@ -46,7 +46,7 @@ import org.onap.aai.setup.SchemaVersions;
  */
 public class NotificationHelper {
 
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(NotificationHelper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NotificationHelper.class);
 	protected final DBSerializer serializer;
 	protected final Loader loader;
 	protected final TransactionalGraphEngine engine;

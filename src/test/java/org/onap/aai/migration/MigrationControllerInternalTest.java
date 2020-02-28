@@ -19,8 +19,8 @@
  */
 package org.onap.aai.migration;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -38,7 +38,7 @@ import static org.hamcrest.core.StringContains.containsString;
 
 public class MigrationControllerInternalTest extends AAISetup {
 
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(MigrationControllerInternalTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MigrationControllerInternalTest.class);
 
     private MigrationControllerInternal migrationControllerInternal;
 

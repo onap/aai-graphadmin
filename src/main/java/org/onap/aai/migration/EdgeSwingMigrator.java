@@ -106,12 +106,12 @@ public abstract class EdgeSwingMigrator extends Migrator {
 		try {
 			// If the old and new Vertices aren't populated, throw an exception
 			if( oldNode == null  ){
-				logger.info ( "null oldNode passed to swingEdges() ");
+				logger.debug ( "null oldNode passed to swingEdges() ");
 				success = false;
 				return;
 			}
 			else if( newNode == null ){
-				logger.info ( "null newNode passed to swingEdges() ");
+				logger.debug ( "null newNode passed to swingEdges() ");
 				success = false;
 				return;
 			}
@@ -120,7 +120,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 							&& !edgeDirRestr.equals("IN")  
 							&& !edgeDirRestr.equals("OUT") )
 						){
-				logger.info ( "invalid direction passed to swingEdges(). valid values are BOTH/IN/OUT ");
+				logger.debug ( "invalid direction passed to swingEdges(). valid values are BOTH/IN/OUT ");
 				success = false;
 				return;
 			}
@@ -140,7 +140,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 
 			// If the nodeTypes don't match, throw an error 
 			if( !oldNodeType.equals(newNodeType) ){
-				logger.info ( "Can not swing edge from a [" + oldNodeType + "] node to a [" +
+				logger.debug ( "Can not swing edge from a [" + oldNodeType + "] node to a [" +
 						newNodeType + "] node. ");
 				success = false;
 				return;
@@ -182,7 +182,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 						}
 						
 						String otherSideUri = otherSideNode4ThisEdge.<String> property("aai-uri").isPresent()  ? otherSideNode4ThisEdge.<String> property("aai-uri").value() : "URI Not present"; 
-						logger.info ( "\nSwinging [" + eLabel + "] OUT edge.  \n    >> Unchanged side is [" 
+						logger.debug ( "\nSwinging [" + eLabel + "] OUT edge.  \n    >> Unchanged side is [" 
 								+ otherSideNodeType + "][" + otherSideUri + "] \n    >> Edge used to go to [" + oldNodeType 
 								+ "][" + oldUri + "],\n    >> now swung to [" + newNodeType + "][" + newUri + "]. ");
 						// remove the old edge
@@ -204,7 +204,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 							        newOutE.property(pair.getKey().toString(), pair.getValue().toString() );
 							    }
 							}else {
-								logger.info("\n Edge was not swung due to Multiplicity Rule Violation...");
+								logger.debug("\n Edge was not swung due to Multiplicity Rule Violation...");
 							}
 						}
 					}
@@ -245,7 +245,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 						}
 
 						String otherSideUri = otherSideNode4ThisEdge.<String> property("aai-uri").isPresent()  ? otherSideNode4ThisEdge.<String> property("aai-uri").value() : "URI Not present"; 
-						logger.info ( "\nSwinging [" + eLabel + "] IN edge.  \n    >> Unchanged side is  [" 
+						logger.debug ( "\nSwinging [" + eLabel + "] IN edge.  \n    >> Unchanged side is  [" 
 								+ otherSideNodeType + "][" + otherSideUri + "] \n    >>  Edge used to go to [" + oldNodeType 
 								+ "][" + oldUri + "],\n    >>   now swung to [" + newNodeType + "][" + newUri + "]. ");
 						
@@ -268,7 +268,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 							        newInE.property(pair.getKey().toString(), pair.getValue().toString() );
 							    }
 							} else {
-								logger.info("\t Edge was not swung due to Multiplicity Rule Violation...");
+								logger.debug("\t Edge was not swung due to Multiplicity Rule Violation...");
 							}
 						}
 					}

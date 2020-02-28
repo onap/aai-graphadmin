@@ -19,8 +19,8 @@
  */
 package org.onap.aai.service;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.util.security.Password;
 import org.onap.aai.Profiles;
 import org.onap.aai.util.AAIConstants;
@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 @Service
 public class AuthorizationService {
 
-    private static final EELFLogger logger = EELFManager.getInstance().getLogger(AuthorizationService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthorizationService.class);
 
     private final Map<String, String> authorizedUsers = new HashMap<>();
 
@@ -72,7 +72,7 @@ public class AuthorizationService {
                     String[] usernamePasswordArray = usernamePassword.split(":");
 
                     if(usernamePasswordArray == null || usernamePasswordArray.length != 3){
-                        throw new RuntimeException("Not a valid entry for the realm.properties entry: " + usernamePassword);
+                        throw new RuntimeException("This username / pwd is not a valid entry in realm.properties");
                     }
 
                     String username = usernamePasswordArray[0];

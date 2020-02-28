@@ -19,8 +19,8 @@
  */
 package org.onap.aai.db.schema;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.collect.Multimap;
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.Multiplicity;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 public class AuditOXM extends Auditor {
 
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(AuditOXM.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuditOXM.class);
 
 	private Set<Introspector> allObjects;
 	private EdgeIngestor ingestor;

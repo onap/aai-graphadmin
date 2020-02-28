@@ -22,100 +22,149 @@ package org.onap.aai.datasnapshot;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.structure.io.IoCore;
 import org.apache.tinkerpop.gremlin.structure.io.GraphWriter;
+import org.apache.tinkerpop.gremlin.structure.io.IoCore;
 import org.janusgraph.core.JanusGraph;
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PrintVertexDetails implements Runnable{
 
+	private Logger LOGGER;
+
 	private JanusGraph jg;
 	private String fname;
-	private ArrayList<Vertex> vtxList;
+	private ArrayList<Long> vtxIdList;
 	private Boolean debugOn;
 	private long debugDelayMs;
 	private String snapshotType;
 
 	static final byte[] newLineBytes = "\n".getBytes();
+	
+	private AaiScheduledTaskAuditLog auditLog;
+	
 
-	public PrintVertexDetails (JanusGraph graph, String fn, ArrayList<Vertex> vL, Boolean debugFlag, long debugAddDelayTime, String snapshotType){
+	public PrintVertexDetails (JanusGraph graph, String fn, ArrayList<Long> vIdL, Boolean debugFlag, 
+			long debugAddDelayTime, String snapshotType, Logger elfLog){
 		jg = graph;
 		fname = fn;
-		vtxList = vL;
+		vtxIdList = vIdL;
 		debugOn = debugFlag;
 		debugDelayMs = debugAddDelayTime;
 		this.snapshotType = snapshotType;
+		LOGGER = elfLog;
+		this.auditLog = new AaiScheduledTaskAuditLog();
 	}
-		
-	public void run(){  
-		if( debugOn ){
-			// This is much slower, but sometimes we need to find out which single line is causing a failure
-			try{
-				int okCount = 0;
-				int failCount = 0;
-				Long debugDelayMsL = new Long(debugDelayMs);
-				FileOutputStream subFileStr = new FileOutputStream(fname);
-				Iterator <Vertex> vSubItr = vtxList.iterator();
-				GraphWriter graphWriter = null;
-				if("gryo".equalsIgnoreCase(snapshotType)){
-					graphWriter = jg.io(IoCore.gryo()).writer().create();
-				} else {
-					graphWriter = jg.io(IoCore.graphson()).writer().create();
-				}
-				while( vSubItr.hasNext() ){
-					Long vertexIdL = 0L;
-					String aaiNodeType = "";
-					String aaiUri = "";
-					String aaiUuid = "";
-					try {
-						Vertex tmpV = vSubItr.next();
-						vertexIdL = (Long) tmpV.id();
-						aaiNodeType = (String) tmpV.property("aai-node-type").orElse(null);
-						aaiUri = (String) tmpV.property("aai-uri").orElse(null);
-						aaiUuid = (String) tmpV.property("aai-uuid").orElse(null);
-						
-						Thread.sleep(debugDelayMsL); // Make sure it doesn't bump into itself
-						graphWriter.writeVertex(subFileStr, tmpV, Direction.BOTH);
-						subFileStr.write(newLineBytes);
-						okCount++;
+
+	
+	public void run(){
+		LOGGER = LoggerFactory.getLogger(PrintVertexDetails.class);
+		auditLog.logBefore("printVertexDetails", ONAPComponents.AAI.toString());
+		try {
+			if (debugOn) {
+				// This is much slower, but sometimes we need to find out which single line is
+				// causing a failure
+				try {
+					int okCount = 0;
+					int failCount = 0;
+					Long debugDelayMsL = new Long(debugDelayMs);
+					FileOutputStream subFileStr = new FileOutputStream(fname);
+					
+					GraphWriter graphWriter = null;
+					if ("gryo".equalsIgnoreCase(snapshotType)) {
+						graphWriter = jg.io(IoCore.gryo()).writer().create();
+					} else {
+						graphWriter = jg.io(IoCore.graphson()).writer().create();
 					}
-					catch(Exception e) {
-						failCount++;
-						System.out.println(" >> DEBUG MODE >> Failed at:  VertexId = [" + vertexIdL + 
-								"], aai-node-type = [" + aaiNodeType + 
-								"], aai-uuid = [" + aaiUuid + 
-								"], aai-uri = [" + aaiUri + "]. " );
-						e.printStackTrace();
+					
+					GraphTraversalSource gts = jg.traversal();
+					ArrayList<Vertex> vtxList = new ArrayList<Vertex> ();
+					GraphTraversal<Vertex, Vertex> gt = gts.V(vtxIdList);
+					while( gt.hasNext() ) {
+						vtxList.add(gt.next());
 					}
+					Iterator<Vertex> vSubItr = vtxList.iterator();
+					while (vSubItr.hasNext()) {
+						Long vertexIdL = 0L;
+						String aaiNodeType = "";
+						String aaiUri = "";
+						String aaiUuid = "";
+						try {
+							Vertex tmpV = vSubItr.next();
+							vertexIdL = (Long) tmpV.id();
+							aaiNodeType = (String) tmpV.property("aai-node-type").orElse(null);
+							aaiUri = (String) tmpV.property("aai-uri").orElse(null);
+							aaiUuid = (String) tmpV.property("aai-uuid").orElse(null);
+
+							Thread.sleep(debugDelayMsL); // Make sure it doesn't bump into itself
+							graphWriter.writeVertex(subFileStr, tmpV, Direction.BOTH);
+							subFileStr.write(newLineBytes);
+							okCount++;
+						} catch (Exception e) {
+							failCount++;
+							String fmsg = " >> DEBUG MODE >> Failed at:  VertexId = [" + vertexIdL
+									+ "], aai-node-type = [" + aaiNodeType + "], aai-uuid = [" + aaiUuid
+									+ "], aai-uri = [" + aaiUri + "]. ";
+							System.out.println(fmsg);
+							LOGGER.debug(" PrintVertexDetails " + fmsg);
+							// e.printStackTrace();
+						}
+					}
+					System.out.println(" -- Printed " + okCount + " vertexes out to " + fname + ", with " + failCount
+							+ " failed.");
+					subFileStr.close();
+				} catch (Exception e) {
+					AAIException ae = new AAIException("AAI_6128", e , "Error running PrintVertexDetails in debugon");
+					ErrorLogHelper.logException(ae);
 				}
-				System.out.println(" -- Printed " + okCount + " vertexes out to " + fname +
-						", with " + failCount + " failed.");
-				subFileStr.close();
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}  	
-		}
-		else {
-			// Not in DEBUG mode, so we'll do all the nodes in one group
-			try{
-				int count = vtxList.size();
-				Iterator <Vertex> vSubItr = vtxList.iterator();
-				FileOutputStream subFileStr = new FileOutputStream(fname);
-				if ("gryo".equalsIgnoreCase(snapshotType)) {
-					jg.io(IoCore.gryo()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
-				} else {
-					jg.io(IoCore.graphson()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
+			} else {
+				// Not in DEBUG mode, so we'll do all the nodes in one group
+				GraphTraversalSource gts = jg.traversal();
+				ArrayList<Vertex> vtxList = new ArrayList<Vertex> ();
+				GraphTraversal<Vertex, Vertex> gt = gts.V(vtxIdList);
+				while( gt.hasNext() ) {
+					vtxList.add(gt.next());
 				}
-				subFileStr.close();
-				System.out.println(" -- Printed " + count + " vertexes out to " + fname);
+				
+				try {
+					int count = vtxList.size();
+					Iterator<Vertex> vSubItr = vtxList.iterator();
+					FileOutputStream subFileStr = new FileOutputStream(fname);
+					if ("gryo".equalsIgnoreCase(snapshotType)) {
+						jg.io(IoCore.gryo()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
+					} else {
+						jg.io(IoCore.graphson()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
+					}
+					subFileStr.close();
+					String pmsg = " -- Printed " + count + " vertexes out to " + fname;
+					System.out.println(pmsg);
+					LOGGER.debug(" PrintVertexDetails " + pmsg);
+				} catch (Exception e) {
+					AAIException ae = new AAIException("AAI_6128", e , "Error running PrintVertexDetails in else");
+					ErrorLogHelper.logException(ae);
+				}
 			}
-			catch(Exception e){
-				e.printStackTrace();
-			}  	
 		}
+		catch(Exception e){
+			AAIException ae = new AAIException("AAI_6128", e , "Error running PrintVertexDetails");
+			ErrorLogHelper.logException(ae);
+		}
+		finally {
+			// Make sure the transaction this thread was using is freed up.
+			jg.tx().commit();
+			jg.tx().close();
+		}
+		auditLog.logAfter();
 	}  
 	
 }	 

@@ -20,31 +20,37 @@
 package org.onap.aai.datagrooming;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
+import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class DataGroomingTasks {
+
+	private AaiScheduledTaskAuditLog auditLog;
 	
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DataGroomingTasks.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataGroomingTasks.class);
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	@Autowired
@@ -55,25 +61,17 @@ public class DataGroomingTasks {
 
 	@Scheduled(cron = "${datagroomingtasks.cron}" )
 	public void groomingScheduleTask() throws AAIException, Exception   {
-
-		LoggingContext.init();
-		LoggingContext.requestId(UUID.randomUUID().toString());
-		LoggingContext.partnerName("AAI");
-		LoggingContext.targetEntity("CronApp");
-		LoggingContext.component("dataGrooming");
-		LoggingContext.serviceName("groomingScheduleTask");
-		LoggingContext.targetServiceName("groomingScheduleTask");
-		LoggingContext.statusCode(LoggingContext.StatusCode.COMPLETE);
-
+		auditLog = new AaiScheduledTaskAuditLog();
+		auditLog.logBefore("dataGroomingTask", ONAPComponents.AAI.toString());
 
 		if(!"true".equals(AAIConfig.get("aai.disable.check.grooming.running", "false"))){
 			if(checkIfDataGroomingIsRunning()){
-				LOGGER.info("Data Grooming is already running on the system");
+				LOGGER.debug("Data Grooming is already running on the system");
 				return;
 			}
 		}
-
-		LOGGER.info("Started cron job dataGrooming @ " + dateFormat.format(new Date()));
+		
+		LOGGER.debug("Started cron job dataGrooming @ " + dateFormat.format(new Date()));
 
 		Map<String, String> dataGroomingFlagMap = new HashMap<>();
 		append("enableautofix" , AAIConfig.get("aai.datagrooming.enableautofix"), dataGroomingFlagMap);
@@ -162,13 +160,12 @@ public class DataGroomingTasks {
             }
         }
 		catch (Exception e) {
-            ErrorLogHelper.logError("AAI_4000", "Exception running cron job for dataGrooming"+e.toString());
-            LOGGER.info("AAI_4000", "Exception running cron job for dataGrooming"+e.toString());
-            throw e;
+            ErrorLogHelper.logError("AAI_4000", "Exception running cron job for dataGrooming"+LogFormatTools.getStackTop(e));
+            LOGGER.debug("AAI_4000", "Exception running cron job for dataGrooming"+LogFormatTools.getStackTop(e));
 		} finally {
-			LOGGER.info("Ended cron job dataGrooming @ " + dateFormat.format(new Date()));
-			LoggingContext.clear();
+			LOGGER.debug("Ended cron job dataGrooming @ " + dateFormat.format(new Date()));
 		}
+		auditLog.logAfter();
 	}
 
 	private boolean checkIfDataGroomingIsRunning(){
@@ -187,9 +184,9 @@ public class DataGroomingTasks {
 			}
 
 			int exitVal = process.waitFor();
-			LOGGER.info("Exit value of the dataGrooming check process: " + exitVal);
+			LOGGER.debug("Exit value of the dataGrooming check process: " + exitVal);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.debug("AAI_4000", "Exception running dataGrooming check process "+LogFormatTools.getStackTop(e));
 		}
 
 		if(count > 0){

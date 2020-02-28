@@ -31,7 +31,7 @@
 #  -s (optional) true or false to enable or disable schema, By default it is true for production, 
 # 	     you can change to false if the snapshot has duplicates
 #  -c (optional) config file to use for loading snapshot into memory.
-#  -o (required) output file to store the data files
+#  -o (optional) output file to store the data files
 #  -f (optional) PAYLOAD or DMAAP-MR
 #  -n (optional) input file for the script 
 #  
@@ -54,22 +54,22 @@ display_usage() {
         Usage: $0 [options]
 
         1. Usage: dynamicPayloadGenerator -d <graphsonPath> -o  <output-path>
-        2. This script has  2 arguments that are required.
+        2. This script has 1 argument that is required.
            a.	-d (required) Name of the fully qualified Datasnapshot file that you need to load
-           b.	-o (required) output file to store the data files
+
         3. Optional Parameters:
 		   a.   -s (optional) true or false to enable or disable schema, By default it is true for production, 
 		   b.	-c (optional) config file to use for loading snapshot into memory. By default it is set to /opt/app/aai-graphadmin/resources/etc/appprops/dynamic.properties
 		   c.	-f (optional) PAYLOAD or DMAAP-MR
 		   d.	-n (optional) input file specifying the nodes and relationships to export. Default: /opt/app/aai-graphadmin/scriptdata/tenant_isolation/nodes.json
-		   e.   -m (optional) true or false to read multiple snapshots or not, by default is false
-		   f.   -i (optional) the file containing the input filters based on node property and regex/value. By default, it is: /opt/app/aai-graphadmin/scriptdata/tenant_isolation/inputFilters.json
+		   e.   -i (optional) the file containing the input filters based on node property and regex/value. By default, it is: /opt/app/aai-graphadmin/scriptdata/tenant_isolation/inputFilters.json
+		   f.	-o (optional) output directory to store the data files
 		4. For example (there are many valid ways to use it):
 			dynamicPayloadGenerator.sh -d '/opt/app/snapshots/snaphot.graphSON' -o '/opt/app/aai-graphadmin/resources/etc/scriptdata/addmanualdata/tenant_isolation/'
 				
 			dynamicPayloadGenerator.sh -d '/opt/app/snapshots/snaphot.graphSON' -s false -c '/opt/app/aai-graphadmin/resources/etc/appprops/dynamic.properties'
 					-o '/opt/app/aai-graphadmin/resources/etc/scriptdata/addmanualdata/tenant_isolation/' -f PAYLOAD -n '/opt/app/aai-graphadmin/resources/etc/scriptdata/tenant_isolation/nodes.json'
-					-m false -i '/opt/app/aai-graphadmin/resources/etc/scriptdata/tenant_isolation/inputFilters.json'
+					-i '/opt/app/aai-graphadmin/resources/etc/scriptdata/tenant_isolation/inputFilters.json'
    
 EOF
 }
@@ -86,7 +86,7 @@ check_user;
 source_profile;
 export JVM_OPTS="-Xmx9000m -Xms9000m"
 
-while getopts ":f:s:d:n:c:i:m:o:p:" opt; do
+while getopts ":f:s:d:n:c:i:o:" opt; do
       case ${opt} in
         f )
           PAYLOAD=$OPTARG
@@ -110,14 +110,6 @@ while getopts ":f:s:d:n:c:i:m:o:p:" opt; do
           ;;
         i )
           INPUT_FILTER_FILE=$OPTARG
-          echo ${opt}
-          ;;
-        m )
-          MULTIPLE_SNAPSHOTS=$OPTARG
-          echo ${opt}
-          ;;
-        p )
-          PARTIAL=$OPTARG
           echo ${opt}
           ;;
         o )
@@ -145,11 +137,42 @@ for nodeType in ${nodes[@]}
 	 grep "aai-node-type.*\"value\":\"$nodeType\"" $INPUT_DATASNAPSHOT_FILE'.P'* >>$INPUT_DATASNAPSHOT_FILE'.out'
      cat $INPUT_DATASNAPSHOT_FILE'.out' | cut -d':' -f2- > $INPUT_DATASNAPSHOT_FILE'.partial'
  done
+if [ -z ${OUTPUT_DIR} ]
+then
+    OUTPUT_DIR=${PROJECT_HOME}/data/scriptdata/addmanualdata/tenant_isolation/payload
+fi
 
-
-execute_spring_jar org.onap.aai.dbgen.DynamicPayloadGenerator ${PROJECT_HOME}/resources/dynamicPayloadGenerator-logback.xml -s ${VALIDATE_SCHEMA} \
-		-f ${PAYLOAD} -o ${OUTPUT_DIR} -c ${DYNAMIC_CONFIG_FILE} -i ${INPUT_FILTER_FILE} -m ${MULTIPLE_SNAPSHOTS} \
-		-d ${INPUT_DATASNAPSHOT_FILE} -n ${NODE_CONFIG_FILE} ;
-		
+# Build the command
+COMMAND="execute_spring_jar org.onap.aai.dbgen.DynamicPayloadGenerator ${PROJECT_HOME}/resources/dynamicPayloadGenerator-logback.xml"
+if [ ! -z ${VALIDATE_SCHEMA} ]
+then
+    COMMAND="${COMMAND} -s ${VALIDATE_SCHEMA}"
+fi
+if [ ! -z ${PAYLOAD} ]
+then
+    COMMAND="${COMMAND} -f ${PAYLOAD}"
+fi
+if [ ! -z ${INPUT_FILTER_FILE} ]
+then
+    COMMAND="${COMMAND} -i ${INPUT_FILTER_FILE}"
+fi
+if [ ! -z ${NODE_CONFIG_FILE} ]
+then
+    COMMAND="${COMMAND} -n ${NODE_CONFIG_FILE}"
+fi
+if [ ! -z ${INPUT_DATASNAPSHOT_FILE} ]
+then
+    COMMAND="${COMMAND} -d ${INPUT_DATASNAPSHOT_FILE}"
+else
+    display_usage
+    exit 1
+fi
+# Removing the multiple snapshot option because there is just one .partial file
+# (-m ${MULTIPLE_SNAPSHOTS})
+# The class only needs to read the ".partial" file and the default value for multiple snapshots is false if you don't pass it
+#execute_spring_jar org.onap.aai.dbgen.DynamicPayloadGenerator ${PROJECT_HOME}/resources/dynamicPayloadGenerator-logback.xml -s ${VALIDATE_SCHEMA} \
+#		-f ${PAYLOAD} -o ${OUTPUT_DIR} -c ${DYNAMIC_CONFIG_FILE} -i ${INPUT_FILTER_FILE} -m ${MULTIPLE_SNAPSHOTS} \
+#		-d ${INPUT_DATASNAPSHOT_FILE} -n ${NODE_CONFIG_FILE} ;
+${COMMAND};
 end_date;
 exit 0
