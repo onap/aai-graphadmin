@@ -46,7 +46,6 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
@@ -63,7 +62,6 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");

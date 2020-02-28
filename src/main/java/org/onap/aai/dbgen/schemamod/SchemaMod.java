@@ -20,16 +20,12 @@
 package org.onap.aai.dbgen.schemamod;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import org.onap.aai.config.PropertyPasswordConfiguration;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
@@ -38,7 +34,9 @@ import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.ExceptionTranslator;
-import org.onap.aai.util.UniquePropertyCheck;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -49,6 +47,11 @@ public class SchemaMod {
 	private final LoaderFactory loaderFactory;
 
 	private final SchemaVersions schemaVersions;
+	
+	private static boolean historyEnabled;
+
+	private Logger logger = LoggerFactory.getLogger(SchemaMod.class.getSimpleName());
+	
 
     public SchemaMod(LoaderFactory loaderFactory, SchemaVersions schemaVersions){
         this.loaderFactory  = loaderFactory;
@@ -57,33 +60,37 @@ public class SchemaMod {
 
 	public void execute(String[] args) {
 
-		// Set the logging file properties to be used by EELFManager
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_SCHEMA_MOD_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-
-		EELFLogger logger = EELFManager.getInstance().getLogger(UniquePropertyCheck.class.getSimpleName());
-		MDC.put("logFilenameAppender", SchemaMod.class.getSimpleName());
-
+        logger = LoggerFactory.getLogger(SchemaMod.class.getSimpleName());
+		
 		// NOTE -- We're just working with properties that are used for NODES
 		// for now.
 		String propName = "";
 		String targetDataType = "";
 		String targetIndexInfo = "";
 		String preserveDataFlag = "";
+		String commitBlockSizeStr = "";
+		long commitBlockSize = 120000;
 
-		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag \n";
-		if (args.length != 4) {
-			String emsg = "Four Parameters are required.  \n" + usageString;
-			logAndPrint(logger, emsg);
-			System.exit(1);
-		} else {
+		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag [blockSize] \n";
+		
+		if (args.length == 4) {
 			propName = args[0];
 			targetDataType = args[1];
 			targetIndexInfo = args[2];
 			preserveDataFlag = args[3];
 		}
-
+		else if (args.length == 5) {
+			propName = args[0];
+			targetDataType = args[1];
+			targetIndexInfo = args[2];
+			preserveDataFlag = args[3];
+			commitBlockSizeStr = args[4];
+		}
+		else {
+			String emsg = "Incorrect number of Parameters passed.  \n" + usageString;
+			logAndPrint(logger, emsg);
+			System.exit(1);
+		} 
 		if (propName.equals("")) {
 			String emsg = "Bad parameter - propertyName cannot be empty.  \n" + usageString;
 			logAndPrint(logger, emsg);
@@ -102,6 +109,17 @@ public class SchemaMod {
 			logAndPrint(logger, emsg);
 			System.exit(1);
 		}
+		
+		try {
+			if( !commitBlockSizeStr.equals("")) {
+				// They're over-riding the commitBlockSize
+				commitBlockSize = Long.parseLong(commitBlockSizeStr);
+			}
+		} catch (NumberFormatException nfe) {
+			String emsg = "NumberFormatException - Bad block size passed in: [" + commitBlockSizeStr + "]. ";
+			logAndPrint(logger, emsg );
+			System.exit(1);
+		}
 
 		try {
 			AAIConfig.init();
@@ -110,15 +128,6 @@ public class SchemaMod {
 			String emsg = "Problem with either AAIConfig.init() or ErrorLogHelper.LoadProperties(). ";
 			logAndPrint(logger, emsg + "[" + ae.getMessage() + "]");
 			System.exit(1);
-		}
-
-		// Give a big warning if the DbMaps.PropertyDataTypeMap value does not
-		// agree with what we're doing
-		String warningMsg = "";
-
-		if (!warningMsg.equals("")) {
-			logAndPrint(logger, "\n>>> WARNING <<<< ");
-			logAndPrint(logger, ">>> " + warningMsg + " <<<");
 		}
 
 		logAndPrint(logger, ">>> Processing will begin in 5 seconds (unless interrupted). <<<");
@@ -138,8 +147,8 @@ public class SchemaMod {
         Loader loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, version);
         TransactionalGraphEngine engine = null;
         try {
-            engine = new JanusGraphDBEngine(queryStyle, DBConnectionType.REALTIME, loader);
-            SchemaModInternal internal = new SchemaModInternal(engine, logger, propName, targetDataType, targetIndexInfo, new Boolean(preserveDataFlag));
+            engine = new JanusGraphDBEngine(queryStyle, loader);
+            SchemaModInternalBatch internal = new SchemaModInternalBatch(engine, logger, propName, targetDataType, targetIndexInfo, Boolean.parseBoolean(preserveDataFlag), commitBlockSize);
             internal.execute();
             engine.startTransaction();
             engine.tx().close();
@@ -157,12 +166,18 @@ public class SchemaMod {
 	 * @param logger the logger
 	 * @param msg the msg
 	 */
-	protected void logAndPrint(EELFLogger logger, String msg) {
+	protected void logAndPrint(Logger logger, String msg) {
 		System.out.println(msg);
-		logger.info(msg);
+		logger.debug(msg);
 	}
 
 	public static void main(String[] args) throws AAIException {
+
+		Properties props = System.getProperties();
+		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_SCHEMA_MOD_LOGBACK_PROPS);
+		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
+
+		MDC.put("logFilenameAppender", SchemaMod.class.getSimpleName());
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
@@ -176,11 +191,17 @@ public class SchemaMod {
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
 			System.out.println("Problems running SchemaMod "+aai.getMessage());
-			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}
+		
+		historyEnabled = Boolean.parseBoolean(ctx.getEnvironment().getProperty("history.enabled","false"));
+		if( historyEnabled ) {
+			String emsg = "Regular SchemaMod may not be used when history.enabled=true. ";
+			System.out.println(emsg);
+			throw new AAIException("AAI-4005",emsg);
+		}
+		
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		SchemaMod schemaMod = new SchemaMod(loaderFactory, schemaVersions);

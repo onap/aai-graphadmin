@@ -121,12 +121,12 @@ public abstract class ValueMigrator extends Migrator {
               this.nodeTotalSuccess.put(nodeType, Integer.toString(this.subTotal));
         }
         
-        logger.info ("\n \n ******* Final Summary for " + " " + getMigrationName() +" ********* \n");                
+        logger.debug ("\n \n ******* Final Summary for " + " " + getMigrationName() +" ********* \n");                
         for (Map.Entry<String, String> migratedNode: nodeTotalSuccess.entrySet()) {
-        	logger.info("Total Migrated Records for " + migratedNode.getKey() +": " + migratedNode.getValue());
+        	logger.debug("Total Migrated Records for " + migratedNode.getKey() +": " + migratedNode.getValue());
         	
         }
-        logger.info(this.MIGRATION_SUMMARY_COUNT + "Total Migrated Records: "+ migrationSuccess);           
+        logger.debug(this.MIGRATION_SUMMARY_COUNT + "Total Migrated Records: "+ migrationSuccess);           
         
     }
     
@@ -136,18 +136,18 @@ public abstract class ValueMigrator extends Migrator {
             String propertyValue = v.property(property).value().toString();
             if (propertyValue.isEmpty()) {
                 v.property(property, newValue);
-                logger.info(String.format("Node Type %s: Property %s is empty, adding value %s",
+                logger.debug(String.format("Node Type %s: Property %s is empty, adding value %s",
                         nodeType, property, newValue.toString()));
                 this.touchVertexProperties(v, false);
                 updateDmaapList(v);
                 this.migrationSuccess++;
                 this.subTotal++;
             } else {
-                logger.info(String.format("Node Type %s: Property %s value already exists - skipping",
+                logger.debug(String.format("Node Type %s: Property %s value already exists - skipping",
                         nodeType, property));
             }
         } else {
-            logger.info(String.format("Node Type %s: Property %s does not exist or " +
+            logger.debug(String.format("Node Type %s: Property %s does not exist or " +
                     "updateExistingValues flag is set to True - adding the property with value %s",
                     nodeType, property, newValue.toString()));
             v.property(property, newValue);
@@ -178,7 +178,7 @@ public abstract class ValueMigrator extends Migrator {
     private void updateDmaapList(Vertex v){
     	String dmaapMsg = System.nanoTime() + "_" + v.id().toString() + "_"	+ v.value("resource-version").toString();
         dmaapMsgList.add(dmaapMsg);
-        logger.info("\tAdding Updated Vertex " + v.id().toString() + " to dmaapMsgList....");
+        logger.debug("\tAdding Updated Vertex " + v.id().toString() + " to dmaapMsgList....");
     }
     
     public boolean isUpdateDmaap(){

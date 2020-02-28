@@ -46,7 +46,6 @@ public class MigrateSameSourcedRCTROPServerDataTest extends AAISetup{
 
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
 
      Loader loader;
      TransactionalGraphEngine dbEngine;
@@ -101,7 +100,6 @@ public class MigrateSameSourcedRCTROPServerDataTest extends AAISetup{
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType,schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 //rct
         Vertex pserverOld = g.addV().property("aai-node-type", "pserver")

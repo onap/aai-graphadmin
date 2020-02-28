@@ -45,7 +45,6 @@ import org.janusgraph.core.JanusGraphTransaction;
 public class ALTSLicenseEntitlementMigrationTest extends AAISetup {
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
 
     private Loader loader;
     private TransactionalGraphEngine dbEngine;
@@ -64,7 +63,6 @@ public class ALTSLicenseEntitlementMigrationTest extends AAISetup {
         System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 
         Vertex vnf = g.addV().property("aai-node-type", "generic-vnf")

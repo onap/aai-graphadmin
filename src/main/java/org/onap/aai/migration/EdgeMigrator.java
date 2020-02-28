@@ -124,7 +124,7 @@ public abstract class EdgeMigrator extends Migrator {
                                         e.properties().forEachRemaining(prop -> prop.remove());
                                         edgeSerializer.addProperties(e, rule);
                                     } else {
-                                        logger.info("found vertices connected by unkwown label: out=" + out + " label="
+                                        logger.debug("found vertices connected by unkwown label: out=" + out + " label="
                                                 + e.label() + " in=" + in);
                                     }
                                 }

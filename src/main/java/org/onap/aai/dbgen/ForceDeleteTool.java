@@ -38,8 +38,6 @@ import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.edges.enums.EdgeProperty;
 import org.onap.aai.util.AAIConfig;
@@ -47,8 +45,8 @@ import org.onap.aai.util.AAIConstants;
 import org.slf4j.MDC;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraph;
 
@@ -85,18 +83,8 @@ public class ForceDeleteTool {
 		Properties props = System.getProperties();
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_FORCE_DELETE_LOGBACK_PROPS);
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-		EELFLogger logger = EELFManager.getInstance().getLogger(ForceDeleteTool.class.getSimpleName());
+		Logger logger = LoggerFactory.getLogger(ForceDeleteTool.class.getSimpleName());
 		MDC.put("logFilenameAppender", ForceDeleteTool.class.getSimpleName());
-		
-		LoggingContext.init();
-		LoggingContext.partnerName(FROMAPPID);
-		LoggingContext.serviceName(AAIConstants.AAI_RESOURCES_MS);
-		LoggingContext.component("forceDeleteTool");
-		LoggingContext.targetEntity(AAIConstants.AAI_RESOURCES_MS);
-		LoggingContext.targetServiceName("main");
-		LoggingContext.requestId(TRANSID);
-		LoggingContext.statusCode(StatusCode.COMPLETE);
-		LoggingContext.responseCode(LoggingContext.SUCCESS);
 		
 		String actionVal = "";
 	  	String userIdVal = "";
@@ -116,8 +104,6 @@ public class ForceDeleteTool {
 				if (thisArg.equals("-action")) {
 					i++;
 					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 						logger.error(" No value passed with -action option.  ");
 						exit(0);
 					}
@@ -127,8 +113,6 @@ public class ForceDeleteTool {
 				else if (thisArg.equals("-userId")) {
 					i++;
 					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 						logger.error(" No value passed with -userId option.  ");
 						exit(0);
 					}
@@ -144,8 +128,6 @@ public class ForceDeleteTool {
 				else if (thisArg.equals("-vertexId")) {
 					i++;
 					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 						logger.error(" No value passed with -vertexId option.  ");
 						exit(0);
 					}
@@ -154,8 +136,6 @@ public class ForceDeleteTool {
 					try {
 						vertexIdLong = Long.parseLong(nextArg);
 					} catch (Exception e) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 						logger.error("Bad value passed with -vertexId option: ["
 										+ nextArg + "]");
 						exit(0);
@@ -164,8 +144,6 @@ public class ForceDeleteTool {
 				else if (thisArg.equals("-params4Collect")) {
 					i++;
 					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 						logger.error(" No value passed with -params4Collect option.  ");
 						exit(0);
 					}
@@ -175,8 +153,6 @@ public class ForceDeleteTool {
 				else if (thisArg.equals("-edgeId")) {
 					i++;
 					if (i >= args.length) {
-						LoggingContext.statusCode(StatusCode.ERROR);
-						LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 						logger.error(" No value passed with -edgeId option.  ");
 						exit(0);
 					}
@@ -185,8 +161,6 @@ public class ForceDeleteTool {
 					edgeIdStr = nextArg;
 				}
 				else {
-					LoggingContext.statusCode(StatusCode.ERROR);
-					LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 					logger.error(" Unrecognized argument passed to ForceDeleteTool: ["
 									+ thisArg + "]. ");
 					logger.error(" Valid values are: -action -userId -vertexId -edgeId -overRideProtection -params4Collect -DISPLAY_ALL_VIDS");
@@ -198,8 +172,6 @@ public class ForceDeleteTool {
 	  	if( !actionVal.equals("COLLECT_DATA") && !actionVal.equals("DELETE_NODE") && !actionVal.equals("DELETE_EDGE")){
 	 		String emsg = "Bad action parameter [" + actionVal + "] passed to ForceDeleteTool().  Valid values = COLLECT_DATA or DELETE_NODE or DELETE_EDGE\n";
 			System.out.println(emsg);
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 			logger.error(emsg);
 	 		exit(0);
 	  	}
@@ -207,16 +179,12 @@ public class ForceDeleteTool {
 	  	if( actionVal.equals("DELETE_NODE") && vertexIdLong == 0 ){
 	 		String emsg = "ERROR: No vertex ID passed on DELETE_NODE request. \n";
 			System.out.println(emsg);
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 			logger.error(emsg);
 	 		exit(0);
 	  	}
 	  	else if( actionVal.equals("DELETE_EDGE") && edgeIdStr.equals("")){
 	 		String emsg = "ERROR: No edge ID passed on DELETE_EDGE request. \n";
 			System.out.println(emsg);
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 			logger.error(emsg);
 	 		exit(0);
 	  	}
@@ -226,8 +194,6 @@ public class ForceDeleteTool {
 	  	if( (userIdVal.length() < 6) || userIdVal.toUpperCase().equals("AAIADMIN") ){
 	  		String emsg = "Bad userId parameter [" + userIdVal + "] passed to ForceDeleteTool(). must be not empty and not aaiadmin \n";
 			System.out.println(emsg);
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 			logger.error(emsg);
 	 		exit(0);
 	  	}
@@ -241,8 +207,6 @@ public class ForceDeleteTool {
     		if( graph == null ){
     			String emsg = "could not get graph object in ForceDeleteTool() \n";
     			System.out.println(emsg);
-    			LoggingContext.statusCode(StatusCode.ERROR);
-    			LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
     			logger.error(emsg);
     	 		exit(0);
     		}
@@ -250,23 +214,19 @@ public class ForceDeleteTool {
 	    catch (AAIException e1) {
 			msg =  e1.getErrorObject().toString();
 			System.out.println(msg);
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
 			logger.error(msg);
 			exit(0);
 	    }
         catch (Exception e2) {
 	 		msg =  e2.toString();
 	 		System.out.println(msg);
-	 		LoggingContext.statusCode(StatusCode.ERROR);
-	 		LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
 	 		logger.error(msg);
 	 		exit(0);
         }
 	
 		msg = "ForceDelete called by: userId [" + userIdVal + "] with these params: [" + argStr4Msg + "]";
 		System.out.println(msg);
-		logger.info(msg);
+		logger.debug(msg);
   	
 		ForceDelete fd = new ForceDelete(graph);
     	if( actionVal.equals("COLLECT_DATA") ){
@@ -293,8 +253,6 @@ public class ForceDeleteTool {
 	  	   		if( firstPipeLoc <= 0 ){
 	  	   			msg =  "Must use the -params4Collect option when collecting data with data string in a format like: 'propName1|propVal1,propName2|propVal2'";
 	  	   			System.out.println(msg);
-	  	   			LoggingContext.statusCode(StatusCode.ERROR);
-	  	   			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 	  	   			logger.error(msg);
 	  	   			exit(0);
 	  	   		}
@@ -307,8 +265,6 @@ public class ForceDeleteTool {
 	  	   			if( pipeLoc <= 0 ){
 	  	   				msg =  "Must use the -params4Collect option when collecting data with data string in a format like: 'propName1|propVal1,propName2|propVal2'";
 	  	   				System.out.println(msg);
-	  	   				LoggingContext.statusCode(StatusCode.ERROR);
-	  	   				LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 	  	   				logger.error(msg);
 	  	   				exit(0);
 	  	   			}
@@ -329,14 +285,12 @@ public class ForceDeleteTool {
 	         	 		int descendantCount = fd.countDescendants( logger, v, 0 );
 	         	 		String infMsg = " Found " + descendantCount + " descendant nodes \n";
 	         	 		System.out.println( infMsg );
-	         	 		logger.info( infMsg );
+	         	 		logger.debug( infMsg );
 	         	 	}
 	  	   		}
 	  	   		else {
 	  	   			msg =  "Bad JanusGraphQuery object.  ";
 	  	   			System.out.println(msg);
-	  	   			LoggingContext.statusCode(StatusCode.ERROR);
-	  	   			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 	  	   			logger.error(msg);
 	  	   			exit(0);
 	  	   		}
@@ -344,7 +298,7 @@ public class ForceDeleteTool {
 	  		
 	  	   	String infMsg = "\n\n Found: " + resCount + " nodes for this query: [" + qStringForMsg + "]\n";
 	  		System.out.println( infMsg );
-	  		logger.info( infMsg );
+	  		logger.debug( infMsg );
 	  	} 
 	  	else if( actionVal.equals("DELETE_NODE") ){
 	  		Iterator <Vertex> vtxItr = graph.vertices( vertexIdLong );
@@ -355,31 +309,31 @@ public class ForceDeleteTool {
         		String infMsg = " Found " + descendantCount + " descendant nodes.  Note - forceDelete does not cascade to " +
         				" child nodes, but they may become unreachable after the delete. \n";
     	  		System.out.println( infMsg );
-    	  		logger.info( infMsg );
+    	  		logger.debug( infMsg );
     	  		
     	  		int edgeCount = fd.countEdges( logger, vtx );
     			
     			infMsg = " Found total of " + edgeCount + " edges incident on this node.  \n";
     	  		System.out.println( infMsg );
-    	  		logger.info( infMsg );
+    	  		logger.debug( infMsg );
     			
     			if( fd.getNodeDelConfirmation(logger, userIdVal, vtx, descendantCount, edgeCount, overRideProtection) ){
 			  		vtx.remove();
 			  		graph.tx().commit();
 			  		infMsg = ">>>>>>>>>> Removed node with vertexId = " + vertexIdLong;
-			  		logger.info( infMsg );
+			  		logger.debug( infMsg );
 			  		System.out.println(infMsg);
     	  		}
     	  		else {
     	  			infMsg = " Delete Cancelled. ";
     	  			System.out.println(infMsg);
-    	  			logger.info( infMsg );
+    	  			logger.debug( infMsg );
     	  		}
 	  		}
 	  		else {
 	  			String infMsg = ">>>>>>>>>> Vertex with vertexId = " + vertexIdLong + " not found.";
 	  			System.out.println( infMsg );
-	  			logger.info( infMsg );
+	  			logger.debug( infMsg );
 	  		}
 	  	}
 	  	else if( actionVal.equals("DELETE_EDGE") ){
@@ -391,7 +345,7 @@ public class ForceDeleteTool {
 	  		
 	  		if( thisEdge == null ){
 	  			String infMsg = ">>>>>>>>>> Edge with edgeId = " + edgeIdStr + " not found.";
-		  		logger.info( infMsg );
+		  		logger.debug( infMsg );
 		  		System.out.println(infMsg);
 		  		exit(0);
 		  	}
@@ -400,20 +354,20 @@ public class ForceDeleteTool {
 	  			thisEdge.remove();
 		  		graph.tx().commit();
 		  		String infMsg = ">>>>>>>>>> Removed edge with edgeId = " + edgeIdStr;
-		  		logger.info( infMsg );
+		  		logger.debug( infMsg );
 		  		System.out.println(infMsg);
 	  		} 
 	  		else {	
 	  			String infMsg = " Delete Cancelled. ";
 	  			System.out.println(infMsg);
-	  			logger.info( infMsg );
+	  			logger.debug( infMsg );
 	  		}
 	 		exit(0);
 	  	}
 	  	else {
 			String emsg = "Unknown action parameter [" + actionVal + "] passed to ForceDeleteTool().  Valid values = COLLECT_DATA, DELETE_NODE or DELETE_EDGE \n";
 			System.out.println(emsg);
-			logger.info( emsg );
+			logger.debug( emsg );
 	 		exit(0);
 	  	}
 
@@ -429,44 +383,41 @@ public class ForceDeleteTool {
 		public ForceDelete(JanusGraph graph) {
 			this.graph = graph;
 		}
-		public void showNodeInfo(EELFLogger logger, Vertex tVert, Boolean displayAllVidsFlag ){ 
+		public void showNodeInfo(Logger logger, Vertex tVert, Boolean displayAllVidsFlag ){ 
 			
 			try {
 				Iterator<VertexProperty<Object>> pI = tVert.properties();
 				String infStr = ">>> Found Vertex with VertexId = " + tVert.id() + ", properties:    ";
 				System.out.println( infStr );
-				logger.info(infStr);
+				logger.debug(infStr);
 				while( pI.hasNext() ){
 					VertexProperty<Object> tp = pI.next();
 					infStr = " [" + tp.key() + "|" + tp.value() + "] ";
 					System.out.println( infStr ); 
-					logger.info(infStr);
+					logger.debug(infStr);
 				}
 			
 				ArrayList <String> retArr = collectEdgeInfoForNode( logger, tVert, displayAllVidsFlag );
 				for( String infoStr : retArr ){ 
 					System.out.println( infoStr ); 
-					logger.info(infoStr);
+					logger.debug(infoStr);
 				}
 			}
 			catch (Exception e){
 				String warnMsg = " -- Error -- trying to display edge info. [" + e.getMessage() + "]";
 				System.out.println( warnMsg );
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logger.warn(warnMsg);
-				LoggingContext.successStatusFields();
 			}
 			
 		}// End of showNodeInfo()
 
 		
-		public void showPropertiesForEdge( EELFLogger logger, Edge tEd ){ 
+		public void showPropertiesForEdge( Logger logger, Edge tEd ){ 
 			String infMsg = "";
 			if( tEd == null ){
 				infMsg = "null Edge object passed to showPropertiesForEdge()";
 				System.out.print(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				return;
 			}
 			
@@ -474,82 +425,82 @@ public class ForceDeleteTool {
 			try {
 				infMsg =" Label for this Edge = [" + tEd.label() + "] ";
 				System.out.print(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				
 				infMsg =" EDGE Properties for edgeId = " + tEd.id() + ": ";
 				System.out.print(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				Iterator <String> pI = tEd.keys().iterator();
 				while( pI.hasNext() ){
 					String propKey = pI.next();
 					infMsg = "Prop: [" + propKey + "], val = [" 
 							+ tEd.property(propKey) + "] ";
 					System.out.print(infMsg);
-					logger.info(infMsg);
+					logger.debug(infMsg);
 				}
 			}
 			catch( Exception ex ){
 				infMsg = " Could not retrieve properties for this edge. exMsg = [" 
 						+ ex.getMessage() + "] ";
 				System.out.println( infMsg ); 
-				logger.info(infMsg);
+				logger.debug(infMsg);
 			}
 			
 			// Try to show what's connected to the IN side of this Edge
 			try {
 				infMsg = " Looking for the Vertex on the IN side of the edge:  ";
 				System.out.print(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				Vertex inVtx = tEd.inVertex();
 				Iterator<VertexProperty<Object>> pI = inVtx.properties();
 				String infStr = ">>> Found Vertex with VertexId = " + inVtx.id() 
 					+ ", properties:    ";
 				System.out.println( infStr );
-				logger.info(infStr);
+				logger.debug(infStr);
 				while( pI.hasNext() ){
 					VertexProperty<Object> tp = pI.next();
 					infStr = " [" + tp.key() + "|" + tp.value() + "] ";
 					System.out.println( infStr ); 
-					logger.info(infStr);
+					logger.debug(infStr);
 				}
 			}
 			catch( Exception ex ){
 				infMsg = " Could not retrieve vertex data for the IN side of "
 						+ "the edge. exMsg = [" + ex.getMessage() + "] ";
 				System.out.println( infMsg ); 
-				logger.info(infMsg);
+				logger.debug(infMsg);
 			}
 			
 			// Try to show what's connected to the OUT side of this Edge
 			try {
 				infMsg = " Looking for the Vertex on the OUT side of the edge:  ";
 				System.out.print(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				Vertex outVtx = tEd.outVertex();
 				Iterator<VertexProperty<Object>> pI = outVtx.properties();
 				String infStr = ">>> Found Vertex with VertexId = " + outVtx.id() 
 					+ ", properties:    ";
 				System.out.println( infStr );
-				logger.info(infStr);
+				logger.debug(infStr);
 				while( pI.hasNext() ){
 					VertexProperty<Object> tp = pI.next();
 					infStr = " [" + tp.key() + "|" + tp.value() + "] ";
 					System.out.println( infStr ); 
-					logger.info(infStr);
+					logger.debug(infStr);
 				}
 			}
 			catch( Exception ex ){
 				infMsg = " Could not retrieve vertex data for the OUT side of "
 						+ "the edge. exMsg = [" + ex.getMessage() + "] ";
 				System.out.println( infMsg ); 
-				logger.info(infMsg);
+				logger.debug(infMsg);
 			}
 			
 		}// end showPropertiesForEdge()
 
 		
 		
-		public ArrayList <String> collectEdgeInfoForNode( EELFLogger logger, Vertex tVert, boolean displayAllVidsFlag ){ 
+		public ArrayList <String> collectEdgeInfoForNode( Logger logger, Vertex tVert, boolean displayAllVidsFlag ){ 
 			ArrayList <String> retArr = new ArrayList <String> ();
 			Direction dir = Direction.OUT;
 			for ( int i = 0; i <= 1; i++ ){
@@ -597,7 +548,7 @@ public class ForceDeleteTool {
 		}// end of collectEdgeInfoForNode()
 
 		
-		public int countEdges( EELFLogger logger, Vertex vtx ){ 
+		public int countEdges( Logger logger, Vertex vtx ){ 
 			int edgeCount = 0;
 			try {
 				Iterator<Edge> edgesItr = vtx.edges(Direction.BOTH);
@@ -609,25 +560,20 @@ public class ForceDeleteTool {
 			catch (Exception e) {
 				String wMsg = "-- ERROR -- Stopping the counting of edges because of Exception [" + e.getMessage() + "]";
 				System.out.println( wMsg );
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logger.warn( wMsg );
-				LoggingContext.successStatusFields();
 			}
 			return edgeCount;
 			
 		}// end of countEdges()
 		
 
-		public int countDescendants(EELFLogger logger, Vertex vtx, int levelVal ){ 
+		public int countDescendants(Logger logger, Vertex vtx, int levelVal ){ 
 			int totalCount = 0;
 			int thisLevel = levelVal + 1;
 			
 			if( thisLevel > MAXDESCENDENTDEPTH ){
 				String wMsg = "Warning -- Stopping the counting of descendents because we reached the max depth of " + MAXDESCENDENTDEPTH;
 				System.out.println( wMsg );
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logger.warn( wMsg );
 				return totalCount;
 			}
@@ -643,10 +589,7 @@ public class ForceDeleteTool {
 			catch (Exception e) {
 				String wMsg = "Error -- Stopping the counting of descendents because of Exception [" + e.getMessage() + "]";
 				System.out.println( wMsg );
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logger.warn( wMsg );
-				LoggingContext.successStatusFields();
 				
 			}
 			
@@ -654,7 +597,7 @@ public class ForceDeleteTool {
 		}// end of countDescendants()
 
 		
-		public boolean getEdgeDelConfirmation( EELFLogger logger, String uid, Edge ed, 
+		public boolean getEdgeDelConfirmation( Logger logger, String uid, Edge ed, 
 				Boolean overRideProtection ) {
 			
 			showPropertiesForEdge( logger, ed );
@@ -667,20 +610,20 @@ public class ForceDeleteTool {
 			if (!confirm.equalsIgnoreCase("y")) {
 				String infMsg = " User [" + uid + "] has chosen to abandon this delete request. ";
 				System.out.println("\n" + infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				return false;
 			}
 			else {
 				String infMsg = " User [" + uid + "] has confirmed this delete request. ";
 				System.out.println("\n" + infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				return true;
 			}
 		
 		} // End of getEdgeDelConfirmation()
 			
 
-		public boolean getNodeDelConfirmation( EELFLogger logger, String uid, Vertex vtx, int edgeCount, 
+		public boolean getNodeDelConfirmation( Logger logger, String uid, Vertex vtx, int edgeCount, 
 				int descendantCount, Boolean overRideProtection ) {
 			String thisNodeType = "";
 			try {
@@ -690,10 +633,7 @@ public class ForceDeleteTool {
 				// Let the user know something is going on - but they can confirm the delete if they want to. 
 				String infMsg = " -- WARNING -- could not get an aai-node-type for this vertex. -- WARNING -- ";
 				System.out.println( infMsg );
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logger.warn( infMsg );
-				LoggingContext.successStatusFields();
 			}
 			
 			String ntListString = "";  
@@ -714,10 +654,7 @@ public class ForceDeleteTool {
 				// Don't worry, we will use default values 
 				String infMsg = "-- WARNING -- could not get aai.forceDel.protected values from aaiconfig.properties -- will use default values. ";
 				System.out.println( infMsg );
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 				logger.warn( infMsg );
-				LoggingContext.successStatusFields();
 			}
 			
 			if( maxDescString != null && !maxDescString.equals("") ){
@@ -752,7 +689,7 @@ public class ForceDeleteTool {
 				String infMsg = " >> WARNING >> This node has more descendant edges than the max ProtectedDescendantCount: " + edgeCount + ".  Max = " + 
 							maxEdgeCount + ".  It can be DANGEROUS to delete one of these. << WARNING << ";
 				System.out.println(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				if( ! overRideProtection ){
 					// They cannot delete this kind of node without using the override option
 					giveProtErrorMsg = true;
@@ -767,7 +704,7 @@ public class ForceDeleteTool {
 				String infMsg = " >> WARNING >> This node has more edges than the max ProtectedEdgeCount: " + edgeCount + ".  Max = " + 
 							maxEdgeCount + ".  It can be DANGEROUS to delete one of these. << WARNING << ";
 				System.out.println(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				if( ! overRideProtection ){
 					// They cannot delete this kind of node without using the override option
 					giveProtErrorMsg = true;
@@ -782,7 +719,7 @@ public class ForceDeleteTool {
 				String infMsg = " >> WARNING >> This node is a PROTECTED NODE-TYPE (" + thisNodeType + "). " +
 						" It can be DANGEROUS to delete one of these. << WARNING << ";
 				System.out.println(infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				if( ! overRideProtection ){
 					// They cannot delete this kind of node without using the override option
 					giveProtErrorMsg = true;
@@ -795,15 +732,12 @@ public class ForceDeleteTool {
 			if( giveProtOverRideMsg ){
 				String infMsg = " !!>> WARNING >>!! you are using the overRideProtection parameter which will let you do this potentially dangerous delete.";
 				System.out.println("\n" + infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 			}
 			else if( giveProtErrorMsg ) {
 				String errMsg = " ERROR >> this kind of node can only be deleted if you pass the overRideProtection parameter.";
 				System.out.println("\n" + errMsg);
-				LoggingContext.statusCode(StatusCode.ERROR);
-				LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 				logger.error(errMsg);
-				LoggingContext.successStatusFields();
 				return false;
 			}
 			
@@ -816,20 +750,20 @@ public class ForceDeleteTool {
 			if (!confirm.equalsIgnoreCase("y")) {
 				String infMsg = " User [" + uid + "] has chosen to abandon this delete request. ";
 				System.out.println("\n" + infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				return false;
 			}
 			else {
 				String infMsg = " User [" + uid + "] has confirmed this delete request. ";
 				System.out.println("\n" + infMsg);
-				logger.info(infMsg);
+				logger.debug(infMsg);
 				return true;
 			}
 		
 		} // End of getNodeDelConfirmation()
 	}
 
-	public static JanusGraph setupGraph(EELFLogger logger){
+	public static JanusGraph setupGraph(Logger logger){
 
 		JanusGraph janusGraph = null;
 
@@ -856,7 +790,7 @@ public class ForceDeleteTool {
 		return janusGraph;
 	}
 
-	public static void closeGraph(JanusGraph graph, EELFLogger logger){
+	public static void closeGraph(JanusGraph graph, Logger logger){
 
 		try {
 			if("inmemory".equals(graphType)) {

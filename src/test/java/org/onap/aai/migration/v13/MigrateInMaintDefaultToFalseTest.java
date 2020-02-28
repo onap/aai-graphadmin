@@ -103,7 +103,6 @@ public class MigrateInMaintDefaultToFalseTest extends
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 
         //generic-vnf

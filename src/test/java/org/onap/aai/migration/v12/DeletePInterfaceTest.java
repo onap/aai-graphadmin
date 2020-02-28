@@ -47,7 +47,6 @@ public class DeletePInterfaceTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
 	private JanusGraph graph;
@@ -65,7 +64,6 @@ public class DeletePInterfaceTest extends AAISetup {
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 
 		Vertex pnf1 = g.addV().property("aai-node-type", "pnf")

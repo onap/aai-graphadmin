@@ -21,11 +21,8 @@ package org.onap.aai;
 
 import com.jayway.jsonpath.JsonPath;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.hamcrest.CoreMatchers;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.*;
-import org.junit.runner.RunWith;
 import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
@@ -37,23 +34,18 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.web.client.RestTemplate;
 
-import javax.ws.rs.core.Response;
-import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -70,11 +62,14 @@ import static org.junit.Assert.fail;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = GraphAdminApp.class)
 @ContextConfiguration(initializers = PropertyPasswordConfiguration.class)
 @Import(GraphAdminTestConfiguration.class)
-@TestPropertySource(properties = {
+@TestPropertySource(
+    properties = {
         "schema.uri.base.path = /aai",
-        "schema.ingest.file = src/main/resources/application.properties",
+        "schema.ingest.file = src/test/resources/application-test.properties",
         "schema.translator.list = config"
-})
+    },
+    locations = "classpath:application-test.properties"
+)
 public class AAIGremlinQueryTest {
 
     @ClassRule
@@ -140,15 +135,17 @@ public class AAIGremlinQueryTest {
         createGraph();
         headers = new HttpHeaders();
 
+        String authorization = Base64.getEncoder().encodeToString("AAI:AAI".getBytes("UTF-8"));
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Real-Time", "true");
         headers.add("X-FromAppId", "JUNIT");
         headers.add("X-TransactionId", "JUNIT");
-
-        String authorization = Base64.getEncoder().encodeToString("AAI:AAI".getBytes("UTF-8"));
         headers.add("Authorization", "Basic " + authorization);
-        baseUrl = "https://localhost:" + randomPort;
+
+
+
+        baseUrl = "http://localhost:" + randomPort;
     }
 
     @Test
@@ -177,7 +174,7 @@ public class AAIGremlinQueryTest {
 
         String payload = PayloadUtil.getTemplatePayload("dsl-query.json", dslQuerymap);
 
-        ResponseEntity responseEntity = null;
+        ResponseEntity responseEntity;
 
         String endpoint = "/aai/v11/dbquery?format=console";
 

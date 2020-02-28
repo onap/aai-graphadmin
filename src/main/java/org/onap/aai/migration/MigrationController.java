@@ -25,8 +25,6 @@ import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConstants;
@@ -49,16 +47,6 @@ public class MigrationController {
 	 */
 	public static void main(String[] args) throws AAIException {
 
-		LoggingContext.init();
-		LoggingContext.partnerName("Migration");
-		LoggingContext.serviceName(AAIConstants.AAI_RESOURCES_MS);
-		LoggingContext.component("MigrationController");
-		LoggingContext.targetEntity(AAIConstants.AAI_RESOURCES_MS);
-		LoggingContext.targetServiceName("main");
-		LoggingContext.requestId(UUID.randomUUID().toString());
-		LoggingContext.statusCode(StatusCode.COMPLETE);
-		LoggingContext.responseCode(LoggingContext.SUCCESS);
-
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
 		initializer.initialize(ctx);
@@ -71,8 +59,6 @@ public class MigrationController {
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
 			System.out.println("Problems running tool "+aai.getMessage());
-			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}

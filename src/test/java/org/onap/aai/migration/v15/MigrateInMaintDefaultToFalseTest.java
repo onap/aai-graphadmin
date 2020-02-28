@@ -91,7 +91,6 @@ public class MigrateInMaintDefaultToFalseTest extends
 
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
     private Loader loader;
     private TransactionalGraphEngine dbEngine;
     private InMaintDefaultMigrator migration;
@@ -103,7 +102,6 @@ public class MigrateInMaintDefaultToFalseTest extends
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 
         //generic-vnf

@@ -44,7 +44,6 @@ public class MigrateInstanceGroupModelInvariantIdTest extends AAISetup{
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
@@ -61,7 +60,6 @@ public class MigrateInstanceGroupModelInvariantIdTest extends AAISetup{
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 
 		Vertex instancegroup1 = g.addV().property("aai-node-type", "instance-group").property("id", "instance-id-1")

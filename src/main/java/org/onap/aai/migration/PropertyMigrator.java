@@ -68,11 +68,11 @@ public abstract class PropertyMigrator extends Migrator {
 	 */
 	@Override
 	public void run() {
-	    logger.info("-------- Starting PropertyMigrator for node type " + P.within(this.getAffectedNodeTypes().get())
+	    logger.debug("-------- Starting PropertyMigrator for node type " + P.within(this.getAffectedNodeTypes().get())
                 + " from property " + OLD_FIELD + " to " + NEW_FIELD + " --------");
 		modifySchema();
 		executeModifyOperation();
-		logger.info(Migrator.MIGRATION_SUMMARY_COUNT + changedVertexCount + " vertices modified.");
+		logger.debug(Migrator.MIGRATION_SUMMARY_COUNT + changedVertexCount + " vertices modified.");
 	}
 
 	protected void modifySchema() {
@@ -94,13 +94,13 @@ public abstract class PropertyMigrator extends Migrator {
 		}
 		g.has(OLD_FIELD).sideEffect(t -> {
 			final Vertex v = t.get();
-			logger.info("Migrating property for vertex " + v.toString());
+			logger.debug("Migrating property for vertex " + v.toString());
 			final String value = v.value(OLD_FIELD);
 			v.property(OLD_FIELD).remove();
 			v.property(NEW_FIELD, value);
 			this.touchVertexProperties(v, false);
 			this.changedVertexCount += 1;
-            logger.info(v.toString() + " : Migrated property " + OLD_FIELD + " to " + NEW_FIELD + " with value = " + value);
+            logger.debug(v.toString() + " : Migrated property " + OLD_FIELD + " to " + NEW_FIELD + " with value = " + value);
 		}).iterate();
 	}
 	
@@ -121,11 +121,11 @@ public abstract class PropertyMigrator extends Migrator {
 	protected Optional<PropertyKey> addProperty() {
 
 		if (!graphMgmt.containsPropertyKey(this.NEW_FIELD)) {
-			logger.info(" PropertyKey  [" + this.NEW_FIELD + "] created in the DB. ");
+			logger.debug(" PropertyKey  [" + this.NEW_FIELD + "] created in the DB. ");
 			return Optional.of(graphMgmt.makePropertyKey(this.NEW_FIELD).dataType(this.fieldType).cardinality(this.cardinality)
 					.make());
 		} else {
-			logger.info(" PropertyKey  [" + this.NEW_FIELD + "] already existed in the DB. ");
+			logger.debug(" PropertyKey  [" + this.NEW_FIELD + "] already existed in the DB. ");
 			return Optional.empty();
 		}
 
@@ -136,7 +136,7 @@ public abstract class PropertyMigrator extends Migrator {
 			if (graphMgmt.containsGraphIndex(key.get().name())) {
 				logger.debug(" Index  [" + key.get().name() + "] already existed in the DB. ");
 			} else {
-				logger.info("Add index for PropertyKey: [" + key.get().name() + "]");
+				logger.debug("Add index for PropertyKey: [" + key.get().name() + "]");
 				graphMgmt.buildIndex(key.get().name(), Vertex.class).addKey(key.get()).buildCompositeIndex();
 			}
 		}

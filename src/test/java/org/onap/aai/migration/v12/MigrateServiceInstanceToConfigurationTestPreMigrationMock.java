@@ -50,7 +50,6 @@ public class MigrateServiceInstanceToConfigurationTestPreMigrationMock extends A
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
@@ -67,7 +66,6 @@ public class MigrateServiceInstanceToConfigurationTestPreMigrationMock extends A
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 
 		Vertex customer = g.addV()

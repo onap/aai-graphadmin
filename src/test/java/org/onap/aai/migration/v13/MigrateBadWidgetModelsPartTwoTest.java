@@ -54,7 +54,6 @@ public class MigrateBadWidgetModelsPartTwoTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
 	private GraphTraversalSource g;
@@ -68,7 +67,7 @@ public class MigrateBadWidgetModelsPartTwoTest extends AAISetup {
 		JanusGraphManagement janusgraphManagement = graph.openManagement();
 		g = graph.traversal();
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
-		dbEngine = new JanusGraphDBEngine(queryStyle, type, loader);
+		dbEngine = new JanusGraphDBEngine(queryStyle, loader);
 		createFirstVertexAndRelatedVertexes();
 		TransactionalGraphEngine spy = spy(dbEngine);
 		TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());

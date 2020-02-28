@@ -22,6 +22,7 @@ package org.onap.aai.util;
 public final class GraphAdminConstants {
     
     public static final int AAI_SNAPSHOT_DEFAULT_THREADS_FOR_CREATE = 15;
+    public static final Long AAI_SNAPSHOT_DEFAULT_MAX_NODES_PER_FILE_FOR_CREATE = 120000L;
     public static final int AAI_SNAPSHOT_DEFAULT_MAX_ERRORS_PER_THREAD = 25;
     public static final Long AAI_SNAPSHOT_DEFAULT_VERTEX_ADD_DELAY_MS = 1L;
     public static final Long AAI_SNAPSHOT_DEFAULT_EDGE_ADD_DELAY_MS = 1L;
@@ -36,7 +37,8 @@ public final class GraphAdminConstants {
     public static final int AAI_DUPETOOL_DEFAULT_MAX_FIX = 25;
     public static final int AAI_DUPETOOL_DEFAULT_SLEEP_MINUTES = 7;
 
-    
+    /** Micro-service Names */
+    public static final String AAI_GRAPHADMIN_MS = "aai-graphadmin";
     
     
     /**

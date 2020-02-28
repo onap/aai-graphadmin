@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.edges.enums.EdgeProperty;
@@ -46,16 +45,9 @@ import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersions;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -103,7 +95,6 @@ public class EdgeMigratorTest extends AAISetup {
 
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
     private JanusGraph graph;
     private GraphTraversalSource g;
     private Graph tx;
@@ -119,7 +110,6 @@ public class EdgeMigratorTest extends AAISetup {
                 loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
         TransactionalGraphEngine dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 
         Vertex gvnf = g.addV().property(AAIProperties.NODE_TYPE, "generic-vnf")

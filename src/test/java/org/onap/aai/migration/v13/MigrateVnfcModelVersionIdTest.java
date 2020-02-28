@@ -46,7 +46,6 @@ public class MigrateVnfcModelVersionIdTest extends AAISetup{
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
@@ -63,7 +62,6 @@ public class MigrateVnfcModelVersionIdTest extends AAISetup{
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 
 		Vertex vnfc1 = g.addV().property("aai-node-type", "vnfc").property("model-version-id", "vnfc-version-id-1")

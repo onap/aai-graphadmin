@@ -29,19 +29,17 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
-import org.onap.aai.GraphAdminApp;
+import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.JanusGraphFactory;
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
+import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-
-import org.janusgraph.core.JanusGraphFactory;
-import org.janusgraph.core.JanusGraph;
-import org.onap.aai.dbmap.AAIGraphConfig;
 
 public class UniquePropertyCheck {
 
@@ -61,25 +59,16 @@ public class UniquePropertyCheck {
 		Properties props = System.getProperties();
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-		EELFLogger logger = EELFManager.getInstance().getLogger(UniquePropertyCheck.class.getSimpleName());
-		
-		LoggingContext.init();
-		LoggingContext.partnerName(FROMAPPID);
-		LoggingContext.serviceName(GraphAdminApp.APP_NAME);
-		LoggingContext.component(COMPONENT);
-		LoggingContext.targetEntity(GraphAdminApp.APP_NAME);
-		LoggingContext.targetServiceName("main");
-		LoggingContext.requestId(TRANSID);
-		LoggingContext.statusCode(StatusCode.COMPLETE);
-		LoggingContext.responseCode(LoggingContext.SUCCESS);
-		
+		Logger logger = LoggerFactory.getLogger(UniquePropertyCheck.class);
 		MDC.put("logFilenameAppender", UniquePropertyCheck.class.getSimpleName());
-		
+		AaiScheduledTaskAuditLog auditLog = new AaiScheduledTaskAuditLog();
+		auditLog.logBefore("UniquePropertyCheck", ONAPComponents.AAI.toString());
+
 		if( args == null || args.length != 1 ){
 				String msg = "usage:  UniquePropertyCheck propertyName \n";
 				System.out.println(msg);
-				LoggingContext.statusCode(StatusCode.ERROR);
-    			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
+				//LoggingContext.statusCode(StatusCode.ERROR);
+    			//LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 				logAndPrint(logger, msg );
 				System.exit(1);
 		}
@@ -92,36 +81,37 @@ public class UniquePropertyCheck {
     		JanusGraph tGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(UniquePropertyCheck.class.getSimpleName()).withGraphType("realtime").buildConfiguration());
     		
     		if( tGraph == null ) {
-    			LoggingContext.statusCode(StatusCode.ERROR);
-    			LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
+    			//LoggingContext.statusCode(StatusCode.ERROR);
+    			//LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
     			logAndPrint(logger, " Error:  Could not get JanusGraph ");
     			System.exit(1);
     		}
     		
     		graph = tGraph.newTransaction();
     		if( graph == null ){
-    			LoggingContext.statusCode(StatusCode.ERROR);
-    			LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
+    			//LoggingContext.statusCode(StatusCode.ERROR);
+    			//LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
     			logAndPrint(logger, "could not get graph object in UniquePropertyCheck() \n");
     	 		System.exit(0);
     		}
     	}
 	    catch (AAIException e1) {
 			String msg =  "Threw Exception: [" + e1.toString() + "]";
-			LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
+			//LoggingContext.statusCode(StatusCode.ERROR);
+			//LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
 			logAndPrint(logger, msg);
 			System.exit(0);
         }
         catch (Exception e2) {
 	 		String msg =  "Threw Exception: [" + e2.toString() + "]";
-	 		LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
+	 		//LoggingContext.statusCode(StatusCode.ERROR);
+			//LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
 			logAndPrint(logger, msg);
 	 		System.exit(0);
         }
 		
 		runTheCheckForUniqueness( TRANSID, FROMAPPID, graph, propertyName, logger );
+		auditLog.logAfter();
 		System.exit(0);
 		
 	}// End main()
@@ -138,7 +128,7 @@ public class UniquePropertyCheck {
 	 * @return the boolean
 	 */
 	public static Boolean runTheCheckForUniqueness( String transId, String fromAppId, Graph graph, 
-			String propertyName, EELFLogger logger ){
+			String propertyName, Logger logger ){
 		
 		// Note - property can be found in more than one nodetype 
 		//    our uniqueness constraints are always across the entire db - so this 
@@ -203,8 +193,8 @@ public class UniquePropertyCheck {
 	    	}
     	}
     	catch( Exception e2 ){
-    		LoggingContext.statusCode(StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
+    		//LoggingContext.statusCode(StatusCode.ERROR);
+			//LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 	 		logAndPrint(logger, "Threw Exception: [" + e2.toString() + "]");
     	} 
     	
@@ -223,7 +213,7 @@ public class UniquePropertyCheck {
 	 * @param logger the logger
 	 */
 	private static void showPropertiesAndEdges( String transId, String fromAppId, Vertex tVert,
-			EELFLogger logger ){ 
+			Logger logger ){ 
 
 		if( tVert == null ){
 			logAndPrint(logger, "Null node passed to showPropertiesAndEdges.");
@@ -279,10 +269,9 @@ public class UniquePropertyCheck {
 	 * @param logger the logger
 	 * @param msg the msg
 	 */
-	protected static void logAndPrint(EELFLogger logger, String msg) {
+	protected static void logAndPrint(Logger logger, String msg) {
 		System.out.println(msg);
 		logger.info(msg);
 	}
 	
 }
-

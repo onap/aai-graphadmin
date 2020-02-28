@@ -50,7 +50,6 @@ public class MigrateInstanceGroupSubTypeTest extends AAISetup{
 	private static final String SUB_TYPE_VALUE = "SubTypeValue";
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
 	private JanusGraph graph;
@@ -69,7 +68,6 @@ public class MigrateInstanceGroupSubTypeTest extends AAISetup{
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 		instanceGroup = g.addV().property("aai-node-type", MigrateInstanceGroupSubType.INSTANCE_GROUP_NODE_TYPE)
 				.property( MigrateInstanceGroupSubType.SUB_TYPE_PROPERTY, SUB_TYPE_VALUE)

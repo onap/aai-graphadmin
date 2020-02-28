@@ -19,8 +19,8 @@
  */
 package org.onap.aai.interceptors.post;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.gson.JsonObject;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.interceptors.AAIContainerFilter;
@@ -41,7 +41,7 @@ import java.util.Optional;
 @Priority(AAIResponseFilterPriority.RESPONSE_TRANS_LOGGING)
 public class ResponseTransactionLogging extends AAIContainerFilter implements ContainerResponseFilter {
 
-	private static final EELFLogger TRANSACTION_LOGGER = EELFManager.getInstance().getLogger(ResponseTransactionLogging.class);
+	private static final Logger TRANSACTION_LOGGER = LoggerFactory.getLogger(ResponseTransactionLogging.class);
 
 	@Autowired
 	private HttpServletResponse httpServletResponse;

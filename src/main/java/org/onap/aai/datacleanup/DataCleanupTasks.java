@@ -28,26 +28,37 @@ import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class DataCleanupTasks {
-
-	private static final EELFLogger logger = EELFManager.getInstance().getLogger(DataCleanupTasks.class);
+    
+	@Autowired
+    private AaiScheduledTaskAuditLog auditLog;
+	
+	private static final Logger logger = LoggerFactory.getLogger(DataCleanupTasks.class);
 	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+
 	/**The function archives/deletes files that end in .out (Ie. dataGrooming.201511111305.out) that sit in our log/data directory structure.
 		logDir is the {project_home}/logs
 		archiveDir is the ARCHIVE directory where the files will be stored after 5 days.
@@ -56,8 +67,9 @@ public class DataCleanupTasks {
 	*/
 	@Scheduled(cron = "${datagroomingcleanup.cron}" )
 	public void dataGroomingCleanup() throws AAIException, Exception {
+		auditLog.logBefore("dataGroomingCleanup", ONAPComponents.AAI.toString() );
 		
-		logger.info("Started cron job dataGroomingCleanup @ " + simpleDateFormat.format(new Date()));
+		logger.debug("Started cron job dataGroomingCleanup @ " + simpleDateFormat.format(new Date()));
 		
 		try {
 			String logDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs";
@@ -68,15 +80,15 @@ public class DataCleanupTasks {
 			File archivepath = new File(archiveDir);
 			File dataGroomingPath = new File(dataGroomingArcDir);
 		
-			logger.info("The logDir is " + logDir);
-			logger.info("The dataGroomingDir is " + dataGroomingDir);
-			logger.info("The archiveDir is " + archiveDir );
-			logger.info("The dataGroomingArcDir is " + dataGroomingArcDir );
+			logger.debug("The logDir is " + logDir);
+			logger.debug("The dataGroomingDir is " + dataGroomingDir);
+			logger.debug("The archiveDir is " + archiveDir );
+			logger.debug("The dataGroomingArcDir is " + dataGroomingArcDir );
 		
 			boolean exists = directoryExists(logDir);
-			logger.info("Directory" + logDir + "exists: " + exists);
+			logger.debug("Directory" + logDir + "exists: " + exists);
 			if(!exists)
-				logger.error("The directory" + logDir +"does not exists");
+				logger.debug("The directory" + logDir +"does not exists");
 		
 			Integer ageZip = AAIConfig.getInt("aai.datagrooming.agezip");
 			Integer ageDelete = AAIConfig.getInt("aai.datagrooming.agedelete");
@@ -91,9 +103,9 @@ public class DataCleanupTasks {
 						continue;
 					}
 					if(listFile.isFile()){
-						logger.info("The file name in dataGrooming: " +listFile.getName()); 
+						logger.debug("The file name in dataGrooming: " +listFile.getName()); 
 						Date fileCreateDate = fileCreationMonthDate(listFile);
-						logger.info("The fileCreateDate in dataGrooming is " + fileCreateDate);
+						logger.debug("The fileCreateDate in dataGrooming is " + fileCreateDate);
 						if( fileCreateDate.compareTo(newAgeZip) < 0) {
 						archive(listFile,archiveDir,dataGroomingArcDir);						
 						}
@@ -107,9 +119,9 @@ public class DataCleanupTasks {
 			if(listFilesArchive != null) {
 				for(File listFileArchive : listFilesArchive) { 
 					if(listFileArchive.isFile()) {
-				logger.info("The file name in ARCHIVE/dataGrooming: " +listFileArchive.getName()); 
+				logger.debug("The file name in ARCHIVE/dataGrooming: " +listFileArchive.getName()); 
 				Date fileCreateDate = fileCreationMonthDate(listFileArchive);
-				logger.info("The fileCreateDate in ARCHIVE/dataGrooming is " + fileCreateDate);
+				logger.debug("The fileCreateDate in ARCHIVE/dataGrooming is " + fileCreateDate);
 				if(fileCreateDate.compareTo(newAgeDelete) < 0) {
 					delete(listFileArchive);
 					}
@@ -118,10 +130,11 @@ public class DataCleanupTasks {
 			}
 		}
 		catch (Exception e) {
-			ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataCleanup"+e.toString());
-			logger.info("AAI_4000", "Exception running cron job for DataCleanup"+e.toString());
-			throw e;
+			ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataCleanup"+LogFormatTools.getStackTop(e));
+			logger.debug("AAI_4000", "Exception running cron job for DataCleanup"+LogFormatTools.getStackTop(e));
 		}
+		logger.debug("Ended cron job dataGroomingCleanup @ " + simpleDateFormat.format(new Date()));
+		auditLog.logAfter();
 	}
 	
     /**
@@ -142,11 +155,11 @@ public class DataCleanupTasks {
     public Date getZipDate(Integer days, Date date) throws Exception{
     	
     	Calendar cal = Calendar.getInstance();
-    	logger.info("The current date is " + date );
+    	logger.debug("The current date is " + date );
     	cal.setTime(date);	
     	cal.add(Calendar.DATE, -days);
     	Date newAgeZip = cal.getTime();
-		logger.info("The newAgeDate is " +newAgeZip);
+		logger.debug("The newAgeDate is " +newAgeZip);
 		return newAgeZip;		
     }
     
@@ -170,9 +183,9 @@ public class DataCleanupTasks {
      */
     public void archive(File file, String archiveDir, String afterArchiveDir) throws AAIException, Exception {
 		
-    	logger.info("Inside the archive folder");  
+    	logger.debug("Inside the archive folder");  
     	String filename = file.getName();
-    	logger.info("file name is " +filename);
+    	logger.debug("file name is " +filename);
 		File archivepath = new File(archiveDir);
 		
 		String zipFile = afterArchiveDir + AAIConstants.AAI_FILESEP + filename;
@@ -180,13 +193,13 @@ public class DataCleanupTasks {
 		File dataGroomingPath = new File(afterArchiveDir);
 	
 		boolean exists = directoryExists(archiveDir);
-		logger.info("Directory" + archiveDir + "exists: " + exists);		
+		logger.debug("Directory" + archiveDir + "exists: " + exists);		
 		if(!exists) {
-			logger.error("The directory" + archiveDir +"does not exists so will create a new archive folder");
+			logger.debug("The directory" + archiveDir +"does not exists so will create a new archive folder");
 			//Create an archive folder if does not exists		
 			boolean flag = dataGroomingPath.mkdirs();
 			if(!flag)
-				logger.error("Failed to create ARCHIVE folder");		
+				logger.debug("Failed to create ARCHIVE folder");		
 		}
 		try(FileOutputStream outputstream = new FileOutputStream(zipFile + ".gz");
 				ZipOutputStream zoutputstream = new ZipOutputStream(outputstream);
@@ -202,13 +215,8 @@ public class DataCleanupTasks {
 			zoutputstream.closeEntry();
 			//Delete the file after been added to archive folder
 			delete(file);
-			logger.info("The file archived is " + file + " at " + afterArchiveDir );
+			logger.debug("The file archived is " + file + " at " + afterArchiveDir );
 		}	
-	 catch (IOException e) {
-		 ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataCleanup " + e.getStackTrace());
-		 logger.info("AAI_4000", "Exception running cron job for DataCleanup", e);
-		 throw e;
-	 	}
     }
     
     /**
@@ -217,10 +225,10 @@ public class DataCleanupTasks {
      */
     public static void delete(File file) {
     	
-    	logger.info("Deleting the file " + file);
+    	logger.debug("Deleting the file " + file);
     	boolean deleteStatus = file.delete();
 		if(!deleteStatus){
-			logger.error("Failed to delete the file" +file);			
+			logger.debug("Failed to delete the file" +file);			
 		}
     }
     
@@ -233,7 +241,7 @@ public class DataCleanupTasks {
     @Scheduled(cron = "${datasnapshotcleanup.cron}" )
     public void dataSnapshotCleanup() throws AAIException, Exception {
 	
-    	logger.info("Started cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
+    	logger.info(ONAPLogConstants.Markers.ENTRY, "Started cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
 	
     	try {
     		String logDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs";
@@ -244,15 +252,15 @@ public class DataCleanupTasks {
     		File archivepath = new File(archiveDir);
     		File dataSnapshotPath = new File(dataSnapshotArcDir);
 	
-    		logger.info("The logDir is " + logDir);
-    		logger.info("The dataSnapshotDir is " + dataSnapshotDir);
-    		logger.info("The archiveDir is " + archiveDir );
-    		logger.info("The dataSnapshotArcDir is " + dataSnapshotArcDir );
+    		logger.debug("The logDir is " + logDir);
+    		logger.debug("The dataSnapshotDir is " + dataSnapshotDir);
+    		logger.debug("The archiveDir is " + archiveDir );
+    		logger.debug("The dataSnapshotArcDir is " + dataSnapshotArcDir );
 	
     		boolean exists = directoryExists(logDir);
-    		logger.info("Directory" + logDir + "exists: " + exists);
+    		logger.debug("Directory" + logDir + "exists: " + exists);
     		if(!exists)
-    			logger.error("The directory" + logDir +"does not exists");
+    			logger.debug("The directory" + logDir +"does not exists");
 	
     		Integer ageZipSnapshot = AAIConfig.getInt("aai.datasnapshot.agezip");
     		Integer ageDeleteSnapshot = AAIConfig.getInt("aai.datasnapshot.agedelete");
@@ -267,9 +275,9 @@ public class DataCleanupTasks {
 					continue;
     				}
     				if(listFile.isFile()){
-    					logger.info("The file name in dataSnapshot: " +listFile.getName()); 
+    					logger.debug("The file name in dataSnapshot: " +listFile.getName()); 
     					Date fileCreateDate = fileCreationMonthDate(listFile);
-    					logger.info("The fileCreateDate in dataSnapshot is " + fileCreateDate);
+    					logger.debug("The fileCreateDate in dataSnapshot is " + fileCreateDate);
     					if( fileCreateDate.compareTo(newAgeZip) < 0) {
     						archive(listFile,archiveDir,dataSnapshotArcDir);						
     					}
@@ -283,9 +291,9 @@ public class DataCleanupTasks {
     		if(listFilesArchive != null) {
     			for(File listFileArchive : listFilesArchive) { 
     				if(listFileArchive.isFile()) {
-    					logger.info("The file name in ARCHIVE/dataSnapshot: " +listFileArchive.getName()); 
+    					logger.debug("The file name in ARCHIVE/dataSnapshot: " +listFileArchive.getName()); 
     					Date fileCreateDate = fileCreationMonthDate(listFileArchive);
-    					logger.info("The fileCreateDate in ARCHIVE/dataSnapshot is " + fileCreateDate);
+    					logger.debug("The fileCreateDate in ARCHIVE/dataSnapshot is " + fileCreateDate);
     					if(fileCreateDate.compareTo(newAgeDelete) < 0) {
     						delete(listFileArchive);
     					}
@@ -294,9 +302,9 @@ public class DataCleanupTasks {
     		}
 	}
 	catch (Exception e) {
-		ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataCleanup"+e.toString());
-		logger.info("AAI_4000", "Exception running cron job for DataCleanup"+e.toString());
-		throw e;
+		ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataCleanup"+LogFormatTools.getStackTop(e));
+		logger.debug("AAI_4000", "Exception running cron job for DataCleanup"+LogFormatTools.getStackTop(e));
 	}
+    logger.info(ONAPLogConstants.Markers.EXIT, "Ended cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
   }   
 }

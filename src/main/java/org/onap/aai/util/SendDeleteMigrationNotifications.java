@@ -20,24 +20,22 @@
 package org.onap.aai.util;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.introspection.*;
+import org.onap.aai.introspection.Introspector;
+import org.onap.aai.introspection.Loader;
+import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.introspection.ModelType;
 import org.onap.aai.migration.EventAction;
 import org.onap.aai.migration.NotificationHelper;
-import org.onap.aai.rest.ueb.UEBNotification;
 import org.onap.aai.serialization.db.DBSerializer;
-import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
+import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
-import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
+import org.onap.aai.setup.SchemaVersions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.io.IOException;
@@ -47,11 +45,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.ws.rs.core.Response.Status;
-
 public class SendDeleteMigrationNotifications {
 
-	protected EELFLogger logger = EELFManager.getInstance().getLogger(SendDeleteMigrationNotifications.class.getSimpleName());
+	protected Logger logger = LoggerFactory.getLogger(SendDeleteMigrationNotifications.class.getSimpleName());
 
 	private String config;
 	private String path;
@@ -104,7 +100,7 @@ public class SendDeleteMigrationNotifications {
 			Map<Integer, String> deleteDataMap = processFile();
 			int count = 0;
 			for (Map.Entry<Integer, String> entry : deleteDataMap.entrySet()) {
-				logger.info("Processing " + entry.getKey() + " :: Data :: " + entry.getValue());
+				logger.debug("Processing " + entry.getKey() + " :: Data :: " + entry.getValue());
 				String data = entry.getValue();
 				Introspector obj = null;
 				if (data.contains("#@#")) {
@@ -118,7 +114,7 @@ public class SendDeleteMigrationNotifications {
 				count++;
 				if (count >= this.numToBatch) {
 					trigger();
-					logger.info("Triggered " + entry.getKey());
+					logger.debug("Triggered " + entry.getKey());
 					count = 0;
 					Thread.sleep(this.sleepInMilliSecs);
 				}
@@ -158,7 +154,7 @@ public class SendDeleteMigrationNotifications {
 
 	private void initFields() {
 		this.loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, version);
-		this.engine = new JanusGraphDBEngine(queryStyle, DBConnectionType.REALTIME, loader);
+		this.engine = new JanusGraphDBEngine(queryStyle, loader);
 		try {
 			this.serializer = new DBSerializer(version, this.engine, introspectorFactoryType, this.eventSource);
 		} catch (AAIException e) {
@@ -176,7 +172,7 @@ public class SendDeleteMigrationNotifications {
 
 	protected void logAndPrint(String msg) {
 		System.out.println(msg);
-		logger.info(msg);
+		logger.debug(msg);
 	}
 
 

@@ -44,7 +44,6 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
 
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
 
     Loader loader;
     TransactionalGraphEngine dbEngine;
@@ -93,7 +92,6 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType,schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 //Scn1 empty RCT move everything over
         pserverRCT = g.addV().property("aai-node-type", "pserver")

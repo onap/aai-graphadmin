@@ -20,7 +20,10 @@
 package org.onap.aai.rest.search;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
+import org.onap.aai.aailog.logs.AaiDBGraphadminMetricLog;
 import org.onap.aai.restcore.search.GremlinGroovyShell;
+import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.GraphAdminConstants;
 
 import java.util.Map;
 
@@ -32,12 +35,18 @@ public class GroovyShellImpl extends GenericQueryProcessor {
 	
 	@Override
 	protected GraphTraversal<?,?> runQuery(String query, Map<String, Object> params) {
-
+		
+		AaiDBGraphadminMetricLog metricLog = new AaiDBGraphadminMetricLog (GraphAdminConstants.AAI_GRAPHADMIN_MS);
+		metricLog.pre(uri);
+		
 		params.put("g", this.dbEngine.asAdmin().getTraversalSource());
 		
 		GremlinGroovyShell shell = new GremlinGroovyShell();
 		
-		return shell.executeTraversal(query, params);
+		GraphTraversal<?,?> graphTraversal = shell.executeTraversal(query, params);
+		
+		metricLog.post();
+		return graphTraversal;
 	}
 		
 }

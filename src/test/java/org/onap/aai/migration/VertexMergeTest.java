@@ -19,25 +19,26 @@
  */
 package org.onap.aai.migration;
 
-import org.janusgraph.core.Cardinality;
-import org.janusgraph.core.JanusGraphFactory;
-import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.schema.JanusGraphManagement;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.janusgraph.core.Cardinality;
+import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.JanusGraphFactory;
+import org.janusgraph.core.schema.JanusGraphManagement;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
-import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.serialization.db.DBSerializer;
-import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
+import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
+import org.onap.aai.setup.SchemaVersion;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -55,7 +56,6 @@ public class VertexMergeTest extends AAISetup {
 	private final static SchemaVersion version = new SchemaVersion("v10");
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
@@ -71,7 +71,6 @@ public class VertexMergeTest extends AAISetup {
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, version);
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
-				type,
 				loader);
 
 		JanusGraphManagement mgmt = graph.openManagement();

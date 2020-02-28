@@ -19,8 +19,8 @@
  */
 package org.onap.aai.rest.dsl;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -38,7 +38,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class DslQueryProcessor {
 
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(DslQueryProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DslQueryProcessor.class);
 
 	private DslListener dslListener;
 

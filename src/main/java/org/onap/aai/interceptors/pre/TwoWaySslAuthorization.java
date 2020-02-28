@@ -19,7 +19,7 @@
  */
 package org.onap.aai.interceptors.pre;
 
-import org.onap.aai.auth.AAIAuthCore;
+import org.onap.aai.aaf.auth.AAIAuthCore;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.interceptors.AAIContainerFilter;
 import org.onap.aai.interceptors.AAIHeaderProperties;

@@ -71,7 +71,6 @@ public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
 
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
     private Loader loader;
     private TransactionalGraphEngine dbEngine;
     private BooleanDefaultMigrator migration;
@@ -83,7 +82,6 @@ public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
 
         //generic-vnf

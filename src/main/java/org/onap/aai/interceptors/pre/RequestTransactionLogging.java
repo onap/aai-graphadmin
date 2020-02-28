@@ -19,8 +19,8 @@
  */
 package org.onap.aai.interceptors.pre;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.gson.JsonObject;
 import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.onap.aai.exceptions.AAIException;
@@ -53,7 +53,7 @@ import java.util.UUID;
 @Priority(AAIRequestFilterPriority.REQUEST_TRANS_LOGGING)
 public class RequestTransactionLogging extends AAIContainerFilter implements ContainerRequestFilter {
 
-	private static final EELFLogger LOGGER = EELFManager.getInstance().getLogger(RequestTransactionLogging.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RequestTransactionLogging.class);
 
 	@Autowired
 	private HttpServletRequest httpServletRequest;

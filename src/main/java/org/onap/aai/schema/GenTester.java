@@ -20,8 +20,8 @@
 package org.onap.aai.schema;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.onap.aai.config.PropertyPasswordConfiguration;
@@ -29,8 +29,6 @@ import org.onap.aai.dbgen.SchemaGenerator;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LoggingContext;
-import org.onap.aai.logging.LoggingContext.StatusCode;
 import org.onap.aai.util.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -40,7 +38,8 @@ import java.util.UUID;
 
 public class GenTester {
 
-	private static EELFLogger LOGGER;
+	private static Logger LOGGER;
+	private static boolean historyEnabled;
 	
 	/**
 	 * The main method.
@@ -55,19 +54,9 @@ public class GenTester {
 		Properties props = System.getProperties();
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-		LOGGER = EELFManager.getInstance().getLogger(GenTester.class);
+		LOGGER = LoggerFactory.getLogger(GenTester.class);
 		boolean addDefaultCR = true;
 		
-		LoggingContext.init();
-		LoggingContext.component("DBGenTester");
-		LoggingContext.partnerName("AAI-TOOLS");
-		LoggingContext.targetEntity("AAI");
-		LoggingContext.requestId(UUID.randomUUID().toString());
-		LoggingContext.serviceName("AAI");
-		LoggingContext.targetServiceName("main");
-		LoggingContext.statusCode(StatusCode.COMPLETE);
-		LoggingContext.responseCode(LoggingContext.SUCCESS);
-
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
 		initializer.initialize(ctx);
@@ -80,13 +69,18 @@ public class GenTester {
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
 			LOGGER.error("Problems running the tool "+aai.getMessage());
-			LoggingContext.statusCode(LoggingContext.StatusCode.ERROR);
-			LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}
+		historyEnabled = Boolean.parseBoolean(ctx.getEnvironment().getProperty("history.enabled","false"));
+		if( historyEnabled ) {
+	    	   String amsg = "GenTester may only be used when history.enabled=false. ";
+	    	   System.out.println(amsg);
+	    	   LOGGER.debug(amsg);
+	    	   return;
+		}
 		try {
-            LOGGER.info("GenTester uses either cql jar or Cassandra jar");
+            LOGGER.debug("GenTester uses either cql jar or Cassandra jar");
 
 			AAIConfig.init();
 	    	if (args != null && args.length > 0 ){
@@ -100,7 +94,7 @@ public class GenTester {
 					// an HBase copyTable can be used to set up a copy of the db.
 					String imsg = "    ---- NOTE --- about to load a graph without doing any schema processing (takes a little while) --------   ";
 	            	System.out.println(imsg);
-	            	LOGGER.info(imsg);
+	            	LOGGER.debug(imsg);
 					graph = AAIGraph.getInstance().getGraph();
 			    	
 			       if( graph == null ){
@@ -110,7 +104,7 @@ public class GenTester {
 			       else {
 			    	   String amsg = "Successfully loaded a JanusGraph graph without doing any schema work.  ";
 			    	   System.out.println(amsg);
-			    	   LOGGER.auditEvent(amsg);
+			    	   LOGGER.debug(amsg);
 			           return;
 			       }
 	    		} else if ("GEN_DB_WITH_NO_DEFAULT_CR".equals(args[0])) {
@@ -121,8 +115,6 @@ public class GenTester {
 	    			
 	    			String emsg = "Unrecognized argument passed to GenTester.java: [" + args[0] + "]. ";
 	    			System.out.println(emsg);
-	    			LoggingContext.statusCode(StatusCode.ERROR);
-	    			LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 	    			LOGGER.error(emsg);
 	    			
 	    			emsg = "Either pass no argument for normal processing, or use 'GEN_DB_WITH_NO_SCHEMA'.";
@@ -137,7 +129,7 @@ public class GenTester {
 			ErrorLogHelper.loadProperties();
 			String imsg = "    ---- NOTE --- about to open graph (takes a little while)--------;";
         	System.out.println(imsg);
-        	LOGGER.info(imsg);
+        	LOGGER.debug(imsg);
 			graph = AAIGraph.getInstance().getGraph();
 	    	
 			if( graph == null ){
@@ -152,18 +144,18 @@ public class GenTester {
 
 	       	imsg = "-- Loading new schema elements into JanusGraph --";
        		System.out.println(imsg);
-       		LOGGER.info(imsg);
+       		LOGGER.debug(imsg);
        		SchemaGenerator.loadSchemaIntoJanusGraph(graph, graphMgt, null);
 
             if( graph != null ){
                 imsg = "-- graph commit";
                 System.out.println(imsg);
-                LOGGER.info(imsg);
+                LOGGER.debug(imsg);
                 graph.tx().commit();
 
                 imsg = "-- graph shutdown ";
                 System.out.println(imsg);
-                LOGGER.info(imsg);
+                LOGGER.debug(imsg);
                 graph.close();
             }
 
@@ -174,11 +166,10 @@ public class GenTester {
 	    
 
 	    
-	    LOGGER.auditEvent("-- all done, if program does not exit, please kill.");
+	    LOGGER.debug("-- all done, if program does not exit, please kill.");
 	    System.exit(0);
     }
 
 
 
 }
-

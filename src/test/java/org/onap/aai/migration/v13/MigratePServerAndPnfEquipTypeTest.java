@@ -48,7 +48,6 @@ public class MigratePServerAndPnfEquipTypeTest extends AAISetup{
 
     private final static ModelType introspectorFactoryType = ModelType.MOXY;
     private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-    private final static DBConnectionType type = DBConnectionType.REALTIME;
     private Loader loader;
     private TransactionalGraphEngine dbEngine;
     private JanusGraph graph;
@@ -71,7 +70,6 @@ public class MigratePServerAndPnfEquipTypeTest extends AAISetup{
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
          pserver1 = g.addV().property("aai-node-type", MigratePserverAndPnfEquipType.PSERVER_NODE_TYPE)
                 .property( MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY, "Server")

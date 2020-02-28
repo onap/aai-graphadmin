@@ -20,23 +20,25 @@
 package org.onap.aai.util;
 
 import com.att.eelf.configuration.Configuration;
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.introspection.*;
+import org.onap.aai.introspection.Introspector;
+import org.onap.aai.introspection.Loader;
+import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.introspection.ModelType;
 import org.onap.aai.migration.EventAction;
 import org.onap.aai.migration.NotificationHelper;
 import org.onap.aai.serialization.db.DBSerializer;
-import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
+import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
-import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
+import org.onap.aai.setup.SchemaVersions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.io.IOException;
@@ -47,7 +49,7 @@ import java.util.*;
 
 public class SendMigrationNotifications {
 
-	protected EELFLogger logger = EELFManager.getInstance().getLogger(SendMigrationNotifications.class.getSimpleName());
+	protected Logger logger = LoggerFactory.getLogger(SendMigrationNotifications.class.getSimpleName());
 
 	private String config;
 	private String path;
@@ -111,7 +113,7 @@ public class SendMigrationNotifications {
 				logAndPrint("Vertex " + entry.getKey() + " query returned " + vertexes.size() + " vertexes." );
 				continue;
 			} else {
-				logger.info("Processing " + entry.getKey() + "resource-version " + entry.getValue());
+				logger.debug("Processing " + entry.getKey() + "resource-version " + entry.getValue());
 				v = vertexes.get(0);
 				if (notifyOn.isEmpty() || notifyOn.contains(v.value(AAIProperties.NODE_TYPE).toString())) {
 					if (entry.getValue().equals(v.value(AAIProperties.RESOURCE_VERSION).toString())) {
@@ -121,7 +123,7 @@ public class SendMigrationNotifications {
 						count++;
 						if (count >= this.numToBatch) {
 							trigger();
-							logger.info("Triggered " + entry.getKey());
+							logger.debug("Triggered " + entry.getKey());
 							count = 0;
 							Thread.sleep(this.sleepInMilliSecs);
 						}
@@ -164,7 +166,7 @@ public class SendMigrationNotifications {
 
 	private void initFields() {
 		this.loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, version);
-		this.engine = new JanusGraphDBEngine(queryStyle, DBConnectionType.REALTIME, loader);
+		this.engine = new JanusGraphDBEngine(queryStyle, loader);
 		try {
 			this.serializer = new DBSerializer(version, this.engine, introspectorFactoryType, this.eventSource);
 		} catch (AAIException e) {
@@ -182,7 +184,7 @@ public class SendMigrationNotifications {
 
 	protected void logAndPrint(String msg) {
 		System.out.println(msg);
-		logger.info(msg);
+		logger.debug(msg);
 	}
 
 

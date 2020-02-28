@@ -1,6 +1,21 @@
 <configuration>
 	<property name="logDirectory" value="${AJSC_HOME}/logs" />
 
+	<property name="p_tim" value="%d{&quot;yyyy-MM-dd'T'HH:mm:ss.SSSXXX&quot;, UTC}"/>
+	<property name="p_lvl" value="%level"/>
+	<property name="p_log" value="%logger"/>
+	<property name="p_mdc" value="%replace(%replace(%mdc){'\t','\\\\t'}){'\n', '\\\\n'}"/>
+	<property name="p_msg" value="%replace(%replace(%msg){'\t', '\\\\t'}){'\n','\\\\n'}"/>
+	<property name="p_exc" value="%replace(%replace(%rootException){'\t', '\\\\t'}){'\n','\\\\n'}"/>
+	<property name="p_mak" value="%replace(%replace(%marker){'\t', '\\\\t'}){'\n','\\\\n'}"/>
+	<property name="p_thr" value="%thread"/>
+	<property name="pattern" value="%nopexception${p_tim}\t${p_thr}\t${p_lvl}\t${p_log}\t${p_mdc}\t${p_msg}\t${p_exc}\t${p_mak}\t%n"/>
+	<property name="errorPattern" value="%X{LogTimestamp}|%X{RequestID}|%thread|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%.-5level|%X{ErrorCode}|%X{ErrorDesc}|%msg%n" />
+	<property name="debugPattern" value="%X{LogTimestamp}|%X{RequestID}|%msg\t${p_mdc}\t${p_msg}\t${p_exc}\t${p_mak}\t|^%n" />
+	<property name="auditPattern" value="%X{EntryTimestamp}|%X{LogTimestamp}|%X{RequestID}|%X{ServiceInstanceID}|%thread||%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDesc}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}||||${p_mak}|${p_mdc}|||%msg%n" />
+	<property name="metricPattern" value="%X{InvokeTimestamp}|%X{LogTimestamp}|%X{RequestID}|%X{ServiceInstanceID}|%thread||%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDesc}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}||||%X{TargetVirtualEntity}|${p_mak}|${p_mdc}|||%msg%n" />
+	<property name="transLogPattern" value="%X{LogTimestamp}|%date{yyyy-MM-dd'T'HH:mm:ss.SSSZ, UTC}|%X{RequestID}|%X{ServiceInstanceID}|%-10t|%X{ServerFQDN}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%replace(%replace(%X{ResponseDesc}){'\\|', '!'}){'\r|\n', '^'}|%X{InstanceUUID}|%level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{clientIpAddress}||%X{unused}|%X{processKey}|%X{customField1}|%X{customField2}|%X{customField3}|%X{customField4}|co=%X{PartnerName}:%m%n"/>
+
 	<appender name="uniquePropertyChecklog" class="ch.qos.logback.classic.sift.SiftingAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>INFO</level>
@@ -24,7 +39,7 @@
 					</fileNamePattern>
 				</rollingPolicy>
 				<encoder>
-					<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+					<pattern>${auditPattern}</pattern>
 				</encoder>
 			</appender>
 		</sift>
@@ -48,13 +63,12 @@
 	<logger name="ch.qos.logback.core" level="WARN" additivity="false">
 		<appender-ref ref="uniquePropertyChecklog" />
 	</logger>
-	<logger name="com.att.eelf" level="WARN" additivity="false">
-		<appender-ref ref="uniquePropertyChecklog" />
-	</logger>
 	<logger name="org.onap.aai" level="INFO" additivity="false">
 		<appender-ref ref="uniquePropertyChecklog" />
 	</logger>
-
+	<logger name="org.onap.aai.util.UniquePropertyCheck" level="INFO" additivity="false">
+		<appender-ref ref="uniquePropertyChecklog" />
+	</logger>
 
 	<root level="INFO">
 		<appender-ref ref="uniquePropertyChecklog" />

@@ -39,7 +39,6 @@ public class MigrateNetworkTechToCloudRegionTest extends AAISetup{
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
 	private final static QueryStyle queryStyle = QueryStyle.TRAVERSAL;
-	private final static DBConnectionType type = DBConnectionType.REALTIME;
 
 	private Loader loader;
 	private TransactionalGraphEngine dbEngine;
@@ -52,7 +51,6 @@ public class MigrateNetworkTechToCloudRegionTest extends AAISetup{
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
-                type,
                 loader);
         Vertex cloudRegion1 = g.addV().property("aai-node-type", "cloud-region").property("cloud-region-id", "cloud-region-id-1").property("cloud-owner", "att-aic").property("resource-version", "1").next();
         Vertex cloudRegion2 = g.addV().property("aai-node-type", "cloud-region").property("cloud-region-id", "cloud-region-id-2").property("cloud-owner", "att-nc").property("resource-version", "2").next();
