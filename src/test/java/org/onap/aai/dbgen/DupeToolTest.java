@@ -114,6 +114,30 @@ public class DupeToolTest extends AAISetup {
                     .property("source-of-truth", "JUNIT")
                     .next();
             edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex6);
+
+
+            Vertex pInterfaceVertex7 = g.addV()
+                .property("aai-node-type", "p-interface")
+                .property("interface-name", "p-interface-name3")
+                .property("in-maint", false)
+                .property("source-of-truth", "JUNIT")
+                .next();
+            edgeSerializer.addTreeEdge(g, pserverVertex, pInterfaceVertex7);
+
+            // Now add a few more pservers  - they won't be dupes because the db won't let us
+            Vertex pserverVertexX = g.addV()
+                    .property("aai-node-type", "pserver")
+                    .property("hostname", "test-pserverX")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
+
+            Vertex pserverVertexY = g.addV()
+                    .property("aai-node-type", "pserver")
+                    .property("hostname", "test-pserverY")
+                    .property("in-maint", false)
+                    .property("source-of-truth", "JUNIT")
+                    .next();
       
 
         } catch(Exception ex){
@@ -130,7 +154,7 @@ public class DupeToolTest extends AAISetup {
     }
 
 
-	@Test
+    @Test
     public void testDupeToolForPInterface(){
         
         String[] args = {
@@ -145,6 +169,42 @@ public class DupeToolTest extends AAISetup {
         assertThat(dupeTool.getDupeGroupCount(), is(3));
         
     }
+
+
+    @Test
+    public void testDupeToolForPInterfaceWithAutoFixOn(){
+        
+        String[] args = {
+                "-userId", "testuser",
+                "-nodeType", "p-interface",
+                "-timeWindowMinutes", "30",
+                "-maxFix", "30",
+                "-sleepMinutes", "5",
+                "-autoFix"
+        };
+
+        dupeTool.execute(args);
+        assertThat(dupeTool.getDupeGroupCount(), is(3));
+        
+    }
+
+
+    @Test
+    public void testDupeToolForPServer(){
+	    
+	String[] args = {
+                "-userId", "testuser",
+                "-nodeType", "pserver",
+                "-timeWindowMinutes", "30",
+                "-maxFix", "30",
+                "-sleepMinutes", "0"
+        };
+     
+        dupeTool.execute(args);
+        assertThat(dupeTool.getDupeGroupCount(), is(0));
+        
+    }
+
 
     @After
     public void tearDown(){

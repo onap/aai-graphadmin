@@ -109,14 +109,6 @@ public class DataSnapshot4HistInit {
 	 */
 	public static void main(String[] args) {
 		
-		// Set the logging file properties to be used by EELFManager
-		System.setProperty("aai.service.name", DataSnapshot4HistInit.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-		LOGGER = LoggerFactory.getLogger(DataSnapshot4HistInit.class);
-		
-		
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
 		initializer.initialize(ctx);
@@ -156,6 +148,13 @@ public class DataSnapshot4HistInit {
 
 
 	public boolean executeCommand(String[] args) {
+		
+		// Set the logging file properties to be used by EELFManager
+		System.setProperty("aai.service.name", DataSnapshot4HistInit.class.getSimpleName());
+		Properties props = System.getProperties();
+		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
+		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
+		LOGGER = LoggerFactory.getLogger(DataSnapshot4HistInit.class);
 		
 		Boolean dbClearFlag = false;
 		JanusGraph graph = null;

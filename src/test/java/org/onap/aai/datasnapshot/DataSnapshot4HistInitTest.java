@@ -33,28 +33,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.onap.aai.AAISetup;
-import org.onap.aai.datagrooming.DataGrooming;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-
-import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.util.AAISystemExitUtil;
 import org.springframework.boot.test.rule.OutputCapture;
-
-import com.beust.jcommander.ParameterException;
-
-import java.lang.NumberFormatException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -62,7 +54,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 
 
-public class DataSnapshotTest4HistInit extends AAISetup {
+
+public class DataSnapshot4HistInitTest extends AAISetup {
 
     private GraphTraversalSource g;
     
@@ -77,7 +70,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
 
     @Before
     public void setup() throws AAIException {
-    	dataSnapshot4HistInit = new DataSnapshot4HistInit(loaderFactory, schemaVersions);
+    	dataSnapshot4HistInit = new DataSnapshot4HistInit(loaderFactory, schemaVersions);  	
     	
     	JanusGraph graph = AAIGraph.getInstance().getGraph();
         currentTransaction = graph.newTransaction();
@@ -174,7 +167,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiAndItShouldCreateMultipleSnapshotFiles() throws IOException {
 
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","2"};
@@ -189,7 +182,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithDebugAndItShouldCreateMultipleSnapshotFiles() throws IOException {
 
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","2", "-debugFlag","DEBUG"};
@@ -204,8 +197,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithDebugAndInvalidNumberAndItShouldFail() throws IOException {
 
-        boolean thrown = false;
-    	String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","foo","-debugFlag", "DEBUG"};
@@ -219,7 +211,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithDebugAndTimeDelayAndInvalidNumberAndItShouldFail() throws IOException {
 
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT","-threadCount", "foo", "-debugFlag","DEBUG","-debugAddDelayTime", "100"};
@@ -233,7 +225,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithDebugAndTimeDelayAndZeroThreadsAndItShouldFail() throws IOException {
 
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","0", "-debugFlag","DEBUG", "-debugAddDelayTime","100"};
@@ -247,7 +239,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithDebugAndTimeDelayIsInvalidNumberAndItShouldFail() throws IOException {
 
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT","-threadCount", "0","-debugFlag","DEBUG", "-debugAddDelayTime","foo"};
@@ -261,7 +253,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
 //    @Test
     public void testTakeSnapshotMultiWithMoreParametersThanAllowedAndItShouldFail() throws IOException {
 
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount", "0", "-debugFlag","DEBUG",  "-debugAddDelayTime","foo", "bar"};
@@ -275,9 +267,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithZeroThreadsAndItShouldFail(){
 
-        // For this test if there is only one vertex in the graph, not sure if it will create multiple files
-        // would need to add more data to the janusgraph
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","0"};
@@ -288,9 +278,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Test
     public void testTakeSnapshotMultiWithInvalidNumberForThreadsAndItShouldFail(){
 
-        // For this test if there is only one vertex in the graph, not sure if it will create multiple files
-        // would need to add more data to the janusgraph
-        String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
+        System.getProperty("AJSC_HOME");
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT","-threadCount", "foo"};
@@ -386,13 +374,12 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     		String nodeType = (String)entry.getKey();
     		ArrayList<String> keyNames = (ArrayList<String>)entry.getValue();
     		keyNamesHash.put(nodeType,keyNames);
-    		System.out.println("DEBUGjojo === for nType " + nodeType + ", got keys = [" + keyNames + "]");
     	}   
 
     	assertTrue(keyNamesHash != null );
     	assertFalse(keyNamesHash.isEmpty());
     }
-
+    
     
     private void showVertProperties(String propKey, String propVal)  {
     	
