@@ -65,7 +65,7 @@ public class SendDeleteMigrationNotificationsMain {
 
 		EventAction action = EventAction.valueOf(cArgs.eventAction.toUpperCase());
 
-		SendDeleteMigrationNotifications internal = new SendDeleteMigrationNotifications(loaderFactory, schemaVersions, cArgs.config, cArgs.file, new HashSet<>(cArgs.notifyOn), cArgs.sleepInMilliSecs, cArgs.numToBatch, requestId, action, cArgs.eventSource);
+		SendDeleteMigrationNotifications internal = new SendDeleteMigrationNotifications(loaderFactory, schemaVersions, cArgs.config, cArgs.file, cArgs.sleepInMilliSecs, cArgs.numToBatch, requestId, action, cArgs.eventSource);
 
 		try {
 			internal.process(basePath);

@@ -88,14 +88,14 @@ public class DataGrooming {
 	
 	private CommandLineArgs cArgs;
 	
-	HashMap<String, Vertex> orphanNodeHash ;
-	HashMap<String, Vertex> missingAaiNtNodeHash ;
-	HashMap<String, Vertex> badUriNodeHash ;
-	HashMap<String, Vertex> badIndexNodeHash ;
-	HashMap<String, Edge> oneArmedEdgeHash ;
-	HashMap<String, Vertex> ghostNodeHash ;
-	ArrayList<String> dupeGroups;
-	Set<String> deleteCandidateList;
+	private Map<String, Vertex> orphanNodeHash ;
+	private Map<String, Vertex> missingAaiNtNodeHash ;
+	private Map<String, Vertex> badUriNodeHash ;
+	private Map<String, Vertex> badIndexNodeHash ;
+	private Map<String, Edge> oneArmedEdgeHash ;
+	private Map<String, Vertex> ghostNodeHash ;
+	private List<String> dupeGroups;
+	private Set<String> deleteCandidateList;
 	private int deleteCount = 0;
 
 	public DataGrooming(LoaderFactory loaderFactory, SchemaVersions schemaVersions){
@@ -438,14 +438,14 @@ public class DataGrooming {
 			
 			ArrayList<String> errArr = new ArrayList<>();
 			int totalNodeCount = 0;
-			HashMap<String, String> misMatchedHash = new HashMap<String, String>();
-			orphanNodeHash = new HashMap<String, Vertex>();
-			missingAaiNtNodeHash = new HashMap<String, Vertex>();
-			badUriNodeHash = new HashMap<String, Vertex>();
-			badIndexNodeHash = new HashMap<String, Vertex>();
-			oneArmedEdgeHash = new HashMap<String, Edge>();
-			HashMap<String, String> emptyVertexHash = new HashMap<String, String>();
-			ghostNodeHash = new HashMap<String, Vertex>();
+			HashMap<String, String> misMatchedHash = new HashMap<>();
+			orphanNodeHash = new HashMap<>();
+			missingAaiNtNodeHash = new HashMap<>();
+			badUriNodeHash = new HashMap<>();
+			badIndexNodeHash = new HashMap<>();
+			oneArmedEdgeHash = new HashMap<>();
+			HashMap<String, String> emptyVertexHash = new HashMap<>();
+			ghostNodeHash = new HashMap<>();
 			dupeGroups = new ArrayList<>();
 
 			LOGGER.debug(" Using default schemaVersion = [" + schemaVersions.getDefaultVersion().toString() + "]" );
@@ -494,15 +494,13 @@ public class DataGrooming {
 					// Determine what the key fields are for this nodeType - use an arrayList so they
 					// can be gotten out in a consistent order.
 					Set <String> keyPropsSet = entry.getValue().getKeys();
-					ArrayList <String> keyProps = new ArrayList <String> ();
-					keyProps.addAll(keyPropsSet);
+					ArrayList<String> keyProps = new ArrayList<>(keyPropsSet);
 					
 					Set <String> indexedPropsSet = entry.getValue().getIndexedProperties();
-					ArrayList <String> indexedProps = new ArrayList <String> ();
-					indexedProps.addAll(indexedPropsSet);
+					ArrayList<String> indexedProps = new ArrayList<>(indexedPropsSet);
 
 					Iterator<String> indPropItr = indexedProps.iterator();
-					HashMap <String,String> propTypeHash = new HashMap <String, String> ();
+					HashMap <String,String> propTypeHash = new HashMap<>();
 					while( indPropItr.hasNext() ){
 						String propName = indPropItr.next();
 						String propType = entry.getValue().getType(propName);
@@ -569,7 +567,7 @@ public class DataGrooming {
 							while (keyPropI.hasNext()) {
 								String propName = keyPropI.next();
 								String propVal = "";
-								Object obj = thisVtx.<Object>property(propName).orElse(null);
+								Object obj = thisVtx.property(propName).orElse(null);
 								if (obj != null) {
 									propVal = obj.toString();
 								}
@@ -608,7 +606,7 @@ public class DataGrooming {
 											boolean updateOnlyFlag = false;
 											try {
 												processedVertices.add(thisVtx.id().toString());
-												Object ob = thisVtx.<Object>property("aai-node-type").orElse(null);
+												Object ob = thisVtx.property("aai-node-type").orElse(null);
 												if( ob == null && !skipIndexUpdateFix ){
 													updateIndexedPropsForMissingNT(thisVtx, thisVid, nType, propTypeHash, indexedProps);
 													updateOnlyFlag = true;
@@ -640,7 +638,7 @@ public class DataGrooming {
 											// That is, you could have a node with no edges... which sounds like an orphan, but not all
 											// nodes require edges.  For example, you could have a newly created "image" node which does not have
 											// any edges connected to it (using it) yet.
-											Object ob = thisVtx.<Object>property("aai-node-type").orElse(null);
+											Object ob = thisVtx.property("aai-node-type").orElse(null);
 											if( ob == null ){
 												// Group this with missing-node-type guys - which
 												// we will delete more readily than orphans.
@@ -648,7 +646,7 @@ public class DataGrooming {
 												missingAaiNtNodeHash.put(thisVid, thisVtx);
 											}
 											else {
-												Object ob2 = thisVtx.<Object>property("aai-uuid").orElse(null);
+												Object ob2 = thisVtx.property("aai-uuid").orElse(null);
 												String auid = "";
 												if( ob2 != null ){
 													auid = ob2.toString();
@@ -716,7 +714,7 @@ public class DataGrooming {
 										boolean okFlag = true;
 										boolean updateOnlyFlag = false;
 										try {
-											Object ob = thisVtx.<Object>property("aai-node-type").orElse(null);
+											Object ob = thisVtx.property("aai-node-type").orElse(null);
 											if( ob == null && !skipIndexUpdateFix ){
 												updateIndexedPropsForMissingNT(thisVtx, thisVid, nType, propTypeHash, indexedProps);
 												dummyUpdCount++;
@@ -782,7 +780,7 @@ public class DataGrooming {
 					if( depNodeTypes.isEmpty() && !dupeCheckOff ){
 						// For this nodeType, we haven't looked at the possibility of a 
 						// non-dependent node where two verts have same key info
-						ArrayList<ArrayList<Vertex>> nonDependentDupeSets = new ArrayList<ArrayList<Vertex>>();
+						ArrayList<ArrayList<Vertex>> nonDependentDupeSets = new ArrayList<>();
 							nonDependentDupeSets = getDupeSets4NonDepNodes( 
 										TRANSID, FROMAPPID, g,
 										version, nType, tmpList, 
@@ -927,7 +925,7 @@ public class DataGrooming {
 						Boolean cantGetUsingVid = false;
 						if (vIn != null) {
 							try {
-								Object ob = vIn.<Object>property("aai-node-type").orElse(null);
+								Object ob = vIn.property("aai-node-type").orElse(null);
 								if (ob != null) {
 									vNtI = ob.toString();
 									keysMissing = anyKeyFieldsMissing(vNtI, vIn, loader);
@@ -1033,7 +1031,7 @@ public class DataGrooming {
 						cantGetUsingVid = false;
 						if (vOut != null) {
 							try {
-								Object ob = vOut.<Object>property("aai-node-type").orElse(null);
+								Object ob = vOut.property("aai-node-type").orElse(null);
 								if (ob != null) {
 									vNtO = ob.toString();
 									keysMissing = anyKeyFieldsMissing(vNtO,
@@ -1342,7 +1340,7 @@ public class DataGrooming {
 			int dupeSetCounter = 0;
 			while (dupeIter.hasNext()) {
 				dupeSetCounter++;
-				String dset = (String) dupeIter.next();
+				String dset = dupeIter.next();
 
 				bw.write("\n --- Duplicate Group # " + dupeSetCounter
 						+ " Detail -----------\n");
@@ -1426,7 +1424,7 @@ public class DataGrooming {
 			bw.write("\n ------------- Got these errors while processing: \n");
 			Iterator<String> errIter = errArr.iterator();
 			while (errIter.hasNext()) {
-				String line = (String) errIter.next();
+				String line = errIter.next();
 				bw.write(line + "\n");
 			}
 
@@ -1540,7 +1538,7 @@ public class DataGrooming {
 	}// end of doTheGrooming()
 	
 	
-	public void tryToReSetIndexedProps(Vertex thisVtx, String thisVidStr, ArrayList <String> indexedProps) {
+	public void tryToReSetIndexedProps(Vertex thisVtx, String thisVidStr, List <String> indexedProps) {
 		// Note - This is for when a node looks to be a phantom (ie. an index/pointer problem)
 	    // We will only deal with properties that are indexed and have a value - and for those,
 	    // we will re-set them to the same value they already have, so that hopefully if their 
@@ -1551,7 +1549,7 @@ public class DataGrooming {
 		LOGGER.debug(" We will try to re-set the indexed properties for this node without changing any property values.  VID = " + thisVidStr );
 		// These reserved-prop-names are all indexed for all nodes
 		
-		ArrayList <String> propList = new ArrayList <String> ();
+		ArrayList <String> propList = new ArrayList <> ();
 		propList.addAll(indexedProps);
 		// Add in the global props that we'd also like to reset
 		propList.add("aai-node-type");
@@ -1561,7 +1559,7 @@ public class DataGrooming {
 		while( propNameItr.hasNext() ){
 			String propName = propNameItr.next();
 			try {
-				Object valObj = thisVtx.<Object>property(propName).orElse(null);
+				Object valObj = thisVtx.property(propName).orElse(null);
 				if( valObj != null ){
 					LOGGER.debug(" We will try resetting prop [" + propName 
 							+ "], to val = [" + valObj.toString() + "] for VID = " + thisVidStr);
@@ -1577,7 +1575,7 @@ public class DataGrooming {
 	          
 	          
 	 public void updateIndexedPropsForMissingNT(Vertex thisVtx, String thisVidStr, String nType,
-			HashMap <String,String>propTypeHash, ArrayList <String> indexedProps) {
+			Map <String,String>propTypeHash, List <String> indexedProps) {
 		// This is for the very specific "missing-aai-node-type" scenario.
 		// That is: a node that does not have the "aai-node-type" property, but still has
 		//     an aai-node-type Index pointing to it and is an orphan node.   Nodes like this
@@ -1641,7 +1639,7 @@ public class DataGrooming {
 			if( propValObj != null ){
 				propVal = propValObj.toString();
 			}
-			Object checkValObj = tmpV.<Object>property(propName).orElse(null);
+			Object checkValObj = tmpV.property(propName).orElse(null);
 			if( checkValObj == null ) {
 				return false;
 			}
@@ -1682,7 +1680,7 @@ public class DataGrooming {
 			Iterator<String> keyPropI = keyPropNamesColl.iterator();
 			while (keyPropI.hasNext()) {
 				String propName = keyPropI.next();
-				Object ob = v.<Object>property(propName).orElse(null);
+				Object ob = v.property(propName).orElse(null);
 				if (ob == null || ob.toString().equals("")) {
 					// It is missing a key property
 					String thisVertId = v.id().toString();
@@ -1691,7 +1689,7 @@ public class DataGrooming {
 					return true;
 				}
 			}
-			Object ob = v.<Object>property("aai-uri").orElse(null);
+			Object ob = v.property("aai-uri").orElse(null);
 			if (ob == null || ob.toString().equals("")) {
 				// It is missing a key property
 				String thisVertId = v.id().toString();
@@ -1770,7 +1768,7 @@ public class DataGrooming {
 	 */
 	public Vertex getPreferredDupe(String transId,
 			String fromAppId, GraphTraversalSource g,
-			ArrayList<Vertex> dupeVertexList, String ver, Loader loader)
+			List<Vertex> dupeVertexList, String ver, Loader loader)
 			throws AAIException {
 
 		// This method assumes that it is being passed a List of 
@@ -1793,14 +1791,14 @@ public class DataGrooming {
 		// If they don't all have the same aai-uri, then we will not 
 		// choose between them - we'll need someone to manually 
 		// check to pick which one makes sense to keep.
-		Object uriOb = dupeVertexList.get(0).<Object>property("aai-uri").orElse(null);
+		Object uriOb = dupeVertexList.get(0).property("aai-uri").orElse(null);
 		if( uriOb == null || uriOb.toString().equals("") ){
 			// this is a bad node - hopefully will be picked up by phantom checker
 			return nullVtx;
 		}
 		String thisUri = uriOb.toString();
 		for (int i = 1; i < listSize; i++) {
-			uriOb = dupeVertexList.get(i).<Object>property("aai-uri").orElse(null);
+			uriOb = dupeVertexList.get(i).property("aai-uri").orElse(null);
 			if( uriOb == null || uriOb.toString().equals("") ){
 				// this is a bad node - hopefully will be picked up by phantom checker
 				return nullVtx;
@@ -1864,11 +1862,11 @@ public class DataGrooming {
 
 		String vtxANodeType = "";
 		String vtxBNodeType = "";
-		Object objType = vtxA.<Object>property("aai-node-type").orElse(null);
+		Object objType = vtxA.property("aai-node-type").orElse(null);
 		if (objType != null) {
 			vtxANodeType = objType.toString();
 		}
-		objType = vtxB.<Object>property("aai-node-type").orElse(null);
+		objType = vtxB.property("aai-node-type").orElse(null);
 		if (objType != null) {
 			vtxBNodeType = objType.toString();
 		}
@@ -1884,7 +1882,7 @@ public class DataGrooming {
 		// (We'll check dep-node later)
 		// Determine what the key fields are for this nodeType
 		Collection <String> keyProps = new ArrayList <>();
-		HashMap <String,Object> keyPropValsHash = new HashMap <String,Object>();
+		HashMap <String,Object> keyPropValsHash = new HashMap <>();
 		try {
 			keyProps = loader.introspectorFromName(vtxANodeType).getKeys();
 		} catch (AAIUnknownObjectException e) {
@@ -1896,12 +1894,12 @@ public class DataGrooming {
 		while (keyPropI.hasNext()) {
 			String propName = keyPropI.next();
 			String vtxAKeyPropVal = "";
-			objType = vtxA.<Object>property(propName).orElse(null);
+			objType = vtxA.property(propName).orElse(null);
 			if (objType != null) {
 				vtxAKeyPropVal = objType.toString();
 			}
 			String vtxBKeyPropVal = "";
-			objType = vtxB.<Object>property(propName).orElse(null);
+			objType = vtxB.property(propName).orElse(null);
 			if (objType != null) {
 				vtxBKeyPropVal = objType.toString();
 			}
@@ -1933,7 +1931,7 @@ public class DataGrooming {
 				Vertex tvCon = iter.next();
 				String conVid = tvCon.id().toString();
 				String nt = "";
-				objType = tvCon.<Object>property("aai-node-type").orElse(null);
+				objType = tvCon.property("aai-node-type").orElse(null);
 				if (objType != null) {
 					nt = objType.toString();
 				}
@@ -1949,7 +1947,7 @@ public class DataGrooming {
 				Vertex tvCon = iter.next();
 				String conVid = tvCon.id().toString();
 				String nt = "";
-				objType = tvCon.<Object>property("aai-node-type").orElse(null);
+				objType = tvCon.property("aai-node-type").orElse(null);
 				if (objType != null) {
 					nt = objType.toString();
 				}
@@ -2097,7 +2095,7 @@ public class DataGrooming {
 			String fromAppId, Graph g, GraphTraversalSource source, String version, String nType,
 			List<Vertex> passedVertList, Boolean dupeFixOn,
 			Set<String> deleteCandidateList, 
-			ArrayList<String> alreadyFoundDupeGroups, Loader loader ) {
+			List<String> alreadyFoundDupeGroups, Loader loader ) {
 		
 		ArrayList<String> returnList = new ArrayList<>();
 		ArrayList<Vertex> checkVertList = new ArrayList<>();
@@ -2277,7 +2275,7 @@ public class DataGrooming {
 		// we're trying to find duplicates - so we
 		// allow for the case where more than one is under the same parent node.
 
-		HashMap<String, ArrayList<Vertex>> retHash = new HashMap<String, ArrayList<Vertex>>();
+		HashMap<String, ArrayList<Vertex>> retHash = new HashMap<>();
 		if (loader.introspectorFromName(nType).isTopLevel()) {
 			// This method really should not have been called if this is not the
 			// kind of node
@@ -2302,7 +2300,7 @@ public class DataGrooming {
 				Vertex tmpParentVtx = getConnectedParent( g, thisVert );
 				if( tmpParentVtx != null ) {
 					String parentNt = null;
-					Object obj = tmpParentVtx.<Object>property("aai-node-type").orElse(null);
+					Object obj = tmpParentVtx.property("aai-node-type").orElse(null);
 					if (obj != null) {
 						parentNt = obj.toString();
 					}
@@ -2427,13 +2425,11 @@ public class DataGrooming {
 	 * @param graph the graph
 	 * @param vtx
 	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
-	 * @throws AAIException the AAI exception
 	 */
-	public Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx )
-			throws AAIException{
+	public Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx ) {
 		String aaiUriStr = "";
 		try { 
-			Object ob = origVtx.<Object>property("aai-uri").orElse(null);
+			Object ob = origVtx.property("aai-uri").orElse(null);
 			String origVid = origVtx.id().toString();
 			LOGGER.debug("DEBUG --- do checkAaiUriOk() for origVid = " + origVid);
 			if (ob == null || ob.toString().equals("")) {
@@ -2641,7 +2637,7 @@ public class DataGrooming {
 		}
 		else {
 			String nodeType = "";
-			Object ob = tVert.<Object>property("aai-node-type").orElse(null);
+			Object ob = tVert.property("aai-node-type").orElse(null);
 			if( ob == null ){
 				nodeType = "null";
 			}
@@ -2662,8 +2658,7 @@ public class DataGrooming {
 	}
 
 	
-	private ArrayList <Vertex> getConnectedNodes(GraphTraversalSource g, Vertex startVtx )
-			throws AAIException {
+	private ArrayList <Vertex> getConnectedNodes(GraphTraversalSource g, Vertex startVtx ) {
 	
 		ArrayList <Vertex> retArr = new ArrayList <> ();
 		if( startVtx == null ){
@@ -2685,7 +2680,7 @@ public class DataGrooming {
 	
 
 	private ArrayList <Vertex> getConnectedChildrenOfOneType( GraphTraversalSource g,
-			Vertex startVtx, String childNType ) throws AAIException{
+			Vertex startVtx, String childNType ) {
 		
 		ArrayList <Vertex> childList = new ArrayList <> ();
 		Iterator <Vertex> vertI =  g.V(startVtx).union(__.outE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).inV(), __.inE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.IN.toString()).outV());
@@ -2693,7 +2688,7 @@ public class DataGrooming {
 		Vertex tmpVtx = null;
 		while( vertI != null && vertI.hasNext() ){
 			tmpVtx = vertI.next();
-			Object ob = tmpVtx.<Object>property("aai-node-type").orElse(null);
+			Object ob = tmpVtx.property("aai-node-type").orElse(null);
 			if (ob != null) {
 				String tmpNt = ob.toString();
 				if( tmpNt.equals(childNType)){
@@ -2708,7 +2703,7 @@ public class DataGrooming {
 
 
 	private Vertex getConnectedParent( GraphTraversalSource g,
-			Vertex startVtx ) throws AAIException{
+			Vertex startVtx ) {
 		
 		Vertex parentVtx = null;
 		Iterator <Vertex> vertI = g.V(startVtx).union(__.inE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).outV(), __.outE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.IN.toString()).inV());
@@ -2789,7 +2784,7 @@ public class DataGrooming {
 				}
 				if( keyVals2VidHash.containsKey(hKey) ){
 					// We've already seen this key 
-					ArrayList <String> tmpVL = (ArrayList <String>)keyVals2VidHash.get(hKey);
+					ArrayList <String> tmpVL = keyVals2VidHash.get(hKey);
 					tmpVL.add(thisVid);
 					keyVals2VidHash.put(hKey, tmpVL);
 				}
@@ -2951,102 +2946,111 @@ class CommandLineArgs {
 		
 	}
 
-	public HashMap<String, Vertex> getGhostNodeHash() {
-		return ghostNodeHash;
-	}
-
-	public void setGhostNodeHash(HashMap<String, Vertex> ghostNodeHash) {
-		this.ghostNodeHash = ghostNodeHash;
-	}
-	
-	public int getGhostNodeCount(){
-		return getGhostNodeHash().size();
-	}
-	
-	public HashMap<String, Vertex> getOrphanNodeHash() {
+	public Map<String, Vertex> getOrphanNodeHash() {
 		return orphanNodeHash;
 	}
 
-	public void setOrphanNodeHash(HashMap<String, Vertex> orphanNodeHash) {
+	public DataGrooming setOrphanNodeHash(Map<String, Vertex> orphanNodeHash) {
 		this.orphanNodeHash = orphanNodeHash;
+		return this;
 	}
-	
+
 	public int getOrphanNodeCount(){
 		return getOrphanNodeHash().size();
 	}
-	  
-	public HashMap<String, Vertex> getMissingAaiNtNodeHash() {
+
+	public Map<String, Vertex> getMissingAaiNtNodeHash() {
 		return missingAaiNtNodeHash;
 	}
 
-	public void setMissingAaiNtNodeHash(HashMap<String, Vertex> missingAaiNtNodeHash) {
+	public DataGrooming setMissingAaiNtNodeHash(Map<String, Vertex> missingAaiNtNodeHash) {
 		this.missingAaiNtNodeHash = missingAaiNtNodeHash;
+		return this;
 	}
-	
+
 	public int getMissingAaiNtNodeCount(){
 		return getMissingAaiNtNodeHash().size();
 	}
-		
-	public HashMap<String, Vertex> getBadUriNodeHash() {
+
+	public Map<String, Vertex> getBadUriNodeHash() {
 		return badUriNodeHash;
 	}
 
-	public void setBadUriNodeHash(HashMap<String, Vertex> badUriNodeHash) {
+	public DataGrooming setBadUriNodeHash(Map<String, Vertex> badUriNodeHash) {
 		this.badUriNodeHash = badUriNodeHash;
+		return this;
 	}
-	
+
 	public int getBadUriNodeCount(){
 		return getBadUriNodeHash().size();
 	}
 
-	public HashMap<String, Vertex> getBadIndexNodeHash() {
+	public Map<String, Vertex> getBadIndexNodeHash() {
 		return badIndexNodeHash;
 	}
 
-	public void setBadIndexNodeHash(HashMap<String, Vertex> badIndexNodeHash) {
+	public DataGrooming setBadIndexNodeHash(Map<String, Vertex> badIndexNodeHash) {
 		this.badIndexNodeHash = badIndexNodeHash;
+		return this;
 	}
-	
+
 	public int getBadIndexNodeCount(){
 		return getBadIndexNodeHash().size();
 	}
-	
-	public HashMap<String, Edge> getOneArmedEdgeHash() {
+
+	public Map<String, Edge> getOneArmedEdgeHash() {
 		return oneArmedEdgeHash;
 	}
 
-	public void setOneArmedEdgeHash(HashMap<String, Edge> oneArmedEdgeHash) {
-		this.oneArmedEdgeHash = oneArmedEdgeHash;
-	}
-	
-	public int getOneArmedEdgeHashCount(){
+	public int getOneArmedEdgeHashCount() {
 		return getOneArmedEdgeHash().size();
 	}
-	
+
+
+
+	public DataGrooming setOneArmedEdgeHash(Map<String, Edge> oneArmedEdgeHash) {
+		this.oneArmedEdgeHash = oneArmedEdgeHash;
+		return this;
+	}
+
+	public Map<String, Vertex> getGhostNodeHash() {
+		return ghostNodeHash;
+	}
+
+	public DataGrooming setGhostNodeHash(Map<String, Vertex> ghostNodeHash) {
+		this.ghostNodeHash = ghostNodeHash;
+		return this;
+	}
+
+	public int getGhostNodeCount(){
+		return getGhostNodeHash().size();
+	}
+
+	public List<String> getDupeGroups() {
+		return dupeGroups;
+	}
+
+	public DataGrooming setDupeGroups(List<String> dupeGroups) {
+		this.dupeGroups = dupeGroups;
+		return this;
+	}
+
 	public Set<String> getDeleteCandidateList() {
 		return deleteCandidateList;
 	}
 
-	public void setDeleteCandidateList(Set<String> deleteCandidateList) {
+	public DataGrooming setDeleteCandidateList(Set<String> deleteCandidateList) {
 		this.deleteCandidateList = deleteCandidateList;
+		return this;
 	}
 
 	public int getDeleteCount() {
 		return deleteCount;
 	}
 
-	public void setDeleteCount(int deleteCount) {
+	public DataGrooming setDeleteCount(int deleteCount) {
 		this.deleteCount = deleteCount;
+		return this;
 	}
-	
-	public ArrayList<String> getDupeGroups() {
-		return dupeGroups;
-	}
-
-	public void setDupeGroups(ArrayList<String> dupeGroups) {
-		this.dupeGroups = dupeGroups;
-	}
-
-	
 
 }

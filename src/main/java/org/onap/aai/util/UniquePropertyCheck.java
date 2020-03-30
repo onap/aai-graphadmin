@@ -62,13 +62,11 @@ public class UniquePropertyCheck {
 		Logger logger = LoggerFactory.getLogger(UniquePropertyCheck.class);
 		MDC.put("logFilenameAppender", UniquePropertyCheck.class.getSimpleName());
 		AaiScheduledTaskAuditLog auditLog = new AaiScheduledTaskAuditLog();
-		auditLog.logBefore("UniquePropertyCheck", ONAPComponents.AAI.toString());
+		auditLog.logBefore(COMPONENT, ONAPComponents.AAI.toString());
 
 		if( args == null || args.length != 1 ){
 				String msg = "usage:  UniquePropertyCheck propertyName \n";
 				System.out.println(msg);
-				//LoggingContext.statusCode(StatusCode.ERROR);
-    			//LoggingContext.responseCode(LoggingContext.BUSINESS_PROCESS_ERROR);
 				logAndPrint(logger, msg );
 				System.exit(1);
 		}
@@ -81,31 +79,23 @@ public class UniquePropertyCheck {
     		JanusGraph tGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(UniquePropertyCheck.class.getSimpleName()).withGraphType("realtime").buildConfiguration());
     		
     		if( tGraph == null ) {
-    			//LoggingContext.statusCode(StatusCode.ERROR);
-    			//LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
     			logAndPrint(logger, " Error:  Could not get JanusGraph ");
     			System.exit(1);
     		}
     		
     		graph = tGraph.newTransaction();
     		if( graph == null ){
-    			//LoggingContext.statusCode(StatusCode.ERROR);
-    			//LoggingContext.responseCode(LoggingContext.AVAILABILITY_TIMEOUT_ERROR);
     			logAndPrint(logger, "could not get graph object in UniquePropertyCheck() \n");
     	 		System.exit(0);
     		}
     	}
 	    catch (AAIException e1) {
 			String msg =  "Threw Exception: [" + e1.toString() + "]";
-			//LoggingContext.statusCode(StatusCode.ERROR);
-			//LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
 			logAndPrint(logger, msg);
 			System.exit(0);
         }
         catch (Exception e2) {
 	 		String msg =  "Threw Exception: [" + e2.toString() + "]";
-	 		//LoggingContext.statusCode(StatusCode.ERROR);
-			//LoggingContext.responseCode(LoggingContext.UNKNOWN_ERROR);
 			logAndPrint(logger, msg);
 	 		System.exit(0);
         }
@@ -135,8 +125,8 @@ public class UniquePropertyCheck {
 		//   tool looks across all nodeTypes that the property is found in.
 		Boolean foundDupesFlag = false;
 		
-		HashMap <String,String> valuesAndVidHash = new HashMap <String, String> ();
-		HashMap <String,String> dupeHash = new HashMap <String, String> ();
+		HashMap <String,String> valuesAndVidHash = new HashMap <> ();
+		HashMap <String,String> dupeHash = new HashMap <> ();
 	
 		int propCount = 0;
 		int dupeCount = 0;
@@ -177,7 +167,7 @@ public class UniquePropertyCheck {
 	    		while( dupeItr.hasNext() ){
 	    			foundDupesFlag = true;
 	    			Map.Entry pair = (Map.Entry) dupeItr.next();
-	    			String dupeValue = pair.getKey().toString();;
+	    			String dupeValue = pair.getKey().toString();
 	    			    			String vidsStr = pair.getValue().toString();
 	    			String[] vidArr = vidsStr.split("\\|");
 	    			logAndPrint(logger, "\n\n -------------- Found " + vidArr.length 
@@ -193,8 +183,6 @@ public class UniquePropertyCheck {
 	    	}
     	}
     	catch( Exception e2 ){
-    		//LoggingContext.statusCode(StatusCode.ERROR);
-			//LoggingContext.responseCode(LoggingContext.DATA_ERROR);
 	 		logAndPrint(logger, "Threw Exception: [" + e2.toString() + "]");
     	} 
     	

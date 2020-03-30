@@ -19,29 +19,15 @@
  */
 package org.onap.aai.dataexport;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Properties;
-import java.util.TreeMap;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.att.eelf.configuration.Configuration;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.dbgen.DynamicPayloadGenerator;
 import org.onap.aai.edges.EdgeIngestor;
-import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
@@ -49,21 +35,18 @@ import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
 import org.onap.logging.filter.base.ONAPComponents;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.att.eelf.configuration.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.RegexFileFilter;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * DataExportTasks obtains a graph snapshot and invokes DynamicPayloadGenerator
@@ -73,12 +56,9 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class DataExportTasks {
 
-	private AaiScheduledTaskAuditLog auditLog;
-	
 	private static final Logger LOGGER;
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	private static final String GA_MS = "aai-graphadmin";
-	
+
 	static {
 		System.setProperty("aai.service.name", DataExportTasks.class.getSimpleName());
 		Properties props = System.getProperties();
@@ -114,10 +94,9 @@ public class DataExportTasks {
 	/**
 	 * The exportTask method.
 	 *
-	 * @throws AAIException, Exception
 	 */
-	public void exportTask() throws AAIException, Exception   {
-		auditLog = new AaiScheduledTaskAuditLog();
+	public void exportTask() throws Exception   {
+		AaiScheduledTaskAuditLog auditLog = new AaiScheduledTaskAuditLog();
 		auditLog.logBefore("dataExportTask", ONAPComponents.AAI.toString());
 		LOGGER.info("Started exportTask: " + dateFormat.format(new Date()));
 		if (AAIConfig.get("aai.dataexport.enable").equalsIgnoreCase("false")) {
@@ -166,7 +145,7 @@ public class DataExportTasks {
 			snapshotFilePath = findMultipleSnapshots();
 		}
 		
-		List<String> paramsList = new ArrayList<String>();
+		List<String> paramsList = new ArrayList<>();
 		paramsList.add("-s");
 		paramsList.add(enableSchemaValidation);
 		paramsList.add("-o");
@@ -229,11 +208,7 @@ public class DataExportTasks {
 			LOGGER.debug("Exception while running the check to see if dataExport is running "+ LogFormatTools.getStackTop(e));
 		}
 
-		if(count > 0){
-		    return true;
-		} else {
-			return false;
-		}
+		return count > 0;
 	}
 
 	/**
@@ -272,7 +247,7 @@ public class DataExportTasks {
 				AAIConstants.AAI_FILESEP + "dataSnapshots";
 		String snapshotName = null;
 		File targetDirFile = new File(targetDir);
-		TreeMap<String,List<File>> fileMap = new TreeMap<String,List<File>>(String.CASE_INSENSITIVE_ORDER);
+		TreeMap<String,List<File>> fileMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 		
 		/*dataSnapshot.graphSON.201804022009.P0
 		dataSnapshot.graphSON.201804022009.P1
@@ -300,7 +275,7 @@ public class DataExportTasks {
 					String g1 = m.group(1);
 					LOGGER.debug ("Found group " + g1);
 					if ( !fileMap.containsKey(g1) ) {
-						ArrayList<File> l = new ArrayList<File>();
+						ArrayList<File> l = new ArrayList<>();
 						l.add(f);
 						fileMap.put(g1, l);
 					}
@@ -342,9 +317,8 @@ public class DataExportTasks {
 	/**
 	 * The deletePayload method deletes all the payload files that it finds at targetDirectory
 	 * @param targetDirFile the directory that contains payload files
-	 * @throws AAIException
 	 */
-	private static void deletePayload(File targetDirFile) throws AAIException {
+	private static void deletePayload(File targetDirFile) {
 		
 		File[] allFilesArr = targetDirFile.listFiles((FileFilter)DirectoryFileFilter.DIRECTORY);
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {

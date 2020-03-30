@@ -22,7 +22,6 @@ package org.onap.aai.util;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
@@ -31,14 +30,12 @@ import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.introspection.Introspector;
 import org.onap.aai.migration.EventAction;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertEquals;
@@ -133,7 +130,7 @@ public class SendDeleteMigrationNotificationsTest extends AAISetup {
 	@Test
 	public void processEverything() throws Exception {
 		SendDeleteMigrationNotifications s  = spy(new SendDeleteMigrationNotifications(
-				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, Collections.EMPTY_SET, 0, 0, "test", EventAction.DELETE, "DMAAP-LOAD"));
+				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, 0, 0, "test", EventAction.DELETE, "DMAAP-LOAD"));
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
@@ -144,7 +141,7 @@ public class SendDeleteMigrationNotificationsTest extends AAISetup {
 	@Test
 	public void processEverythingBatched2() throws Exception {
 		SendDeleteMigrationNotifications s  = spy(new SendDeleteMigrationNotifications(
-				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, Collections.EMPTY_SET, 0, 2, "test", EventAction.DELETE, "DMAAP-LOAD"));
+				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, 0, 2, "test", EventAction.DELETE, "DMAAP-LOAD"));
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
@@ -155,7 +152,7 @@ public class SendDeleteMigrationNotificationsTest extends AAISetup {
 	@Test
 	public void processEverythingBatched3() throws Exception {
 		SendDeleteMigrationNotifications s  = spy(new SendDeleteMigrationNotifications(
-				loaderFactory, schemaVersions,  REALTIME_CONFIG, FILE, Collections.EMPTY_SET, 0, 3, "test", EventAction.DELETE, "DMAAP-LOAD"));
+				loaderFactory, schemaVersions,  REALTIME_CONFIG, FILE, 0, 3, "test", EventAction.DELETE, "DMAAP-LOAD"));
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");

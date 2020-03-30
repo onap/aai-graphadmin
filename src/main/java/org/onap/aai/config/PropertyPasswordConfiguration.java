@@ -49,64 +49,38 @@ public class PropertyPasswordConfiguration implements ApplicationContextInitiali
         String certPath = environment.getProperty("server.certs.location");
         File passwordFile = null;
         File passphrasesFile = null;
-        InputStream passwordStream = null;
-        InputStream passphrasesStream = null;
         Map<String, Object> sslProps = new LinkedHashMap<>();
 
         // Override the passwords from application.properties if we find AAF certman files
         if (certPath != null) {
-            try {
-                passwordFile = new File(certPath + ".password");
-                passwordStream = new FileInputStream(passwordFile);
+            passwordFile = new File(certPath + ".password");
+            try (InputStream passwordStream = new FileInputStream(passwordFile)) {
 
-                if (passwordStream != null) {
-                    String keystorePassword = null;
+                String keystorePassword = null;
 
-                    keystorePassword = IOUtils.toString(passwordStream);
-                    if (keystorePassword != null) {
-                        keystorePassword = keystorePassword.trim();
-                    }
-                    sslProps.put("server.ssl.key-store-password", keystorePassword);
-                    sslProps.put("schema.service.ssl.key-store-password", keystorePassword);
-                } else {
-                    logger.info("Not using AAF Certman password file");
+                keystorePassword = IOUtils.toString(passwordStream);
+                if (keystorePassword != null) {
+                    keystorePassword = keystorePassword.trim();
                 }
+                sslProps.put("server.ssl.key-store-password", keystorePassword);
+                sslProps.put("schema.service.ssl.key-store-password", keystorePassword);
             } catch (IOException e) {
                 logger.warn("Not using AAF Certman password file, e=" + e.getMessage());
-            } finally {
-                if (passwordStream != null) {
-                    try {
-                        passwordStream.close();
-                    } catch (Exception e) {
-                    }
-                }
             }
-            try {
-                passphrasesFile = new File(certPath + ".passphrases");
-                passphrasesStream = new FileInputStream(passphrasesFile);
+            passphrasesFile = new File(certPath + ".passphrases");
+            try (InputStream passphrasesStream = new FileInputStream(passphrasesFile)) {
 
-                if (passphrasesStream != null) {
-                    String truststorePassword = null;
-                    Properties passphrasesProps = new Properties();
-                    passphrasesProps.load(passphrasesStream);
-                    truststorePassword = passphrasesProps.getProperty("cadi_truststore_password");
-                    if (truststorePassword != null) {
-                        truststorePassword = truststorePassword.trim();
-                    }
-                    sslProps.put("server.ssl.trust-store-password", truststorePassword);
-                    sslProps.put("schema.service.ssl.trust-store-password", truststorePassword);
-                } else {
-                    logger.info("Not using AAF Certman passphrases file");
+                String truststorePassword = null;
+                Properties passphrasesProps = new Properties();
+                passphrasesProps.load(passphrasesStream);
+                truststorePassword = passphrasesProps.getProperty("cadi_truststore_password");
+                if (truststorePassword != null) {
+                    truststorePassword = truststorePassword.trim();
                 }
+                sslProps.put("server.ssl.trust-store-password", truststorePassword);
+                sslProps.put("schema.service.ssl.trust-store-password", truststorePassword);
             } catch (IOException e) {
                 logger.warn("Not using AAF Certman passphrases file, e=" + e.getMessage());
-            } finally {
-                if (passphrasesStream != null) {
-                    try {
-                        passphrasesStream.close();
-                    } catch (Exception e) {
-                    }
-                }
             }
         }
         for (PropertySource<?> propertySource : environment.getPropertySources()) {

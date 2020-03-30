@@ -260,10 +260,10 @@ public class DupeTool {
             logger.debug(msg);
 
             // Determine what the key fields are for this nodeType (and we want them ordered)
-            ArrayList<String> keyPropNamesArr = new ArrayList<String>(obj.getKeys());
+            ArrayList<String> keyPropNamesArr = new ArrayList<>(obj.getKeys());
 
             // Determine what kinds of nodes (if any) this nodeType is dependent on for uniqueness
-            ArrayList<String> depNodeTypeList = new ArrayList<String>();
+            ArrayList<String> depNodeTypeList = new ArrayList<>();
             Collection<String> depNTColl = obj.getDependentOn();
             Iterator<String> ntItr = depNTColl.iterator();
             while (ntItr.hasNext()) {
@@ -274,7 +274,7 @@ public class DupeTool {
             System.out.println("    ---- NOTE --- about to open graph (takes a little while)--------\n");
             graph1 = setupGraph(logger);
             gt1 = getGraphTransaction(graph1, logger);
-            ArrayList<Vertex> verts2Check = new ArrayList<Vertex>();
+            ArrayList<Vertex> verts2Check = new ArrayList<>();
             try {
                 verts2Check = figureOutNodes2Check(TRANSID, FROMAPPID, gt1,
                         nodeTypeVal, windowStartTime, filterParams, logger);
@@ -299,8 +299,8 @@ public class DupeTool {
                 System.out.println(msg);
             }
 
-            ArrayList<String> firstPassDupeSets = new ArrayList<String>();
-            ArrayList<String> secondPassDupeSets = new ArrayList<String>();
+            ArrayList<String> firstPassDupeSets = new ArrayList<>();
+            ArrayList<String> secondPassDupeSets = new ArrayList<>();
             Boolean isDependentOnParent = false;
             if (!obj.getDependentOn().isEmpty()) {
                 isDependentOnParent = true;
@@ -332,7 +332,7 @@ public class DupeTool {
             }
             dupeGroupCount = firstPassDupeSets.size();
             boolean didSomeDeletesFlag = false;
-            ArrayList<String> dupeSetsToFix = new ArrayList<String>();
+            ArrayList<String> dupeSetsToFix = new ArrayList<>();
             if (autoFix && firstPassDupeSets.size() == 0) {
                 msg = "AutoFix option is on, but no dupes were found on the first pass.  Nothing to fix.";
                 logger.debug(msg);
@@ -500,7 +500,8 @@ public class DupeTool {
      * @param version        the version
      * @param nType          the n type
      * @param passedVertList the passed vert list
-     * @param dbMaps         the db maps
+     * @param loader         the loader
+     * @param logger         the logger
      * @return the array list
      */
     private ArrayList<String> getDupeSets4NonDepNodes(String transId,
@@ -509,7 +510,7 @@ public class DupeTool {
                                                              ArrayList<String> keyPropNamesArr,
                                                              Boolean specialTenantRule, Loader loader, Logger logger) {
 
-        ArrayList<String> returnList = new ArrayList<String>();
+        ArrayList<String> returnList = new ArrayList<>();
 
         // We've been passed a set of nodes that we want to check.
         // They are all NON-DEPENDENT nodes meaning that they should be
@@ -525,8 +526,8 @@ public class DupeTool {
         // or, "100017|200027|30037|keepVid=30037" (if there were 3 dupes and we
         // thought the third one was the one that should survive)
 
-        HashMap<String, ArrayList<String>> keyVals2VidHash = new HashMap<String, ArrayList<String>>();
-        HashMap<String, Vertex> vtxHash = new HashMap<String, Vertex>();
+        HashMap<String, ArrayList<String>> keyVals2VidHash = new HashMap<>();
+        HashMap<String, Vertex> vtxHash = new HashMap<>();
         Iterator<Vertex> pItr = passedVertList.iterator();
         while (pItr.hasNext()) {
             try {
@@ -538,12 +539,12 @@ public class DupeTool {
                 String hKey = getNodeKeyValString(tvx, keyPropNamesArr, logger);
                 if (keyVals2VidHash.containsKey(hKey)) {
                     // We've already seen this key
-                    ArrayList<String> tmpVL = (ArrayList<String>) keyVals2VidHash.get(hKey);
+                    ArrayList<String> tmpVL = keyVals2VidHash.get(hKey);
                     tmpVL.add(thisVid);
                     keyVals2VidHash.put(hKey, tmpVL);
                 } else {
                     // First time for this key
-                    ArrayList<String> tmpVL = new ArrayList<String>();
+                    ArrayList<String> tmpVL = new ArrayList<>();
                     tmpVL.add(thisVid);
                     keyVals2VidHash.put(hKey, tmpVL);
                 }
@@ -558,7 +559,7 @@ public class DupeTool {
                 if (!vidList.isEmpty() && vidList.size() > 1) {
                     // There are more than one vertex id's using the same key info
                     String dupesStr = "";
-                    ArrayList<Vertex> vertList = new ArrayList<Vertex>();
+                    ArrayList<Vertex> vertList = new ArrayList<>();
                     for (int i = 0; i < vidList.size(); i++) {
                         String tmpVid = vidList.get(i);
                         dupesStr = dupesStr + tmpVid + "|";
@@ -597,10 +598,9 @@ public class DupeTool {
      * @param version           the version
      * @param nType             the n type
      * @param passedVertList    the passed vert list
-     * @param dbMaps            the db maps
      * @param keyPropNamesArr   Array (ordered) of keyProperty names
      * @param specialTenantRule flag
-     * @param Logger        the logger
+     * @param logger        the logger
      * @return the array list
      */
     private ArrayList<String> getDupeSets4DependentNodes(String transId,
@@ -611,8 +611,8 @@ public class DupeTool {
 
         // This is for nodeTypes that DEPEND ON A PARENT NODE FOR UNIQUNESS
 
-        ArrayList<String> returnList = new ArrayList<String>();
-        ArrayList<String> alreadyFoundDupeVidArr = new ArrayList<String>();
+        ArrayList<String> returnList = new ArrayList<>();
+        ArrayList<String> alreadyFoundDupeVidArr = new ArrayList<>();
 
         // We've been passed a set of nodes that we want to check.  These are
         // all nodes that ARE DEPENDENT on a PARENT Node for uniqueness.
@@ -628,7 +628,7 @@ public class DupeTool {
         // couldn't figure out which one to keep)
         // or, "100017|200027|30037|keepVid=30037" (if there were 3 dupes and we
         // thought the third one was the one that should survive)
-        HashMap<String, Object> checkVertHash = new HashMap<String, Object>();
+        HashMap<String, Object> checkVertHash = new HashMap<>();
         try {
             Iterator<Vertex> pItr = passedVertList.iterator();
             while (pItr.hasNext()) {
@@ -785,7 +785,7 @@ public class DupeTool {
 
 
     public ArrayList<String> collectEdgeInfoForNode(Logger logger, Vertex tVert, boolean displayAllVidsFlag) {
-        ArrayList<String> retArr = new ArrayList<String>();
+        ArrayList<String> retArr = new ArrayList<>();
         Direction dir = Direction.OUT;
         for (int i = 0; i <= 1; i++) {
             if (i == 1) {
@@ -808,7 +808,7 @@ public class DupeTool {
                     vtx = ed.outVertex();
                 }
                 if (vtx == null) {
-                    retArr.add(" >>> COULD NOT FIND VERTEX on the other side of this edge edgeId = " + ed.id() + " <<< ");
+                    retArr.add(String.format(" >>> COULD NOT FIND VERTEX on the other side of this edge edgeId = %s <<< ", ed.id()));
                 } else {
                     String nType = vtx.<String>property("aai-node-type").orElse(null);
                     if (displayAllVidsFlag) {
@@ -858,13 +858,13 @@ public class DupeTool {
     public ArrayList<Vertex> getNodeJustUsingKeyParams(String transId, String fromAppId, Graph graph, String nodeType,
                                                               HashMap<String, Object> keyPropsHash, String apiVersion, Logger logger) throws AAIException {
 
-        ArrayList<Vertex> retVertList = new ArrayList<Vertex>();
+        ArrayList<Vertex> retVertList = new ArrayList<>();
 
         // We assume that all NodeTypes have at least one key-property defined.
         // Note - instead of key-properties (the primary key properties), a user could pass
         //        alternate-key values if they are defined for the nodeType.
-        ArrayList<String> kName = new ArrayList<String>();
-        ArrayList<Object> kVal = new ArrayList<Object>();
+        ArrayList<String> kName = new ArrayList<>();
+        ArrayList<Object> kVal = new ArrayList<>();
         if (keyPropsHash == null || keyPropsHash.isEmpty()) {
             throw new AAIException("AAI_6120", " NO key properties passed for this getNodeJustUsingKeyParams() request.  NodeType = [" + nodeType + "]. ");
         }
@@ -914,8 +914,7 @@ public class DupeTool {
         }
 
         if (retVertList.size() == 0) {
-            logger.debug("DEBUG No node found for nodeType = [" + nodeType +
-                    "], propsAndVal = " + propsAndValuesForMsg);
+            logger.debug(String.format("DEBUG No node found for nodeType = [%s], propsAndVal = %s", nodeType, propsAndValuesForMsg));
         }
 
         return retVertList;
@@ -931,8 +930,8 @@ public class DupeTool {
      * @param graph           the graph
      * @param nodeType        the node type
      * @param windowStartTime the window start time
-     * @param propsHash       the props hash
-     * @param apiVersion      the api version
+     * @param propsString     the props hash
+     * @param logger          the logger
      * @return the nodes
      * @throws AAIException the AAI exception
      */
@@ -940,7 +939,7 @@ public class DupeTool {
                                                          Graph graph, String nodeType, long windowStartTime,
                                                          String propsString, Logger logger) throws AAIException {
 
-        ArrayList<Vertex> retVertList = new ArrayList<Vertex>();
+        ArrayList<Vertex> retVertList = new ArrayList<>();
         String msg = "";
         GraphTraversal<Vertex, Vertex> tgQ = graph.traversal().V().has("aai-node-type", nodeType);
         String qStringForMsg = "graph.traversal().V().has(\"aai-node-type\"," + nodeType + ")";
@@ -1002,7 +1001,7 @@ public class DupeTool {
         }
 
         if (retVertList.size() == 0) {
-            logger.debug("DEBUG No node found for: [" + qStringForMsg + ", with aai-created-ts > " + windowStartTime);
+            logger.debug(String.format("DEBUG No node found for: [%s, with aai-created-ts > %d", qStringForMsg, windowStartTime));
         }
 
         return retVertList;
@@ -1018,7 +1017,8 @@ public class DupeTool {
      * @param g              the g
      * @param dupeVertexList the dupe vertex list
      * @param ver            the ver
-     * @param Logger     the logger
+     * @param loader         the loader
+     * @param logger         the logger
      * @return Vertex
      * @throws AAIException the AAI exception
      */
@@ -1098,14 +1098,15 @@ public class DupeTool {
     /**
      * Pick one of two dupes.
      *
-     * @param transId    the trans id
-     * @param fromAppId  the from app id
-     * @param g          the graphTraversalSource
-     * @param vtxA       the vtx A
-     * @param vtxB       the vtx B
-     * @param ver        the ver
-     * @param boolean    specialTenantRuleFlag flag
-     * @param Logger the logger
+     * @param transId               the trans id
+     * @param fromAppId             the from app id
+     * @param gts                   the graphTraversalSource
+     * @param vtxA                  the vtx A
+     * @param vtxB                  the vtx B
+     * @param ver                   the ver
+     * @param specialTenantRule     specialTenantRuleFlag flag
+     * @param loader                the loader
+     * @param logger                the logger
      * @return Vertex
      * @throws AAIException the AAI exception
      */
@@ -1164,12 +1165,12 @@ public class DupeTool {
 
         // Collect the vid's and aai-node-types of the vertices that each vertex
         // (A and B) is connected to.
-        ArrayList<String> vtxIdsConn2A = new ArrayList<String>();
-        ArrayList<String> vtxIdsConn2B = new ArrayList<String>();
-        HashMap<String, String> nodeTypesConn2A = new HashMap<String, String>();
-        HashMap<String, String> nodeTypesConn2B = new HashMap<String, String>();
+        ArrayList<String> vtxIdsConn2A = new ArrayList<>();
+        ArrayList<String> vtxIdsConn2B = new ArrayList<>();
+        HashMap<String, String> nodeTypesConn2A = new HashMap<>();
+        HashMap<String, String> nodeTypesConn2B = new HashMap<>();
 
-        ArrayList<String> retArr = new ArrayList<String>();
+        ArrayList<String> retArr = new ArrayList<>();
         Iterator<Edge> eAI = vtxA.edges(Direction.BOTH);
         while (eAI.hasNext()) {
             Edge ed = eAI.next();
@@ -1348,7 +1349,7 @@ public class DupeTool {
      * @param version        the version
      * @param nType          the n type
      * @param passedVertList the passed vert list
-     * @param dbMaps         the db maps
+     * @param loader the loader
      * @return the hash map
      * @throws AAIException the AAI exception
      */
@@ -1391,8 +1392,7 @@ public class DupeTool {
     }// end of groupVertsByDepNodes()
 
 
-    private Vertex getConnectedParent(GraphTraversalSource g,
-                                             Vertex startVtx) throws AAIException {
+    private Vertex getConnectedParent(GraphTraversalSource g, Vertex startVtx) {
 
         Vertex parentVtx = null;
         // This traversal does not assume a parent/child edge direction
@@ -1436,9 +1436,9 @@ public class DupeTool {
     /**
      * Delete non keepers if appropriate.
      *
-     * @param g          the g
-     * @param dupeSetStr the dupe string
-     * @param logger     the Logger
+     * @param g                 the g
+     * @param dupeInfoString    the dupe string
+     * @param logger            the Logger
      * @return the boolean
      */
     private Boolean deleteNonKeeperForOneSet(Graph g,
@@ -1451,7 +1451,7 @@ public class DupeTool {
 
 
         String[] dupeArr = dupeInfoString.split("\\|");
-        ArrayList<String> idArr = new ArrayList<String>();
+        ArrayList<String> idArr = new ArrayList<>();
         int lastIndex = dupeArr.length - 1;
         for (int i = 0; i <= lastIndex; i++) {
             if (i < lastIndex) {
@@ -1525,14 +1525,14 @@ public class DupeTool {
      * Get values of the key properties for a node.
      *
      * @param tvx              the vertex to pull the properties from
-     * @param keyPropertyNames ArrayList (ordered) of key prop names
+     * @param keyPropNamesArr  ArrayList (ordered) of key prop names
      * @param logger           the Logger
      * @return a hashMap of the propertyNames/values
      */
     private HashMap<String, Object> getNodeKeyVals(Vertex tvx,
                                                           ArrayList<String> keyPropNamesArr, Logger logger) {
 
-        HashMap<String, Object> retHash = new HashMap<String, Object>();
+        HashMap<String, Object> retHash = new HashMap<>();
         Iterator<String> propItr = keyPropNamesArr.iterator();
         while (propItr.hasNext()) {
             String propName = propItr.next();
@@ -1549,25 +1549,21 @@ public class DupeTool {
 	
 	/**
 	 * makes sure aai-uri exists and can be used to get this node back
-	 *
-	 * @param transId the trans id
-	 * @param fromAppId the from app id
+     *
 	 * @param graph the graph
-	 * @param vtx
-	 * @param Logger         
+	 * @param origVtx
+	 * @param eLogger
 	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
 	 * @throws AAIException the AAI exception
 	 */
-	private Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx, Logger eLogger )
-			throws AAIException{
+	private Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx, Logger eLogger ) {
 		String aaiUriStr = "";
 		try { 
 			Object ob = origVtx.<Object>property("aai-uri").orElse(null);
 			String origVid = origVtx.id().toString();
 			if (ob == null || ob.toString().equals("")) {
 				// It is missing its aai-uri
-				eLogger.debug("DEBUG No [aai-uri] property found for vid = [" 
-						+ origVid + "] " );
+				eLogger.debug(String.format("DEBUG No [aai-uri] property found for vid = [%s] ", origVid));
 				return false;
 			}
 			else {
@@ -1579,24 +1575,16 @@ public class DupeTool {
 					Vertex foundV = verts.next();
 					String foundVid = foundV.id().toString();
 					if( !origVid.equals(foundVid) ){
-						eLogger.debug("DEBUG aai-uri key property ["  
-								+ aaiUriStr + "] for vid = [" 
-								+ origVid + "] brought back different vertex with vid = [" 
-								+ foundVid + "]." );
+						eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] brought back different vertex with vid = [%s].", aaiUriStr, origVid, foundVid));
 						return false;
 					}
 				}
 				if( count == 0 ){
-					eLogger.debug("DEBUG aai-uri key property ["  
-							+ aaiUriStr + "] for vid = [" 
-							+ origVid + "] could not be used to query for that vertex. ");
+					eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] could not be used to query for that vertex. ", aaiUriStr, origVid));
 					return false;	
 				}
 				else if( count > 1 ){
-					eLogger.debug("DEBUG aai-uri key property ["  
-							+ aaiUriStr + "] for vid = [" 
-							+ origVid + "] brought back multiple (" 
-							+ count + ") vertices instead of just one. ");
+					eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] brought back multiple (%d) vertices instead of just one. ", aaiUriStr, origVid, count));
 					return false;	
 				}
 			}
@@ -1613,7 +1601,7 @@ public class DupeTool {
      * Get values of the key properties for a node as a single string
      *
      * @param tvx              the vertex to pull the properties from
-     * @param keyPropertyNames collection of key prop names
+     * @param keyPropNamesArr  collection of key prop names
      * @param logger           the Logger
      * @return a String of concatenated values
      */
@@ -1642,13 +1630,13 @@ public class DupeTool {
      *
      * @param firstPassDupeSets  from the first pass
      * @param secondPassDupeSets from the second pass
-     * @param Logger         logger
+     * @param logger         logger
      * @return commonDupeSets that are common to both passes and have a determined keeper
      */
     private ArrayList<String> figureWhichDupesStillNeedFixing(ArrayList<String> firstPassDupeSets,
                                                                      ArrayList<String> secondPassDupeSets, Logger logger) {
 
-        ArrayList<String> common2BothSet = new ArrayList<String>();
+        ArrayList<String> common2BothSet = new ArrayList<>();
 
         // We just want to look for entries from the first set which have identical (almost)
         //    entries in the secondary set.  I say "almost" because the order of the
@@ -1740,7 +1728,7 @@ public class DupeTool {
     private HashMap<String, ArrayList<String>> makeKeeperHashOfDupeStrings(ArrayList<String> dupeSets,
                                                                                   ArrayList<String> excludeSets, Logger logger) {
 
-        HashMap<String, ArrayList<String>> keeperHash = new HashMap<String, ArrayList<String>>();
+        HashMap<String, ArrayList<String>> keeperHash = new HashMap<>();
 
         for (int x = 0; x < dupeSets.size(); x++) {
             String tmpSetStr = dupeSets.get(x);
@@ -1750,7 +1738,7 @@ public class DupeTool {
             }
 
             String[] dupeArr = tmpSetStr.split("\\|");
-            ArrayList<String> delIdArr = new ArrayList<String>();
+            ArrayList<String> delIdArr = new ArrayList<>();
             int lastIndex = dupeArr.length - 1;
             for (int i = 0; i <= lastIndex; i++) {
                 if (i < lastIndex) {
@@ -1842,7 +1830,7 @@ public class DupeTool {
 
     public JanusGraph setupGraph(Logger logger) {
 
-        JanusGraph JanusGraph = null;
+        JanusGraph janusGraph = null;
 
 
         try (InputStream inputStream = new FileInputStream(AAIConstants.REALTIME_DB_CONFIG);) {
@@ -1851,17 +1839,17 @@ public class DupeTool {
             properties.load(inputStream);
 
             if ("inmemory".equals(properties.get("storage.backend"))) {
-                JanusGraph = AAIGraph.getInstance().getGraph();
+                janusGraph = AAIGraph.getInstance().getGraph();
                 graphType = "inmemory";
             } else {
-                JanusGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(DupeTool.class.getSimpleName()).withGraphType("realtime" + graphIndex).buildConfiguration());
+                janusGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(DupeTool.class.getSimpleName()).withGraphType("realtime" + graphIndex).buildConfiguration());
                 graphIndex++;
             }
         } catch (Exception e) {
             logger.error("Unable to open the graph", e);
         }
 
-        return JanusGraph;
+        return janusGraph;
     }
 
     public void closeGraph(JanusGraph graph, Logger logger) {
@@ -1879,7 +1867,7 @@ public class DupeTool {
             logger.warn("WARNING from final graph.shutdown()", ex);
         }
     }
-    
+
 	public int getDupeGroupCount() {
 		return dupeGroupCount;
 	}

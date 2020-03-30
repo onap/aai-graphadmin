@@ -18,36 +18,32 @@
  * ============LICENSE_END=========================================================
  */
 package org.onap.aai.datacleanup;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
-import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
 import org.onap.logging.filter.base.ONAPComponents;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
@@ -66,7 +62,7 @@ public class DataCleanupTasks {
 		ageDelete is the number of days after which the data files will be deleted i.e after 30 days.
 	*/
 	@Scheduled(cron = "${datagroomingcleanup.cron}" )
-	public void dataGroomingCleanup() throws AAIException, Exception {
+	public void dataGroomingCleanup() {
 		auditLog.logBefore("dataGroomingCleanup", ONAPComponents.AAI.toString() );
 		
 		logger.debug("Started cron job dataGroomingCleanup @ " + simpleDateFormat.format(new Date()));
@@ -77,7 +73,6 @@ public class DataCleanupTasks {
 			String archiveDir = dataGroomingDir + AAIConstants.AAI_FILESEP + "ARCHIVE";
 			String dataGroomingArcDir = archiveDir + AAIConstants.AAI_FILESEP + "dataGrooming";		
 			File path = new File(dataGroomingDir);
-			File archivepath = new File(archiveDir);
 			File dataGroomingPath = new File(dataGroomingArcDir);
 		
 			logger.debug("The logDir is " + logDir);
@@ -139,20 +134,18 @@ public class DataCleanupTasks {
 	
     /**
      * This method checks if the directory exists
-     * @param DIR
+     * @param dir the Directory
      * 
      */
     public boolean directoryExists(String dir) {
-    	File path = new File(dir);
-		boolean exists = path.exists();
-		return exists;	
+		return new File(dir).exists();
     }
     
-    public Date getZipDate(Integer days) throws Exception {
+    public Date getZipDate(Integer days) {
     	return getZipDate(days, new Date());
     }
     
-    public Date getZipDate(Integer days, Date date) throws Exception{
+    public Date getZipDate(Integer days, Date date) {
     	
     	Calendar cal = Calendar.getInstance();
     	logger.debug("The current date is " + date );
@@ -170,24 +163,21 @@ public class DataCleanupTasks {
                                                         BasicFileAttributes.class);
         FileTime time = attr.creationTime();
 	    String formatted = simpleDateFormat.format( new Date( time.toMillis() ) );
-	    Date d = simpleDateFormat.parse(formatted);
-	    return d;
+	    return simpleDateFormat.parse(formatted);
     }
     
     /**
      * This method will zip the files and add it to the archive folder
      * Checks if the archive folder exists, if not then creates one
      * After adding the file to archive folder it deletes the file from the filepath
-     * @throws AAIException
      * @throws Exception
      */
-    public void archive(File file, String archiveDir, String afterArchiveDir) throws AAIException, Exception {
+    public void archive(File file, String archiveDir, String afterArchiveDir) throws Exception {
 		
     	logger.debug("Inside the archive folder");  
     	String filename = file.getName();
     	logger.debug("file name is " +filename);
-		File archivepath = new File(archiveDir);
-		
+
 		String zipFile = afterArchiveDir + AAIConstants.AAI_FILESEP + filename;
 		
 		File dataGroomingPath = new File(afterArchiveDir);
@@ -239,7 +229,7 @@ public class DataCleanupTasks {
 	ageDelete is the number of days after which the data files will be deleted i.e after 30 days.
 */
     @Scheduled(cron = "${datasnapshotcleanup.cron}" )
-    public void dataSnapshotCleanup() throws AAIException, Exception {
+    public void dataSnapshotCleanup() {
 	
     	logger.info(ONAPLogConstants.Markers.ENTRY, "Started cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
 	
@@ -249,7 +239,6 @@ public class DataCleanupTasks {
     		String archiveDir = dataSnapshotDir + AAIConstants.AAI_FILESEP + "ARCHIVE";
     		String dataSnapshotArcDir = archiveDir + AAIConstants.AAI_FILESEP + "dataSnapshots";		
     		File path = new File(dataSnapshotDir);
-    		File archivepath = new File(archiveDir);
     		File dataSnapshotPath = new File(dataSnapshotArcDir);
 	
     		logger.debug("The logDir is " + logDir);
