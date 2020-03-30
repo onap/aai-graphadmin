@@ -19,21 +19,16 @@
  */
 package org.onap.aai;
 
-import com.att.eelf.configuration.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.onap.aai.aailog.logs.AaiDebugLog;
 import org.onap.aai.config.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
-import java.util.Properties;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.ExceptionTranslator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -75,9 +70,6 @@ public class GraphAdminApp {
 
     public static final String APP_NAME = "GraphAdmin";
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphAdminApp.class);
-
-    private static final String FROMAPPID = "AAI-GA";
-    private static final String TRANSID = UUID.randomUUID().toString();
     
     private static AaiDebugLog debugLog = new AaiDebugLog();
 	static {

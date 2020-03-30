@@ -26,14 +26,18 @@ import org.slf4j.LoggerFactory;
 
 public class GraphAdminDBUtils {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(GraphAdminDBUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(GraphAdminDBUtils.class);
+
+	private GraphAdminDBUtils() {
+
+	}
 
 	public static void logConfigs(org.apache.commons.configuration.Configuration configuration) {
 
 		if (configuration != null && configuration.getKeys() != null) {
 			Iterator<String> keys = configuration.getKeys();
 			keys.forEachRemaining(
-					key -> LOGGER.info("Key is " + key + "Value is  " + configuration.getProperty(key).toString()));
+					key -> logger.info("Key is " + key + "Value is  " + configuration.getProperty(key).toString()));
 		}
 
 	}

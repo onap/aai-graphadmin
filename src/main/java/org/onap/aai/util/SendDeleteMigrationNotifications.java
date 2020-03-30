@@ -51,7 +51,6 @@ public class SendDeleteMigrationNotifications {
 
 	private String config;
 	private String path;
-	private Set<String> notifyOn;
 	long sleepInMilliSecs;
 	int numToBatch;
 	private String requestId;
@@ -68,7 +67,7 @@ public class SendDeleteMigrationNotifications {
 	protected final SchemaVersions schemaVersions;
 	protected final SchemaVersion version;
 	
-	public SendDeleteMigrationNotifications(LoaderFactory loaderFactory, SchemaVersions schemaVersions, String config, String path, Set<String> notifyOn, int sleepInMilliSecs, int numToBatch, String requestId, EventAction eventAction, String eventSource) {
+	public SendDeleteMigrationNotifications(LoaderFactory loaderFactory, SchemaVersions schemaVersions, String config, String path, int sleepInMilliSecs, int numToBatch, String requestId, EventAction eventAction, String eventSource) {
 		System.setProperty("aai.service.name", SendDeleteMigrationNotifications.class.getSimpleName());
 		Properties props = System.getProperties();
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "migration-logback.xml");
@@ -78,7 +77,6 @@ public class SendDeleteMigrationNotifications {
 
 		this.config = config;
 		this.path = path;
-		this.notifyOn = notifyOn;
 		this.sleepInMilliSecs = sleepInMilliSecs;
 		this.numToBatch = numToBatch;
 		this.requestId = requestId;
@@ -90,11 +88,11 @@ public class SendDeleteMigrationNotifications {
 		initGraph();
 
 		initFields();
-		
+
 
 	}
 
-	public void process(String basePath) throws Exception {
+	public void process(String basePath) {
 
 		try {
 			Map<Integer, String> deleteDataMap = processFile();
@@ -124,8 +122,7 @@ public class SendDeleteMigrationNotifications {
 			}
 			cleanup();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("Exception caught during SendDeleteMigrationNotifications.process()", e);
 		}
 	}
 
