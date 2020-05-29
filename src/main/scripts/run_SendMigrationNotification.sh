@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 
 ###
 # ============LICENSE_START=======================================================
@@ -43,7 +43,7 @@ fi
 INPUT_DIR_FOR_JAVA=${INPUT_PATH}/combined
 mkdir -p "$INPUT_DIR_FOR_JAVA"
 INPUT_FILE_FOR_JAVA=${INPUT_DIR_FOR_JAVA}/sorted_dmaap_files.txt
-sort --numeric-sort -k 1 -t '_' $(find ${INPUT_PATH}/* -maxdepth 0 -type f) | awk -F '_' '{ print $2"_"$3; }' > $INPUT_FILE_FOR_JAVA
+sort -g -k 1 -t '_' $(find ${INPUT_PATH}/* -maxdepth 0 -type f) | awk -F '_' '{ print $2"_"$3; }' > $INPUT_FILE_FOR_JAVA
 
 shift
 

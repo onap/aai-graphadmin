@@ -99,8 +99,8 @@ public class MigrationControllerInternal {
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "migration-logback.xml");
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_ETC_APP_PROPERTIES);
 
-		logger = LoggerFactory.getLogger(MigrationControllerInternal.class.getSimpleName());
 		MDC.put("logFilenameAppender", MigrationController.class.getSimpleName());
+        logger = LoggerFactory.getLogger(MigrationControllerInternal.class.getSimpleName());		
 
 		CommandLineArgs cArgs = new CommandLineArgs();
 

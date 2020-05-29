@@ -21,7 +21,7 @@ package org.onap.aai.util;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
