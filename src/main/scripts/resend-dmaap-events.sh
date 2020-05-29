@@ -33,17 +33,21 @@
 #
 # -b,  (required) <string> the base url for the dmaap server 
 # -e,  (required) <file>   filename containing the missed events
-# -l,  (optional)          indicating that the script should be run it debug mode
+# -l,  (optional)          indicating that the script should be run in debug mode
 #                          it will not send the dmaap messages to dmaap server 
 #                          but it will write to a file named resend_dmaap_server.out
+# -x   (optional)          skip resource version check
 # -p,  (required) <string> the password for the dmaap server 
 # -s,  (required) <file>   containing the data snapshot graphson file to compare the resource versions against
-# -u,  (required) <string> the username for the dmaap server 
+#                          partial snapshots should be concatenated into a full snapshot file
+#                          before running the script
+# -u,  (required) <string> the username for the dmaap server
+# -t,  (required) <string> the dmaap topic
 #
 # An example of how to use the tool:
 # Please use right credentials and right dmaap server in the cluster
 #
-#  ./resend-dmaap-events.sh -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905
+#  ./resend-dmaap-events.sh -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t AAI-EVENT
 #
 # For each dmaap message in the example_events.txt, it will check 
 # against graphson and try to send it to the dmaap server
@@ -66,9 +70,11 @@
 # For testing purposes, if you are trying to run this script and don't want to actually
 # send it to a dmaap server, then you can run either of the following:
 #
-# ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545
+# ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545 -t <other-dmaap-topic>
 # or
-# ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905
+# ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t <other-dmaap-topic>
+# or, to skip the resource-version check
+# ./resend-dmaap-events.sh -l -x -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t <other-dmaap-topic>
 #
 # Following will output what would have been sent out based on checking the datasnapshot with example_events.txt
 #
@@ -90,18 +96,22 @@ usage(){
     echo;
     echo "  -b,   <string> the base url for the dmaap server";
     echo "  -e,   <file>   filename containing the missed events";
-    echo "  -l, (optional) indicating that the script should be run it debug mode"
+    echo "  -l, (optional) indicating that the script should be run in debug mode"
     echo "                 it will not send the dmaap messages to dmaap server "
     echo "                 but it will write to a file named resend_dmaap_server.out"
+    echo "  -x, (optional) indicating that the script will skip the resource-version check"
     echo "  -p,   <string> the password for the dmaap server";
     echo "  -s,   <file>   containing the data snapshot graphson file to compare the resource versions against";
+    echo "                  partial snapshots should be concatenated into a full snapshot file";
+    echo "                  before running the script";
     echo "  -u,   <string> the username for the dmaap server";
+    echo "  -t,   <string> the dmaap topic";
     echo;
     echo;
     echo " An example of how to use the tool:";
     echo " Please use right credentials and right dmaap server in the cluster";
     echo;
-    echo "  ./resend-dmaap-events.sh -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905";
+    echo "  ./resend-dmaap-events.sh -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t AAI-EVENT";
     echo;
     echo " For each dmaap message in the example_events.txt, it will check ";
     echo " against graphson and try to send it to the dmaap server";
@@ -126,7 +136,9 @@ usage(){
     echo;
     echo " ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545";
     echo " or";
-    echo " ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905";
+    echo " ./resend-dmaap-events.sh -l -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t AAI-EVENT";
+    echo " or, to skip the resource-version check";
+    echo " ./resend-dmaap-events.sh -l -x -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t AAI-EVENT";
     echo;
     echo " Following will output what would have been sent out based on checking the datasnapshot with example_events.txt";
     echo;
@@ -143,25 +155,25 @@ usage(){
 # Checks if the argument of the string is greater than zero
 # Also check if the file actually exists
 validate(){
-    local type_of_file=$1;
+    type_of_file=$1;
 
     if [ $# -eq 0 ]; then
         echo "Error expecting the validate method to have at least one argument indicating what type";
-        exit -1;
+        exit 1;
     fi;
 
     shift;
 
-    local arg=$1;
+    arg=$1;
 
     if [ -z "$arg" ]; then
         echo "Error missing the expected argument for ${type_of_file}";
-        exit -1;
+        exit 1;
     fi;
 
     if [ ! -f "$arg" ]; then
         echo "Error: file $arg cannot be found, please check the file again";
-        exit -1;
+        exit 1;
     fi;
 }
 
@@ -171,26 +183,31 @@ validate(){
 # Otherwise it will return non zero to indicate that this method failed
 resource_version_matches_snapshot_file(){
 
-    local snapshot_file=$1;
-    local entity_link=$2;
-    local resource_version=$3;
-    local action=$4;
+    snapshot_file=$1;
+    entity_link=$2;
+    resource_version=$3;
+    action=$4;
+    topic=$5;
     
     if [ -z ${resource_version} ]; then
         echo "Missing the parameter resource version to be passed";
-        return -1;
+        return 1;
     fi
 
     # Modify the entity link passed to remove the /aai/v[0-9]+
-    aai_uri=$(echo $entity_link | sed 's/\/aai\/v[0-9][0-9]*//g');
+    if [ "${topic}" = "<other-dmaap-topic>" ]; then 
+	aai_uri=$(echo $entity_link | sed 's/\/<other-base>\/v[0-9][0-9]*//g');
+    else
+    	aai_uri=$(echo $entity_link | sed 's/\/aai\/v[0-9][0-9]*//g');
+    fi
 
-    local line=$(grep '"value":"'${aai_uri}'"' ${snapshot_file} 2> /dev/null);
+    line=$(grep '"value":"'${aai_uri}'"' ${snapshot_file} 2> /dev/null);
 
     if [ -z "${line}" ] ; then
         if [ "${action}" = "DELETE" ]; then
             return 0;
         else
-            return -1;
+            return 1;
         fi;
     fi;
 
@@ -199,51 +216,26 @@ resource_version_matches_snapshot_file(){
     if [ $cnt -eq 1 ]; then
         return 0;
     else
-        return -1;
+        return 1;
     fi;
-}
-
-# From a array being passed, it will determine the smallest element
-# and return the index of the smallest element
-# If the array length is zero, then it will return -1
-retrieve_smallest_index(){
-
-    local elements=("${@}");
-
-    if [ ${#elements} -eq 0 ]; then
-        return -1;
-    fi;
-
-    local smallest_element=${elements[0]};
-
-    local index=0;
-    local smallest_index=0;
-
-    for element in ${elements[@]}; do
-        if [ $element -lt $smallest_element ]; then
-            smallest_index=${index};
-        fi;
-        index=$((index+1));
-    done;
-
-    return ${smallest_index};
 }
 
 # Send the dmaap event to the host based on
 # the line that was send to the function
 send_dmaap(){
 
-    local local_mode=$1;
-    local line=$2;
-    local username=$3;
-    local password=$4;
-    local baseurl=$5;
-    local resp_code=0;
+    local_mode=$1;
+    line=$2;
+    username=$3;
+    password=$4;
+    baseurl=$5;
+    topic=$6;
+    resp_code=0;
     
     generated_file=$(uuidgen);
 
-    local json_file=/tmp/${generated_file}.json;
-    local curl_output=/tmp/${generated_file}.txt;
+    json_file=/tmp/${generated_file}.json;
+    curl_output=/tmp/${generated_file}.txt;
 
     echo ${line} > ${json_file};
     > ${curl_output};
@@ -259,13 +251,13 @@ send_dmaap(){
             -X POST \
             -H "Content-Type: application/json" \
             -d "@${json_file}" \
-            "${baseurl}/events/AAI-EVENT"\
+            "${baseurl}/events/${topic}"\
         );
 
         if [ "$response_code" -ne "200" ]; then
             echo -n "Response failure for dmaap message with id ${id}," >> ${resend_error_log};
             echo " code: ${response_code} body: $(cat ${curl_output})" >> ${resend_error_log};
-            resp_code=-1;
+            resp_code=1;
         fi;
     fi;
     
@@ -303,25 +295,32 @@ main(){
         usage;
     fi;
 
-    while getopts ":e:s:u:lp:b:h" opt; do
+    versioncheck=true
+    while getopts ":e:s:u:xlp:b:t:h" opt; do
         case ${opt} in
             l ) # Specify that the application will not send messages to dmaap but save it a file
-                local local_mode=true
+                local_mode=true
                 ;;
             e ) # Specify the file for missed events
-                local missed_events_file=$OPTARG
+                missed_events_file=$OPTARG
                 ;;
             s ) # Specify the file for snapshot
-                local snapshot_file=$OPTARG
+                snapshot_file=$OPTARG
                 ;;
             u ) # Specify the username to dmaap
-                local username=$OPTARG
+                username=$OPTARG
                 ;;
             p ) # Specify the password to dmaap
-                local password=$OPTARG
+                password=$OPTARG
+                ;;
+            t ) # Specify the dmaap topic
+                topic=$OPTARG
+                ;;
+            x ) # Specify whether to skip version check
+                versioncheck=false
                 ;;
             b ) # Specify the baseurl to dmaap
-                local hostname=$OPTARG
+                hostname=$OPTARG
                 ;;
             h ) 
                 usage;
@@ -345,15 +344,25 @@ main(){
         id=$(echo $dmaap_event | grep -o '"id":"[^"]*"' | cut -d":" -f2- | sed 's/"//g');
         action=$(echo $dmaap_event | grep -o '"action":"[^"]*"' | cut -d":" -f2- | sed 's/"//g');
         smallest_resource_version=$(echo $dmaap_event | jq -M '.' | grep 'resource-version' | sort | tail -1 | sed 's/[^0-9]//g');
-        resource_version_matches_snapshot_file "${snapshot_file}" "${entity_link}" "${smallest_resource_version}" "${action}" && {
-            send_dmaap "${local_mode}" "$dmaap_event" "$username" "$password" "$hostname" && {
+        #smallest_resource_version=$(echo $dmaap_event | python -m json.tool | grep 'resource-version' | sort | tail -1 | sed 's/[^0-9]//g');
+        match=0;
+        if [ "$versioncheck" = true ]; then
+            resource_version_matches_snapshot_file "${snapshot_file}" "${entity_link}" "${smallest_resource_version}" "${action}" "${topic}" && {
+                match=0;
+            } || {
+                match=1;
+            }
+         fi;
+
+        if [ $match -eq 0 ]; then
+            send_dmaap "${local_mode}" "$dmaap_event" "$username" "$password" "$hostname" "$topic" && {
                 echo "Dmaap Event with Id $id was sent";
             } || {
                 echo "Dmaap Event with Id $id was not sent due to dmaap error, please check logs";
             }
-        } || {
+	else
             echo "Dmaap Event with Id $id not sent";
-        }
+	fi;
 
     done < ${missed_events_file};
 

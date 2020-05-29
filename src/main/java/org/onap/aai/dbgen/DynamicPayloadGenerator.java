@@ -30,7 +30,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.type.TypeReference;
-import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.InMemoryGraph;
 import org.onap.aai.edges.EdgeIngestor;

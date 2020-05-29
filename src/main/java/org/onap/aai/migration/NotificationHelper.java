@@ -39,6 +39,7 @@ import org.onap.aai.serialization.engines.query.QueryEngine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.onap.aai.setup.SchemaVersions;
 
 /**
@@ -46,7 +47,7 @@ import org.onap.aai.setup.SchemaVersions;
  */
 public class NotificationHelper {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NotificationHelper.class);
+	protected Logger LOGGER = null;
 	protected final DBSerializer serializer;
 	protected final Loader loader;
 	protected final TransactionalGraphEngine engine;
@@ -61,6 +62,9 @@ public class NotificationHelper {
 		this.transactionId = transactionId;
 		this.sourceOfTruth = sourceOfTruth;
 		this.notification = new UEBNotification(loader, loaderFactory, schemaVersions);
+		MDC.put("logFilenameAppender", this.getClass().getSimpleName());
+		LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
+		
 	}
 	
 	public void addEvent(Vertex v, Introspector obj, EventAction action, URI uri, String basePath) throws UnsupportedEncodingException, AAIException {

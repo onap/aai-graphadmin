@@ -100,29 +100,24 @@ public class ForceDeleteTool {
 			for (int i = 0; i < args.length; i++) {
 				String thisArg = args[i];
 				argStr4Msg = argStr4Msg + " " + thisArg;
+				
 				if (thisArg.equals("-action")) {
 					i++;
 					if (i >= args.length) {
 						logger.error(" No value passed with -action option.  ");
-						System.out.println(" No value passed with -action option.  ");
 						exit(0);
 					}
-					else {
-						actionVal = args[i];
-						argStr4Msg = argStr4Msg + " " + actionVal;
-					}
+					actionVal = args[i];
+					argStr4Msg = argStr4Msg + " " + actionVal;
 				}
 				else if (thisArg.equals("-userId")) {
 					i++;
 					if (i >= args.length) {
 						logger.error(" No value passed with -userId option.  ");
-						System.out.println(" No value passed with -userId option.  ");
 						exit(0);
 					}
-					else {
-						userIdVal = args[i];
-						argStr4Msg = argStr4Msg + " " + userIdVal;
-					}
+					userIdVal = args[i];
+					argStr4Msg = argStr4Msg + " " + userIdVal;
 				}
 				else if (thisArg.equals("-overRideProtection")) {
 					overRideProtection = true;
@@ -134,54 +129,40 @@ public class ForceDeleteTool {
 					i++;
 					if (i >= args.length) {
 						logger.error(" No value passed with -vertexId option.  ");
-						System.out.println(" No value passed with -vertexId option.  "); 
 						exit(0);
 					}
-					else {
-						String nextArg = args[i];
-						argStr4Msg = argStr4Msg + " " + nextArg;
-					
-						try {
-							vertexIdLong = Long.parseLong(nextArg);
-						} catch (Exception e) {
-							logger.error("Bad value passed with -vertexId option: ["
+					String nextArg = args[i];
+					argStr4Msg = argStr4Msg + " " + nextArg;
+					try {
+						vertexIdLong = Long.parseLong(nextArg);
+					} catch (Exception e) {
+						logger.error("Bad value passed with -vertexId option: ["
 										+ nextArg + "]");
-							System.out.println("Bad value passed with -vertexId option: [" 
-									 	+ nextArg + "]");
-							exit(0);
-						}
+						exit(0);
 					}
 				}
 				else if (thisArg.equals("-params4Collect")) {
 					i++;
 					if (i >= args.length) {
 						logger.error(" No value passed with -params4Collect option.  ");
-						System.out.println(" No value passed with -params4Collect option.  "); 
 						exit(0);
 					}
-					else {
-						dataString = args[i];
-						argStr4Msg = argStr4Msg + " " + dataString;
-					}
+					dataString = args[i];
+					argStr4Msg = argStr4Msg + " " + dataString;
 				}
 				else if (thisArg.equals("-edgeId")) {
 					i++;
 					if (i >= args.length) {
 						logger.error(" No value passed with -edgeId option.  ");
-						System.out.println(" No value passed with -edgeId option.  "); 
 						exit(0);
 					}
-					else {
-						String nextArg = args[i];
-						argStr4Msg = argStr4Msg + " " + nextArg;
-						edgeIdStr = nextArg;
-					}
+					String nextArg = args[i];
+					argStr4Msg = argStr4Msg + " " + nextArg;
+					edgeIdStr = nextArg;
 				}
 				else {
 					logger.error(" Unrecognized argument passed to ForceDeleteTool: ["
 									+ thisArg + "]. ");
-					System.out.println(" Unrecognized argument passed to ForceDeleteTool: [" 
-							+ thisArg + "]");
 					logger.error(" Valid values are: -action -userId -vertexId -edgeId -overRideProtection -params4Collect -DISPLAY_ALL_VIDS");
 					exit(0);
 				}
@@ -368,19 +349,18 @@ public class ForceDeleteTool {
 		  		System.out.println(infMsg);
 		  		exit(0);
 		  	}
-	  		else {
-	  			if( fd.getEdgeDelConfirmation(logger, userIdVal, thisEdge, overRideProtection) ){
-	  				thisEdge.remove();
-	  				graph.tx().commit();
-	  				String infMsg = ">>>>>>>>>> Removed edge with edgeId = " + edgeIdStr;
-	  				logger.debug( infMsg );
-	  				System.out.println(infMsg);
-	  			} 
-	  			else {	
-	  				String infMsg = " Delete Cancelled. ";
-	  				System.out.println(infMsg);
-	  				logger.debug( infMsg );
-	  			}
+	  		
+	  		if( fd.getEdgeDelConfirmation(logger, userIdVal, thisEdge, overRideProtection) ){
+	  			thisEdge.remove();
+		  		graph.tx().commit();
+		  		String infMsg = ">>>>>>>>>> Removed edge with edgeId = " + edgeIdStr;
+		  		logger.debug( infMsg );
+		  		System.out.println(infMsg);
+	  		} 
+	  		else {	
+	  			String infMsg = " Delete Cancelled. ";
+	  			System.out.println(infMsg);
+	  			logger.debug( infMsg );
 	  		}
 	 		exit(0);
 	  	}

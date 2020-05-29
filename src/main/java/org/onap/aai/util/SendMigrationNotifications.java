@@ -54,8 +54,8 @@ public class SendMigrationNotifications {
 	private String config;
 	private String path;
 	private Set<String> notifyOn;
-	private long sleepInMilliSecs;
-	private int numToBatch;
+	long sleepInMilliSecs;
+	int numToBatch;
 	private String requestId;
 	private EventAction eventAction;
 	private String eventSource;
@@ -108,22 +108,25 @@ public class SendMigrationNotifications {
 			vertexes = g.V(entry.getKey()).toList();
 			if (vertexes == null || vertexes.isEmpty()) {
 				logAndPrint("Vertex " + entry.getKey() + " no longer exists." );
+				continue;
 			} else if (vertexes.size() > 1) {
 				logAndPrint("Vertex " + entry.getKey() + " query returned " + vertexes.size() + " vertexes." );
+				continue;
 			} else {
 				logger.debug("Processing " + entry.getKey() + "resource-version " + entry.getValue());
 				v = vertexes.get(0);
-				if ((notifyOn.isEmpty() || notifyOn.contains(v.value(AAIProperties.NODE_TYPE).toString()))
-						&& entry.getValue().equals(v.value(AAIProperties.RESOURCE_VERSION).toString())) {
-					Introspector introspector = serializer.getLatestVersionView(v);
-					uri = this.serializer.getURIForVertex(v, false);
-					this.notificationHelper.addEvent(v, introspector, eventAction, uri, basePath);
-					count++;
-					if (count >= this.numToBatch) {
-						trigger();
-						logger.debug("Triggered " + entry.getKey());
-						count = 0;
-						Thread.sleep(this.sleepInMilliSecs);
+				if (notifyOn.isEmpty() || notifyOn.contains(v.value(AAIProperties.NODE_TYPE).toString())) {
+					if (entry.getValue().equals(v.value(AAIProperties.RESOURCE_VERSION).toString())) {
+						Introspector introspector = serializer.getLatestVersionView(v);
+						uri = this.serializer.getURIForVertex(v, false);
+						this.notificationHelper.addEvent(v, introspector, eventAction, uri, basePath);
+						count++;
+						if (count >= this.numToBatch) {
+							trigger();
+							logger.debug("Triggered " + entry.getKey());
+							count = 0;
+							Thread.sleep(this.sleepInMilliSecs);
+						}
 					}
 				}
 			}
