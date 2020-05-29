@@ -140,7 +140,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 
 			// If the nodeTypes don't match, throw an error 
 			if( !oldNodeType.equals(newNodeType) ){
-				logger.debug ( "Can not swing edge from a [" + oldNodeType + "] node to a [" +
+				logger.info ( "Can not swing edge from a [" + oldNodeType + "] node to a [" +
 						newNodeType + "] node. ");
 				success = false;
 				return;
@@ -182,7 +182,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 						}
 						
 						String otherSideUri = otherSideNode4ThisEdge.<String> property("aai-uri").isPresent()  ? otherSideNode4ThisEdge.<String> property("aai-uri").value() : "URI Not present"; 
-						logger.debug ( "\nSwinging [" + eLabel + "] OUT edge.  \n    >> Unchanged side is [" 
+						logger.info ( "\nSwinging [" + eLabel + "] OUT edge.  \n    >> Unchanged side is [" 
 								+ otherSideNodeType + "][" + otherSideUri + "] \n    >> Edge used to go to [" + oldNodeType 
 								+ "][" + oldUri + "],\n    >> now swung to [" + newNodeType + "][" + newUri + "]. ");
 						// remove the old edge
@@ -203,8 +203,9 @@ public abstract class EdgeSwingMigrator extends Migrator {
 							        Map.Entry pair = (Map.Entry)it.next();
 							        newOutE.property(pair.getKey().toString(), pair.getValue().toString() );
 							    }
+							    logger.info("\n Edge swing of [" + eLabel + "] OUT edge successful");
 							}else {
-								logger.debug("\n Edge was not swung due to Multiplicity Rule Violation...");
+								logger.info("\n Edge was not swung due to Multiplicity Rule Violation...");
 							}
 						}
 					}
@@ -245,7 +246,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 						}
 
 						String otherSideUri = otherSideNode4ThisEdge.<String> property("aai-uri").isPresent()  ? otherSideNode4ThisEdge.<String> property("aai-uri").value() : "URI Not present"; 
-						logger.debug ( "\nSwinging [" + eLabel + "] IN edge.  \n    >> Unchanged side is  [" 
+						logger.info ( "\nSwinging [" + eLabel + "] IN edge.  \n    >> Unchanged side is  [" 
 								+ otherSideNodeType + "][" + otherSideUri + "] \n    >>  Edge used to go to [" + oldNodeType 
 								+ "][" + oldUri + "],\n    >>   now swung to [" + newNodeType + "][" + newUri + "]. ");
 						
@@ -267,8 +268,9 @@ public abstract class EdgeSwingMigrator extends Migrator {
 							        Map.Entry pair = (Map.Entry)it.next();
 							        newInE.property(pair.getKey().toString(), pair.getValue().toString() );
 							    }
+							    logger.info("\n Edge swing of [" + eLabel + "] IN edge successful");
 							} else {
-								logger.debug("\t Edge was not swung due to Multiplicity Rule Violation...");
+								logger.info("\t Edge was not swung due to Multiplicity Rule Violation...");
 							}
 						}
 					}
@@ -276,7 +278,7 @@ public abstract class EdgeSwingMigrator extends Migrator {
 			}	
 			
 		} catch (Exception e) {
-			logger.error("error encountered", e);
+			logger.info("error encountered", e);
 			success = false;
 		}
 	}
