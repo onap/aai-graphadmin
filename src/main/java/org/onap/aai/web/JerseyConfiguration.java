@@ -32,6 +32,7 @@ import org.apache.tinkerpop.gremlin.structure.T;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletProperties;
+import org.onap.aai.rest.AuditSqlDbConsumer;
 import org.onap.aai.rest.QueryConsumer;
 import org.onap.aai.rest.util.EchoResponse;
 import org.onap.logging.filter.base.AuditLogContainerFilter;
@@ -54,7 +55,7 @@ public class JerseyConfiguration extends ResourceConfig {
         this.env = env;
 
         register(QueryConsumer.class);
-
+        register(AuditSqlDbConsumer.class);
         register(EchoResponse.class);
 
         //Filters

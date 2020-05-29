@@ -27,7 +27,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.codehaus.jackson.JsonGenerationException;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
-import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;

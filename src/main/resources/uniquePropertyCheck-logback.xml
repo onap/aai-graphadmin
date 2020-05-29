@@ -11,39 +11,28 @@
 	<property name="p_thr" value="%thread"/>
 	<property name="pattern" value="%nopexception${p_tim}\t${p_thr}\t${p_lvl}\t${p_log}\t${p_mdc}\t${p_msg}\t${p_exc}\t${p_mak}\t%n"/>
 	<property name="errorPattern" value="%X{LogTimestamp}|%X{RequestID}|%thread|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%.-5level|%X{ErrorCode}|%X{ErrorDesc}|%msg%n" />
-	<property name="debugPattern" value="%X{LogTimestamp}|%X{RequestID}|%msg\t${p_mdc}\t${p_msg}\t${p_exc}\t${p_mak}\t|^%n" />
+	<property name="debugPattern" value="%X{LogTimestamp}|%X{RequestID}|${p_msg}\t${p_mdc}\t${p_exc}\t${p_mak}\t|^%n" />
 	<property name="auditPattern" value="%X{EntryTimestamp}|%X{LogTimestamp}|%X{RequestID}|%X{ServiceInstanceID}|%thread||%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDesc}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}||||${p_mak}|${p_mdc}|||%msg%n" />
 	<property name="metricPattern" value="%X{InvokeTimestamp}|%X{LogTimestamp}|%X{RequestID}|%X{ServiceInstanceID}|%thread||%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDesc}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}||||%X{TargetVirtualEntity}|${p_mak}|${p_mdc}|||%msg%n" />
 	<property name="transLogPattern" value="%X{LogTimestamp}|%date{yyyy-MM-dd'T'HH:mm:ss.SSSZ, UTC}|%X{RequestID}|%X{ServiceInstanceID}|%-10t|%X{ServerFQDN}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%replace(%replace(%X{ResponseDesc}){'\\|', '!'}){'\r|\n', '^'}|%X{InstanceUUID}|%level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{clientIpAddress}||%X{unused}|%X{processKey}|%X{customField1}|%X{customField2}|%X{customField3}|%X{customField4}|co=%X{PartnerName}:%m%n"/>
 
-	<appender name="uniquePropertyChecklog" class="ch.qos.logback.classic.sift.SiftingAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>INFO</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-		<!-- This is MDC value -->
-		<!-- We will assign a value to 'logFilenameAppender' via Java code -->
-		<discriminator>
-			<key>logFilenameAppender</key>
-			<defaultValue>undefined</defaultValue>
-		</discriminator>
-		<sift>
-			<!-- A standard RollingFileAppender, the log file is based on 'logFileName' 
-				at runtime -->
-			<appender name="FILE-${logFilenameAppender}"
-				class="ch.qos.logback.core.rolling.RollingFileAppender">
-				<file>${logDirectory}/uniquePropertyCheck/${logFilenameAppender}.log</file>
-				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-					<fileNamePattern>${logDirectory}/uniquePropertyCheck/${logFilenameAppender}.log.%d{yyyy-MM-dd}
-					</fileNamePattern>
-				</rollingPolicy>
-				<encoder>
-					<pattern>${auditPattern}</pattern>
-				</encoder>
-			</appender>
-		</sift>
-	</appender>
+	<appender name="uniquePropertyChecklog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+    <File>${logDirectory}/uniquePropertyCheck/debug.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${logDirectory}/uniquePropertyCheck/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
+      <maxHistory>7</maxHistory>
+      <cleanHistoryOnStart>true</cleanHistoryOnStart>
+    </rollingPolicy>
+    <encoder>
+      <pattern>${debugPattern}</pattern>
+    </encoder>
+  </appender>
+
 
 	<logger name="org.reflections" level="WARN" additivity="false">
 		<appender-ref ref="uniquePropertyChecklog" />

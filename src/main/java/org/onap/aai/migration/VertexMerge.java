@@ -43,6 +43,7 @@ import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 /**
  * This class recursively merges two vertices passed in.
@@ -52,8 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class VertexMerge {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
+	protected Logger logger = null;
 	private final GraphTraversalSource g;
 	private final TransactionalGraphEngine engine;
 	private final DBSerializer serializer;
@@ -70,6 +70,9 @@ public class VertexMerge {
 		this.loader = builder.getLoader();
 		this.notificationHelper = builder.getHelper();
 		this.hasNotifications = builder.isHasNotifications();
+		MDC.put("logFilenameAppender", this.getClass().getSimpleName());
+        logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+		
 	}
 	
 	/**
