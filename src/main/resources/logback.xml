@@ -184,6 +184,23 @@
 		<appender-ref ref="translog" />
 	</appender>
 
+	<appender name="failover" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDirectory}/failover/failover.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/failover/failover.log.%d{yyyy-MM-dd}</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{1024} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="asyncFailover" class="ch.qos.logback.classic.AsyncAppender">
+		<queueSize>1000</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="failover" />
+	</appender>
+
 	<appender name="dmaapAAIEventConsumer"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -195,7 +212,7 @@
 			</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${"errorPattern"}</pattern>
+			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>
 	<appender name="dmaapAAIEventConsumerInfo"
@@ -410,7 +427,7 @@
 			<fileNamePattern>${logDirectory}/createDBSchema/error.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${"errorPattern"}</pattern>
+			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>
 
@@ -455,7 +472,7 @@
 			<fileNamePattern>${logDirectory}/misc/error.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${"errorPattern"}</pattern>
+			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>
 
@@ -497,9 +514,9 @@
 			<onMatch>ACCEPT</onMatch>
 			<onMismatch>DENY</onMismatch>
 		</filter>
-		<File>${logDirectory}/dupetool/debug.log</File>
+		<File>${logDirectory}/dupeTool/debug.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${logDirectory}/dupetool/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<fileNamePattern>${logDirectory}/dupeTool/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
 			<pattern>${debugPattern}</pattern>
@@ -600,7 +617,7 @@
 	</appender>	
 	<!-- forceDelete logs ended -->
 	
-	<!-- migration logs started -->	
+	<!-- default migration logs started -->	
 	<appender name="migrationdebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>DEBUG</level>
@@ -630,7 +647,38 @@
 			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>	
-	<!-- migration logs ended -->	
+	<!-- default migration logs ended -->
+  
+    <!-- other migration logs started -->
+    <appender name="migrationlog" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<!-- This is MDC value -->
+		<!-- We will assign a value to 'logFilenameAppender' via Java code -->
+		<discriminator>
+			<key>logFilenameAppender</key>
+			<defaultValue>undefined</defaultValue>
+		</discriminator>
+		<sift>
+			<!-- A standard RollingFileAppender, the log file is based on 'logFileName' 
+				at runtime -->
+			<appender name="FILE-${logFilenameAppender}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${logDirectory}/migration/${logFilenameAppender}.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${logDirectory}/migration/${logFilenameAppender}.log.%d{yyyy-MM-dd}
+					</fileNamePattern>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+	<!-- other migration logs ended -->
 	
 	<!-- DataGrooming logs started -->
 	<appender name="dataExportError" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -954,6 +1002,9 @@
 	<logger name="org.onap.aai.logging.ErrorLogHelper" level="WARN">
 		<appender-ref ref="asyncERROR"/>
 	</logger>
+	<logger name="org.onap.aai.failover" level="DEBUG" additivity="false">
+		<appender-ref ref="asyncFailover" />
+	</logger>
 	<logger name="org.onap.aai.interceptors.post" level="DEBUG" additivity="false">
 		<appender-ref ref="asynctranslog" />
 	</logger>
@@ -1028,6 +1079,15 @@
 	<appender-ref ref="migrationdebug" />
 	<appender-ref ref="migrationerror" />
 	</logger>
+	
+	<logger name="org.onap.aai.migration" level="ERROR" additivity="false">
+		<appender-ref ref="migrationlog" />
+	</logger>
+	
+	<logger name="org.onap.aai.migration" level="INFO" additivity="false">
+		<appender-ref ref="migrationlog" />
+	</logger>
+	
 			
 	<logger name="org.onap.aai.dataexport" level="DEBUG" additivity="false">
 		<appender-ref ref="dataExportError"/>
@@ -1040,15 +1100,6 @@
 	<logger name="com.netflix" level="WARN" />
 	<logger name="org.janusgraph" level="WARN" />
 	<logger name="com.att.aft.dme2" level="WARN" />
-
-	<!-- ============================================================================ -->
-	<!-- General EELF logger -->
-	<!-- ============================================================================ -->
-	<logger name="com.att.eelf" level="WARN" additivity="false">
-		<appender-ref ref="asyncDEBUG" />
-		<appender-ref ref="asyncERROR" />
-		<appender-ref ref="asyncMETRIC" />
-	</logger>
 
 	<root level="DEBUG">
 		<appender-ref ref="external" />

@@ -18,21 +18,6 @@
  * ============LICENSE_END=========================================================
  */
 package org.onap.aai.datacleanup;
-
-import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
-import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
-import org.onap.logging.filter.base.ONAPComponents;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,6 +29,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.LogFormatTools;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.AAIConstants;
+import org.onap.logging.filter.base.ONAPComponents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
@@ -73,6 +72,7 @@ public class DataCleanupTasks {
 			String archiveDir = dataGroomingDir + AAIConstants.AAI_FILESEP + "ARCHIVE";
 			String dataGroomingArcDir = archiveDir + AAIConstants.AAI_FILESEP + "dataGrooming";		
 			File path = new File(dataGroomingDir);
+			File archivepath = new File(archiveDir);
 			File dataGroomingPath = new File(dataGroomingArcDir);
 		
 			logger.debug("The logDir is " + logDir);
@@ -138,7 +138,9 @@ public class DataCleanupTasks {
      * 
      */
     public boolean directoryExists(String dir) {
-		return new File(dir).exists();
+    	File path = new File(dir);
+		boolean exists = path.exists();
+		return exists;	
     }
     
     public Date getZipDate(Integer days) {
@@ -177,7 +179,7 @@ public class DataCleanupTasks {
     	logger.debug("Inside the archive folder");  
     	String filename = file.getName();
     	logger.debug("file name is " +filename);
-
+		
 		String zipFile = afterArchiveDir + AAIConstants.AAI_FILESEP + filename;
 		
 		File dataGroomingPath = new File(afterArchiveDir);
@@ -230,8 +232,10 @@ public class DataCleanupTasks {
 */
     @Scheduled(cron = "${datasnapshotcleanup.cron}" )
     public void dataSnapshotCleanup() {
-	
-    	logger.info(ONAPLogConstants.Markers.ENTRY, "Started cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
+		
+		auditLog.logBefore("dataSnapshotCleanup", ONAPComponents.AAI.toString() );
+    	
+		logger.debug("Started cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
 	
     	try {
     		String logDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs";
@@ -289,11 +293,88 @@ public class DataCleanupTasks {
     				}	
     			}
     		}
+    		dmaapEventsDataCleanup(newAgeDelete);
+    		dataMigrationCleanup();
 	}
 	catch (Exception e) {
 		ErrorLogHelper.logError("AAI_4000", "Exception running cron job for DataCleanup"+LogFormatTools.getStackTop(e));
 		logger.debug("AAI_4000", "Exception running cron job for DataCleanup"+LogFormatTools.getStackTop(e));
 	}
-    logger.info(ONAPLogConstants.Markers.EXIT, "Ended cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
-  }   
+    logger.debug("Ended cron job dataSnapshotCleanup @ " + simpleDateFormat.format(new Date()));
+	auditLog.logAfter();
+  }
+	public void dmaapEventsDataCleanup(Date deleteAge) {
+
+		logger.debug("Started dmaapEventsDataCleanup @ " + simpleDateFormat.format(new Date()));
+
+		try {
+			String logDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs";
+			String dmaapEventsDataDir = logDir + AAIConstants.AAI_FILESEP + "data" + AAIConstants.AAI_FILESEP + "dmaapEvents";
+			File path = new File(dmaapEventsDataDir);
+
+			logger.debug("The logDir is " + logDir);
+			logger.debug("The dmaapEventsDataDir is " + dmaapEventsDataDir);
+
+			//Iterate through the files
+			File[] listFiles = path.listFiles();
+			if(listFiles != null) {
+				for(File listFile : listFiles) {
+					if(listFile.isFile()){
+						logger.debug("The file name in dmaapEvents is: " +listFile.getName());
+						Date fileCreateDate = fileCreationMonthDate(listFile);
+						logger.debug("The fileCreateDate in dmaapEvents is " + fileCreateDate);
+						if( fileCreateDate.compareTo(deleteAge) < 0) {
+							delete(listFile);
+							logger.debug("Deleted " + listFile.getName());
+						}
+					}
+				}
+			}
+
+		}
+		catch (Exception e) {
+			ErrorLogHelper.logError("AAI_4000", "Exception in dmaapEventsDataCleanup");
+			logger.debug("AAI_4000", "Exception in dmaapEventsDataCleanup "+LogFormatTools.getStackTop(e));
+		}
+		logger.debug("Ended cron dmaapEventsDataCleanup @ " + simpleDateFormat.format(new Date()));
+	}
+	
+    public void dataMigrationCleanup() throws AAIException {
+		Integer ageDeleteSnapshot = AAIConfig.getInt("aai.datamigration.agedelete");
+		
+		Date deleteAge = getZipDate(ageDeleteSnapshot);
+    	
+		logger.debug("Started dataMigrationCleanup @ " + simpleDateFormat.format(new Date()));
+	
+    	try {
+    		String logDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs";
+    		String dataMigrationCleanupDir = logDir + AAIConstants.AAI_FILESEP + "data" + AAIConstants.AAI_FILESEP + "migration-input-files";
+    		File path = new File(dataMigrationCleanupDir);
+    		
+    		logger.debug("The logDir is " + logDir);
+			logger.debug("The migrationInputFilesDir is " + dataMigrationCleanupDir);
+
+			//Iterate through the files
+			File[] listFiles = path.listFiles();
+			if(listFiles != null) {
+				for(File listFile : listFiles) {
+					if(listFile.isFile()){
+						logger.debug("The file name in migration-input-files is: " +listFile.getName());
+						Date fileCreateDate = fileCreationMonthDate(listFile);
+						logger.debug("The fileCreateDate in migration-input-files is " + fileCreateDate);
+						if( fileCreateDate.compareTo(deleteAge) < 0) {
+							delete(listFile);
+							logger.debug("Deleted " + listFile.getName());
+						}
+					}
+				}
+			}
+
+		}
+		catch (Exception e) {
+			ErrorLogHelper.logError("AAI_4000", "Exception in dataMigrationCleanup");
+			logger.debug("AAI_4000", "Exception in dataMigrationCleanup "+LogFormatTools.getStackTop(e));
+		}
+		logger.debug("Ended cron dataMigrationCleanup @ " + simpleDateFormat.format(new Date()));
+	}
 }

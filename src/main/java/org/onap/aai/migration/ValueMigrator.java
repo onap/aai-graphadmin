@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -113,6 +112,8 @@ public abstract class ValueMigrator extends Migrator {
                         }                                         
                     }
                 } catch (Exception e) {
+                	System.out.println(String.format("caught exception updating aai-node-type %s's property %s's value to " +
+                            "%s: %s", nodeType, property, newValue.toString(), e.getMessage()));
                     logger.error(String.format("caught exception updating aai-node-type %s's property %s's value to " +
                             "%s: %s", nodeType, property, newValue.toString(), e.getMessage()));
                     logger.error(e.getMessage());
@@ -121,12 +122,12 @@ public abstract class ValueMigrator extends Migrator {
               this.nodeTotalSuccess.put(nodeType, Integer.toString(this.subTotal));
         }
         
-        logger.debug ("\n \n ******* Final Summary for " + " " + getMigrationName() +" ********* \n");                
+        logAndPrint(logger, " ******* Final Summary for " + " " + getMigrationName() +" ********* ");                
         for (Map.Entry<String, String> migratedNode: nodeTotalSuccess.entrySet()) {
-        	logger.debug("Total Migrated Records for " + migratedNode.getKey() +": " + migratedNode.getValue());
+        	logAndPrint(logger,"Total Migrated Records for " + migratedNode.getKey() +": " + migratedNode.getValue());
         	
         }
-        logger.debug(this.MIGRATION_SUMMARY_COUNT + "Total Migrated Records: "+ migrationSuccess);           
+        logAndPrint(logger,this.MIGRATION_SUMMARY_COUNT + "Total Migrated Records: "+ migrationSuccess);           
         
     }
     
@@ -136,18 +137,18 @@ public abstract class ValueMigrator extends Migrator {
             String propertyValue = v.property(property).value().toString();
             if (propertyValue.isEmpty()) {
                 v.property(property, newValue);
-                logger.debug(String.format("Node Type %s: Property %s is empty, adding value %s",
+               logAndPrint(logger,String.format("Node Type %s: Property %s is empty, adding value %s",
                         nodeType, property, newValue.toString()));
                 this.touchVertexProperties(v, false);
                 updateDmaapList(v);
                 this.migrationSuccess++;
                 this.subTotal++;
             } else {
-                logger.debug(String.format("Node Type %s: Property %s value already exists - skipping",
+            	logAndPrint(logger,String.format("Node Type %s: Property %s value already exists - skipping",
                         nodeType, property));
             }
         } else {
-            logger.debug(String.format("Node Type %s: Property %s does not exist or " +
+        	logAndPrint(logger,String.format("Node Type %s: Property %s does not exist or " +
                     "updateExistingValues flag is set to True - adding the property with value %s",
                     nodeType, property, newValue.toString()));
             v.property(property, newValue);
@@ -178,7 +179,7 @@ public abstract class ValueMigrator extends Migrator {
     private void updateDmaapList(Vertex v){
     	String dmaapMsg = System.nanoTime() + "_" + v.id().toString() + "_"	+ v.value("resource-version").toString();
         dmaapMsgList.add(dmaapMsg);
-        logger.debug("\tAdding Updated Vertex " + v.id().toString() + " to dmaapMsgList....");
+        logAndPrint(logger,"\tAdding Updated Vertex " + v.id().toString() + " to dmaapMsgList....");
     }
     
     public boolean isUpdateDmaap(){

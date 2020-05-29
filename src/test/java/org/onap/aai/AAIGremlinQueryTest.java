@@ -23,7 +23,7 @@ import com.jayway.jsonpath.JsonPath;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.*;
-import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.util.AAIConfig;

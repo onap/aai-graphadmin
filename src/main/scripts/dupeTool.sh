@@ -68,6 +68,9 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 start_date;
 check_user;
 source_profile;
+
+export JAVA_PRE_OPTS=${JAVA_PRE_OPTS:--Xms6g -Xmx6g};
+
 execute_spring_jar org.onap.aai.dbgen.DupeTool ${PROJECT_HOME}/resources/dupeTool-logback.xml "$@"
 end_date;
 exit 0
