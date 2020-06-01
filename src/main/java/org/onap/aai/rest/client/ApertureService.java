@@ -92,9 +92,6 @@ public class ApertureService {
         httpHeaders.put("X-TransactionID", UUID.randomUUID().toString());
         httpHeaders.put("Accept", "application/json");
 
-        // request should wind up something like this:
-        //  http://localhost:59053/narad/aperture/v1/audit/?timestamp=1904826945000&dbname=narad_relational
-
         String queryParams = "?timestamp=" + tStamp + "&dbname=" + dbName;
 
         ResponseEntity responseEntity = null;

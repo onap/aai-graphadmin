@@ -24,12 +24,11 @@ display_usage() {
         cat <<EOF
         Usage: $0 [options]
 
-        1. Usage: getDslResult.sh <base-path or optional narad host url> <optional input-json-filepath> <optional -XFROMAPPID> <optional -XTRANSID>
+        1. Usage: getDslResult.sh <base-path or optional host url> <optional input-json-filepath> <optional -XFROMAPPID> <optional -XTRANSID>
         2. This script requires one argument, a base-path 
-        3. Example for basepath: narad/{version}
-        4. Example for narad host url : https://narad-int1.ecomp.cci.att.com:8443/narad/{version}/
-        5. Adding the optional input-json-payload replaces the default dsl payload with the contents of the input-file
-        6. The query result is returned in the file resources/migration-input-files/dslResults.json
+        3. Example for basepath: aai/{version}\
+        4. Adding the optional input-json-payload replaces the default dsl payload with the contents of the input-file
+        5. The query result is returned in the file resources/migration-input-files/dslResults.json
 EOF
 }
 if [ $# -eq 0 ]; then

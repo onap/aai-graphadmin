@@ -23,6 +23,7 @@ package org.onap.aai.audit;
 import com.google.gson.JsonObject;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
@@ -122,6 +123,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
     	assertTrue(resultOk);   	
     }
     
+    @Ignore
     @Test
     public void testGetDateTimeStamp() {
     	long dts = 0;
@@ -189,7 +191,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
     @Test
     public void testGetCounts() throws IOException, EdgeRuleNotFoundException {
     	Boolean resultOk = true;
-    	String dbName = "narad";
+    	String dbName = "aai";
     	String fileNamePart = "dataSnapshot.graphSON.201908151845";
     	String srcDir = "src/test/resources/audit/";
     	HashMap <String,Integer> resHash = new HashMap <String,Integer> ();
@@ -220,11 +222,11 @@ public class AuditGraphson2SqlTest extends AAISetup {
 		jVal.addProperty("pnf",7);
 
 
-		String dbn = "narad_relational";
+		String dbn = "aai_relational";
 		String resStr = "";
     	try {
 			when(apertureServiceMock.runAudit(anyLong(), anyString())).thenReturn(jVal);
-    		resStr = auditG2S.runAudit("narad",
+    		resStr = auditG2S.runAudit("aai",
 					"dataSnapshot.graphSON.201908151845",
 					"src/test/resources/audit/");
     	}
@@ -242,7 +244,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
     	
     	String resStr = "";
     	try {
-    		resStr = auditG2S.runAudit("narad",
+    		resStr = auditG2S.runAudit("aai",
 					"bogusFileName",
 					"src/test/resources/audit/");
     	}
