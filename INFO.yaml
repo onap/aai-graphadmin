@@ -46,6 +46,11 @@ committers:
       company: 'ATT'
       id: 'vk250x'
       timezone: 'America/New_York'
+    - name: 'William Reehil'
+      email: 'william.reehil@att.com'
+      company: 'ATT'
+      id: 'wreehil'
+      timezone: 'America/New_York'
 tsc:
     approval: 'https://lists.onap.org/g/onap-tsc'
     changes:
@@ -55,3 +60,6 @@ tsc:
         - type: 'removal'
           name: 'Tian Lee'
           link: 'https://lists.onap.org/g/onap-tsc/message/6227'
+        - type: 'Addition'
+          name: 'William Reehil'
+          link: 'https://lists.onap.org/g/onap-tsc/message/6506'
