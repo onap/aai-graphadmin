@@ -92,7 +92,7 @@ public class MigrateDataFromASDCToConfiguration extends Migrator {
             logger.error("Found Exception" , a);
         } finally {
             try {
-                br.close();
+                if(br !=null) br.close();
             } catch (IOException e) {
                 success = false;
                 logger.error("Found Exception" , e);

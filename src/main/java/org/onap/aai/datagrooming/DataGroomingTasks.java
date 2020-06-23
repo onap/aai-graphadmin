@@ -51,7 +51,7 @@ public class DataGroomingTasks {
 	private AaiScheduledTaskAuditLog auditLog;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataGroomingTasks.class);
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	@Autowired
 	private LoaderFactory loaderFactory;

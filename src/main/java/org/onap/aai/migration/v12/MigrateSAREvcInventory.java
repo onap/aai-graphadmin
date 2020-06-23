@@ -430,7 +430,7 @@ public class MigrateSAREvcInventory extends Migrator {
     private Vertex createNewConfigurationFromSARData(Map<String, String> sarColValues, Vertex forwardingPathVtx, int lineNumber) {
     	
     	Vertex configurationVtx = null;
-    	String forwardingPathId = forwardingPathVtx.value(this.FOWARDING_PATH_ID);
+      String forwardingPathId = forwardingPathVtx !=null ? forwardingPathVtx.value(this.FOWARDING_PATH_ID) : "";
     	try {
     		
     		List<Vertex> configList = g.V(forwardingPathVtx).out("org.onap.relationships.inventory.Uses").has("aai-node-type","configuration")
@@ -470,7 +470,7 @@ public class MigrateSAREvcInventory extends Migrator {
     	try {
 	    	Introspector evc = loader.introspectorFromName(EVC_NODE_TYPE);
 			evcVtx = serializer.createNewVertex(evc);
-			evcId = configurationVtx.value(this.PROPERTY_CONFIGURATION_ID);
+			evcId = configurationVtx != null ? configurationVtx.value(this.PROPERTY_CONFIGURATION_ID) : "";
 			
 			String cir = sarColValues.get("evcAccessCIR");
 			int length = cir.length();
