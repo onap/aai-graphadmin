@@ -70,7 +70,7 @@ public class DeletePInterface extends Migrator {
 						if (cousins == null || cousins.isEmpty()) {
 							if (children == null || children.isEmpty()) {
 								logger.info("Delete p-interface: " + getVertexURI(pInterfV));
-								pInterfV.remove();
+								if(pInterfV != null) pInterfV.remove();
 								count++;
 							} else {
 								skipCount++;

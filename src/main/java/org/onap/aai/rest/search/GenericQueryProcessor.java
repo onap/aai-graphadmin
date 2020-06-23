@@ -115,10 +115,10 @@ public abstract class GenericQueryProcessor {
 		Map<String, Object> params = new HashMap<>();
 		String query = "";
 		 if (this.isGremlin) {
-			query = gremlin.get();
+			query = gremlin.isPresent() ? gremlin.get() : "";
 			
 		}else if (this.isDsl) {
-			String dslUserQuery = dsl.get();
+			String dslUserQuery = dsl.isPresent() ? dsl.get() : "";
 			if(dslQueryProcessorOptional.isPresent()){
 				String dslQuery = dslQueryProcessorOptional.get().parseAaiQuery(dslUserQuery);
 				query = groovyQueryBuilder.executeTraversal(dbEngine, dslQuery, params);
