@@ -119,7 +119,7 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 
     @Override
     public Optional<String[]> getAffectedNodeTypes() {
-        return null;
+        return Optional.empty();
     }
 
     @Override

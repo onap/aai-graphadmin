@@ -74,11 +74,10 @@ public class PrintVertexDetails implements Runnable{
 			if (debugOn) {
 				// This is much slower, but sometimes we need to find out which single line is
 				// causing a failure
-				try {
+				try(FileOutputStream subFileStr = new FileOutputStream(fname)) {
 					int okCount = 0;
 					int failCount = 0;
 					Long debugDelayMsL = new Long(debugDelayMs);
-					FileOutputStream subFileStr = new FileOutputStream(fname);
 					
 					GraphWriter graphWriter = null;
 					if ("gryo".equalsIgnoreCase(snapshotType)) {
@@ -117,12 +116,10 @@ public class PrintVertexDetails implements Runnable{
 									+ "], aai-uri = [" + aaiUri + "]. ";
 							System.out.println(fmsg);
 							LOGGER.debug(" PrintVertexDetails " + fmsg);
-							// e.printStackTrace();
 						}
 					}
 					System.out.println(" -- Printed " + okCount + " vertexes out to " + fname + ", with " + failCount
 							+ " failed.");
-					subFileStr.close();
 				} catch (Exception e) {
 					AAIException ae = new AAIException("AAI_6128", e , "Error running PrintVertexDetails in debugon");
 					ErrorLogHelper.logException(ae);
@@ -136,16 +133,14 @@ public class PrintVertexDetails implements Runnable{
 					vtxList.add(gt.next());
 				}
 				
-				try {
+				try(FileOutputStream subFileStr = new FileOutputStream(fname)) {
 					int count = vtxList.size();
 					Iterator<Vertex> vSubItr = vtxList.iterator();
-					FileOutputStream subFileStr = new FileOutputStream(fname);
 					if ("gryo".equalsIgnoreCase(snapshotType)) {
 						jg.io(IoCore.gryo()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
 					} else {
 						jg.io(IoCore.graphson()).writer().create().writeVertices(subFileStr, vSubItr, Direction.BOTH);
 					}
-					subFileStr.close();
 					String pmsg = " -- Printed " + count + " vertexes out to " + fname;
 					System.out.println(pmsg);
 					LOGGER.debug(" PrintVertexDetails " + pmsg);

@@ -243,9 +243,9 @@ public class UpdatePropertyToolInternal {
 
         if (filePath != null && !filePath.isEmpty()) {
             // Add vertex Ids listed from the given file name
-            try {
+            try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
                 logAndPrint("Loading file at: " + filePath);
-                BufferedReader br = new BufferedReader(new FileReader(filePath));
+
                 StringBuilder sb = new StringBuilder();
                 String nextLine = br.readLine();
 
@@ -261,7 +261,6 @@ public class UpdatePropertyToolInternal {
                 }
                 String allVertexIdsString = sb.toString();
                 logAndPrint("All vertex IDs from file " + filePath + ":\n" + allVertexIdsString);
-                br.close();
             } catch (IOException ioe) {
                 logErrorAndPrint("ERROR reading in text file failed.", ioe);
             }

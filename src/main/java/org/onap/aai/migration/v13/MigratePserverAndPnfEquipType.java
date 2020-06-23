@@ -70,7 +70,7 @@ public class MigratePserverAndPnfEquipType extends Migrator{
     			currentValueOfEquipType = getEquipTypeNodeValue(vertex);
     			hostName = getHostNameNodeValue(vertex);
     			if("Server".equals(currentValueOfEquipType) ||"server".equals(currentValueOfEquipType) ){
-    				vertex.property(EQUIP_TYPE_PROPERTY, "SERVER");
+    				if(vertex != null) vertex.property(EQUIP_TYPE_PROPERTY, "SERVER");
     				this.touchVertexProperties(vertex, false);
     				logger.info("changed Pserver equip-type from " + currentValueOfEquipType + " to SERVER having hostname : " + hostName);
     				pserverCount++;
@@ -89,7 +89,7 @@ public class MigratePserverAndPnfEquipType extends Migrator{
     			currentValueOfEquipType = getEquipTypeNodeValue(vertex);
     			pnfName = getPnfNameNodeValue(vertex);
     			if("Switch".equals(currentValueOfEquipType)||"switch".equals(currentValueOfEquipType)){
-    				vertex.property(EQUIP_TYPE_PROPERTY, "SWITCH");
+    				if(vertex != null) vertex.property(EQUIP_TYPE_PROPERTY, "SWITCH");
     				this.touchVertexProperties(vertex, false);
     				logger.info("changed Pnf equip-type from "+ currentValueOfEquipType +" to SWITCH having pnf-name :" + pnfName);
     				pnfCount++;

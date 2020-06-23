@@ -73,11 +73,10 @@ public class UniquePropertyCheck {
 	  	String propertyName = args[0];
 	  	Graph graph = null;
 		
-		try {   
+		try(JanusGraph tGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(UniquePropertyCheck.class.getSimpleName()).withGraphType("realtime").buildConfiguration())) {
     		AAIConfig.init();
     		System.out.println("    ---- NOTE --- about to open graph (takes a little while)--------\n");
-    		JanusGraph tGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(UniquePropertyCheck.class.getSimpleName()).withGraphType("realtime").buildConfiguration());
-    		
+
     		if( tGraph == null ) {
     			logAndPrint(logger, " Error:  Could not get JanusGraph ");
     			System.exit(1);

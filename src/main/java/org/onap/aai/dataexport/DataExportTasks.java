@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
 public class DataExportTasks {
 
 	private static final Logger LOGGER;
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	static {
 		System.setProperty("aai.service.name", DataExportTasks.class.getSimpleName());
@@ -133,7 +133,7 @@ public class DataExportTasks {
 		if ( "false".equalsIgnoreCase(enableMultipleSnapshots)){
 			// find the second to latest data snapshot
 			snapshot = findSnapshot();
-			snapshotFilePath = snapshot.getAbsolutePath();
+			snapshotFilePath = snapshot != null ?snapshot.getAbsolutePath() : null;
 			if ( "true".equalsIgnoreCase (enablePartialGraph) ) {
 					String[] command = new String[2];
 					command[0] = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "bin" + AAIConstants.AAI_FILESEP + "dynamicPayloadPartial.sh";

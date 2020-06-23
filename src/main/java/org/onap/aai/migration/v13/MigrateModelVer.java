@@ -142,8 +142,8 @@ public class MigrateModelVer extends Migrator{
                 
                 String uri = String.format("/service-design-and-creation/models/model/%s/model-vers/model-ver/%s", currrentValueModelInvariantID, currentValueModelVersionID);
                 String propertyKey = NODETYPEKEYMAP.get(nodeTypeString);
-                String propertyValue = vertex.value(propertyKey).toString();
-                logger.info("Processing "+nodeTypeString+ " vertex with key "+vertex.value(propertyKey).toString());
+                String propertyValue = vertex != null ? vertex.value(propertyKey).toString() : "";
+                logger.info("Processing "+nodeTypeString+ " vertex with key "+ propertyValue);
                 Vertex modelVerVertex = null;
                 
                 if (modelVerUriVtxIdMap.containsKey(uri)){
