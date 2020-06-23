@@ -153,7 +153,7 @@ public class AuditOXM extends Auditor {
 		if (namespace == null) {
 			namespace = "";
 		}
-		boolean isTopLevel = namespace != "";
+		boolean isTopLevel = !namespace.isEmpty();
 		List<String> unique = Arrays.asList(uniqueProps.split(","));
 		Set<String> indexed = temp.getIndexedProperties();
 		Set<String> keys = temp.getKeys();
