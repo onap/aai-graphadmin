@@ -195,7 +195,7 @@
 			</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${"errorPattern"}</pattern>
+			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>
 	<appender name="dmaapAAIEventConsumerInfo"
@@ -353,7 +353,56 @@
 	</appender>
 	
 	<!-- DataSnapshot logs ended -->
-	
+
+
+	<!-- AuditGraphson2SQL logs started -->
+	<appender name="auditGraphson2Sql" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<File>${logDirectory}/auditGraphson2Sql/error.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/auditGraphson2Sql/error.log.%d{yyyy-MM-dd}</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${errorPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="auditGraphson2Sqldebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logDirectory}/auditGraphson2Sql/debug.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/auditGraphson2Sql/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${debugPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="auditGraphson2Sqlaudit" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logDirectory}/auditGraphson2Sql/audit.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/auditGraphson2Sql/audit.log.%d{yyyy-MM-dd}</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${auditPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- AuditGraphson2Sql logs ended -->
+
+
+
 	<!-- HistoryTruncate logs started -->
 	<appender name="historyTruncate" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -410,7 +459,7 @@
 			<fileNamePattern>${logDirectory}/createDBSchema/error.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${"errorPattern"}</pattern>
+			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>
 
@@ -455,7 +504,7 @@
 			<fileNamePattern>${logDirectory}/misc/error.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>${"errorPattern"}</pattern>
+			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>
 
@@ -497,9 +546,9 @@
 			<onMatch>ACCEPT</onMatch>
 			<onMismatch>DENY</onMismatch>
 		</filter>
-		<File>${logDirectory}/dupetool/debug.log</File>
+		<File>${logDirectory}/dupeTool/debug.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${logDirectory}/dupetool/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<fileNamePattern>${logDirectory}/dupeTool/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
 			<pattern>${debugPattern}</pattern>
@@ -600,7 +649,7 @@
 	</appender>	
 	<!-- forceDelete logs ended -->
 	
-	<!-- migration logs started -->	
+	<!-- default migration logs started -->	
 	<appender name="migrationdebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>DEBUG</level>
@@ -630,7 +679,38 @@
 			<pattern>${errorPattern}</pattern>
 		</encoder>
 	</appender>	
-	<!-- migration logs ended -->	
+	<!-- default migration logs ended -->
+  
+    <!-- other migration logs started -->
+    <appender name="migrationlog" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<!-- This is MDC value -->
+		<!-- We will assign a value to 'logFilenameAppender' via Java code -->
+		<discriminator>
+			<key>logFilenameAppender</key>
+			<defaultValue>undefined</defaultValue>
+		</discriminator>
+		<sift>
+			<!-- A standard RollingFileAppender, the log file is based on 'logFileName' 
+				at runtime -->
+			<appender name="FILE-${logFilenameAppender}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${logDirectory}/migration/${logFilenameAppender}.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${logDirectory}/migration/${logFilenameAppender}.log.%d{yyyy-MM-dd}
+					</fileNamePattern>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}|%m%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+	<!-- other migration logs ended -->
 	
 	<!-- DataGrooming logs started -->
 	<appender name="dataExportError" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -971,6 +1051,13 @@
 		<appender-ref ref="STDOUT"/>
 	</logger>
 
+	<logger name="org.onap.aai.audit.AuditGraphson2Sql" level="DEBUG" additivity="false">
+		<appender-ref ref="auditGraphson2Sql"/>
+		<appender-ref ref="auditGraphson2Sqldebug"/>
+		<appender-ref ref="auditGraphson2Sqlaudit"/>
+		<appender-ref ref="STDOUT"/>
+	</logger>
+
 	<logger name="org.onap.aai.historytruncate" level="DEBUG" additivity="false">
 		<appender-ref ref="historyTruncate"/>
 		<appender-ref ref="historyTruncatedebug"/>
@@ -1027,6 +1114,14 @@
 	<logger name="org.onap.aai.util.SendDeleteMigrationNotifications" level="DEBUG" additivity="false">
 	<appender-ref ref="migrationdebug" />
 	<appender-ref ref="migrationerror" />
+	</logger>
+	
+	<logger name="org.onap.aai.migration" level="ERROR" additivity="false">
+		<appender-ref ref="migrationlog" />
+	</logger>
+	
+	<logger name="org.onap.aai.migration" level="INFO" additivity="false">
+		<appender-ref ref="migrationlog" />
 	</logger>
 			
 	<logger name="org.onap.aai.dataexport" level="DEBUG" additivity="false">

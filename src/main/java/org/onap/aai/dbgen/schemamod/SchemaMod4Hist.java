@@ -20,7 +20,7 @@
 package org.onap.aai.dbgen.schemamod;
 
 import com.att.eelf.configuration.Configuration;
-import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;

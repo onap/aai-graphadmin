@@ -19,16 +19,21 @@
  */
 package org.onap.aai;
 
-import org.onap.aai.aailog.logs.AaiDebugLog;
-import org.onap.aai.config.PropertyPasswordConfiguration;
-import org.onap.aai.dbmap.AAIGraph;
-import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.nodes.NodeIngestor;
-import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.ExceptionTranslator;
+import com.att.eelf.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.onap.aai.aailog.logs.AaiDebugLog;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
+import org.onap.aai.dbmap.AAIGraph;
+import java.util.Properties;
+import org.onap.aai.exceptions.AAIException;
+import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.logging.LogFormatTools;
+import org.onap.aai.nodes.NodeIngestor;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.ExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -36,6 +41,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -61,10 +67,13 @@ import java.util.UUID;
     "org.onap.aai.datagrooming",
     "org.onap.aai.dataexport",
     "org.onap.aai.datacleanup",
-    "org.onap.aai.aailog"
+    "org.onap.aai.aailog",
+    "org.onap.aai.failover",
+    "org.onap.aai.audit"
 })
 @EnableAsync
 @EnableScheduling
+@EnableAspectJAutoProxy
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class GraphAdminApp {
 

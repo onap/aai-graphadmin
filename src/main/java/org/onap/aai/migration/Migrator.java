@@ -21,7 +21,6 @@ package org.onap.aai.migration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -39,6 +38,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onap.aai.aailog.logs.AaiDebugLog;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.enums.EdgeType;
 import org.onap.aai.edges.exceptions.AmbiguousRuleChoiceException;
@@ -54,9 +54,9 @@ import org.onap.aai.serialization.db.exceptions.NoEdgeRuleFoundException;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 /**
  * This class defines an A&AI Migration
@@ -81,6 +81,12 @@ public abstract class Migrator implements Runnable {
 
 	protected static final String MIGRATION_ERROR = "Migration Error: ";
 	protected static final String MIGRATION_SUMMARY_COUNT = "Migration Summary Count: ";
+	
+	private static AaiDebugLog debugLog = new AaiDebugLog();
+	static {
+		debugLog.setupMDC();
+	}
+
 
 	/**
 	 * Instantiates a new migrator.
@@ -96,8 +102,9 @@ public abstract class Migrator implements Runnable {
 		this.schemaVersions = schemaVersions;
         initDBSerializer();
         this.notificationHelper = new NotificationHelper(loader, serializer, loaderFactory, schemaVersions, engine, "AAI-MIGRATION", this.getMigrationName());
-		logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-		logger.debug("\tInitilization of " + this.getClass().getSimpleName() + " migration script complete.");
+		MDC.put("logFilenameAppender", this.getClass().getSimpleName());
+        logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+		logAndPrint(logger,"\tInitilization of " + this.getClass().getSimpleName() + " migration script complete.");
 	}
 
 	/**
@@ -127,7 +134,7 @@ public abstract class Migrator implements Runnable {
 	 */
 	public void createDmaapFiles(List<String> dmaapMsgList) {
 		String fileName = getMigrationName() + "-" + UUID.randomUUID();
-		String logDirectory = System.getProperty("AJSC_HOME") + "/logs/migration/dmaapEvents";
+		String logDirectory = System.getProperty("AJSC_HOME") + "/logs/data/dmaapEvents";
 
 		File f = new File(logDirectory);
 		f.mkdirs();
@@ -136,10 +143,12 @@ public abstract class Migrator implements Runnable {
 			try {
 				Files.write(Paths.get(logDirectory+"/"+fileName), (Iterable<String>)dmaapMsgList.stream()::iterator);
 			} catch (IOException e) {				
+				System.out.println("Unable to generate file with dmaap msgs for " + getMigrationName() + 
+						" Exception is: " + e.getMessage());
 				logger.error("Unable to generate file with dmaap msgs for " + getMigrationName(), e);
 			}
 		} else {
-			logger.debug("No dmaap msgs detected for " + getMigrationName());
+			logAndPrint(logger,"No dmaap msgs detected for " + getMigrationName());
 		}
 	}
 
@@ -150,7 +159,7 @@ public abstract class Migrator implements Runnable {
 	public void createDmaapFilesForDelete(List<Introspector> dmaapDeleteIntrospectorList) {try {
 		System.out.println("dmaapDeleteIntrospectorList :: " + dmaapDeleteIntrospectorList.size());
 		String fileName = "DELETE-"+ getMigrationName() + "-" + UUID.randomUUID();
-		String logDirectory = System.getProperty("AJSC_HOME") + "/logs/migration/dmaapEvents/";
+		String logDirectory = System.getProperty("AJSC_HOME") + "/logs/data/dmaapEvents/";
 		File f = new File(logDirectory);
 		f.mkdirs();
 		
@@ -169,6 +178,8 @@ public abstract class Migrator implements Runnable {
 						finalStr=svIntr.getName() + "#@#" + svIntr.getURI() + "#@#" + str+"\n";
 						Files.write(Paths.get(logDirectory + "/" + fileName),finalStr.getBytes(),StandardOpenOption.APPEND);
 					} catch (IOException e) {
+						System.out.println("Unable to generate file with dmaap msgs for " + getMigrationName() + 
+								" Exception is: " + e.getMessage());
 						logger.error("Unable to generate file with dmaap msgs for "+getMigrationName(), e);
 					}
 
@@ -201,6 +212,7 @@ public abstract class Migrator implements Runnable {
 				result.put(pk.key(), pk.value());
 			}
 		} catch (JSONException e) {
+			System.out.println("Warning error reading vertex: " + e.getMessage());
 			logger.error("Warning error reading vertex: " + e);
 		}
 
@@ -223,6 +235,7 @@ public abstract class Migrator implements Runnable {
 				result.put(pk.key(), pk.value());
 			}
 		} catch (JSONException e) {
+			System.out.println("Warning error reading edge: " + e.getMessage());
 			logger.error("Warning error reading edge: " + e);
 		}
 
@@ -403,5 +416,16 @@ public abstract class Migrator implements Runnable {
 	
 	public NotificationHelper getNotificationHelper() {
 		return this.notificationHelper;
+	}
+	
+	/**
+	 * Log and print.
+	 *
+	 * @param logger the logger
+	 * @param msg the msg
+	 */
+	protected void logAndPrint(Logger logger, String msg) {
+		System.out.println(msg);
+		logger.info(msg);
 	}
 }

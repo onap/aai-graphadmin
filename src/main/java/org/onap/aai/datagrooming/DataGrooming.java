@@ -47,7 +47,7 @@ import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.onap.aai.GraphAdminApp;
-import org.onap.aai.config.PropertyPasswordConfiguration;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.util.GraphAdminConstants;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.onap.aai.dbmap.AAIGraph;
