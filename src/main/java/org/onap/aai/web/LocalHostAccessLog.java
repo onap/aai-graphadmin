@@ -24,9 +24,9 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
+import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
+import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,11 +36,11 @@ import java.util.Arrays;
 public class LocalHostAccessLog {
 
     @Bean
-    public EmbeddedServletContainerFactory jettyConfigBean(
+    public AbstractServletWebServerFactory jettyConfigBean(
             @Value("${jetty.threadPool.maxThreads:200}") final String maxThreads,
             @Value("${jetty.threadPool.minThreads:8}") final String minThreads
     ){
-		JettyEmbeddedServletContainerFactory jef = new JettyEmbeddedServletContainerFactory();
+    JettyServletWebServerFactory jef = new JettyServletWebServerFactory();
 		jef.addServerCustomizers((JettyServerCustomizer) server -> {
 
             HandlerCollection handlers = new HandlerCollection();

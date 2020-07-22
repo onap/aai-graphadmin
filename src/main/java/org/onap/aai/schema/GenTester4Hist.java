@@ -147,7 +147,7 @@ public class GenTester4Hist {
 	       	imsg = "-- Loading new schema elements into JanusGraph --";
        		System.out.println(imsg);
        		LOGGER.debug(imsg);      					
-       		SchemaGenerator4Hist.loadSchemaIntoJanusGraph(graph, graphMgt, null);
+       		SchemaGenerator4Hist.loadSchemaIntoJanusGraph(graphMgt, null);
 
             if( graph != null ){
                 imsg = "-- graph commit";

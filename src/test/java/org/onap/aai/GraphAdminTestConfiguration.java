@@ -81,7 +81,7 @@ public class GraphAdminTestConfiguration {
                 .build();
 
         RestTemplate restTemplate =  builder
-                .requestFactory(new HttpComponentsClientHttpRequestFactory(client))
+                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(client))
                 .build();
 
         restTemplate.setErrorHandler(new ResponseErrorHandler() {

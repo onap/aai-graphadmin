@@ -19,17 +19,14 @@
  */
 package org.onap.aai.web;
 
+import com.sun.jersey.api.client.filter.LoggingFilter;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 import javax.annotation.Priority;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
-
-import org.apache.tinkerpop.gremlin.structure.T;
-import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.onap.aai.rest.AuditSqlDbConsumer;
@@ -68,7 +65,7 @@ public class JerseyConfiguration extends ResourceConfig {
         // Following registers the request headers and response headers
         // If the LoggingFilter second argument is set to true, it will print response value as well
         if ("true".equalsIgnoreCase(env.getProperty("aai.request.logging.enabled"))) {
-            register(new LoggingFilter(log, false));
+            register(new LoggingFilter(log, 0));
         }
     }
 

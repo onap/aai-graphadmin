@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.6.10</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
@@ -35,7 +35,7 @@
     <properties>
 
         <!-- Start of Compiler Related Properties -->
-	<mockito.core.version>1.10.19</mockito.core.version>
+	      <mockito.core.version>1.10.19</mockito.core.version>
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -55,14 +55,14 @@
         <!-- This value should be overwritten at runtime to wherever need to be pushed to -->
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
-	<aai.schema.version>1.6.6</aai.schema.version>
+	      <aai.schema.version>1.6.6</aai.schema.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
         <!-- base image for aai-common -->
         <aai.base.image>alpine</aai.base.image>
         <!-- aai-common image version -->
-        <aai.base.image.version>1.6.0</aai.base.image.version>
+        <aai.base.image.version>1.7.0-SNAPSHOT</aai.base.image.version>
         <!-- End of Docker Related Properties -->
 
         <license.goal.type>check</license.goal.type>
@@ -87,8 +87,6 @@
         <snapshot.file>${project.basedir}/snapshots/int1-data.graphson</snapshot.file>
         <jacoco.line.coverage.limit>0.46</jacoco.line.coverage.limit>
         
-        <aai.common.version>1.6.10</aai.common.version>
-
         <!-- Start of Default ONAP Schema Properties -->
         <schema.source.name>onap</schema.source.name>
         <schema.configuration.location>N/A</schema.configuration.location>
@@ -336,19 +334,60 @@
         </profile>
     </profiles>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-                <version>${spring.boot.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>javax.jms-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.aai.aai-common</groupId>
+            <artifactId>aai-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+        </dependency>
+
         <!-- Start of Logback Dependencies -->
         <dependency>
             <groupId>com.att.eelf</groupId>
@@ -371,55 +410,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        <!-- Start of Janus Graph Dependencies -->
-        <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>dom4j</groupId>
-                    <artifactId>dom4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-cassandra</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>dom4j</groupId>
-                    <artifactId>dom4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!--
-            indirect janusgraph-cassandra dependency
-            need to be newer than default one
-            in order to support multiple cpu archs
-        -->
-        <dependency>
-            <groupId>com.github.jnr</groupId>
-            <artifactId>jnr-ffi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-cql</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- End of Janus Graph Dependencies -->
+
         <!-- Start of Tinkerpop Dependencies -->
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
@@ -484,40 +475,6 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.onap.aai.aai-common</groupId>
-            <artifactId>aai-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-http</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.jackson</groupId>
-                    <artifactId>jackson-mapper-asl</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>

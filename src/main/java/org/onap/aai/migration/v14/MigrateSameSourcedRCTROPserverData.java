@@ -19,6 +19,7 @@
  */
 package org.onap.aai.migration.v14;
 
+import java.nio.charset.UnsupportedCharsetException;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.*;
@@ -568,7 +569,7 @@ public class MigrateSameSourcedRCTROPserverData extends EdgeSwingMigrator {
     private static String encodeProp(String s) {
         try {
             return UriUtils.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedCharsetException e) {
             return "";
         }
     }
