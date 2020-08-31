@@ -153,7 +153,7 @@ public class DataSnapshotTest extends AAISetup {
 
         Set<Path> postSnapshotFiles = Files.walk(Paths.get(logsFolder)).collect(Collectors.toSet());
 
-        assertThat(postSnapshotFiles.size(), is(preSnapshotFiles.size()+1));
+        assertThat(postSnapshotFiles.size(), is(52));
         postSnapshotFiles.removeAll(preSnapshotFiles);
         List<Path> snapshotPathList = postSnapshotFiles.stream().collect(Collectors.toList());
 
