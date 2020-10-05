@@ -33,6 +33,8 @@ import org.janusgraph.core.schema.JanusGraphManagement;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -56,7 +58,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class MigrateInMaintDefaultToFalseTest extends
 		AAISetup {
 	protected static final String VNF_NODE_TYPE = "generic-vnf";

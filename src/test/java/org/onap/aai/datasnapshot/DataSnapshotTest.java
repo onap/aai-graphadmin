@@ -29,6 +29,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
@@ -50,7 +52,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class DataSnapshotTest extends AAISetup {
 
     private GraphTraversalSource g;

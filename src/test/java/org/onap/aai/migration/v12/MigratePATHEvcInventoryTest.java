@@ -31,7 +31,9 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.junit.*;
-import org.onap.aai.AAISetup;
+import org.springframework.test.annotation.DirtiesContext;
+
+import org.onap.aai.AAISetup;inte
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
@@ -41,6 +43,7 @@ import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class MigratePATHEvcInventoryTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;

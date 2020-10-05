@@ -33,6 +33,8 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -48,6 +50,7 @@ import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class MigrateHUBEvcInventoryTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;

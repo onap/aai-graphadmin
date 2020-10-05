@@ -25,6 +25,8 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.*;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
@@ -43,6 +45,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class SendMigrationNotificationsTest extends AAISetup {
 
 	private final static String FILE = "./test.txt";
