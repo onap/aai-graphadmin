@@ -25,6 +25,8 @@ import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Loader;
@@ -44,6 +46,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ValueMigratorTest extends AAISetup{
 
     public static class SampleValueMigrator extends ValueMigrator {

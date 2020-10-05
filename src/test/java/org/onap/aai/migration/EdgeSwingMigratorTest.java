@@ -29,6 +29,8 @@ import org.janusgraph.core.schema.JanusGraphManagement;
 import org.javatuples.Pair;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
@@ -49,6 +51,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class EdgeSwingMigratorTest extends AAISetup {
 	
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;

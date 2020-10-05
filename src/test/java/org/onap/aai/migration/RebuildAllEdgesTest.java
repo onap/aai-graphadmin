@@ -28,6 +28,8 @@ import org.janusgraph.core.schema.JanusGraphManagement;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
+
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.introspection.Loader;
@@ -39,6 +41,7 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class RebuildAllEdgesTest extends AAISetup {
 
 	private static final ModelType introspectorFactoryType = ModelType.MOXY;
