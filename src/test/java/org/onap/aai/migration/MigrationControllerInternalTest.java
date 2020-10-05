@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +36,7 @@ import java.io.PrintStream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class MigrationControllerInternalTest extends AAISetup {
 
     private static final Logger logger = LoggerFactory.getLogger(MigrationControllerInternalTest.class);

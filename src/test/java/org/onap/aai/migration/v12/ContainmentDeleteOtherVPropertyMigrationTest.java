@@ -29,6 +29,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -41,11 +42,13 @@ import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
@@ -59,6 +62,7 @@ public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 	private Graph tx;
 
 	@Before
+	@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		JanusGraphManagement janusgraphManagement = graph.openManagement();
