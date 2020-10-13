@@ -55,7 +55,7 @@
         <!-- This value should be overwritten at runtime to wherever need to be pushed to -->
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
-        <aai.schema.service.version>1.7.9</aai.schema.service.version>
+        <aai.schema.service.version>1.7.10</aai.schema.service.version>
         <aai.common.version>1.7.3</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
