@@ -1,5 +1,5 @@
 distribution_type: container
-container_release_tag: 1.7.1
+container_release_tag: 1.8.0
 project: aai/graphadmin
 ref: 259550d18f919c8cf61dd25f2388bcdfb0e7ec02
 containers:
