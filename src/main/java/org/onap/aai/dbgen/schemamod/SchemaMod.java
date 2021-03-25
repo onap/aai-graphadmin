@@ -68,23 +68,26 @@ public class SchemaMod {
 		String targetDataType = "";
 		String targetIndexInfo = "";
 		String preserveDataFlag = "";
+		String consistencyLockFlag = "";
 		String commitBlockSizeStr = "";
 		long commitBlockSize = 120000;
 
-		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag [blockSize] \n";
+		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag consistencyLockFlag [blockSize] \n";
 		
-		if (args.length == 4) {
+		if (args.length == 5) {
 			propName = args[0];
 			targetDataType = args[1];
 			targetIndexInfo = args[2];
 			preserveDataFlag = args[3];
+			consistencyLockFlag = args[4];
 		}
-		else if (args.length == 5) {
+		else if (args.length == 6) {
 			propName = args[0];
 			targetDataType = args[1];
 			targetIndexInfo = args[2];
 			preserveDataFlag = args[3];
-			commitBlockSizeStr = args[4];
+			consistencyLockFlag = args[4];
+			commitBlockSizeStr = args[5];
 		}
 		else {
 			String emsg = "Incorrect number of Parameters passed.  \n" + usageString;
@@ -148,7 +151,7 @@ public class SchemaMod {
         TransactionalGraphEngine engine = null;
         try {
             engine = new JanusGraphDBEngine(queryStyle, loader);
-            SchemaModInternalBatch internal = new SchemaModInternalBatch(engine, logger, propName, targetDataType, targetIndexInfo, Boolean.parseBoolean(preserveDataFlag), commitBlockSize);
+            SchemaModInternalBatch internal = new SchemaModInternalBatch(engine, logger, propName, targetDataType, targetIndexInfo, Boolean.parseBoolean(preserveDataFlag), Boolean.parseBoolean(consistencyLockFlag), commitBlockSize);
             internal.execute();
             engine.startTransaction();
             engine.tx().close();
