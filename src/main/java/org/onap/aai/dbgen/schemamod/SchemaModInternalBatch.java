@@ -32,6 +32,8 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
+import org.janusgraph.core.schema.ConsistencyModifier;
+import org.janusgraph.core.schema.JanusGraphIndex;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.util.FormatDate;
 
@@ -48,17 +50,19 @@ public class SchemaModInternalBatch {
 	private final Class<?> type;
 	private final String indexType;
 	private final boolean preserveData;
+	private final boolean consistencyLock;
 	private final Cardinality cardinality;
 	private final long commitBlockSize;
 	private final Logger logger;
 	
 	public SchemaModInternalBatch(TransactionalGraphEngine engine, Logger logger, String propName,  
-				String type, String indexType, boolean preserveData, long commitBlockSize) {
+				String type, String indexType, boolean preserveData, boolean consistencyLock, long commitBlockSize) {
 		this.engine = engine;
 		this.propName = propName;
 		this.type = determineClass(type);
 		this.indexType = indexType;
 		this.preserveData = preserveData;
+		this.consistencyLock = consistencyLock;
 		this.cardinality = determineCardinality(type);
 		this.commitBlockSize = commitBlockSize;
 		this.logger = logger;
@@ -226,14 +230,23 @@ public class SchemaModInternalBatch {
 			// targetDataType
 			PropertyKey freshPropKey = graphMgt.makePropertyKey(propName).dataType(type)
 					.cardinality(cardinality).make();
-	
+			if (consistencyLock) {
+				logAndPrint(logger, " -- Consistency Lock is being set on the property ");
+				graphMgt.setConsistency(freshPropKey, ConsistencyModifier.LOCK);
+			}
 			// Create the appropriate index (if any)
+			JanusGraphIndex indexG = null;
 			if (indexType.equals("uniqueIndex")) {
 				String freshIndexName = propName + dteStr;
-				graphMgt.buildIndex(freshIndexName, Vertex.class).addKey(freshPropKey).unique().buildCompositeIndex();
+				indexG = graphMgt.buildIndex(freshIndexName, Vertex.class).addKey(freshPropKey).unique().buildCompositeIndex();
 			} else if (indexType.equals("index")) {
 				String freshIndexName = propName + dteStr;
-				graphMgt.buildIndex(freshIndexName, Vertex.class).addKey(freshPropKey).buildCompositeIndex();
+				indexG = graphMgt.buildIndex(freshIndexName, Vertex.class).addKey(freshPropKey).buildCompositeIndex();
+			}
+
+			if(indexG != null && consistencyLock) {
+				logAndPrint(logger, " -- Consistency Lock is being set on the index ");
+				graphMgt.setConsistency(indexG, ConsistencyModifier.LOCK);
 			}
 	
 			logAndPrint(logger, "Committing schema changes with graphMgt.commit()");
