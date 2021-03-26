@@ -100,9 +100,9 @@ public class SchemaModTest extends AAISetup {
 	
 	@Test
 	public void testSchemaModDataType() throws AAIException {
-		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag \n";
+		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag consistencyLock \n";
 		String[] args = {
-				"hostname", "String", "noIndex", "false"
+				"hostname", "String", "noIndex", "false", "false"
 		};
 
 		schemaMod.execute(args);

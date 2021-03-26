@@ -13,19 +13,20 @@
 #    just to change existing instances of the schema since schemaGenerator does not 
 #    update things - it just does the initial creation.
 #
-# To use this script, there are 4 required parameters, and one optional:
+# To use this script, there are 5 required parameters, and one optional:
 #      propertyName    -- the name of the property that you need to change either the index or dataType on
 #      targetDataType  -- whether it's changing or not, you need to give it:  String, Integer, Boolean or Long
 #      targetIndexInfo -- whether it's changing or not, you need to give it: index, noIndex or uniqueIndex
 #      preserveDataFlag -- true or false.     The only reason I can think of why you'd ever want to
 #                   set this to false would be maybe if you were changing to an incompatible dataType so didn't 
 #                   want it to try to use the old data (and fail).  But 99% of the time this will just be 'true'.
+#      consistencyLock -- true or false. Whether to enable consistency lock on the property or not
 #
 #      commitBlockSize -- OPTIONAL -- how many updates to commit at once.  
 #                  Default will be used if no value is passed.
 #
-# Ie.    schemaMod flavor-id String index true
-#   or,  schemaMod flavor-id String noIndex true 50000
+# Ie.    schemaMod flavor-id String index true true
+#   or,  schemaMod flavor-id String noIndex true true 50000
 #
 
 COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )	
@@ -33,9 +34,9 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 start_date;
 check_user;
 
-if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
+if [ "$#" -ne 5 ] && [ "$#" -ne 6 ]; then
     echo "Illegal number of parameters"
-    echo "usage: $0 propertyName targetDataType targetIndexInfo preserveDataFlag [blockSize]"
+    echo "usage: $0 propertyName targetDataType targetIndexInfo preserveDataFlag consistencyLock [blockSize]"
     exit 1
 fi
 
