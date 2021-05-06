@@ -212,12 +212,12 @@ public class UpdatePropertyToolInternal {
                 logAndPrint("Unsuccessful update transaction. Rolling back graph");
             }
         } catch (Exception e) {
+            logErrorAndPrint("ERROR: Could not properly query and update vertex.", e);
             if (transaction != null) {
                 transaction.rollback();
             } else {
                 logAndPrint("ERROR: JanusGraphTransaction object is null");
             }
-            logErrorAndPrint("ERROR: Could not properly query and update vertex.", e);
             isValidTransaction = false;
         } finally {
             // close the transaction -- note: JanusGraph graph object will be closed in the main method.
