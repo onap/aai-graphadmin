@@ -1,0 +1,4 @@
+distribution_type: maven
+log_dir: aai-graphadmin-maven-stage-master/795/
+project: aai/graphadmin
+version: 1.9.0
