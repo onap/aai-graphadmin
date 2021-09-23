@@ -193,7 +193,7 @@ public class DataCleanupTasks {
 			if(!flag)
 				logger.debug("Failed to create ARCHIVE folder");		
 		}
-		try(FileOutputStream outputstream = new FileOutputStream(zipFile + ".gz");
+		try(FileOutputStream outputstream = new FileOutputStream(zipFile + ".zip");
 				ZipOutputStream zoutputstream = new ZipOutputStream(outputstream);
 				FileInputStream inputstream = new FileInputStream(file)) {
 			ZipEntry ze = new ZipEntry(file.getName());
