@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import java.util.stream.Collectors;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.javatuples.Pair;
@@ -174,7 +175,6 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 			success = false;
 		} catch (Exception e) {
 			logger.info("encountered exception", e);
-			e.printStackTrace();
 			success = false;
 		}
 	}
@@ -208,7 +208,7 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 
 		logger.info("Total rows count excluding header: " + lines.size());
 
-		lines.stream().filter(line -> !line.isEmpty()).map(line -> Arrays.asList(line.split("\\s*,\\s*", -1)))
+		lines.stream().filter(line -> !line.isEmpty()).map(line -> Arrays.stream(line.split(",", -1)).map(String::trim).collect(Collectors.toList()))
 				.map(this::processRegionUpgradeCycle).filter(Optional::isPresent).map(Optional::get).forEach(p -> {
 					processedRowsCount.getAndIncrement();
 					String pnfName = p.getValue0();
@@ -219,7 +219,7 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 
 		fileContent.add(regionMap);
 
-		lines.stream().filter(line -> !line.isEmpty()).map(line -> Arrays.asList(line.split("\\s*,\\s*", -1)))
+		lines.stream().filter(line -> !line.isEmpty()).map(line -> Arrays.stream(line.split(",", -1)).map(String::trim).collect(Collectors.toList()))
 				.map(this::processRegionAlias).filter(Optional::isPresent).map(Optional::get).forEach(p -> {
 					processedRowsCount.getAndIncrement();
 					String pnfName = p.getValue0();
@@ -319,7 +319,7 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 			firstLine = lines.get(0);
 		}
 
-		this.headerLength = firstLine.split("\\s*,\\s*", -1).length;
+		this.headerLength = firstLine.split(",", -1).length;
 		logger.info("headerLength: " + headerLength);
 		if (this.headerLength < 4) {
 			String msg = "ERROR: Input file should have 4 columns";

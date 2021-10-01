@@ -25,13 +25,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Direction;
@@ -41,7 +37,10 @@ import org.javatuples.Pair;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.*;
+import org.onap.aai.migration.EdgeSwingMigrator;
+import org.onap.aai.migration.MigrationDangerRating;
+import org.onap.aai.migration.MigrationPriority;
+import org.onap.aai.migration.Status;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersions;
@@ -420,7 +419,6 @@ public class MigrateBadWidgetModelsPartTwo extends EdgeSwingMigrator {
 			success = false;
 		} catch (Exception e) {
 			logger.error("encountered exception", e);
-			e.printStackTrace();
 			success = false;
 		}
 		return fileLines;

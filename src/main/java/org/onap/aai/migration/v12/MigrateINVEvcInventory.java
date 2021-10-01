@@ -112,14 +112,14 @@ public class MigrateINVEvcInventory extends Migrator {
                 logger.info("\n");
                 if (!line.isEmpty()) {
                     if (fileLineCounter != 0) {
-                        String[] colList = line.split("\\s*,\\s*", -1);
+                        String[] colList = line.split(",", -1);
                         if (colList.length != headerLength) {
                             logger.info("ERROR: INV line should contain " + headerLength + " columns, contains " + colList.length + " instead.");
                             continue;
                         }
                         Map<String, String> invColValues = new HashMap<String, String>();
-                        invColValues.put("evcName", colList[22]);
-                        invColValues.put("collectorInterconnectType", colList[17]);
+                        invColValues.put("evcName", colList[22].trim());
+                        invColValues.put("collectorInterconnectType", colList[17].trim());
                     	
                     	String evcName = invColValues.get("evcName");
                     	String interconnectType = invColValues.get("collectorInterconnectType");
@@ -152,7 +152,7 @@ public class MigrateINVEvcInventory extends Migrator {
                         	continue;
                         }
                     } else {
-                        this.headerLength = line.split("\\s*,\\s*", -1).length;
+                        this.headerLength = line.split(",", -1).length;
                         logger.info("headerLength: " + headerLength);
                         if (this.headerLength < 23){
                             logger.info("ERROR: Input file should have 23 columns");
@@ -183,7 +183,6 @@ public class MigrateINVEvcInventory extends Migrator {
             success = false;
         } catch (Exception e) {
             logger.info("encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
     }

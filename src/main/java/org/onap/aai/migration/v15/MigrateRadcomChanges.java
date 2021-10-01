@@ -183,15 +183,15 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
             	String line = lineItr.next().replace("\n", "").replace("\r", "");
             	if (!line.isEmpty()) {
                     if (typeFileLineCounter != 0) {
-                        String[] colList = line.split("\\s*,\\s*", -1);
-                        if(!colList[0].equalsIgnoreCase(SERVICE_MODEL_TYPE) && !colList[0].equalsIgnoreCase(RESOURCE_MODEL_TYPE)) {
-    						vfModuleFileLineList.add(new VfModuleFileData(colList[0], colList[5], colList[6]));
+                        String[] colList = line.split(",", -1);
+                        if(!colList[0].trim().equalsIgnoreCase(SERVICE_MODEL_TYPE) && !colList[0].trim().equalsIgnoreCase(RESOURCE_MODEL_TYPE)) {
+    						vfModuleFileLineList.add(new VfModuleFileData(colList[0].trim(), colList[5].trim(), colList[6].trim()));
     					}
-                        if(!colList[1].isEmpty() && !fileTypeList.contains(colList[1])) {
-                        	fileTypeList.add(colList[1]);
+                        if(!colList[1].trim().isEmpty() && !fileTypeList.contains(colList[1].trim())) {
+                        	fileTypeList.add(colList[1].trim());
                         }
                     } else {
-                        this.headerLength = line.split("\\s*,\\s*", -1).length;
+                        this.headerLength = line.split(",", -1).length;
                         logger.info("headerLength: " + headerLength + "\n");
                         if (this.headerLength != 7 ){
                             logger.info(MIGRATION_ERROR + "ERROR: Input file should have 7 columns");
@@ -211,7 +211,6 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
             success = false;
         } catch (Exception e) {
             logger.info(MIGRATION_ERROR + "encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
         
@@ -238,15 +237,15 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
         			String line = lineItr.next().replace("\n", "").replace("\r", "");
         			if (!line.isEmpty()) {
         				if (modelFileLineCounter != 0) {
-        					String[] colList = line.split("\\s*,\\s*", -1);
-        					if(colList[1].equals(fileTypeList.get(i)) && colList[0].equalsIgnoreCase(SERVICE_MODEL_TYPE)) {
-        						newServiceModelInvariantId = colList[2];
-        						newServiceModelVersionId = colList[3];
+        					String[] colList = line.split(",", -1);
+        					if(colList[1].trim().equals(fileTypeList.get(i)) && colList[0].trim().equalsIgnoreCase(SERVICE_MODEL_TYPE)) {
+        						newServiceModelInvariantId = colList[2].trim();
+        						newServiceModelVersionId = colList[3].trim();
         					}
-        					else if(colList[1].equals(fileTypeList.get(i)) && colList[0].equalsIgnoreCase(RESOURCE_MODEL_TYPE)) {
-        						newResourceModelInvariantId = colList[2];
-        						newResourceModelVersionId = colList[3];
-        						newResourceModelCustomizationId = colList[4];
+        					else if(colList[1].trim().equals(fileTypeList.get(i)) && colList[0].trim().equalsIgnoreCase(RESOURCE_MODEL_TYPE)) {
+        						newResourceModelInvariantId = colList[2].trim();
+        						newResourceModelVersionId = colList[3].trim();
+        						newResourceModelCustomizationId = colList[4].trim();
         					}
         				}
         			}
@@ -261,12 +260,12 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
         			String line = lineItr.next().replace("\n", "").replace("\r", "");
         			if (!line.isEmpty()) {
         				if (genericVnfFileLineCounter != 0) {
-        					String[] colList = line.split("\\s*,\\s*", -1);
-        					if(colList[1].equals(fileTypeList.get(i))) {
-        						genericVnfList.add(colList[0]);
+        					String[] colList = line.split(",", -1);
+        					if(colList[1].trim().equals(fileTypeList.get(i))) {
+        						genericVnfList.add(colList[0].trim());
         					}
         				} else {
-        					this.headerLength = line.split("\\s*,\\s*", -1).length;
+        					this.headerLength = line.split(",", -1).length;
         					logger.info("headerLength: " + headerLength + "\n");
         					if (this.headerLength != 2){
         						logger.info(MIGRATION_ERROR + "ERROR: Input file should have 2 columns");
@@ -288,7 +287,6 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
                 success = false;
             } catch (Exception e) {
                 logger.info(MIGRATION_ERROR + "encountered exception", e);
-                e.printStackTrace();
                 success = false;
             }
         }

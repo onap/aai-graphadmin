@@ -19,19 +19,17 @@
  */
 package org.onap.aai.datasnapshot;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.apache.tinkerpop.gremlin.structure.io.graphson.GraphSONReader;
 import org.janusgraph.core.JanusGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 
 
@@ -96,7 +94,6 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
        				Thread.sleep(failurePauseMs); // Slow down if things are failing
        				LOGGER.debug(" >> addVertex FAILED for vtxId = " + oldVtxIdStr + ", label = [" 
        						+ vtxLabelStr + "].  ErrorMsg = [" + e.getMessage() + "]" );
-        			//e.printStackTrace();
         			failedAttemptHash.put(oldVtxIdStr, vtxLabelStr);
         			if( failureCount > maxAllowedErrors ) {
         				LOGGER.debug(" >>> Abandoning PartialVertexLoader() because " +
@@ -116,7 +113,6 @@ public class PartialVertexLoader implements Callable<HashMap<String,String>>{
 	       			Thread.sleep(failurePauseMs); // Slow down if things are failing
 	       			LOGGER.debug(" -- COMMIT FAILED for Vtx ADD for vtxId = " + oldVtxIdStr + ", label = [" 
 	       					+ vtxLabelStr + "].  ErrorMsg = [" +e.getMessage() + "]" );
-        			//e.printStackTrace();	        				
         			failedAttemptHash.put(oldVtxIdStr, vtxLabelStr);
         			if( failureCount > maxAllowedErrors ) {
         				LOGGER.debug(">>> Abandoning PartialVertexLoader() because " +

@@ -558,24 +558,23 @@ public class DupeTool {
             try {
                 if (!vidList.isEmpty() && vidList.size() > 1) {
                     // There are more than one vertex id's using the same key info
-                    String dupesStr = "";
+                    StringBuilder dupesStr = new StringBuilder();
                     ArrayList<Vertex> vertList = new ArrayList<>();
-                    for (int i = 0; i < vidList.size(); i++) {
-                        String tmpVid = vidList.get(i);
-                        dupesStr = dupesStr + tmpVid + "|";
+                    for (String tmpVid : vidList) {
+                        dupesStr.append(tmpVid).append("|");
                         vertList.add(vtxHash.get(tmpVid));
                     }
 
-                    if (dupesStr != "") {
+                    if (dupesStr.length() > 0) {
                         Vertex prefV = getPreferredDupe(transId, fromAppId,
                                 g, vertList, version, specialTenantRule, loader, logger);
                         if (prefV == null) {
                             // We could not determine which duplicate to keep
-                            dupesStr = dupesStr + "KeepVid=UNDETERMINED";
-                            returnList.add(dupesStr);
+                            dupesStr.append("KeepVid=UNDETERMINED");
+                            returnList.add(dupesStr.toString());
                         } else {
-                            dupesStr = dupesStr + "KeepVid=" + prefV.id();
-                            returnList.add(dupesStr);
+                            dupesStr.append("KeepVid=").append(prefV.id());
+                            returnList.add(dupesStr.toString());
                         }
                     }
                 }
@@ -689,25 +688,22 @@ public class DupeTool {
                     if (thisParentsVertList.size() > 1) {
                         // More than one vertex found with the same key info
                         // hanging off the same parent/dependent node
-                        String dupesStr = "";
-                        for (int i = 0; i < thisParentsVertList.size(); i++) {
-                            dupesStr = dupesStr
-                                    + ((thisParentsVertList
-                                    .get(i))).id() + "|";
+                        StringBuilder dupesStr = new StringBuilder();
+                        for (Vertex vertex : thisParentsVertList) {
+                            dupesStr.append(vertex.id()).append("|");
                         }
-                        if (dupesStr != "") {
+                        if (dupesStr.toString().length() > 0) {
                             Vertex prefV = getPreferredDupe(transId,
                                     fromAppId, g, thisParentsVertList,
                                     version, specialTenantRule, loader, logger);
 
                             if (prefV == null) {
                                 // We could not determine which duplicate to keep
-                                dupesStr = dupesStr + "KeepVid=UNDETERMINED";
-                                returnList.add(dupesStr);
+                                dupesStr.append("KeepVid=UNDETERMINED");
+                                returnList.add(dupesStr.toString());
                             } else {
-                                dupesStr = dupesStr + "KeepVid="
-                                        + prefV.id().toString();
-                                returnList.add(dupesStr);
+                                dupesStr.append("KeepVid=").append(prefV.id().toString());
+                                returnList.add(dupesStr.toString());
                             }
                         }
                     }
@@ -1422,10 +1418,8 @@ public class DupeTool {
         // ie. "3456|9880|keepVid=3456"
 
         boolean didADelFlag = false;
-        for (int n = 0; n < dupeInfoList.size(); n++) {
-            String dupeInfoString = dupeInfoList.get(n);
-            boolean tmpFlag = deleteNonKeeperForOneSet(g, dupeInfoString, logger);
-            didADelFlag = tmpFlag | didADelFlag;
+        for (String dupeInfoString : dupeInfoList) {
+            didADelFlag |= deleteNonKeeperForOneSet(g, dupeInfoString, logger);
         }
 
         return didADelFlag;

@@ -564,7 +564,7 @@ public class DataSnapshot {
 				//
 				LOGGER.debug(" Command = " + command );
 				
-				if (cArgs.oldFileDir != null && cArgs.oldFileDir != ""){
+				if (cArgs.oldFileDir != null && !cArgs.oldFileDir.isEmpty()){
 					targetDir = cArgs.oldFileDir;
 				}
 				ArrayList <File> snapFilesArr = getFilesToProcess(targetDir, oldSnapshotFileName, false);

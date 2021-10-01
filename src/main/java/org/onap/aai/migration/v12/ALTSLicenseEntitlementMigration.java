@@ -82,15 +82,15 @@ public class ALTSLicenseEntitlementMigration extends Migrator{
                 logger.info("\n");
                 if (!vnfLine.isEmpty()) {
                     if (fileLineCounter != 0) {
-                        String[] fields = vnfLine.split("\\s*,\\s*", -1);
+                        String[] fields = vnfLine.split(",", -1);
                         if (fields.length != this.headerLength) {
                             logger.info("ERROR: Vnf line should contain " + this.headerLength + " columns, contains " + fields.length + " instead.");
                             success = false;
                             continue;
                         }
-                        String newResourceUuid = fields[0];
-                        String groupUuid = fields[1];
-                        String vnfId = fields[19];
+                        String newResourceUuid = fields[0].trim();
+                        String groupUuid = fields[1].trim();
+                        String vnfId = fields[19].trim();
                         logger.info("---------- Processing Line " + vnfLine + "----------");
                         logger.info("newResourceUuid = " + newResourceUuid + " vnfId = " + vnfId + " group uuid = " + groupUuid);
                         if (history.containsKey(vnfId)){
@@ -104,7 +104,7 @@ public class ALTSLicenseEntitlementMigration extends Migrator{
                             }
                         }
                         else {
-                            Set newSet = new HashSet();
+                            Set<String> newSet = new HashSet<>();
                             newSet.add(groupUuid);
                             history.put(vnfId, newSet);
                         }
@@ -120,7 +120,7 @@ public class ALTSLicenseEntitlementMigration extends Migrator{
                         this.ChangeResourceUuid(licenses, newResourceUuid, "license", vnfId, groupUuid);
 
                     } else {
-                        this.headerLength = vnfLine.split("\\s*,\\s*", -1).length;
+                        this.headerLength = vnfLine.split(",", -1).length;
                         logger.info("headerLength: " + headerLength);
                         if (this.headerLength < 22){
                             logger.info("ERROR: Input file should have 22 columns");
@@ -139,7 +139,6 @@ public class ALTSLicenseEntitlementMigration extends Migrator{
             success = false;
         } catch (Exception e) {
             logger.info("encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
     }

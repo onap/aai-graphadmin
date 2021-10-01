@@ -68,7 +68,7 @@ public class UpdatePropertyTool {
         try {
             EXIT_VM_STATUS_CODE = updatePropertyToolInternal.run(graph, args) ? EXIT_VM_STATUS_CODE_SUCCESS : EXIT_VM_STATUS_CODE_FAILURE;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Exception : " + e.getMessage());
             EXIT_VM_STATUS_CODE = EXIT_VM_STATUS_CODE_FAILURE;
         } finally {
             updatePropertyToolInternal.closeGraph(graph);

@@ -101,7 +101,7 @@ public class SendDeleteMigrationNotificationsTest extends AAISetup {
 			try{
 				Files.createFile(Paths.get(FILE));
 			}catch(Exception e) {
-				e.printStackTrace();
+				System.out.println("Create File error : " + e.getMessage());
 			}
 			String finalStr = "";
 			finalStr = "pserver" + "#@#" + "/cloud-infrastructure/pservers/pserver/"+SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-1" + "#@#" + "{\"hostname\":\""+ SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-1\",\"resource-version\":\"333\"}" + "\n";

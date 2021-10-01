@@ -70,7 +70,7 @@ public class SendDeleteMigrationNotificationsMain {
 		try {
 			internal.process(basePath);
 		} catch (Exception e) {
-			e.printStackTrace();
+			// TODO Catch exception
 		}
 		AAIGraph.getInstance().graphShutdown();
 		System.exit(0);

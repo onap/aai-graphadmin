@@ -254,7 +254,6 @@ public class MigrateBadWidgetModelsPartOne extends EdgeSwingMigrator {
 			success = false;
 		} catch (Exception e) {
 			logger.error("encountered exception", e);
-			e.printStackTrace();
 			success = false;
 		}
 		return fileLines;

@@ -71,7 +71,7 @@ public class SendMigrationNotificationsMain {
 		try {
 			internal.process(basePath);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("SendMigrationNotifications process error : " + e.getMessage());
 		}
 		AAIGraph.getInstance().graphShutdown();
 		System.exit(0);

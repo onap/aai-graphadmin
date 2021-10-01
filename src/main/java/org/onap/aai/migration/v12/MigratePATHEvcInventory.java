@@ -136,25 +136,25 @@ public class MigratePATHEvcInventory extends Migrator {
                 logger.info("\n");
                 if (!line.isEmpty()) {
                     if (fileLineCounter != 0) {
-                        String[] colList = line.split("\\s*,\\s*", -1);
+                        String[] colList = line.split(",", -1);
                         if (colList.length != headerLength) {
                             logger.info("ERROR: PATH line should contain " + headerLength + " columns, contains " + colList.length + " instead.");
 //                            success = false;
                             continue;
                         }
                         Map<String, String> pathColValues = new HashMap<String, String>();
-                        pathColValues.put("evcName", colList[1]);
-                        pathColValues.put("bearerFacingCircuit", colList[4]);
-                        pathColValues.put("bearerCvlan", colList[6]);
-                    	pathColValues.put("bearerSvlan", colList[7]);
-                    	pathColValues.put("bearerPtniiName", colList[8]);
-                    	String bearerPortAid = colList[12].replaceAll("^\"|\"$", "").replaceAll("\\s+","");
+                        pathColValues.put("evcName", colList[1].trim());
+                        pathColValues.put("bearerFacingCircuit", colList[4].trim());
+                        pathColValues.put("bearerCvlan", colList[6].trim());
+                    	pathColValues.put("bearerSvlan", colList[7].trim());
+                    	pathColValues.put("bearerPtniiName", colList[8].trim());
+                    	String bearerPortAid = colList[12].trim().replaceAll("^\"|\"$", "").replaceAll("\\s+","");
                     	pathColValues.put("bearerPortAid", bearerPortAid);
-                    	pathColValues.put("collectorFacingCircuit", colList[14]);
-                    	pathColValues.put("collectorCvlan", colList[16]);
-                    	pathColValues.put("collectorSvlan", colList[17]);
-                    	pathColValues.put("collectorPtniiName", colList[18]);
-                    	String collectorPortAid = colList[22].replaceAll("^\"|\"$", "").replaceAll("\\s+","");
+                    	pathColValues.put("collectorFacingCircuit", colList[14].trim());
+                    	pathColValues.put("collectorCvlan", colList[16].trim());
+                    	pathColValues.put("collectorSvlan", colList[17].trim());
+                    	pathColValues.put("collectorPtniiName", colList[18].trim());
+                    	String collectorPortAid = colList[22].trim().replaceAll("^\"|\"$", "").replaceAll("\\s+","");
                     	pathColValues.put("collectorPortAid", collectorPortAid);
                     	
                     	
@@ -202,7 +202,7 @@ public class MigratePATHEvcInventory extends Migrator {
                             }
                         }
                     } else {
-                        this.headerLength = line.split("\\s*,\\s*", -1).length;
+                        this.headerLength = line.split(",", -1).length;
                         logger.info("headerLength: " + headerLength);
                         if (this.headerLength < 24){
                             logger.info("ERROR: Input file should have 24 columns");
@@ -232,7 +232,6 @@ public class MigratePATHEvcInventory extends Migrator {
             success = false;
         } catch (Exception e) {
             logger.info("encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
     }

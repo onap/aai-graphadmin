@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -154,47 +153,52 @@ public abstract class Migrator implements Runnable {
 
 	/**
 	 * Create files containing data for dmaap delete Event Generation
-	 * @param dmaapVertexList
+	 * @param dmaapDeleteIntrospectorList
 	 */
-	public void createDmaapFilesForDelete(List<Introspector> dmaapDeleteIntrospectorList) {try {
-		System.out.println("dmaapDeleteIntrospectorList :: " + dmaapDeleteIntrospectorList.size());
-		String fileName = "DELETE-"+ getMigrationName() + "-" + UUID.randomUUID();
-		String logDirectory = System.getProperty("AJSC_HOME") + "/logs/data/dmaapEvents/";
-		File f = new File(logDirectory);
-		f.mkdirs();
-		
-		try{
-			Files.createFile(Paths.get(logDirectory + "/" + fileName));
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		if (dmaapDeleteIntrospectorList.size() > 0) {				
-			dmaapDeleteIntrospectorList.stream().forEach(svIntr-> {
-				try {
-					String str = svIntr.marshal(false);
-					String finalStr="";
-					try {
-						finalStr=svIntr.getName() + "#@#" + svIntr.getURI() + "#@#" + str+"\n";
-						Files.write(Paths.get(logDirectory + "/" + fileName),finalStr.getBytes(),StandardOpenOption.APPEND);
-					} catch (IOException e) {
-						System.out.println("Unable to generate file with dmaap msgs for " + getMigrationName() + 
-								" Exception is: " + e.getMessage());
-						logger.error("Unable to generate file with dmaap msgs for "+getMigrationName(), e);
-					}
+	public void createDmaapFilesForDelete(List<Introspector> dmaapDeleteIntrospectorList) {
+		try {
+			System.out.println("dmaapDeleteIntrospectorList :: " + dmaapDeleteIntrospectorList.size());
+			String fileName = "DELETE-" + getMigrationName() + "-" + UUID.randomUUID();
+			String logDirectory = System.getProperty("AJSC_HOME") + "/logs/data/dmaapEvents/";
+			File f = new File(logDirectory);
+			f.mkdirs();
 
-				}catch (Exception e) {
+			try {
+				Files.createFile(Paths.get(logDirectory + "/" + fileName));
+			} catch (Exception e) {
+				logger.error("Unable to create file", e);
+			}
+
+			if (dmaapDeleteIntrospectorList.size() > 0) {
+				dmaapDeleteIntrospectorList.stream().forEach(svIntr -> {
+					try {
+						String str = svIntr.marshal(false);
+						String finalStr = "";
+						try {
+							finalStr =
+									svIntr.getName() + "#@#" + svIntr.getURI() + "#@#" + str + "\n";
+							Files.write(Paths.get(logDirectory + "/" + fileName),
+									finalStr.getBytes(), StandardOpenOption.APPEND);
+						} catch (IOException e) {
+							System.out.println("Unable to generate file with dmaap msgs for " +
+									getMigrationName() +
+									" Exception is: " + e.getMessage());
+							logger.error("Unable to generate file with dmaap msgs for " +
+									getMigrationName(), e);
+						}
+
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("Exception : " + e.getMessage());
 					}
 				});
-				
+
 				//Files.write(Paths.get(logDirectory+"/"+fileName), (Iterable<Vertex>)dmaapVertexList.stream()::iterator);
-			} 
-		}catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Unable to generate file with dmaap msgs for "+getMigrationName(), e);
-		}}
+			}
+		} catch (Exception e) {
+			logger.error("Unable to generate file with dmaap msgs for " + getMigrationName(), e);
+		}
+	}
 
 	/**
 	 * As string.

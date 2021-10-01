@@ -19,30 +19,35 @@
  */
 package org.onap.aai.migration.v12;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.ws.rs.core.UriBuilder;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
+import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.edges.enums.EdgeProperty;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
-import org.onap.aai.serialization.db.EdgeSerializer;
-import org.onap.aai.introspection.exceptions.AAIUnknownObjectException;
-import org.onap.aai.migration.*;
-import org.onap.aai.edges.enums.AAIDirection;
+import org.onap.aai.migration.MigrationDangerRating;
+import org.onap.aai.migration.MigrationPriority;
+import org.onap.aai.migration.Migrator;
+import org.onap.aai.migration.Status;
 import org.onap.aai.serialization.db.DBSerializer;
+import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.springframework.web.util.UriUtils;
-
-import javax.ws.rs.core.UriBuilder;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 //@Enabled
 
@@ -99,12 +104,8 @@ public class UriMigration extends Migrator {
 			logger.info(topLevelNodeType + " : " + parentSet.size());
 			try {
 				this.verifyOrAddUri("", parentSet);
-			} catch (AAIUnknownObjectException e) {
-				e.printStackTrace();
-			} catch (AAIException e) {
-				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+			} catch (UnsupportedEncodingException | AAIException e) {
+				logger.info("VerifyOrAddUri error: " + e.getMessage());
 			}
 		});
 		logger.info("RUNTIME: " + (System.currentTimeMillis() - start));

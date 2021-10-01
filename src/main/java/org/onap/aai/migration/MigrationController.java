@@ -19,19 +19,16 @@
  */
 package org.onap.aai.migration;
 
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.ExceptionTranslator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.UUID;
 
 /**
  * Wrapper class to allow {@link org.onap.aai.migration.MigrationControllerInternal MigrationControllerInternal}
@@ -72,7 +69,7 @@ public class MigrationController {
 		try {
 			internal.run(args);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Exception : " + e.getMessage());
 		}
 		AAIGraph.getInstance().graphShutdown();
 		System.exit(0);

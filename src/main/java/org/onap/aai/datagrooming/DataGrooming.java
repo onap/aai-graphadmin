@@ -19,6 +19,9 @@
  */
 package org.onap.aai.datagrooming;
 
+import com.att.eelf.configuration.Configuration;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +39,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
@@ -46,11 +48,10 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
-import org.onap.aai.GraphAdminApp;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
-import org.onap.aai.util.GraphAdminConstants;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.janusgraph.core.JanusGraph;
 import org.onap.aai.dbmap.AAIGraph;
+import org.onap.aai.edges.enums.AAIDirection;
+import org.onap.aai.edges.enums.EdgeProperty;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.Loader;
@@ -59,19 +60,16 @@ import org.onap.aai.introspection.ModelType;
 import org.onap.aai.introspection.exceptions.AAIUnknownObjectException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.edges.enums.AAIDirection;
-import org.onap.aai.edges.enums.EdgeProperty;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
-import org.onap.aai.util.*;
-
-import com.att.eelf.configuration.Configuration;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.AAIConstants;
+import org.onap.aai.util.AAISystemExitUtil;
+import org.onap.aai.util.ExceptionTranslator;
+import org.onap.aai.util.FormatDate;
+import org.onap.aai.util.GraphAdminConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-
-import org.janusgraph.core.JanusGraph;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 
@@ -2159,32 +2157,31 @@ public class DataGrooming {
 				// uniqueness, and we
 				// found more than one node using its key -- record the found
 				// vertices as duplicates.
-				String dupesStr = "";
-				for (int i = 0; i < checkVertList.size(); i++) {
-					dupesStr = dupesStr
-							+ ((checkVertList.get(i))).id()
-									.toString() + "|";
+				StringBuilder dupesStr = new StringBuilder();
+				for (Vertex vertex : checkVertList) {
+					dupesStr.append(vertex.id()
+							.toString()).append("|");
 				}
-				if (dupesStr != "") {
+				if (dupesStr.length() > 0) {
 					Vertex prefV = getPreferredDupe(transId, fromAppId,
 							source, checkVertList, version, loader);
 					if (prefV == null) {
 						// We could not determine which duplicate to keep
-						dupesStr = dupesStr + "KeepVid=UNDETERMINED";
-						returnList.add(dupesStr);
+						dupesStr.append("KeepVid=UNDETERMINED");
+						returnList.add(dupesStr.toString());
 					} else {
-						dupesStr = dupesStr + "KeepVid=" + prefV.id();
+						dupesStr.append("KeepVid=").append(prefV.id());
 						Boolean didRemove = false;
 						if (dupeFixOn) {
 							didRemove = deleteNonKeepersIfAppropriate(g,
-									dupesStr, prefV.id().toString(),
+									dupesStr.toString(), prefV.id().toString(),
 									deleteCandidateList);
 						}
 						if (didRemove) {
 							dupeGrpsDeleted++;
 						} else {
 							// keep them on our list
-							returnList.add(dupesStr);
+							returnList.add(dupesStr.toString());
 						}
 					}
 				}
@@ -2206,13 +2203,11 @@ public class DataGrooming {
 					if (thisParentsVertList.size() > 1) {
 						// More than one vertex found with the same key info
 						// hanging off the same parent/dependent node
-						String dupesStr = "";
-						for (int i = 0; i < thisParentsVertList.size(); i++) {
-							dupesStr = dupesStr
-									+ ((thisParentsVertList
-											.get(i))).id() + "|";
+						StringBuilder dupesStr = new StringBuilder();
+						for (Vertex vertex : thisParentsVertList) {
+							dupesStr.append(vertex.id()).append("|");
 						}
-						if (dupesStr != "") {
+						if (dupesStr.length() > 0) {
 							Vertex prefV = getPreferredDupe(transId,
 									fromAppId, source, thisParentsVertList,
 									version, loader);
@@ -2220,15 +2215,14 @@ public class DataGrooming {
 							if (prefV == null) {
 								// We could not determine which duplicate to
 								// keep
-								dupesStr = dupesStr + "KeepVid=UNDETERMINED";
-								returnList.add(dupesStr);
+								dupesStr.append("KeepVid=UNDETERMINED");
+								returnList.add(dupesStr.toString());
 							} else {
 								Boolean didRemove = false;
-								dupesStr = dupesStr + "KeepVid="
-										+ prefV.id().toString();
+								dupesStr.append("KeepVid=").append(prefV.id().toString());
 								if (dupeFixOn) {
 									didRemove = deleteNonKeepersIfAppropriate(
-											g, dupesStr, prefV.id()
+											g, dupesStr.toString(), prefV.id()
 													.toString(),
 											deleteCandidateList );
 								}
@@ -2236,7 +2230,7 @@ public class DataGrooming {
 									dupeGrpsDeleted++;
 								} else {
 									// keep them on our list
-									returnList.add(dupesStr);
+									returnList.add(dupesStr.toString());
 								}
 							}
 						}

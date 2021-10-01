@@ -203,12 +203,10 @@ public class HistoryTruncate {
 		} catch (AAIException e) {
 			ErrorLogHelper.logError("AAI_6128", e.getMessage());
 			LOGGER.error("Encountered an exception during the historyTruncate: ", e);
-			e.printStackTrace();
 			successStatus = false;
 		} catch (Exception ex) {
 			ErrorLogHelper.logError("AAI_6128", ex.getMessage());
 			LOGGER.error("Encountered an exception during the historyTruncate: ", ex);
-			ex.printStackTrace();
 			successStatus = false;
 		} finally {
 			if (jgraph != null ) {

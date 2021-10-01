@@ -22,39 +22,38 @@ package org.onap.aai.audit;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.tinkerpop.gremlin.structure.Direction;
-import org.javatuples.Triplet;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
-import org.onap.aai.edges.EdgeIngestor;
-import org.onap.aai.edges.EdgeRule;
-import org.onap.aai.edges.exceptions.EdgeRuleNotFoundException;
-import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.introspection.Loader;
-import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.introspection.ModelType;
-import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.rest.client.ApertureService;
-import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
-import org.onap.aai.util.ExceptionTranslator;
-import org.onap.aai.util.FormatDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.att.eelf.configuration.Configuration;
+import org.javatuples.Triplet;
+import org.onap.aai.edges.EdgeIngestor;
+import org.onap.aai.edges.EdgeRule;
+import org.onap.aai.edges.exceptions.EdgeRuleNotFoundException;
+import org.onap.aai.introspection.Loader;
+import org.onap.aai.introspection.LoaderFactory;
+import org.onap.aai.introspection.ModelType;
+import org.onap.aai.rest.client.ApertureService;
+import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.util.FormatDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -515,7 +514,6 @@ public class AuditGraphson2Sql {
         	    String msg = "DEBUG --  Error while processing nodes ------";
                 LOGGER.debug(msg);
     		    System.out.println(msg);
-                e.printStackTrace();
             }
         }// End of looping over all files
         

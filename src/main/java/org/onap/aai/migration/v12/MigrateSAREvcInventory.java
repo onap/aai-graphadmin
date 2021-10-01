@@ -131,36 +131,36 @@ public class MigrateSAREvcInventory extends Migrator {
                 logger.info("\n");
                 if (!line.isEmpty()) {
                     if (fileLineCounter != 0) {
-                        String[] colList = line.split("\\s*,\\s*", -1);
+                        String[] colList = line.split(",", -1);
 //                        if (colList.length != headerLength) {
 //                            logger.info("ERROR: SAR line should contain " + headerLength + " columns, contains " + colList.length + " instead.");
 //                            success = false;
 //                            continue;
 //                        }
                         Map<String, String> sarColValues = new HashMap<String, String>();
-                        sarColValues.put("evcName", colList[0]);
-                        sarColValues.put("subscriberName", colList[1]);
-                        sarColValues.put("espName", colList[2]);
-                        sarColValues.put("bearerCircuitId", colList[3]);
-                    	sarColValues.put("bearerTagMode", colList[4]);
-                    	sarColValues.put("bearerCvlan", colList[5]);
-                    	sarColValues.put("bearerSvlan", colList[6]);
-                    	sarColValues.put("bearerPtniiName", colList[7]);
-                    	sarColValues.put("bearerSlotName", colList[8]);
-                    	String bearerPortAid = colList[9].replaceAll("^\"|\"$", "").replaceAll("\\s+","");
+                        sarColValues.put("evcName", colList[0].trim());
+                        sarColValues.put("subscriberName", colList[1].trim());
+                        sarColValues.put("espName", colList[2].trim());
+                        sarColValues.put("bearerCircuitId", colList[3].trim());
+                    	sarColValues.put("bearerTagMode", colList[4].trim());
+                    	sarColValues.put("bearerCvlan", colList[5].trim());
+                    	sarColValues.put("bearerSvlan", colList[6].trim());
+                    	sarColValues.put("bearerPtniiName", colList[7].trim());
+                    	sarColValues.put("bearerSlotName", colList[8].trim());
+                    	String bearerPortAid = colList[9].trim().replaceAll("^\"|\"$", "").replaceAll("\\s+","");
                     	sarColValues.put("bearerPortAid", bearerPortAid);
-                    	sarColValues.put("bearerPortType", colList[10]);
-                    	sarColValues.put("collectorCircuitId", colList[11]);
-                    	sarColValues.put("collectorTagMode", colList[12]);
-                    	sarColValues.put("collectorCvlan", colList[13]);
-                    	sarColValues.put("collectorSvlan", colList[14]);
-                    	sarColValues.put("collectorPtniiName", colList[15]);
-                    	sarColValues.put("collectorSlotName", colList[16]);
-                    	String collectorPortAid = colList[17].replaceAll("^\"|\"$", "").replaceAll("\\s+","");
+                    	sarColValues.put("bearerPortType", colList[10].trim());
+                    	sarColValues.put("collectorCircuitId", colList[11].trim());
+                    	sarColValues.put("collectorTagMode", colList[12].trim());
+                    	sarColValues.put("collectorCvlan", colList[13].trim());
+                    	sarColValues.put("collectorSvlan", colList[14].trim());
+                    	sarColValues.put("collectorPtniiName", colList[15].trim());
+                    	sarColValues.put("collectorSlotName", colList[16].trim());
+                    	String collectorPortAid = colList[17].trim().replaceAll("^\"|\"$", "").replaceAll("\\s+","");
                     	sarColValues.put("collectorPortAid", collectorPortAid);
-                    	sarColValues.put("collectorPortType", colList[18]);
-                    	sarColValues.put("espEvcCircuitId", colList[19]);
-                    	sarColValues.put("evcAccessCIR", colList[20]);
+                    	sarColValues.put("collectorPortType", colList[18].trim());
+                    	sarColValues.put("espEvcCircuitId", colList[19].trim());
+                    	sarColValues.put("evcAccessCIR", colList[20].trim());
                     	
                     	String evcName = sarColValues.get("evcName");
                         if (!AAIConfig.isEmpty(evcName)) {
@@ -181,7 +181,7 @@ public class MigrateSAREvcInventory extends Migrator {
                         	
                         }
                     } else {
-                        this.headerLength = line.split("\\s*,\\s*", -1).length;
+                        this.headerLength = line.split(",", -1).length;
                         logger.info("headerLength: " + headerLength);
                         if (this.headerLength < 21){
                             logger.info("ERROR: Input file should have 21 columns");
@@ -211,7 +211,6 @@ public class MigrateSAREvcInventory extends Migrator {
             success = false;
         } catch (Exception e) {
             logger.info("encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
     }

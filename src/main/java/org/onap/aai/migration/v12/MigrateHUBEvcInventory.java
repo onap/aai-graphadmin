@@ -120,16 +120,16 @@ public class MigrateHUBEvcInventory extends Migrator {
                 logger.info("\n");
                 if (!line.isEmpty()) {
                     if (fileLineCounter != 0) {
-                        String[] colList = line.split("\\s*,\\s*", -1);
+                        String[] colList = line.split(",", -1);
 //                        if (colList.length != headerLength) {
 //                            logger.info("ERROR: HUB line entry should contain " + headerLength + " columns, contains " + colList.length + " instead.");
 //                            success = false;
 //                            continue;
 //                        }
                         Map<String, String> hubColValues = new HashMap<String, String>();
-                        hubColValues.put("ivlan", colList[1]);
-                        hubColValues.put("nniSvlan", colList[3]);
-                        hubColValues.put("evcName", colList[4]);
+                        hubColValues.put("ivlan", colList[1].trim());
+                        hubColValues.put("nniSvlan", colList[3].trim());
+                        hubColValues.put("evcName", colList[4].trim());
                     	
                     	String evcName = hubColValues.get("evcName");
                     	String ivlan = hubColValues.get("ivlan");
@@ -169,7 +169,7 @@ public class MigrateHUBEvcInventory extends Migrator {
                             }
                         }
                     } else {
-                        this.headerLength = line.split("\\s*,\\s*", -1).length;
+                        this.headerLength = line.split(",", -1).length;
                         logger.info("headerLength: " + headerLength);
                         if (this.headerLength < 5){
                             logger.info("ERROR: Input file should have 5 columns");

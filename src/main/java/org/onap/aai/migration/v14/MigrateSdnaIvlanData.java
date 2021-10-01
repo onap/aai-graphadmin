@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
@@ -38,7 +37,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.Enabled;
 import org.onap.aai.migration.MigrationDangerRating;
 import org.onap.aai.migration.MigrationPriority;
 import org.onap.aai.migration.Migrator;
@@ -212,7 +210,6 @@ public class MigrateSdnaIvlanData extends Migrator {
             success = false;
         } catch (Exception e) {
             logger.info(this.MIGRATION_ERROR + "encountered exception", e);
-            e.printStackTrace();
             success = false;
         }        
 

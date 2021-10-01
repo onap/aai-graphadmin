@@ -145,24 +145,20 @@ public class MigrateSameSourcedRCTROPserverData extends EdgeSwingMigrator {
         try {
         	logger.info("RCT pserver count: "+rctCount);
             updateToLatestRCT(pserverTraversalRCT);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (AAIException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException | AAIException e) {
+          logger.info("UpdateToLatestRCT error: " + e.getMessage());
         }
 
-        List<Vertex>  pserverTraversalRO = graphTraversalSource().V().has("aai-node-type", "pserver").has("source-of-truth", P.within("RO", "AAI-EXTENSIONS")).toList();
+      List<Vertex>  pserverTraversalRO = graphTraversalSource().V().has("aai-node-type", "pserver").has("source-of-truth", P.within("RO", "AAI-EXTENSIONS")).toList();
         int roCount = pserverTraversalRO.size();
         try {
         	logger.info("RO pserver count: "+roCount);
             updateToLatestRO(pserverTraversalRO);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (AAIException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException | AAIException e) {
+          logger.info("UpdateToLatestRO error: " + e.getMessage());
         }
 
-        logger.info ("\n \n ******* Migration Summary Counts for RCT and RO sourced pservers in A&AI ********* \n");
+      logger.info ("\n \n ******* Migration Summary Counts for RCT and RO sourced pservers in A&AI ********* \n");
         logger.info(this.MIGRATION_SUMMARY_COUNT + "Total number of RCT pservers: " +rctCount);
         logger.info(this.MIGRATION_SUMMARY_COUNT + "Duplicate RCT pserver count: "+ dupRctCount);
         logger.info(this.MIGRATION_SUMMARY_COUNT + "Number of RCT updated: "+ rctPserversUpdatedCount);

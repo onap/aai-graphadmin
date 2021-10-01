@@ -47,14 +47,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.Enabled;
 import org.onap.aai.migration.MigrationDangerRating;
 import org.onap.aai.migration.MigrationPriority;
 import org.onap.aai.migration.Migrator;
@@ -156,20 +154,20 @@ public class MigrateForwarderEvcCircuitId extends Migrator {
                 String line = lineItr.next().replace("\n", "").replace("\r", "");
                 if (!line.isEmpty()) {
                     if (fileLineCounter != 0) {
-                        String[] colList = line.split("\\s*,\\s*", -1);
+                        String[] colList = line.split(",", -1);
                         CircuitIdFileData lineData = new CircuitIdFileData();
-                        lineData.setPnfName(colList[0].replaceAll("^\"|\"$", "")
+                        lineData.setPnfName(colList[0].trim().replaceAll("^\"|\"$", "")
                         		.replaceAll("[\t\n\r]+", "").trim());
-                        lineData.setInterfaceName(colList[1].replaceAll("^\"|\"$", "")
+                        lineData.setInterfaceName(colList[1].trim().replaceAll("^\"|\"$", "")
                         		.replaceAll("[\t\n\r]+", "").trim());
-                        lineData.setOldCircuitId(colList[2].replaceAll("^\"|\"$", "")
+                        lineData.setOldCircuitId(colList[2].trim().replaceAll("^\"|\"$", "")
                         		.replaceAll("[\t\n\r]+", "").trim());
-                        lineData.setNewCircuitId(colList[4].replaceAll("^\"|\"$", "")
+                        lineData.setNewCircuitId(colList[4].trim().replaceAll("^\"|\"$", "")
                         		.replaceAll("[\t\n\r]+", "").trim());
                         circuitIdList.add(lineData);
                     	
                     } else {
-                        this.headerLength = line.split("\\s*,\\s*", -1).length;
+                        this.headerLength = line.split(",", -1).length;
                         logger.info("headerLength: " + headerLength + "\n");
                         if (this.headerLength != 6){
                             logger.info(this.MIGRATION_ERROR + "ERROR: Input file should have 6 columns");
@@ -195,7 +193,6 @@ public class MigrateForwarderEvcCircuitId extends Migrator {
             success = false;
         } catch (Exception e) {
             logger.info(this.MIGRATION_ERROR + "encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
     }
@@ -209,7 +206,7 @@ public class MigrateForwarderEvcCircuitId extends Migrator {
 					.has(this.PROPERTY_FORWARDER_ROLE, this.VALUE_INGRESS).has(this.PROPERTY_SEQUENCE, this.VALUE_EXPECTED_SEQUENCE)
 					.out("org.onap.relationships.inventory.Uses").in("org.onap.relationships.inventory.BelongsTo");
 				if(!nodeList.hasNext()) {
-					logger.info(this.MIGRATION_ERROR + "ERROR: Failure to update Circuit Id " + circuitIdList.get(i).getOldCircuitId() + 
+					logger.info(this.MIGRATION_ERROR + "ERROR: Failure to update Circuit Id " + circuitIdList.get(i).getOldCircuitId() +
 							" to " + circuitIdList.get(i).getNewCircuitId() + " Graph Traversal failed \n");
 					migrationFailure++;
 				}
@@ -218,30 +215,30 @@ public class MigrateForwarderEvcCircuitId extends Migrator {
 					boolean updateSuccess = false;
 					if (forwarderEvcVtx != null) {
 						logger.info("forwarder-evc-id is " + forwarderEvcVtx.value("forwarder-evc-id"));
-						if(forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID).isPresent() && 
+						if(forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID).isPresent() &&
 						   forwarderEvcVtx.value(PROPERTY_CIRCUIT_ID).equals(circuitIdList.get(i).getNewCircuitId())) {
-							logger.info("Skipping Record: Old Collector CircuitId " + forwarderEvcVtx.value(PROPERTY_CIRCUIT_ID) + 
+							logger.info("Skipping Record: Old Collector CircuitId " + forwarderEvcVtx.value(PROPERTY_CIRCUIT_ID) +
 									" is the same as New Collector CircuitId " + circuitIdList.get(i).getNewCircuitId() + "\n");
 							migrationFailure++;
 						}
 						else if(!circuitIdList.get(i).getNewCircuitId().isEmpty() &&
-							forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID).isPresent() && 
+							forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID).isPresent() &&
 							circuitIdList.get(i).getOldCircuitId().equals(forwarderEvcVtx.value(PROPERTY_CIRCUIT_ID)))
 						{
 							try {
 								forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID, circuitIdList.get(i).getNewCircuitId());
 								this.touchVertexProperties(forwarderEvcVtx, false);
 								updateSuccess = true;
-								
+
 							} catch (Exception e) {
 								logger.info(e.toString());
-								logger.info(this.MIGRATION_ERROR + "ERROR: Failure to update Circuit Id " + circuitIdList.get(i).getOldCircuitId() + 
+								logger.info(this.MIGRATION_ERROR + "ERROR: Failure to update Circuit Id " + circuitIdList.get(i).getOldCircuitId() +
 										" to " + circuitIdList.get(i).getNewCircuitId() + "\n");
 								migrationFailure++;
-								
+
 							}
 							if(updateSuccess) {
-								String dmaapMsg = System.nanoTime() + "_" + forwarderEvcVtx.id().toString() + "_"	+ 
+								String dmaapMsg = System.nanoTime() + "_" + forwarderEvcVtx.id().toString() + "_"	+
 										forwarderEvcVtx.value("resource-version").toString();
 								dmaapMsgList.add(dmaapMsg);
 								logger.info("Update of Circuit Id " + circuitIdList.get(i).getOldCircuitId() + " to " +
@@ -249,14 +246,14 @@ public class MigrateForwarderEvcCircuitId extends Migrator {
 								migrationSuccess++;
 							}
 						}
-						else if(!forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID).isPresent())	
+						else if(!forwarderEvcVtx.property(PROPERTY_CIRCUIT_ID).isPresent())
 						{
-							logger.info(this.MIGRATION_ERROR + "ERROR: Old Collector Circuit Id not found " + circuitIdList.get(i).getOldCircuitId() + 
+							logger.info(this.MIGRATION_ERROR + "ERROR: Old Collector Circuit Id not found " + circuitIdList.get(i).getOldCircuitId() +
 									" was not updated to " + circuitIdList.get(i).getNewCircuitId() + "\n");
 							migrationFailure++;
 						}
 						else {
-							logger.info(this.MIGRATION_ERROR + "ERROR: Failure to update Circuit Id " + circuitIdList.get(i).getOldCircuitId() + 
+							logger.info(this.MIGRATION_ERROR + "ERROR: Failure to update Circuit Id " + circuitIdList.get(i).getOldCircuitId() +
 									" to " + circuitIdList.get(i).getNewCircuitId() + "\n");
 							migrationFailure++;
 						}

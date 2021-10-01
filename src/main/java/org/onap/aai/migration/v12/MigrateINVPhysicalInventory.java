@@ -39,6 +39,7 @@ package org.onap.aai.migration.v12;
  */
 
 
+import java.util.stream.Collectors;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.javatuples.Pair;
@@ -125,7 +126,6 @@ public class MigrateINVPhysicalInventory extends Migrator {
             success = false;
         } catch (Exception e) {
             logger.info("encountered exception", e);
-            e.printStackTrace();
             success = false;
         }
     }
@@ -231,7 +231,7 @@ public class MigrateINVPhysicalInventory extends Migrator {
 		
 		lines.stream()
 			.filter(line -> !line.isEmpty())
-			.map(line -> Arrays.asList(line.split("\\s*,\\s*", -1)))
+			.map(line -> Arrays.stream(line.split(",", -1)).map(String::trim).collect(Collectors.toList()))
 //			.filter(this::verifyLine)
 			.map(this::processLine)
 			.filter(Optional::isPresent)
@@ -316,7 +316,7 @@ public class MigrateINVPhysicalInventory extends Migrator {
 			firstLine = lines.get(0);
 		}
 
-		this.headerLength = firstLine.split("\\s*,\\s*", -1).length;
+		this.headerLength = firstLine.split(",", -1).length;
 		logger.info("headerLength: " + headerLength);
 		if (this.headerLength < 21){
 			String msg = "ERROR: Input file should have 21 columns";

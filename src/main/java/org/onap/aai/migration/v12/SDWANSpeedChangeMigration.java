@@ -111,7 +111,6 @@ public class SDWANSpeedChangeMigration extends Migrator {
 
             }
         } catch (AAIException e) {
-            e.printStackTrace();
             success = false;
         }
 

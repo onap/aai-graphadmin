@@ -191,7 +191,6 @@ public class MigrateVlanTag extends EdgeSwingMigrator {
 		} catch (Exception e) {
 			logger.info("encountered exception", e.getMessage());
 			logger.error("encountered exception", e);
-			e.printStackTrace();
 			success = false;
 		}
 	}

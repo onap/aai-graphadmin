@@ -192,7 +192,7 @@ public class UpdateAaiUriIndexMigration extends Migrator {
 							.status(SchemaStatus.DISABLED)
 							.call();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.info("AwaitGraphIndexStatus error: " + e.getMessage());
 				}
 			}
 
@@ -260,7 +260,7 @@ public class UpdateAaiUriIndexMigration extends Migrator {
 						.status(SchemaStatus.REGISTERED)
 						.call();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.info("AwaitGraphIndexStatus error: " + e.getMessage());
 			}
 		}
 
@@ -279,7 +279,7 @@ public class UpdateAaiUriIndexMigration extends Migrator {
 						.status(SchemaStatus.ENABLED)
 						.call();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.info("AwaitGraphIndexStatus error: " + e.getMessage());
 			}
 		}
 
