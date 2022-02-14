@@ -30,7 +30,7 @@
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.9.2-SNAPSHOT</version>
+    <version>1.9.3-SNAPSHOT</version>
 
     <properties>
 
@@ -55,7 +55,7 @@
         <!-- This value should be overwritten at runtime to wherever need to be pushed to -->
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
-        <aai.schema.service.version>1.9.0</aai.schema.service.version>
+        <aai.schema.service.version>1.9.4</aai.schema.service.version>
         <aai.common.version>1.9.2</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
@@ -98,8 +98,8 @@
         <schema.version.app.root.start>v11</schema.version.app.root.start>
         <schema.version.namespace.change.start>v12</schema.version.namespace.change.start>
         <schema.version.edge.label.start>v12</schema.version.edge.label.start>
-        <schema.version.api.default>v24</schema.version.api.default>
-        <schema.version.list>v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24</schema.version.list>
+        <schema.version.api.default>v26</schema.version.api.default>
+        <schema.version.list>v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25,v26</schema.version.list>
         <schema.uri.base.path>/aai</schema.uri.base.path>
         <!-- End of Default ONAP Schema Properties -->
 
@@ -154,7 +154,7 @@
             <properties>
                 <schema.source.name>onap</schema.source.name>
                 <schema.version.namespace.change.start>v12</schema.version.namespace.change.start>
-                <schema.version.list>v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24</schema.version.list>
+                <schema.version.list>v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25,v26</schema.version.list>
             </properties>
         </profile>
         <!-- End of ONAP Profile -->
