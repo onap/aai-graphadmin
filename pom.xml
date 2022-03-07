@@ -580,10 +580,12 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
+            <version>${netty.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
+            <version>${netty.handler.version}</version>
         </dependency>
         <!-- End of Netty Dependencies -->
         <!-- Start of Antlr dependencies for DSL -->
