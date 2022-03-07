@@ -102,6 +102,8 @@
         <schema.version.list>v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,v21,v22,v23,v24,v25,v26</schema.version.list>
         <schema.uri.base.path>/aai</schema.uri.base.path>
         <!-- End of Default ONAP Schema Properties -->
+        <netty.handler.version>4.1.63.Final</netty.handler.version>
+        <netty.version>4.1.63.Final</netty.version>
     </properties>
 
     <profiles>
