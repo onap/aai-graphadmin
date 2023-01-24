@@ -1,0 +1,4 @@
+distribution_type: maven
+log_dir: aai-graphadmin-maven-stage-jakarta/78/
+project: aai/graphadmin
+version: 1.10.1
