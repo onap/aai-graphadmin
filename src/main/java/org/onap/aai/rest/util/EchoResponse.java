@@ -106,7 +106,7 @@ public class EchoResponse extends RESTAPI {
 			response = Response
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(ErrorLogHelper.getRESTAPIErrorResponse(
-							headers.getAcceptableMediaTypes(), ex,
+							new ArrayList<>(headers.getAcceptableMediaTypes()), ex,
 							templateVars)).build();
 
 		} finally {
