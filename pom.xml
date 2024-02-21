@@ -26,16 +26,15 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.9.4</version>
+        <version>1.13.4</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.12.3-SNAPSHOT</version>
+    <version>1.13.4-SNAPSHOT</version>
 
     <properties>
 
         <!-- Start of Compiler Related Properties -->
-	      <mockito.core.version>1.10.19</mockito.core.version>
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -56,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.3</aai.schema.service.version>
-        <aai.common.version>1.9.4</aai.common.version>
+        <aai.common.version>1.13.4</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -108,6 +107,8 @@
         <micrometer.registry.prometheus.version>1.8.1</micrometer.registry.prometheus.version>
         <micrometer.jersey2.version>1.8.1</micrometer.jersey2.version>
         <spring.boot.starter.actuator.version>2.1.12.RELEASE</spring.boot.starter.actuator.version>
+        <activemq.version>5.16.7</activemq.version>
+        <mockito.core.version>1.10.19</mockito.core.version>
         <!-- End of graphadmin metric collection Properties -->
     </properties>
 
@@ -342,6 +343,18 @@
         </profile>
     </profiles>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Keeping guava at 19 is necessary here, since the janusgraph-cql driver in version
+                 2.3 has a dependency on it. Remove this override, once we are using janusgraph > 0.2.3/tinkerpop > 3.2.3
+            -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <!-- Start of graphadmin metric collection dependencies -->
         <dependency>
@@ -521,10 +534,12 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
+            <version>${activemq.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-client</artifactId>
+            <version>${activemq.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
@@ -668,7 +683,7 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -676,7 +691,23 @@
             <artifactId>jsonassert</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- End of Junit Test Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+          </dependency>
+        <!-- TODO: Migrate tests to junit 5 and remove this dependency -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                    <exclusion>
+                            <groupId>org.hamcrest</groupId>
+                            <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
