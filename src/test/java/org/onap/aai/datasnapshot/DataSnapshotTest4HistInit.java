@@ -40,6 +40,7 @@ import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAISystemExitUtil;
 import org.springframework.boot.test.rule.OutputCapture;
+import org.springframework.boot.test.system.OutputCaptureRule;
 
 import com.beust.jcommander.ParameterException;
 
@@ -73,7 +74,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     private DataSnapshot4HistInit dataSnapshot4HistInit;
 
     @Rule
-    public OutputCapture outputCapture = new OutputCapture();
+    public OutputCaptureRule outputCapture = new OutputCaptureRule();
 
     @Before
     public void setup() throws AAIException {
