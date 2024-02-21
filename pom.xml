@@ -63,7 +63,7 @@
         <!-- base image for aai-common -->
         <aai.base.image>alpine</aai.base.image>
         <!-- aai-common image version -->
-        <aai.base.image.version>1.6.0</aai.base.image.version>
+        <aai.base.image.version>1.13.4</aai.base.image.version>
         <!-- End of Docker Related Properties -->
 
         <license.goal.type>check</license.goal.type>
