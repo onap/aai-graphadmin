@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import org.junit.Before;
@@ -37,6 +38,7 @@ import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.web.server.LocalManagementPort;
+import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -51,6 +53,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Test management endpoints against configuration resource.
  */
+@AutoConfigureMetrics
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {SpringContextAware.class, GraphAdminApp.class})
 @ContextConfiguration(initializers = PropertyPasswordConfiguration.class, classes = {SpringContextAware.class})
@@ -91,14 +94,12 @@ public class MetricsConfigurationTest {
 
         headers = new HttpHeaders();
 
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.TEXT_PLAIN));
         headers.add("Real-Time", "true");
         headers.add("X-FromAppId", "JUNIT");
         headers.add("X-TransactionId", "JUNIT");
 
-        String authorization = Base64.getEncoder().encodeToString("AAI:AAI".getBytes("UTF-8"));
-        headers.add("Authorization", "Basic " + authorization);
+        headers.setBasicAuth("AAI","AAI");
 
         httpEntity = new HttpEntity<String>(headers);
         baseUrl = "http://localhost:" + randomPort;
@@ -108,15 +109,16 @@ public class MetricsConfigurationTest {
 
     @Test
     public void testManagementEndpointConfiguration() {
-        ResponseEntity responseEntity = null;
+        ResponseEntity<String> responseEntity = null;
         String responseBody = null;
 
         //set Accept as text/plain in order to get access of endpoint "/actuator/prometheus"
         headers.set("Accept", "text/plain");
+        headers.setAccept(Arrays.asList(MediaType.TEXT_PLAIN));
         httpEntity = new HttpEntity<String>(headers);
         responseEntity =
             restTemplate.exchange(actuatorUrl + "/actuator/prometheus", HttpMethod.GET, httpEntity, String.class);
-        responseBody = (String) responseEntity.getBody();
+        responseBody = responseEntity.getBody();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         //Set Accept as MediaType.APPLICATION_JSON in order to get access of endpoint "/actuator/info" and "/actuator/health"
@@ -124,7 +126,7 @@ public class MetricsConfigurationTest {
         httpEntity = new HttpEntity<String>(headers);
         responseEntity =
             restTemplate.exchange(actuatorUrl + "/actuator/info", HttpMethod.GET, httpEntity, String.class);
-        responseBody = (String) responseEntity.getBody();
+        responseBody = responseEntity.getBody();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         responseEntity =

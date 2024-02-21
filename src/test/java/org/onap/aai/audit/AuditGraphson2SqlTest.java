@@ -22,22 +22,18 @@ package org.onap.aai.audit;
 
 import com.google.gson.JsonObject;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.exceptions.EdgeRuleNotFoundException;
-import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.rest.client.ApertureService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
 import java.util.HashMap;

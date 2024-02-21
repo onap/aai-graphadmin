@@ -35,7 +35,8 @@ import org.junit.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-import org.springframework.boot.test.rule.OutputCapture;
+import org.springframework.boot.test.system.OutputCaptureRule;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
     private DataSnapshot4HistInit dataSnapshot4HistInit;
 
     @Rule
-    public OutputCapture outputCapture = new OutputCapture();
+    public OutputCaptureRule outputCapture = new OutputCaptureRule();
 
     @Before
     public void setup() throws AAIException {

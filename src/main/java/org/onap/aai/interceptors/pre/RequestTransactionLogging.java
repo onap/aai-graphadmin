@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
@@ -86,11 +87,13 @@ public class RequestTransactionLogging extends AAIContainerFilter implements Con
 		String contentType = headersMap.getFirst(CONTENT_TYPE);
 		String acceptType  = headersMap.getFirst(ACCEPT);
 
-		if(contentType == null || contentType.contains(TEXT_PLAIN)){
+		if(contentType == null && !requestContext.getMethod().equals(HttpMethod.GET.toString())){
+			LOGGER.debug("Content Type header missing in the request, adding one of [{}]", DEFAULT_CONTENT_TYPE);
 			requestContext.getHeaders().putSingle(CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
 		}
 
-		if(acceptType == null || acceptType.contains(TEXT_PLAIN)){
+		if(acceptType == null){
+			LOGGER.debug("Accept header missing in the request, adding one of [{}]", DEFAULT_RESPONSE_TYPE);
 			requestContext.getHeaders().putSingle(ACCEPT, DEFAULT_RESPONSE_TYPE);
 		}
 	}
