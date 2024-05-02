@@ -1,6 +1,7 @@
 /target/
 /oxm/
 .idea/
+.vscode/
 .settings/
 debug-logs/
 .project
