@@ -93,8 +93,8 @@ public class EchoResponse extends RESTAPI {
 			exceptionList.put(new AAIException("AAI_0002", "OK"), templateVars);
 				
 			response = Response.status(Status.OK)
-					.entity(ErrorLogHelper.getRESTAPIInfoResponse(
-							new ArrayList<>(headers.getAcceptableMediaTypes()), exceptionList))
+					.entity(ErrorLogHelper.getRESTAPIInfoResponse(new ArrayList<>(headers.getAcceptableMediaTypes())
+							, exceptionList))
 							.build();
 			
 		} catch (Exception e) {
