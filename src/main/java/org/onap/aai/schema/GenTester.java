@@ -147,13 +147,15 @@ public class GenTester {
 			LOGGER.debug("-- committing transaction ");
 			graph.tx().commit();
 
-			if (!vertexesToReindex.isEmpty()) {
-
+			boolean reindexingEnabled = false; // disable reindexing for now, since it's not working correctly
+			if (reindexingEnabled && !vertexesToReindex.isEmpty()) {
 				killTransactionsAndInstances(graph);
 				LOGGER.info("Number of edge indexes to reindex: " + vertexesToReindex.size());
 				SchemaGenerator.reindexEdgeIndexes(graph, vertexesToReindex);
 			} else {
-				LOGGER.info("Nothing to reindex.");
+				if (vertexesToReindex.isEmpty()) {
+					LOGGER.info("Nothing to reindex.");
+				}
 			}
 			graph.close();
 			LOGGER.info("Closed the graph");
