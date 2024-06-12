@@ -43,6 +43,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
+import org.apache.tinkerpop.gremlin.structure.io.graphson.GraphSONIo;
+import org.apache.tinkerpop.gremlin.structure.io.graphson.GraphSONVersion;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.util.JanusGraphCleanup;
@@ -145,7 +147,6 @@ public class DataSnapshot {
 		}
 		long maxNodesPerFile4Create = cArgs.maxNodesPerFile;
 
-		// cArgs.snapshotType = "graphson";
 		Long vertAddDelayMs = GraphAdminConstants.AAI_SNAPSHOT_DEFAULT_VERTEX_ADD_DELAY_MS;
 		itemName = "aai.datasnapshot.vertex.add.delay.ms";
 		try {
@@ -353,9 +354,16 @@ public class DataSnapshot {
 			new File(targetDir).mkdirs();
 			LOGGER.debug("    ---- NOTE --- about to open graph (takes a little while) ");
 
+			String graphsonVersionArg = cArgs.graphsonVersion;
+			if (graphsonVersionArg != GraphSONVersion.V1_0.getVersion() && graphsonVersionArg != GraphSONVersion.V2_0.getVersion() && graphsonVersionArg != GraphSONVersion.V3_0.getVersion()) {
+				LOGGER.warn("The graphsonVersion argument was not in the correct format, defaulting to V1. Argument value should be either one of [{}|{}|{}]", GraphSONVersion.V1_0,GraphSONVersion.V2_0,GraphSONVersion.V3_0);
+				graphsonVersionArg = GraphSONVersion.V1_0.getVersion();
+			}
+			GraphSONVersion graphsonVersion = GraphSONVersion.valueOf("V" + graphsonVersionArg.replace(".", "_"));
+
 			if ( (command.equals("THREADED_SNAPSHOT") || command.equals("JUST_TAKE_SNAPSHOT"))
 					&& threadCount4Create == 1 ){
-				graph = writeSnapshotFile(command, targetDir, snapshotType);
+					graph = writeSnapshotFile(command, targetDir, snapshotType, graphsonVersion);
 
 			}
 			else if ( (command.equals("THREADED_SNAPSHOT") || command.equals("JUST_TAKE_SNAPSHOT"))
@@ -765,13 +773,13 @@ public class DataSnapshot {
 				}
 
 				// Now add inputStreams.elements() to the Vector,
-			    // inputStreams.elements() will return Enumerations
-			    InputStream sis = new SequenceInputStream(inputStreamsV.elements());
-			    LOGGER.debug("Begin loading data from " + fCount + " files  -----");
-			    if("gryo".equalsIgnoreCase(snapshotType)){
+			  // inputStreams.elements() will return Enumerations
+			  InputStream sis = new SequenceInputStream(inputStreamsV.elements());
+			  LOGGER.debug("Begin loading data from " + fCount + " files  -----");
+			  if("gryo".equalsIgnoreCase(snapshotType)){
 					graph.io(IoCore.gryo()).reader().create().readGraph(sis, graph);
 				} else {
-					graph.io(IoCore.graphson()).reader().create().readGraph(sis, graph);
+					graph.io(GraphSONIo.build(graphsonVersion)).reader().create().readGraph(sis, graph);
 				}
 				LOGGER.debug("Completed the inputGraph command, now try to commit()... ");
 				graph.tx().commit();
@@ -823,7 +831,7 @@ public class DataSnapshot {
 	}
 
 
-	private JanusGraph writeSnapshotFile(String command, String targetDir, String format) throws IOException {
+	private JanusGraph writeSnapshotFile(String command, String targetDir, String format, GraphSONVersion graphsonVersion) throws IOException {
 		JanusGraph graph;
 		// -------------------------------------------------------------------------------
 		// They want to take a snapshot on a single thread and have it go in a single file
@@ -841,12 +849,14 @@ public class DataSnapshot {
 		String newSnapshotOutFname = null;
 		long timeA = System.nanoTime();
 
-		if(format == "gryo") {
+		if("gryo".equalsIgnoreCase(format)) {
+			LOGGER.debug("Exporting snapshot in gryo format");
 			newSnapshotOutFname = targetDir + AAIConstants.AAI_FILESEP + "snapshot_" + dteStr + ".gryo";
 			graph.io(IoCore.gryo()).writeGraph(newSnapshotOutFname);
 		} else {
+			LOGGER.debug("Exporting snapshot in graphson format");
 			newSnapshotOutFname = targetDir + AAIConstants.AAI_FILESEP + "dataSnapshot.graphSON." + dteStr;
-			graph.io(IoCore.graphson()).writeGraph(newSnapshotOutFname);
+			graph.io(GraphSONIo.build(graphsonVersion)).writeGraph(newSnapshotOutFname);
 		}
 		LOGGER.debug("Snapshot written to " + newSnapshotOutFname);
 		long timeB = System.nanoTime();
@@ -1047,6 +1057,9 @@ public class DataSnapshot {
 
 		@Parameter(names = "-f", description = "previous snapshot file to reload")
 		public String oldFileName = "";
+
+		@Parameter(names = "-v", description = "Graphson version of the snapshot file. Defaults to 1")
+		public String graphsonVersion = GraphSONVersion.V1_0.getVersion();
 
 		@Parameter(names = "-snapshotType", description = "snapshot type of gryo or graphson")
 		public String snapshotType = "graphson";

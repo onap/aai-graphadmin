@@ -47,7 +47,7 @@ public class SchemaMod4Hist {
 	private final LoaderFactory loaderFactory;
 
 	private final SchemaVersions schemaVersions;
-	
+
 	private static boolean historyEnabled;
 
     public SchemaMod4Hist(LoaderFactory loaderFactory, SchemaVersions schemaVersions){
@@ -64,7 +64,7 @@ public class SchemaMod4Hist {
 
 		Logger logger = LoggerFactory.getLogger(SchemaMod4Hist.class.getSimpleName());
 		MDC.put("logFilenameAppender", SchemaMod4Hist.class.getSimpleName());
-		
+
 
 		// NOTE -- We're just working with properties that are used for NODES
 		// for now.
@@ -111,7 +111,7 @@ public class SchemaMod4Hist {
 			logAndPrint(logger, emsg + "[" + ae.getMessage() + "]");
 			System.exit(1);
 		}
-		
+
 		// Give a big warning if the DbMaps.PropertyDataTypeMap value does not
 		// agree with what we're doing
 		String warningMsg = "";
@@ -143,8 +143,6 @@ public class SchemaMod4Hist {
             //   preserve-data-flag last parameter since this is for HISTORY.
             SchemaModInternal4Hist internal = new SchemaModInternal4Hist(engine, logger, propName, targetDataType, targetIndexInfo, true);
             internal.execute();
-            engine.startTransaction();
-            engine.tx().close();
             logAndPrint(logger, "------ Completed the SchemaMod -------- ");
         } catch (Exception e) {
             String emsg = "Not able to complete the requested SchemaMod4Hist \n";
@@ -181,14 +179,14 @@ public class SchemaMod4Hist {
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}
-		
+
 		historyEnabled = Boolean.parseBoolean(ctx.getEnvironment().getProperty("history.enabled","false"));
 		if( !historyEnabled ) {
 			String emsg = "SchemaMod4Hist may only be used when history.enabled=true. ";
 			System.out.println(emsg);
 			throw new AAIException("AAI-4005",emsg);
 		}
-		
+
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		SchemaMod4Hist schemaMod4H = new SchemaMod4Hist(loaderFactory, schemaVersions);

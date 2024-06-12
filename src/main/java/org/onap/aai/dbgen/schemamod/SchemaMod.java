@@ -47,11 +47,11 @@ public class SchemaMod {
 	private final LoaderFactory loaderFactory;
 
 	private final SchemaVersions schemaVersions;
-	
+
 	private static boolean historyEnabled;
 
 	private Logger logger = LoggerFactory.getLogger(SchemaMod.class.getSimpleName());
-	
+
 
     public SchemaMod(LoaderFactory loaderFactory, SchemaVersions schemaVersions){
         this.loaderFactory  = loaderFactory;
@@ -61,7 +61,7 @@ public class SchemaMod {
 	public void execute(String[] args) {
 
         logger = LoggerFactory.getLogger(SchemaMod.class.getSimpleName());
-		
+
 		// NOTE -- We're just working with properties that are used for NODES
 		// for now.
 		String propName = "";
@@ -73,7 +73,7 @@ public class SchemaMod {
 		long commitBlockSize = 120000;
 
 		String usageString = "Usage: SchemaMod propertyName targetDataType targetIndexInfo preserveDataFlag consistencyLockFlag [blockSize] \n";
-		
+
 		if (args.length == 5) {
 			propName = args[0];
 			targetDataType = args[1];
@@ -93,7 +93,7 @@ public class SchemaMod {
 			String emsg = "Incorrect number of Parameters passed.  \n" + usageString;
 			logAndPrint(logger, emsg);
 			System.exit(1);
-		} 
+		}
 		if (propName.equals("")) {
 			String emsg = "Bad parameter - propertyName cannot be empty.  \n" + usageString;
 			logAndPrint(logger, emsg);
@@ -112,7 +112,7 @@ public class SchemaMod {
 			logAndPrint(logger, emsg);
 			System.exit(1);
 		}
-		
+
 		try {
 			if( !commitBlockSizeStr.equals("")) {
 				// They're over-riding the commitBlockSize
@@ -153,8 +153,6 @@ public class SchemaMod {
             engine = new JanusGraphDBEngine(queryStyle, loader);
             SchemaModInternalBatch internal = new SchemaModInternalBatch(engine, logger, propName, targetDataType, targetIndexInfo, Boolean.parseBoolean(preserveDataFlag), Boolean.parseBoolean(consistencyLockFlag), commitBlockSize);
             internal.execute();
-            engine.startTransaction();
-            engine.tx().close();
             logAndPrint(logger, "------ Completed the SchemaMod -------- ");
         } catch (Exception e) {
             String emsg = "Not able to complete the requested SchemaMod \n";
@@ -197,14 +195,14 @@ public class SchemaMod {
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}
-		
+
 		historyEnabled = Boolean.parseBoolean(ctx.getEnvironment().getProperty("history.enabled","false"));
 		if( historyEnabled ) {
 			String emsg = "Regular SchemaMod may not be used when history.enabled=true. ";
 			System.out.println(emsg);
 			throw new AAIException("AAI-4005",emsg);
 		}
-		
+
 		LoaderFactory loaderFactory = ctx.getBean(LoaderFactory.class);
 		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		SchemaMod schemaMod = new SchemaMod(loaderFactory, schemaVersions);

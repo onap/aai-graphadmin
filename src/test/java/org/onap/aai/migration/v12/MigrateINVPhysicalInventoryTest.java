@@ -86,7 +86,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 		TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
 
 		GraphTraversalSource traversal = g;
-		GraphTraversalSource readOnly = tx.traversal(GraphTraversalSource.build().with(ReadOnlyStrategy.instance()));
+		GraphTraversalSource readOnly = graph.traversal().withStrategies(ReadOnlyStrategy.instance());
 		when (spy.tx()).thenReturn(tx);
 		when(spy.asAdmin()).thenReturn(adminSpy);
 		when(adminSpy.getTraversalSource()).thenReturn(traversal);
