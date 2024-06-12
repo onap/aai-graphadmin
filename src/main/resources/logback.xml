@@ -1135,7 +1135,7 @@
 		<appender-ref ref="asyncMETRIC"/>
 	</logger>
 	<logger name="org.onap.aai.logging.ErrorLogHelper" level="WARN">
-		<appender-ref ref="asyncERROR"/>
+		<appender-ref ref="STDOUT"/>
 	</logger>
 	<logger name="org.onap.aai.failover" level="DEBUG" additivity="false">
 		<appender-ref ref="asyncFailover" />

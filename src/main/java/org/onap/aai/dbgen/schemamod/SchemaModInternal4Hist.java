@@ -20,17 +20,17 @@
 package org.onap.aai.dbgen.schemamod;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.util.FormatDate;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.PropertyKey;
 import org.janusgraph.core.schema.JanusGraphManagement;
+import org.janusgraph.graphdb.database.management.ManagementSystem;
 
 public class SchemaModInternal4Hist {
 	private final TransactionalGraphEngine engine;
@@ -40,7 +40,7 @@ public class SchemaModInternal4Hist {
 	private final boolean preserveData;
 	private final Cardinality cardinality;
 	private final Logger logger;
-	
+
 	public SchemaModInternal4Hist(TransactionalGraphEngine engine, Logger logger, String propName, String type, String indexType, boolean preserveData) {
 		this.engine = engine;
 		this.propName = propName;
@@ -50,7 +50,7 @@ public class SchemaModInternal4Hist {
 		this.cardinality = Cardinality.LIST; // Always use this for History
 		this.logger = logger;
 	}
-		
+
 	private Class<?> determineClass(String type) {
 		final Class<?> result;
 		if (type.equals("String")) {
@@ -74,7 +74,7 @@ public class SchemaModInternal4Hist {
 			logAndPrint(logger, emsg);
 			throw new RuntimeException(emsg);
 		}
-		
+
 		return result;
 	}
 
@@ -95,32 +95,35 @@ public class SchemaModInternal4Hist {
 				logAndPrint(logger, emsg);
 				System.exit(1);
 			}
-			
+
 			// Rename this property to a backup name (old name with "retired_"
 			// appended plus a dateStr)
 			FormatDate fd = new FormatDate("MMddHHmm", "GMT");
 			String dteStr= fd.getDateTime();
-			
+
 			String retiredName = propName + "-" + dteStr + "-RETIRED";
 			graphMgt.changeName(origPropKey, retiredName);
-	
+
 			// Create a new property using the original property name and the
 			// targetDataType
 			PropertyKey freshPropKey = graphMgt.makePropertyKey(propName).dataType(type)
 					.cardinality(cardinality).make();
-	
+
 			// Create an index if needed (regular index will be used instead of unique for history)
-			if (indexType.equals("index") || indexType.equals("uniqueIndex")) {
-				String freshIndexName = propName + dteStr;
+			boolean needsIndex = indexType.equals("index") || indexType.equals("uniqueIndex");
+			String freshIndexName = propName + dteStr;
+			if (needsIndex) {
 				graphMgt.buildIndex(freshIndexName, Vertex.class).addKey(freshPropKey).buildCompositeIndex();
 			}
-	
+
 			logAndPrint(logger, "Committing schema changes with graphMgt.commit()");
 			graphMgt.commit();
 			engine.commit();
+			if (needsIndex) {
+				ManagementSystem.awaitGraphIndexStatus(AAIGraph.getInstance().getGraph(), freshIndexName).call();
+			}
 			Graph grTmp2 = engine.startTransaction();
-			
-	
+
 			// For each node that has this property, update the new from the old
 			// and then remove the
 			// old property from that node
@@ -146,7 +149,7 @@ public class SchemaModInternal4Hist {
 				logAndPrint(logger, "INFO -- just did the remove of the " + retiredName + " from this vertex. (vid="
 						+ tmpVid + ")");
 			}
-	
+
 			success = true;
 		} catch (Exception ex) {
 			logAndPrint(logger, "Threw a regular Exception: ");
@@ -166,7 +169,7 @@ public class SchemaModInternal4Hist {
 			}
 		}
 	}
-	
+
 	/**
 	 * Log and print.
 	 *
@@ -177,5 +180,5 @@ public class SchemaModInternal4Hist {
 		System.out.println(msg);
 		logger.debug(msg);
 	}
-	
+
 }
