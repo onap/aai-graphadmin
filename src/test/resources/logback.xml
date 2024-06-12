@@ -880,8 +880,7 @@
 	<!-- dynamicPayloadGenerator log ends here -->		
 	
 	<logger name="org.onap.aai" level="DEBUG" additivity="false">
-		<appender-ref ref="asyncDEBUG" />
-		<appender-ref ref="asyncSANE" />
+		<appender-ref ref="STDOUT" />
 	</logger>
 
 	<!-- Spring related loggers -->
@@ -1022,7 +1021,7 @@
 	<logger name="org.onap.logging.filter.base.AbstractMetricLogFilter" level="INFO">
 		<appender-ref ref="asyncMETRIC"/>
 	</logger>	
-	<logger name="org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog" level="INFO">
+	<logger name="org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog" level="WARN">
 		<appender-ref ref="asyncAUDIT"/>
 	</logger>
 	<logger name="org.onap.logging.filter.base.AbstractAuditLogFilter" level="INFO">
@@ -1032,10 +1031,10 @@
 		<appender-ref ref="asyncMETRIC"/>
 	</logger>
 	<logger name="org.onap.aai.logging.ErrorLogHelper" level="WARN">
-		<appender-ref ref="asyncERROR"/>
+		<appender-ref ref="STDOUT"/>
 	</logger>
 	<logger name="org.onap.aai.interceptors.post" level="DEBUG" additivity="false">
-		<appender-ref ref="asynctranslog" />
+		<appender-ref ref="STDOUT" />
 	</logger>
 
 	<logger name="org.onap.aai.kafka" level="DEBUG" additivity="false">
@@ -1147,5 +1146,6 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="external" />
+		<appender-ref ref="STDOUT"/>
 	</root>
 </configuration>
