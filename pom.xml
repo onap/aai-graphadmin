@@ -26,11 +26,11 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.13.5</version>
+        <version>1.14.0</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.13.7-SNAPSHOT</version>
+    <version>1.14.0-SNAPSHOT</version>
 
     <properties>
 
@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.4</aai.schema.service.version>
-        <aai.common.version>1.13.6</aai.common.version>
+        <aai.common.version>1.14.0</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -86,7 +86,7 @@
 
         <snapshot.file>${project.basedir}/snapshots/int1-data.graphson</snapshot.file>
         <jacoco.line.coverage.limit>0.46</jacoco.line.coverage.limit>
-        
+
         <!-- Start of Default ONAP Schema Properties -->
         <schema.source.name>onap</schema.source.name>
         <schema.configuration.location>N/A</schema.configuration.location>
@@ -108,6 +108,7 @@
         <micrometer.jersey2.version>1.8.1</micrometer.jersey2.version>
         <activemq.version>5.16.7</activemq.version>
         <antlr.version>4.9.3</antlr.version>
+        <gremlin.version>3.3.3</gremlin.version>
         <!-- End of graphadmin metric collection Properties -->
     </properties>
 
@@ -691,18 +692,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
           </dependency>
-        <!-- TODO: Migrate tests to junit 5 and remove this dependency -->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                    <exclusion>
-                            <groupId>org.hamcrest</groupId>
-                            <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>
@@ -949,22 +938,19 @@
             </plugin>
             <!-- Used for unit tests -->
             <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-surefire-plugin</artifactId>
-	      <configuration>
-		<!-- <argLine>-noverify ${argLine}</argLine> -->
-		<runOrder>alphabetical</runOrder>
-	      </configuration>
-	    </plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <!-- <argLine>-noverify ${argLine}</argLine> -->
+                    <argLine>-Xmx4096m -XX:MaxPermSize=256m</argLine>
+                    <runOrder>alphabetical</runOrder>
+                    <!-- <forkCount>0</forkCount> -->
+                </configuration>
+        </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!--
-                  Issue with the spring 1.5.15.RELEASE plugin is causing build errors
-                  due to the fact that the plugin 1.5.15.RELEASE was built using maven 3.5 while
-                  the current build version being used by our jenkins is 3.3.9
-                -->
-                <version>1.5.21.RELEASE</version>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
                     <layout>ZIP</layout>
