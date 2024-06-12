@@ -56,7 +56,7 @@ public class DataSnapshotTest extends AAISetup {
     private JanusGraphTransaction currentTransaction;
 
     private List<Vertex> vertexes;
-    
+
     private static final int DELAYSINGLETHREADTEST = 90;
 
     @Rule
@@ -126,15 +126,13 @@ public class DataSnapshotTest extends AAISetup {
          assertThat(outputCapture.toString(), containsString("graphson had no data."));
     }
 
-    
-    @Ignore("Unit test failing temporarily ignore")
     @Test
     public void testTakeSnapshotAndItShouldCreateASnapshotFileWithOneVertex() throws IOException, InterruptedException {
 
         String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
 
         Set<Path> preSnapshotFiles = Files.walk(Paths.get(logsFolder)).collect(Collectors.toSet());
-        
+
         // previous test may have the same generated file name, this wait will ensure a new name is used for this test
         System.out.println("delay generation, seconds " + DELAYSINGLETHREADTEST);
         Thread.sleep(DELAYSINGLETHREADTEST*1000);
@@ -149,7 +147,7 @@ public class DataSnapshotTest extends AAISetup {
 
         Set<Path> postSnapshotFiles = Files.walk(Paths.get(logsFolder)).collect(Collectors.toSet());
 
-        assertThat(postSnapshotFiles.size(), is(37));
+        assertThat(postSnapshotFiles.size(), is(preSnapshotFiles.size() +1));
         postSnapshotFiles.removeAll(preSnapshotFiles);
         List<Path> snapshotPathList = postSnapshotFiles.stream().collect(Collectors.toList());
 
@@ -158,7 +156,7 @@ public class DataSnapshotTest extends AAISetup {
         List<String> fileContents = Files.readAllLines(snapshotPathList.get(0));
         assertThat(fileContents.get(0), containsString("id"));
     }
-    
+
 
     @Test
     public void testTakeSnapshotMultiAndItShouldCreateMultipleSnapshotFiles() throws IOException {
@@ -180,27 +178,27 @@ public class DataSnapshotTest extends AAISetup {
         long totalVerts = 5000;
         int threadCt = 15;
         long maxNodesPerFile = 120000;
-        
-        int fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt, 
+
+        int fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt,
     			maxNodesPerFile );
         assertThat( fileCt, is(15));
-               
+
         totalVerts = 5000;
         threadCt = 15;
         maxNodesPerFile = 100;
-        fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt, 
+        fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt,
     			maxNodesPerFile );
         assertThat( fileCt, is(60));
-        
+
         totalVerts = 1500;
         threadCt = 15;
         maxNodesPerFile = 100;
-        fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt, 
+        fileCt = DataSnapshot.figureOutFileCount( totalVerts, threadCt,
     			maxNodesPerFile );
-        assertThat( fileCt, is(15));       
-        
+        assertThat( fileCt, is(15));
+
     }
-    
+
     @Test
     public void testTakeSnapshotMultiWithDebugAndItShouldCreateMultipleSnapshotFiles() throws IOException {
 
@@ -224,7 +222,7 @@ public class DataSnapshotTest extends AAISetup {
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","foo","-debugFlag", "DEBUG"};
-        
+
         DataSnapshot.main(args);
 
         // For this test if there is only one vertex in the graph, not sure if it will create multiple files
