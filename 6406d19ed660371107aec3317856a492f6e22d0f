@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Lukasz Rajewski <lukasz.rajewski@t-mobile.pl>
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Submitted-by: Lukasz Rajewski <lukasz.rajewski@t-mobile.pl>
+Submitted-at: Sat, 15 Jun 2024 11:14:56 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/aai/graphadmin/+/138171
+Project: aai/graphadmin
+Branch: refs/heads/master
