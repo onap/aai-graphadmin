@@ -35,6 +35,7 @@ import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.util.AAIConfig;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,14 +99,18 @@ public class UpdatePropertyToolInternal {
      */
     private boolean processCommandLineArguments(final String[] args) {
         logAndPrint("Start of processCommandLineArguments()");
-        final JCommander commander = new JCommander();
-        commander.addObject(this);
-        commander.setVerbose(1);
-        commander.parse(args);
-        commander.setProgramName(UpdatePropertyTool.class.getSimpleName());
         boolean filenameExists = false;
         boolean vertexIdExists = false;
         boolean isValidArgs = true;
+        final JCommander commander = new JCommander();
+        commander.addObject(this);
+        commander.setVerbose(1);
+        commander.setProgramName(UpdatePropertyTool.class.getSimpleName());
+        try {
+            commander.parse(args);
+        } catch (Exception e) {
+            return false;
+        }
 
         // check for help flag
         if (help) {
@@ -262,7 +267,11 @@ public class UpdatePropertyToolInternal {
                 String allVertexIdsString = sb.toString();
                 logAndPrint("All vertex IDs from file " + filePath + ":\n" + allVertexIdsString);
             } catch (IOException ioe) {
-                logErrorAndPrint("ERROR reading in text file failed.", ioe);
+                if(ioe instanceof FileNotFoundException) {
+                    logErrorAndPrint(String.format("File %s not found.", filePath));
+                } else {
+                    logErrorAndPrint("ERROR reading in text file failed.", ioe);
+                }
             }
         }
 
