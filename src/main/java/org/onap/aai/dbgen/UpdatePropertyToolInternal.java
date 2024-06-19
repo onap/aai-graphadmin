@@ -98,14 +98,18 @@ public class UpdatePropertyToolInternal {
      */
     private boolean processCommandLineArguments(final String[] args) {
         logAndPrint("Start of processCommandLineArguments()");
-        final JCommander commander = new JCommander();
-        commander.addObject(this);
-        commander.setVerbose(1);
-        commander.parse(args);
-        commander.setProgramName(UpdatePropertyTool.class.getSimpleName());
         boolean filenameExists = false;
         boolean vertexIdExists = false;
         boolean isValidArgs = true;
+        final JCommander commander = new JCommander();
+        commander.addObject(this);
+        commander.setVerbose(1);
+        commander.setProgramName(UpdatePropertyTool.class.getSimpleName());
+        try {
+            commander.parse(args);
+        } catch (Exception e) {
+            return false;
+        }
 
         // check for help flag
         if (help) {
