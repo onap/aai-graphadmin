@@ -40,6 +40,8 @@ import org.onap.aai.util.AAISystemExitUtil;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.att.eelf.configuration.Configuration;
+import com.codahale.metrics.JmxReporter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
@@ -307,6 +309,9 @@ public class HistoryTruncate {
 						+ " vertex deletes - COMMIT FAILED. ");
 				return;
 			}
+		} else {
+			LOGGER.info("Rolling back transaction for delete of Vertices.");
+			g.tx().rollback();
 		}
 
 		if(doDelete) {
@@ -417,6 +422,9 @@ public class HistoryTruncate {
 						+ " edge deletes - COMMIT FAILED. ");
 				return;
 			}
+		} else {
+			LOGGER.info("Rolling back transaction for delete of Vertices.");
+			g.tx().rollback();
 		}
 
 		if( doDelete ) {

@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.4</aai.schema.service.version>
-        <aai.common.version>1.14.2-SNAPSHOT</aai.common.version>
+        <aai.common.version>1.14.2</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -349,6 +349,13 @@
                 <artifactId>guava</artifactId>
                 <version>25.0-jre</version>
             </dependency>
+            <!-- https://docs.datastax.com/en/developer/java-driver/3.5/manual/metrics/index.html#metrics-4-compatibility -->
+             <!-- remove this for janusgraph >= 0.6.0 -->
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-core</artifactId>
+                <version>3.2.6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -379,6 +386,10 @@
             <groupId>org.onap.aai.aai-common</groupId>
             <artifactId>aai-core</artifactId>
             <exclusions>
+                <exclusion>
+                    <groupId>io.dropwizard.metrics</groupId>
+                    <artifactId>metrics-jmx</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.onap.aai.aai-common</groupId>
                     <artifactId>aai-aaf-auth</artifactId>
