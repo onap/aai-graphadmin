@@ -26,11 +26,11 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.14.2-SNAPSHOT</version>
+        <version>1.14.3-SNAPSHOT</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.14.2-SNAPSHOT</version>
+    <version>1.14.3-SNAPSHOT</version>
 
     <properties>
 
@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.4</aai.schema.service.version>
-        <aai.common.version>1.14.2</aai.common.version>
+        <aai.common.version>1.14.3-SNAPSHOT</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -102,13 +102,12 @@
         <schema.uri.base.path>/aai</schema.uri.base.path>
         <!-- End of Default ONAP Schema Properties -->
 
-        <!-- Start of graphadmin metric collection Properties -->
-        <micrometer.core.version>1.8.1</micrometer.core.version>
-        <micrometer.registry.prometheus.version>1.8.1</micrometer.registry.prometheus.version>
-        <micrometer.jersey2.version>1.8.1</micrometer.jersey2.version>
+        <janusgraph.version>0.5.0</janusgraph.version>
+        <gremlin.version>3.4.13</gremlin.version>
+        <micrometer.version>1.8.1</micrometer.version>
         <activemq.version>5.16.7</activemq.version>
         <antlr.version>4.9.3</antlr.version>
-        <!-- End of graphadmin metric collection Properties -->
+        <jcommander.version>1.78</jcommander.version>
     </properties>
 
     <profiles>
@@ -363,17 +362,17 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>${micrometer.core.version}</version>
+            <version>${micrometer.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>${micrometer.registry.prometheus.version}</version>
+            <version>${micrometer.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-jersey2</artifactId>
-            <version>${micrometer.jersey2.version}</version>
+            <version>${micrometer.version}</version>
         </dependency>
         <!-- End of graphadmin metric collection dependencies -->
 
@@ -479,6 +478,12 @@
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.janusgraph</groupId>
+            <artifactId>janusgraph-inmemory</artifactId>
+            <version>${janusgraph.version}</version>
+            <scope>test</scope>
         </dependency>
 
 
@@ -655,14 +660,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- End of Antlr dependencies for DSL -->
-        <!-- Start of Plexus dependencies for DSL -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>${jcommander.version}</version>
+          </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
         </dependency>
-        <!-- End of Plexus dependencies for DSL -->
-        <!-- Start of Junit Test Dependencies -->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-junit</artifactId>

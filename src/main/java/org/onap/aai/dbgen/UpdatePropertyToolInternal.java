@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -327,11 +329,12 @@ public class UpdatePropertyToolInternal {
         JanusGraph janusGraph = null;
 
         try {
+            PropertiesConfiguration configuration = new AAIGraphConfig.Builder(configPath)
+                    .forService(UpdatePropertyTool.class.getSimpleName())
+                    .withGraphType("AAITools-" + UpdatePropertyTool.class.getSimpleName())
+                    .buildConfiguration();
             janusGraph = JanusGraphFactory.open(
-                    new AAIGraphConfig.Builder(configPath)
-                            .forService(UpdatePropertyTool.class.getSimpleName())
-                            .withGraphType("AAITools-" + UpdatePropertyTool.class.getSimpleName())
-                            .buildConfiguration()
+                    configuration
             );
         } catch (Exception e) {
             logErrorAndPrint("Unable to open the graph. ", e);

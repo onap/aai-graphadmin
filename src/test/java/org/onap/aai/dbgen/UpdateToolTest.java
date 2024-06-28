@@ -21,6 +21,8 @@ package org.onap.aai.dbgen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
@@ -35,6 +37,7 @@ import org.onap.aai.util.AAIConstants;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.*;
 
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class UpdateToolTest extends AAISetup {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateToolTest.class);
