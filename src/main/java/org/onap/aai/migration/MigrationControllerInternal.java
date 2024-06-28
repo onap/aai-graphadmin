@@ -42,7 +42,7 @@ import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.FormatDate;
-import org.reflections.Reflections;
+import org.reflections8.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -83,7 +83,7 @@ public class MigrationControllerInternal {
 		this.edgeIngestor = edgeIngestor;
 		this.edgeSerializer = edgeSerializer;
 		this.schemaVersions = schemaVersions;
-		
+
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class MigrationControllerInternal {
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_ETC_APP_PROPERTIES);
 
 		MDC.put("logFilenameAppender", MigrationController.class.getSimpleName());
-        logger = LoggerFactory.getLogger(MigrationControllerInternal.class.getSimpleName());		
+        logger = LoggerFactory.getLogger(MigrationControllerInternal.class.getSimpleName());
 
 		CommandLineArgs cArgs = new CommandLineArgs();
 
@@ -154,6 +154,7 @@ public class MigrationControllerInternal {
 			return;
 		}
 
+		// TODO: do not rely on the transitive reflections dependency of janusgraph-core
 		Reflections reflections = new Reflections("org.onap.aai.migration");
 		List<Class<? extends Migrator>> migratorClasses = new ArrayList<>(findClasses(reflections));
 		//Displays list of migration classes which needs to be executed.Pass flag "-l" following by the class names

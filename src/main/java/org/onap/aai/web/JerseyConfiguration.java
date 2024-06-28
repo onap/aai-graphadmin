@@ -33,7 +33,7 @@ import org.onap.aai.rest.AuditSqlDbConsumer;
 import org.onap.aai.rest.QueryConsumer;
 import org.onap.aai.rest.util.EchoResponse;
 import org.onap.logging.filter.base.AuditLogContainerFilter;
-import org.reflections.Reflections;
+import org.reflections8.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
@@ -59,7 +59,7 @@ public class JerseyConfiguration extends ResourceConfig {
         registerFilters(ContainerRequestFilter.class);
         registerFilters(ContainerResponseFilter.class);
         registerFilters(AuditLogContainerFilter.class);
-        
+
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
 
         // Following registers the request headers and response headers
@@ -72,6 +72,7 @@ public class JerseyConfiguration extends ResourceConfig {
     public <T> void registerFilters(Class<T> type) {
 
         // Find all the classes within the interceptors package
+        // TODO: do not rely on the transitive reflections dependency of janusgraph-core
     	Reflections loggingReflections = new Reflections("org.onap.aai.aailog.filter");
 		Reflections reflections = new Reflections("org.onap.aai.interceptors");
 		// Filter them based on the clazz that was passed in
