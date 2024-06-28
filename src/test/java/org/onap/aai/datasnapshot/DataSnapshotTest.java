@@ -129,13 +129,14 @@ public class DataSnapshotTest extends AAISetup {
     @Test
     public void testTakeSnapshotAndItShouldCreateASnapshotFileWithOneVertex() throws IOException, InterruptedException {
 
+        // previous test may have the same generated file name, this wait will ensure a new name is used for this test
+        System.out.println("delay generation, seconds " + DELAYSINGLETHREADTEST);
+        Thread.sleep(DELAYSINGLETHREADTEST*1000);
+
         String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
 
         Set<Path> preSnapshotFiles = Files.walk(Paths.get(logsFolder)).collect(Collectors.toSet());
 
-        // previous test may have the same generated file name, this wait will ensure a new name is used for this test
-        System.out.println("delay generation, seconds " + DELAYSINGLETHREADTEST);
-        Thread.sleep(DELAYSINGLETHREADTEST*1000);
         // Run the clear dataSnapshot and this time it should fail
         //String [] args = {"JUST_TAKE_SNAPSHOT"};  >> default behavior is now to use 15 threads
         // To just get one file, you have to tell it to just use one.
