@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ###
 # ============LICENSE_START=======================================================
@@ -9,9 +9,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,13 +31,13 @@
 #
 # Parameters:
 #
-# -b,  (required) <string> the base url for the dmaap server 
+# -b,  (required) <string> the base url for the dmaap server
 # -e,  (required) <file>   filename containing the missed events
 # -l,  (optional)          indicating that the script should be run in debug mode
-#                          it will not send the dmaap messages to dmaap server 
+#                          it will not send the dmaap messages to dmaap server
 #                          but it will write to a file named resend_dmaap_server.out
 # -x   (optional)          skip resource version check
-# -p,  (required) <string> the password for the dmaap server 
+# -p,  (required) <string> the password for the dmaap server
 # -s,  (required) <file>   containing the data snapshot graphson file to compare the resource versions against
 #                          partial snapshots should be concatenated into a full snapshot file
 #                          before running the script
@@ -49,22 +49,22 @@
 #
 #  ./resend-dmaap-events.sh -e example_events.txt -s dataSnapshot.graphSON.201808091545 -u username -p example_pass -b https://localhost:3905 -t AAI-EVENT
 #
-# For each dmaap message in the example_events.txt, it will check 
+# For each dmaap message in the example_events.txt, it will check
 # against graphson and try to send it to the dmaap server
 # If the example_events.txt contains two events one that wasn't sent to dmaap
 # and the other that was already updated by another PUT/DELETE
 # and the output of the run will look something like this:
-# 
+#
 # Output:
 # Dmaap Event with Id 7f7d8a7b-4034-46f3-a969-d7e5cbcbf75f was sent
 # Dmaap Event with Id 7f7d8a7b-4034-46f3-a969-d7e5cbcbf75f not sent
-# 
+#
 # If lets say, there was a username password issue, you will see something like this:
 # Dmaap Event with Id 7f7d8a7b-4034-46f3-a969-d7e5cbcbf75f was not sent due to dmaap error, please check logs
 # Dmaap Event with Id 7f7d8a7b-4034-46f3-a969-d7e5cbcbf75f not sent
-# 
+#
 # From the directory in which you are executing the script (not where the script is located)
-# You can have it be located and executed in the same place 
+# You can have it be located and executed in the same place
 # Check for a file called resend_dmaap_error.log as it will give you more details on the error
 #
 # For testing purposes, if you are trying to run this script and don't want to actually
@@ -81,10 +81,10 @@
 # Output:
 # Dmaap Event with Id 7f7d8a7b-4034-46f3-a969-d7e5cbcbf75f was sent
 # Dmaap Event with Id 7f7d8a7b-4034-46f3-a969-d7e5cbcbf75f not sent
-# 
-# Also it will write the dmaap events to a file called dmaap_messages.out that 
+#
+# Also it will write the dmaap events to a file called dmaap_messages.out that
 # would have been sent out in the current directory where you are executing this script
-# 
+#
 
 current_directory=$( cd "$(dirname "$0")" ; pwd -P );
 resend_error_log=${current_directory}/resend_dmaap_error.log
@@ -188,14 +188,14 @@ resource_version_matches_snapshot_file(){
     resource_version=$3;
     action=$4;
     topic=$5;
-    
+
     if [ -z ${resource_version} ]; then
         echo "Missing the parameter resource version to be passed";
         return 1;
     fi
 
     # Modify the entity link passed to remove the /aai/v[0-9]+
-    if [ "${topic}" = "<other-dmaap-topic>" ]; then 
+    if [ "${topic}" = "<other-dmaap-topic>" ]; then
 	aai_uri=$(echo $entity_link | sed 's/\/<other-base>\/v[0-9][0-9]*//g');
     else
     	aai_uri=$(echo $entity_link | sed 's/\/aai\/v[0-9][0-9]*//g');
@@ -231,42 +231,45 @@ send_dmaap(){
     baseurl=$5;
     topic=$6;
     resp_code=0;
-    
+
     generated_file=$(uuidgen);
 
     json_file=/tmp/${generated_file}.json;
-    curl_output=/tmp/${generated_file}.txt;
+    command_output=/tmp/${generated_file}.txt;
 
     echo ${line} > ${json_file};
-    > ${curl_output};
+    > ${command_output};
     id=$(echo $line | grep -o '"id":"[^"]*"' | cut -d":" -f2- | sed 's/"//g');
 
     if [ "$local_mode" = true ]; then
         echo $line >> ${resend_output};
     else
 
-        response_code=$(curl \
-            -k -o ${curl_output} -s -w "%{http_code}\n" \
-            -u "${username}:${password}" \
-            -X POST \
-            -H "Content-Type: application/json" \
-            -d "@${json_file}" \
-            "${baseurl}/events/${topic}"\
-        );
+        response_code=$(wget \
+            --no-check-certificate \
+            --output-file=/dev/null \
+            --server-response \
+            --quiet \
+            --method=POST \
+            --header="Content-Type: application/json" \
+            --body-file="${json_file}" \
+            --user="${username}" \
+            --password="${password}" \
+            "${baseurl}/events/${topic}" 2>&1 | awk '/^  HTTP/{print $2}')
 
         if [ "$response_code" -ne "200" ]; then
             echo -n "Response failure for dmaap message with id ${id}," >> ${resend_error_log};
-            echo " code: ${response_code} body: $(cat ${curl_output})" >> ${resend_error_log};
+            echo " code: ${response_code} body: $(cat ${command_output})" >> ${resend_error_log};
             resp_code=1;
         fi;
     fi;
-    
+
     if [ -f "${json_file}" ]; then
         rm $json_file;
     fi;
 
-    if [ -f "${curl_output}" ]; then
-        rm $curl_output;
+    if [ -f "${command_output}" ]; then
+        rm $command_output;
     fi;
 
     return ${resp_code};
@@ -274,8 +277,8 @@ send_dmaap(){
 
 # Validates the events file and the snapshot file
 # Goes through each line in the missed events file
-# Gets all the resource versions there are 
-# Finds the smallest resource version there 
+# Gets all the resource versions there are
+# Finds the smallest resource version there
 # checks if the smallest resource version for the aai uri
 # is what is currently in the last snapshot file provided by user
 # If it is, it will send an dmaap event out
@@ -322,10 +325,10 @@ main(){
             b ) # Specify the baseurl to dmaap
                 hostname=$OPTARG
                 ;;
-            h ) 
+            h )
                 usage;
                 ;;
-            \? ) 
+            \? )
                 echo "Invalid option: -$OPTARG" >&2
                 usage;
                 ;;
@@ -338,7 +341,7 @@ main(){
     if [ "$local_mode" = true ]; then
         > ${resend_output};
     fi;
-    
+
     while read dmaap_event; do
         entity_link=$(echo $dmaap_event | grep -o '"entity-link":"[^"]*"' | cut -d":" -f2- | sed 's/"//g');
         id=$(echo $dmaap_event | grep -o '"id":"[^"]*"' | cut -d":" -f2- | sed 's/"//g');

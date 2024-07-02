@@ -21,7 +21,6 @@ fi
 # and then let the common functions check if the function exist and invoke it
 # So this all can be templated out
 start_date;
-check_user;
 source_profile;
 
 # Only sourcing the file aai-graphadmin-tools-vars for dataSnapshot

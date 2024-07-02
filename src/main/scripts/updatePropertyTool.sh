@@ -50,7 +50,6 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 
 start_date;
 
-check_user;
 source_profile;
 execute_spring_jar org.onap.aai.dbgen.UpdatePropertyTool ${PROJECT_HOME}/resources/updatePropertyTool-logback.xml "$@"
 end_date;

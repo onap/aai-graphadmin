@@ -25,7 +25,7 @@ display_usage() {
         Usage: $0 [options]
 
         1. Usage: getDslResult.sh <base-path or optional host url> <optional input-json-filepath> <optional -XFROMAPPID> <optional -XTRANSID>
-        2. This script requires one argument, a base-path 
+        2. This script requires one argument, a base-path
         3. Example for basepath: aai/{version}\
         4. Adding the optional input-json-payload replaces the default dsl payload with the contents of the input-file
         5. The query result is returned in the file resources/migration-input-files/dslResults.json
@@ -111,13 +111,13 @@ if [ -z $BASICENABLE ]; then
         USEBASICAUTH=false
 else
         USEBASICAUTH=true
-        CURLUSER=`grep ^aai.tools.username $prop_file |cut -d'=' -f2 |tr -d "\015"`
-        if [ -z $CURLUSER ]; then
+        USER=`grep ^aai.tools.username $prop_file |cut -d'=' -f2 |tr -d "\015"`
+        if [ -z $USER ]; then
                 echo "Property [aai.tools.username] not found in file $prop_file"
                 MISSING_PROP=true
         fi
-        CURLPASSWORD=`grep ^aai.tools.password $prop_file |cut -d'=' -f2 |tr -d "\015"`
-        if [ -z $CURLPASSWORD ]; then
+        PASSWORD=`grep ^aai.tools.password $prop_file |cut -d'=' -f2 |tr -d "\015"`
+        if [ -z $PASSWORD ]; then
                 echo "Property [aai.tools.password] not found in file $prop_file"
                 MISSING_PROP=true
         fi
@@ -133,13 +133,20 @@ fi
 
 if [ $MISSING_PROP = false ]; then
         if [ $USEBASICAUTH = false ]; then
-                AUTHSTRING="--cert $PROJECT_HOME/resources/etc/auth/aaiClientPublicCert.pem --key $PROJECT_HOME/resources/etc/auth/aaiClientPrivateKey.pem"
+                AUTHSTRING="--certificate $PROJECT_HOME/resources/etc/auth/aaiClientPublicCert.pem --private-key $PROJECT_HOME/resources/etc/auth/aaiClientPrivateKey.pem"
         else
-                AUTHSTRING="-u $CURLUSER:$CURLPASSWORD"
+                AUTHSTRING="--http-user $USER --http-password=$PASSWORD"
         fi
-		curl --request PUT -k $AUTHSTRING -H "X-FromAppId: $XFROMAPPID" -H "X-TransactionId: $XTRANSID" -H "Accept: application/json" -H "Content-Type: application/json" -T $fname $RESTURL$RESOURCE | jq '.' > $RESULTPATH
-		RC=$?
-	
+
+        wget --method=PUT --no-check-certificate $AUTHSTRING \
+            --header="X-FromAppId: $XFROMAPPID" \
+            --header="X-TransactionId: $XTRANSID" \
+            --header="Accept: application/json" \
+            --header="Content-Type: application/json" \
+            --body-file=$fname \
+            -O - $RESTURL$RESOURCE > $RESULTPATH
+        RC=$?
+
 else
         echo "usage: $0 <base-path>"
         RC=-1
@@ -147,5 +154,5 @@ fi
 if [ "a$JSONFILE" = "a$TEMPFILE" ]; then
 	rm $TEMPFILE
 fi
-echo `date` "   Done $0, exit code is $RC, returning result in $RESULTPATH" 
+echo `date` "   Done $0, exit code is $RC, returning result in $RESULTPATH"
 exit $RC

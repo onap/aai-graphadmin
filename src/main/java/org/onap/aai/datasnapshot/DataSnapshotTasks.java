@@ -45,13 +45,13 @@ import org.slf4j.MDC;
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class DataSnapshotTasks {
-	
+
 	private AaiScheduledTaskAuditLog auditLog;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataSnapshotTasks.class);
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-	
+
 	@Scheduled(cron = "${datasnapshottasks.cron}" )
 	public void snapshotScheduleTask() throws AAIException, Exception {
 		auditLog = new AaiScheduledTaskAuditLog();
@@ -86,7 +86,7 @@ public class DataSnapshotTasks {
 
 		int count = 0;
 		try {
-			process = new ProcessBuilder().command("bash", "-c", "ps -ef | grep '[D]ataSnapshot'").start();
+			process = new ProcessBuilder().command("sh", "-c", "ps -ef | grep '[D]ataSnapshot'").start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
@@ -103,5 +103,3 @@ public class DataSnapshotTasks {
 		return count > 0;
 	}
 }
-		
-	

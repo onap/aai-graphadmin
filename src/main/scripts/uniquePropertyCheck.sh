@@ -6,10 +6,9 @@
 # For example:    uniquePropertyCheck.sh subscriber-name
 #
 
-COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )	
+COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 start_date;
-check_user;
 source_profile;
 
 #execute_spring_jar org.onap.aai.util.UniquePropertyCheck ${PROJECT_HOME}/resources/uniquePropertyCheck-logback.xml "$@"

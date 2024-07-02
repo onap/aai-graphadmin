@@ -9,9 +9,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,27 @@
 #
 # dynamicPayloadGenerator.sh  -- This tool is used to dynamically load payloads from snapshots
 #       It is used to load a snapshot into memory and generate payloads for any input nodes
-#       
+#
 #
 # Parameters:
 #
 #  -d (required) name of the fully qualified Datasnapshot file that you need to load
-#  -s (optional) true or false to enable or disable schema, By default it is true for production, 
+#  -s (optional) true or false to enable or disable schema, By default it is true for production,
 # 	     you can change to false if the snapshot has duplicates
 #  -c (optional) config file to use for loading snapshot into memory.
 #  -o (optional) output file to store the data files
 #  -f (optional) PAYLOAD or DMAAP-MR
-#  -n (optional) input file for the script 
-#  
-#  
+#  -n (optional) input file for the script
+#
+#
 #  For example (there are many valid ways to use it):
-#  
+#
 #  dynamicPayloadGenerator.sh -d '/opt/app/snapshots/snaphot.graphSON' -o '/opt/app/aai-graphadmin/resources/etc/scriptdata/addmanualdata/payload_dir/'
-#              
+#
 #  or
 #  dynamicPayloadGenerator.sh -d '/opt/app/snapshots/snaphot.graphSON' -s false -c '/opt/app/aai-graphadmin/resources/etc/appprops/dynamic.properties'
 #					-o '/opt/app/aai-graphadmin/resources/etc/scriptdata/addmanualdata/payload_dir/' -f PAYLOAD -n '/opt/app/aai-graphadmin/resources/etc/scriptdata/nodes.json'
-# 
+#
 
 
 echo
@@ -58,7 +58,7 @@ display_usage() {
            a.	-d (required) Name of the fully qualified Datasnapshot file that you need to load
 
         3. Optional Parameters:
-		   a.   -s (optional) true or false to enable or disable schema, By default it is true for production, 
+		   a.   -s (optional) true or false to enable or disable schema, By default it is true for production,
 		   b.	-c (optional) config file to use for loading snapshot into memory. By default it is set to /opt/app/aai-graphadmin/resources/etc/appprops/dynamic.properties
 		   c.	-f (optional) PAYLOAD or DMAAP-MR
 		   d.	-n (optional) input file specifying the nodes and relationships to export. Default: /opt/app/aai-graphadmin/scriptdata/tenant_isolation/nodes.json
@@ -66,11 +66,11 @@ display_usage() {
 		   f.	-o (optional) output directory to store the data files
 		4. For example (there are many valid ways to use it):
 			dynamicPayloadGenerator.sh -d '/opt/app/snapshots/snaphot.graphSON' -o '/opt/app/aai-graphadmin/resources/etc/scriptdata/addmanualdata/tenant_isolation/'
-				
+
 			dynamicPayloadGenerator.sh -d '/opt/app/snapshots/snaphot.graphSON' -s false -c '/opt/app/aai-graphadmin/resources/etc/appprops/dynamic.properties'
 					-o '/opt/app/aai-graphadmin/resources/etc/scriptdata/addmanualdata/tenant_isolation/' -f PAYLOAD -n '/opt/app/aai-graphadmin/resources/etc/scriptdata/tenant_isolation/nodes.json'
 					-i '/opt/app/aai-graphadmin/resources/etc/scriptdata/tenant_isolation/inputFilters.json'
-   
+
 EOF
 }
 if [ $# -eq 0 ]; then
@@ -82,7 +82,6 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 
 start_date;
-check_user;
 source_profile;
 export JVM_OPTS="-Xmx9000m -Xms9000m"
 
