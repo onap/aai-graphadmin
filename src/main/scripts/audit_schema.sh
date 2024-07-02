@@ -25,7 +25,6 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 
 start_date;
-check_user;
 source_profile;
 execute_spring_jar org.onap.aai.db.schema.ScriptDriver "/opt/app/aai-graphadmin/resources/logback.xml" "$@"
 end_date;

@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 #Create empty partial snapshot file
 INPUT_DATASNAPSHOT_FILE=$1

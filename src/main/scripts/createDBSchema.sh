@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 # ============LICENSE_START=======================================================
 # org.onap.aai
@@ -30,10 +30,10 @@
 #
 #
 
-COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )	
+set -x;
+COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 start_date;
-check_user;
 source_profile;
 if [ -z "$1" ]; then
     execute_spring_jar org.onap.aai.schema.GenTester ${PROJECT_HOME}/resources/logback.xml

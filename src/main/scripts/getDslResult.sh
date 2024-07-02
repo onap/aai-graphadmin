@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 ###
 # ============LICENSE_START=======================================================
@@ -25,7 +25,7 @@ display_usage() {
         Usage: $0 [options]
 
         1. Usage: getDslResult.sh <base-path or optional host url> <optional input-json-filepath> <optional -XFROMAPPID> <optional -XTRANSID>
-        2. This script requires one argument, a base-path 
+        2. This script requires one argument, a base-path
         3. Example for basepath: aai/{version}\
         4. Adding the optional input-json-payload replaces the default dsl payload with the contents of the input-file
         5. The query result is returned in the file resources/migration-input-files/dslResults.json
@@ -139,7 +139,7 @@ if [ $MISSING_PROP = false ]; then
         fi
 		curl --request PUT -k $AUTHSTRING -H "X-FromAppId: $XFROMAPPID" -H "X-TransactionId: $XTRANSID" -H "Accept: application/json" -H "Content-Type: application/json" -T $fname $RESTURL$RESOURCE | jq '.' > $RESULTPATH
 		RC=$?
-	
+
 else
         echo "usage: $0 <base-path>"
         RC=-1
@@ -147,5 +147,5 @@ fi
 if [ "a$JSONFILE" = "a$TEMPFILE" ]; then
 	rm $TEMPFILE
 fi
-echo `date` "   Done $0, exit code is $RC, returning result in $RESULTPATH" 
+echo `date` "   Done $0, exit code is $RC, returning result in $RESULTPATH"
 exit $RC

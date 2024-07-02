@@ -78,7 +78,7 @@ public class DataExportTasks {
 	private static final Logger LOGGER;
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-	
+
 	static {
 		System.setProperty("aai.service.name", DataExportTasks.class.getSimpleName());
 		Properties props = System.getProperties();
@@ -103,10 +103,10 @@ public class DataExportTasks {
 	 */
 	@Scheduled(cron = "${dataexporttask.cron}" )
 	public void export() {
-		
+
 		try {
 			exportTask();
-		} 
+		}
 		catch (Exception e) {
 			ErrorLogHelper.logError("AAI_8002", "Exception while running export "+ LogFormatTools.getStackTop(e));
 		}
@@ -138,14 +138,14 @@ public class DataExportTasks {
 		}
 
 		LOGGER.debug("Started exportTask: " + dateFormat.format(new Date()));
-		
+
 		String enableSchemaValidation = AAIConfig.get("aai.dataexport.enable.schema.validation", "false");
 		String outputLocation =  AAIConstants.AAI_HOME_BUNDLECONFIG + AAIConfig.get("aai.dataexport.output.location");
 		String enableMultipleSnapshots =  AAIConfig.get("aai.dataexport.enable.multiple.snapshots", "false");
 		String nodeConfigurationLocation = AAIConstants.AAI_HOME_BUNDLECONFIG + AAIConfig.get("aai.dataexport.node.config.location");
 		String inputFilterConfigurationLocation = AAIConstants.AAI_HOME_BUNDLECONFIG + AAIConfig.get("aai.dataexport.input.filter.config.location");
 		String enablePartialGraph = AAIConfig.get("aai.dataexport.enable.partial.graph", "true");
-		
+
 		// Check that the output location exist
 		File targetDirFile = new File(outputLocation);
 		if ( !targetDirFile.exists() ) {
@@ -155,7 +155,7 @@ public class DataExportTasks {
 			//Delete any existing payload files
 			deletePayload(targetDirFile);
 		}
-		
+
 		File snapshot = null;
 		String snapshotFilePath = null;
 		if ( "false".equalsIgnoreCase(enableMultipleSnapshots)){
@@ -172,7 +172,7 @@ public class DataExportTasks {
 		else {
 			snapshotFilePath = findMultipleSnapshots();
 		}
-		
+
 		List<String> paramsList = new ArrayList<>();
 		paramsList.add("-s");
 		paramsList.add(enableSchemaValidation);
@@ -188,10 +188,10 @@ public class DataExportTasks {
 		paramsList.add(enablePartialGraph);
 		paramsList.add("-d");
 		paramsList.add(snapshotFilePath);
-				
+
 		LOGGER.debug("paramsList is : " + paramsList);
-							
-		String[] paramsArray = paramsList.toArray(new String[0]); 
+
+		String[] paramsArray = paramsList.toArray(new String[0]);
 		try {
 			DynamicPayloadGenerator.run(loaderFactory, edgeIngestor, schemaVersions, paramsArray, false);
 			LOGGER.debug("DynamicPaylodGenerator completed");
@@ -208,7 +208,7 @@ public class DataExportTasks {
 		}
 		LOGGER.info("Ended exportTask: " + dateFormat.format(new Date()));
 		auditLog.logAfter();
-		
+
 	}
 	/**
 	 * The isDataExportRunning method, checks if the data export task was started separately via command line
@@ -220,7 +220,7 @@ public class DataExportTasks {
 
 		int count = 0;
 		try {
-			process = new ProcessBuilder().command("bash", "-c", "ps -ef | grep '[D]ynamicPayloadGenerator'").start();
+			process = new ProcessBuilder().command("sh", "-c", "ps -ef | grep '[D]ynamicPayloadGenerator'").start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
@@ -244,11 +244,11 @@ public class DataExportTasks {
 	 * @return a single snapshot File
 	 */
 	private static File findSnapshot() {
-		String targetDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs" + AAIConstants.AAI_FILESEP + "data" + 
+		String targetDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs" + AAIConstants.AAI_FILESEP + "data" +
 				AAIConstants.AAI_FILESEP + "dataSnapshots";
 		File snapshot = null;
 		File targetDirFile = new File(targetDir);
-		
+
 		File[] allFilesArr = targetDirFile.listFiles((FileFilter) FileFileFilter.FILE);
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {
 			ErrorLogHelper.logError("AAI_8001", "Unable to find data snapshots at " + targetDir);
@@ -265,18 +265,18 @@ public class DataExportTasks {
 		}
 		return (snapshot);
 	}
-	
+
 	/**
 	 * The method findMultipleSnapshots looks in the data snapshots directory for a set of snapshot files that match the pattern.
 	 * @return the file name prefix corresponding to the second to last set of snapshots
 	 */
 	private static String findMultipleSnapshots() {
-		String targetDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs" + AAIConstants.AAI_FILESEP + "data" + 
+		String targetDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP + "logs" + AAIConstants.AAI_FILESEP + "data" +
 				AAIConstants.AAI_FILESEP + "dataSnapshots";
 		String snapshotName = null;
 		File targetDirFile = new File(targetDir);
 		TreeMap<String,List<File>> fileMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-		
+
 		/*dataSnapshot.graphSON.201804022009.P0
 		dataSnapshot.graphSON.201804022009.P1
 		dataSnapshot.graphSON.201804022009.P2
@@ -284,16 +284,16 @@ public class DataExportTasks {
 		dataSnapshot.graphSON.201804022009.P4*/
 		String snapshotPattern = "^.*dataSnapshot\\.graphSON\\.(\\d+)\\.P.*$";
 		Pattern p = Pattern.compile (snapshotPattern);
-		
+
 		FileFilter fileFilter = new RegexFileFilter("^.*dataSnapshot\\.graphSON\\.(\\d+)\\.P.*$");
 		File[] allFilesArr = targetDirFile.listFiles(fileFilter);
-		
+
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {
 			ErrorLogHelper.logError("AAI_8001", "Unable to find data snapshots at " + targetDir);
 			LOGGER.debug("Unable to find data snapshots at " + targetDir);
 			return (null);
 		}
-		
+
 		if ( allFilesArr.length > 1 ) {
 			Arrays.sort(allFilesArr, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
 			for ( File f : allFilesArr ) {
@@ -317,13 +317,13 @@ public class DataExportTasks {
 			}
 			if ( fileMap.size() > 1 ) {
 				NavigableMap<String,List<File>> dmap = fileMap.descendingMap();
-			
+
 				Map.Entry<String,List<File>> fentry = dmap.firstEntry();
 				LOGGER.debug ("First key in descending map " + fentry.getKey());
-				
+
 				Map.Entry<String,List<File>> lentry = dmap.higherEntry(fentry.getKey());
 				LOGGER.debug ("Next key in descending map " + lentry.getKey());
-				
+
 				List<File> l = lentry.getValue();
 				snapshotName = l.get(0).getAbsolutePath();
 				// Remove the .P* extension
@@ -348,7 +348,7 @@ public class DataExportTasks {
 	 * @throws AAIException
 	 */
 	private static void deletePayload(File targetDirFile) {
-		
+
 		File[] allFilesArr = targetDirFile.listFiles((FileFilter)DirectoryFileFilter.DIRECTORY);
 		if ( allFilesArr == null || allFilesArr.length == 0 ) {
 			LOGGER.debug("No payload files found at " + targetDirFile.getPath());
@@ -359,12 +359,12 @@ public class DataExportTasks {
 				FileUtils.deleteDirectory(f);
 			}
 			catch (IOException e) {
-				
+
 				LOGGER.debug("Unable to delete directory " + f.getAbsolutePath() + " " + e.getMessage());
 			}
-			
+
 		}
-		
+
 	}
 	/**
 	 * The runScript method runs a shell script/command with a variable number of arguments
@@ -380,6 +380,6 @@ public class DataExportTasks {
 			ErrorLogHelper.logError("AAI_8002", "Exception while running dynamicPayloadArchive.sh "+ LogFormatTools.getStackTop(e));
 			LOGGER.debug("Exception while running dynamicPayloadArchive.sh" + LogFormatTools.getStackTop(e));
 		}
-		
+
 	}
 }

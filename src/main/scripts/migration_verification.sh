@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 ###
 # ============LICENSE_START=======================================================
@@ -9,9 +9,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@
 display_usage() {
   cat << EOF
   Usage: $0 [options]
-  
+
   1. Usage: migration_verification.sh <last_modified> <logs_path>
   2. The <logs_path> should be a directory containing all of the logs. If empty, default path is /opt/app/aai-graphadmin/logs/migration.
   3. The <last_modified> parameter should be an integer for up to how many minutes ago a log file should be parsed.

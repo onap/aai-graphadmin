@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 ###
 # ============LICENSE_START=======================================================
@@ -24,7 +24,6 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 
 start_date;
-check_user;
 source_profile;
 
 CERTPATH=$PROJECT_HOME/resources/etc/auth/
