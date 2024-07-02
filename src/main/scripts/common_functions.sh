@@ -1,18 +1,7 @@
-#!/bin/ksh
+#!/bin/sh
 #
 # Common functions that can be used throughout multiple scripts
 # In order to call these functions, this file needs to be sourced
-
-# Checks if the user that is currently running is aaiadmin
-check_user(){
-
-    userid=$( id | cut -f2 -d"(" | cut -f1 -d")" )
-
-    if [ "${userid}" != "aaiadmin" ]; then
-        echo "You must be aaiadmin to run $0. The id used $userid."
-        exit 1
-    fi
-}
 
 # Sources the profile and sets the project home
 source_profile(){
@@ -49,7 +38,7 @@ execute_spring_jar(){
     JAVA_OPTS="${JAVA_OPTS} ${JAVA_POST_OPTS}";
 
     "${JAVA_HOME}/bin/java" ${JVM_OPTS} ${JAVA_OPTS} -jar ${EXECUTABLE_JAR} "$@" || {
-        echo "Failed to run the tool $0 successfully";
+        echo "Failed to run the tool $0";
         exit 1;
     }
 }

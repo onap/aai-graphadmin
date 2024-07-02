@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 # This script uses "history" versions of dataSnapshot and SchemaGenerator (via genTester)
 #  java classes to do the INITIAL load of a history database based on regular dataSnapShot
@@ -14,7 +14,6 @@ COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 
 start_date;
-check_user;
 
 if [ "$#" -lt 1 ]; then
     echo "Illegal number of parameters"
@@ -32,7 +31,7 @@ if [ "$?" -ne "0" ]; then
     echo "Problem clearing out database."
     exit 1
 fi
- 
+
 #### Step 2) rebuild the db-schema
 echo "---- Second Step: rebuild the db schema ----"
 execute_spring_jar org.onap.aai.schema.GenTester4Hist ${PROJECT_HOME}/resources/logback.xml "GEN_DB_WITH_NO_DEFAULT_CR"
@@ -49,6 +48,6 @@ if [ "$?" -ne "0" ]; then
     end_date;
     exit 1
 fi
- 
+
 end_date;
 exit 0

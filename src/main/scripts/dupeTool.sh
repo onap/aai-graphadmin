@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 ###
 # ============LICENSE_START=======================================================
@@ -9,9 +9,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,35 +38,34 @@
 #        nodes created that many (or fewer) minutes ago.
 #  -autoFix (optional) use this if you want duplicates fixed automatically (if we
 #           can figure out which to delete)
-#  -maxFix (optional) like with dataGrooming lets you override the default maximum 
+#  -maxFix (optional) like with dataGrooming lets you override the default maximum
 #           number of dupes that can be processed at one time
 #  -skipHostCheck (optional) By default, the dupe tool will check to see that it is running
 #           on the host that is the first one in the list found in:
 #               aaiconfig.properties  aai.primary.filetransfer.serverlist
 #           This is so that when run from the cron, it only runs on one machine.
 #           This option lets you turn that checking off.
-#  -sleepMinutes (optional) like with DataGrooming, you can override the 
+#  -sleepMinutes (optional) like with DataGrooming, you can override the
 #           sleep time done when doing autoFix between first and second checks of the data.
-#  -params4Collect (optional) followed by a string to tell what properties/values to use 
+#  -params4Collect (optional) followed by a string to tell what properties/values to use
 #  		to limit the nodes being looked at.  Must be in the format
 #  		of “propertName|propValue” use commas to separate if there
 #  		are more than one name/value being passed.
 #  -specialTenantRule (optional) turns on logic which will use extra logic to figure
 #       out which tenant node can be deleted in a common scenario.
-#  
-#  
+#
+#
 #  For example (there are many valid ways to use it):
-#  
+#
 #  dupeTool.sh -userId am8383 -nodeType tenant -timeWindowMinutes 60 -autoFix
 #  or
 #  dupeTool.sh -userId am8383 -nodeType tenant -specialTenantRule -autoFix -maxFix 100
-# 
+#
 
 COMMON_ENV_PATH=$( cd "$(dirname "$0")" ; pwd -P )
 . ${COMMON_ENV_PATH}/common_functions.sh
 
 start_date;
-check_user;
 source_profile;
 
 export JAVA_PRE_OPTS=${JAVA_PRE_OPTS:--Xms6g -Xmx6g};

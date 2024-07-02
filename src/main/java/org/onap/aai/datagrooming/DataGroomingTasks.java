@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
 public class DataGroomingTasks {
 
 	private AaiScheduledTaskAuditLog auditLog;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DataGroomingTasks.class);
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
@@ -70,7 +70,7 @@ public class DataGroomingTasks {
 				return;
 			}
 		}
-		
+
 		LOGGER.debug("Started cron job dataGrooming @ " + dateFormat.format(new Date()));
 
 		Map<String, String> dataGroomingFlagMap = new HashMap<>();
@@ -111,7 +111,7 @@ public class DataGroomingTasks {
 				paramsArray.add("-dontFixOrphans");
 			}
 			if("true".equals(dataGroomingFlagMap.get("enabletimewindowminutes"))){
-				paramsArray.add("-timeWindowMinutes");			
+				paramsArray.add("-timeWindowMinutes");
 				paramsArray.add(dataGroomingFlagMap.get("timewindowminutesvalue"));
 			}
 			if("true".equals(dataGroomingFlagMap.get("enableskiphostcheck"))){
@@ -119,19 +119,19 @@ public class DataGroomingTasks {
 			}
 
 			if("true".equals(dataGroomingFlagMap.get("enablesleepminutes"))) {
-				paramsArray.add("-sleepMinutes");		
+				paramsArray.add("-sleepMinutes");
 				paramsArray.add(dataGroomingFlagMap.get("sleepminutesvalue"));
 			}
-		
+
 			if("true".equals(dataGroomingFlagMap.get("enableedgesonly"))){
 				paramsArray.add("-edgesOnly");
 			}
 			if("true".equals(dataGroomingFlagMap.get("enableskipedgechecks"))) {
 				paramsArray.add("-skipEdgeChecks");
 			}
-		
+
 			if("true".equals(dataGroomingFlagMap.get("enablemaxfix"))) {
-				paramsArray.add("-maxFix"); 
+				paramsArray.add("-maxFix");
 				paramsArray.add(dataGroomingFlagMap.get("maxfixvalue"));
 			}
 			if("true".equals(dataGroomingFlagMap.get("enabledupecheckoff"))){
@@ -151,7 +151,7 @@ public class DataGroomingTasks {
 				paramsArray.add("-f");
 				paramsArray.add(dataGroomingFlagMap.get("fvalue"));
 			}
-				
+
             DataGrooming dataGrooming = new DataGrooming(loaderFactory, schemaVersions);
             String[] paramsList = paramsArray.toArray(new String[0]);
             if (AAIConfig.get("aai.cron.enable.dataGrooming").equals("true")) {
@@ -174,7 +174,7 @@ public class DataGroomingTasks {
 
 		int count = 0;
 		try {
-			process = new ProcessBuilder().command("bash", "-c", "ps -ef | grep '[D]ataGrooming'").start();
+			process = new ProcessBuilder().command("sh", "-c", "ps -ef | grep '[D]ataGrooming'").start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);

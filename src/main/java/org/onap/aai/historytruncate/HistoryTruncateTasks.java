@@ -52,7 +52,7 @@ public class HistoryTruncateTasks {
 
 	@Scheduled(cron = "${historytruncatetasks.cron}" )
 	public void historyTruncateScheduleTask() throws AAIException, Exception {
-		
+
 		if(!"true".equals(AAIConfig.get("aai.disable.check.historytruncate.running", "false"))){
 			if(checkIfHistoryTruncateIsRunning()){
 				LOGGER.debug("History Truncate is already running on the system");
@@ -65,9 +65,9 @@ public class HistoryTruncateTasks {
 		try {
 			if (AAIConfig.get("aai.cron.enable.historytruncate").equals("true")) {
 				// Until we're comfortable with how it is working, we will keep it in "LOG_ONLY" mode
-				String defaultTruncMode = "LOG_ONLY"; 
-				String defaultTruncWindowDays = "999";    
-				String [] params = {"-truncateMode",defaultTruncMode,"-truncateWindowDays",defaultTruncWindowDays};   
+				String defaultTruncMode = "LOG_ONLY";
+				String defaultTruncWindowDays = "999";
+				String [] params = {"-truncateMode",defaultTruncMode,"-truncateWindowDays",defaultTruncWindowDays};
 				HistoryTruncate.main(params);
 			}
 		}
@@ -87,7 +87,7 @@ public class HistoryTruncateTasks {
 
 		int count = 0;
 		try {
-			process = new ProcessBuilder().command("bash", "-c", "ps -ef | grep '[H]istoryTruncate'").start();
+			process = new ProcessBuilder().command("sh", "-c", "ps -ef | grep '[H]istoryTruncate'").start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
@@ -104,5 +104,3 @@ public class HistoryTruncateTasks {
 		return count > 0;
 	}
 }
-		
-	
