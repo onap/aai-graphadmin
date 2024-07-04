@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.14.3</version>
+        <version>1.14.4</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.4</aai.schema.service.version>
-        <aai.common.version>1.14.3</aai.common.version>
+        <aai.common.version>1.14.4</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -102,7 +102,7 @@
         <schema.uri.base.path>/aai</schema.uri.base.path>
         <!-- End of Default ONAP Schema Properties -->
 
-        <janusgraph.version>0.5.0</janusgraph.version>
+        <janusgraph.version>0.5.3</janusgraph.version>
         <gremlin.version>3.4.13</gremlin.version>
         <micrometer.version>1.8.1</micrometer.version>
         <activemq.version>5.16.7</activemq.version>
