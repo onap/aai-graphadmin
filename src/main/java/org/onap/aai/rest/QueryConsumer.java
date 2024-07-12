@@ -44,6 +44,7 @@ import org.onap.aai.util.AAIConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -56,10 +57,10 @@ import java.util.List;
 @Component
 @Path("{version: v[1-9][0-9]*|latest}/dbquery")
 public class QueryConsumer extends RESTAPI {
-	
+
 	/** The introspector factory type. */
 	private ModelType introspectorFactoryType = ModelType.MOXY;
-	
+
 	private QueryProcessorType processorType = QueryProcessorType.LOCAL_GROOVY;
 
 	private static final String TARGET_ENTITY = "DB";
@@ -75,7 +76,7 @@ public class QueryConsumer extends RESTAPI {
 
 	@Autowired
 	public QueryConsumer(
-		HttpEntry traversalUriHttpEntry,
+		@Qualifier("traversalUriHttpEntry") HttpEntry traversalUriHttpEntry,
 		DslQueryProcessor dslQueryProcessor,
 		SchemaVersions schemaVersions,
 		@Value("${schema.uri.base.path}") String basePath
@@ -121,14 +122,14 @@ public class QueryConsumer extends RESTAPI {
 			}
 			SubGraphStyle subGraphStyle = SubGraphStyle.valueOf(subgraph);
 			JsonParser parser = new JsonParser();
-			
+
 			JsonObject input = parser.parse(content).getAsJsonObject();
-			
+
 			JsonElement gremlinElement = input.get("gremlin");
 			JsonElement dslElement = input.get("dsl");
 			String gremlin = "";
 			String dsl = "";
-			
+
 			SchemaVersion version = new SchemaVersion(versionParam);
 			traversalUriHttpEntry.setHttpEntryProperties(version);
 			dbEngine = traversalUriHttpEntry.getDbEngine();
@@ -140,9 +141,9 @@ public class QueryConsumer extends RESTAPI {
 				dsl = dslElement.getAsString();
 			}
 			GenericQueryProcessor processor;
-			
+
 			StopWatch.conditionalStart();
-			
+
 			if(!dsl.equals("")){
 				processor =  new GenericQueryProcessor.Builder(dbEngine)
 						.queryFrom(dsl, "dsl")
@@ -156,20 +157,20 @@ public class QueryConsumer extends RESTAPI {
 
 			String result = "";
 			List<Object> vertices = processor.execute(subGraphStyle);
-		
+
 			DBSerializer serializer = new DBSerializer(version, dbEngine, introspectorFactoryType, sourceOfTruth);
 			FormatFactory ff = new FormatFactory(traversalUriHttpEntry.getLoader(), serializer, schemaVersions, basePath);
-			
+
 			Formatter formater =  ff.get(format, info.getQueryParameters());
-		
+
 			result = formater.output(vertices).toString();
 
 			LOGGER.info ("Completed");
-			
+
 			response = Response.status(Status.OK)
 					.type(MediaType.APPLICATION_JSON)
 					.entity(result).build();
-		
+
 		} catch (AAIException e) {
 			response = consumerExceptionResponseGenerator(headers, info, HttpMethod.GET, e);
 		} catch (Exception e ) {
@@ -179,14 +180,14 @@ public class QueryConsumer extends RESTAPI {
 			if (dbEngine != null) {
 				dbEngine.rollback();
 			}
-			
+
 		}
-		
+
 		return response;
 	}
-	
+
 	public void checkQueryParams(MultivaluedMap<String, String> params) throws AAIException {
-		
+
 		if (params.containsKey("depth") && params.getFirst("depth").matches("\\d+")) {
 			String depth = params.getFirst("depth");
 			int i = Integer.parseInt(depth);
@@ -194,8 +195,8 @@ public class QueryConsumer extends RESTAPI {
 				throw new AAIException("AAI_3303");
 			}
 		}
-		
-		
+
+
 	}
 
 }
