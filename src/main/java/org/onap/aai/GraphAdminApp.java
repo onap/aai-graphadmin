@@ -63,7 +63,9 @@ import javax.annotation.PreDestroy;
     "org.onap.aai.datacleanup",
     "org.onap.aai.aailog",
     "org.onap.aai.failover",
-    "org.onap.aai.audit"
+    "org.onap.aai.audit",
+    "org.onap.aai.introspection",
+    "org.onap.aai.rest.notification"
 })
 @EnableAsync
 @EnableScheduling
@@ -73,7 +75,7 @@ public class GraphAdminApp {
 
     public static final String APP_NAME = "GraphAdmin";
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphAdminApp.class);
-    
+
     private static AaiDebugLog debugLog = new AaiDebugLog();
 	static {
 		debugLog.setupMDC();
@@ -128,7 +130,7 @@ public class GraphAdminApp {
 
         AAIGraph.getInstance();
 
-        System.setProperty("org.onap.aai.graphadmin.started", "true");             
+        System.setProperty("org.onap.aai.graphadmin.started", "true");
         LOGGER.info("GraphAdmin MicroService Started");
         LOGGER.debug("GraphAdmin MicroService Started");
         System.out.println("GraphAdmin Microservice Started");
