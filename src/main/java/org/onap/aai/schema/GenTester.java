@@ -70,7 +70,8 @@ public class GenTester {
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai.setup");
+					"org.onap.aai.setup",
+					"org.onap.aai.introspection");
 			ctx.refresh();
 		} catch (Exception e) {
 			AAIException aai = ExceptionTranslator.schemaServiceExceptionTranslator(e);
@@ -175,7 +176,7 @@ public class GenTester {
 	 * or JanusGraph instances.
 	 * This is because a state change needs to be acknowledged by all instances
 	 * before transitioning.
-	 * 
+	 *
 	 * @param graph
 	 * @return
 	 */

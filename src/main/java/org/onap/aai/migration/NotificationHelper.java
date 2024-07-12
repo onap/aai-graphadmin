@@ -32,7 +32,7 @@ import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.exceptions.AAIUnknownObjectException;
-import org.onap.aai.rest.ueb.UEBNotification;
+import org.onap.aai.rest.notification.UEBNotification;
 import org.onap.aai.serialization.db.DBSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.serialization.engines.query.QueryEngine;
@@ -64,9 +64,9 @@ public class NotificationHelper {
 		this.notification = new UEBNotification(loader, loaderFactory, schemaVersions);
 		MDC.put("logFilenameAppender", this.getClass().getSimpleName());
 		LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
-		
+
 	}
-	
+
 	public void addEvent(Vertex v, Introspector obj, EventAction action, URI uri, String basePath) throws UnsupportedEncodingException, AAIException {
 		HashMap<String, Introspector> relatedObjects = new HashMap<>();
 		Status status = mapAction(action);
@@ -75,15 +75,15 @@ public class NotificationHelper {
 			relatedObjects = this.getRelatedObjects(serializer, engine.getQueryEngine(), v);
 		}
 		notification.createNotificationEvent(transactionId, sourceOfTruth, status, uri, obj, relatedObjects, basePath);
-		
+
 	}
-	
+
 	public void addDeleteEvent(String transactionId, String sourceOfTruth, EventAction action, URI uri, Introspector obj, HashMap relatedObjects,String basePath) throws UnsupportedEncodingException, AAIException {
 		Status status = mapAction(action);
 		notification.createNotificationEvent(transactionId, sourceOfTruth, status, uri, obj, relatedObjects, basePath);
-		
+
 	}
-	
+
 	private HashMap<String, Introspector> getRelatedObjects(DBSerializer serializer, QueryEngine queryEngine, Vertex v) throws AAIException {
 		HashMap<String, Introspector> relatedVertices = new HashMap<>();
 		List<Vertex> vertexChain = queryEngine.findParents(v);
@@ -94,12 +94,12 @@ public class NotificationHelper {
 			} catch (AAIUnknownObjectException | UnsupportedEncodingException e) {
 				LOGGER.warn("Unable to get vertex properties, partial list of related vertices returned");
 			}
-			
+
 		}
-		
+
 		return relatedVertices;
 	}
-	
+
 	private Status mapAction(EventAction action) {
 		if (EventAction.CREATE.equals(action)) {
 			return Status.CREATED;
@@ -111,7 +111,7 @@ public class NotificationHelper {
 			return Status.OK;
 		}
 	}
-	
+
 	public void triggerEvents() throws AAIException {
 		notification.triggerEvents();
 	}
