@@ -23,8 +23,10 @@ package org.onap.aai.migration;
 import com.att.eelf.configuration.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.onap.aai.datasnapshot.DataSnapshot;
 import org.onap.aai.db.props.AAIProperties;
@@ -111,7 +113,12 @@ public class MigrationControllerInternal {
 		// graph storage backend of inmemory
 		if (cArgs.dataSnapshot != null && !cArgs.dataSnapshot.isEmpty()) {
 			try {
-				PropertiesConfiguration config = new PropertiesConfiguration(cArgs.config);
+				FileBasedConfigurationBuilder<PropertiesConfiguration> builder =
+    			new FileBasedConfigurationBuilder<PropertiesConfiguration>(PropertiesConfiguration.class)
+    			.configure(new Parameters().properties()
+        	.setFileName(cArgs.config));
+					PropertiesConfiguration config = builder.getConfiguration();
+				// PropertiesConfiguration config = new PropertiesConfiguration(cArgs.config);
 				if (config.getString("storage.backend").equals("inmemory")) {
 					System.setProperty("snapshot.location", cArgs.dataSnapshot);
 					String snapshotLocation =cArgs.dataSnapshot;

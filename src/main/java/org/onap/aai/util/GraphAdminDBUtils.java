@@ -32,7 +32,7 @@ public class GraphAdminDBUtils {
 
 	}
 
-	public static void logConfigs(org.apache.commons.configuration.Configuration configuration) {
+	public static void logConfigs(org.apache.commons.configuration2.Configuration configuration) {
 
 		if (configuration != null && configuration.getKeys() != null) {
 			Iterator<String> keys = configuration.getKeys();

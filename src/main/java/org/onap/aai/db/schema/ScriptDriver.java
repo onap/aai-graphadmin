@@ -22,8 +22,7 @@ package org.onap.aai.db.schema;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.codehaus.jackson.JsonGenerationException;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
@@ -50,13 +49,14 @@ public class ScriptDriver {
 	 * @throws AAIException the AAI exception
 	 * @throws JsonGenerationException the json generation exception
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws org.apache.commons.configuration2.ex.ConfigurationException
 	 */
-	public static void main (String[] args) throws AAIException, IOException, ConfigurationException, ErrorObjectFormatException {
+	public static void main (String[] args) throws AAIException, IOException, ErrorObjectFormatException, org.apache.commons.configuration2.ex.ConfigurationException {
 		CommandLineArgs cArgs = new CommandLineArgs();
-		
+
 		ErrorLogHelper.loadProperties();
 		new JCommander(cArgs, args);
-		
+
 		if (cArgs.help) {
 			System.out.println("-c [path to graph configuration] -type [what you want to audit - oxm or graph]");
 		}
@@ -108,19 +108,19 @@ public class ScriptDriver {
 			System.out.println(json);
 		}
 	}
-	
+
 }
 
 class CommandLineArgs {
-	
+
 	@Parameter(names = "--help", description = "Help")
 	public boolean help = false;
-	
+
 	@Parameter(names = "-c", description = "Configuration", required=true)
 	public String config;
-	
+
 	@Parameter(names = "-type", description = "Type", required=true)
 	public String type = "graph";
-	
+
 
 }
