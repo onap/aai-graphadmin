@@ -34,6 +34,7 @@ import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.MoxyLoader;
 import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.rest.db.HttpEntry;
+import org.onap.aai.rest.notification.NotificationService;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.AAIConfigTranslator;
 import org.onap.aai.setup.SchemaVersion;
@@ -62,7 +63,9 @@ import static org.junit.Assert.assertNotNull;
         DslConfiguration.class,
         IntrospectionConfig.class,
         XmlFormatTransformerConfiguration.class,
-        RestBeanConfig.class
+        RestBeanConfig.class,
+        LoaderFactory.class,
+        NotificationService.class
 })
 @TestPropertySource(properties = {
         "schema.uri.base.path = /aai",

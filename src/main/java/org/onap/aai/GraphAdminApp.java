@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -63,17 +65,24 @@ import javax.annotation.PreDestroy;
     "org.onap.aai.datacleanup",
     "org.onap.aai.aailog",
     "org.onap.aai.failover",
-    "org.onap.aai.audit"
+    "org.onap.aai.audit",
+    "org.onap.aai.introspection",
+    "org.onap.aai.rest.notification"
 })
 @EnableAsync
 @EnableScheduling
 @EnableAspectJAutoProxy
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {
+    DataSourceAutoConfiguration.class,
+    HibernateJpaAutoConfiguration.class,
+    CassandraDataAutoConfiguration.class,
+    CassandraAutoConfiguration.class
+})
 public class GraphAdminApp {
 
     public static final String APP_NAME = "GraphAdmin";
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphAdminApp.class);
-    
+
     private static AaiDebugLog debugLog = new AaiDebugLog();
 	static {
 		debugLog.setupMDC();
@@ -128,7 +137,7 @@ public class GraphAdminApp {
 
         AAIGraph.getInstance();
 
-        System.setProperty("org.onap.aai.graphadmin.started", "true");             
+        System.setProperty("org.onap.aai.graphadmin.started", "true");
         LOGGER.info("GraphAdmin MicroService Started");
         LOGGER.debug("GraphAdmin MicroService Started");
         System.out.println("GraphAdmin Microservice Started");
