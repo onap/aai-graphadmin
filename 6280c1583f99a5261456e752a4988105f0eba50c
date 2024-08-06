@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Nandkishor Patke <nandkishor-laxman.patke@t-systems.com>
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Submitted-by: Nandkishor Patke <nandkishor-laxman.patke@t-systems.com>
+Submitted-at: Tue, 06 Aug 2024 12:39:20 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/aai/graphadmin/+/138640
+Project: aai/graphadmin
+Branch: refs/heads/master
