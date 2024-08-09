@@ -120,11 +120,11 @@ public class DynamicPayloadGenerator {
 	 *
 	 * @param args
 	 *            the arguments
-	 * @param exitFlag true if running from a shell script to call system exit, false if running from scheduled task         
+	 * @param exitFlag true if running from a shell script to call system exit, false if running from scheduled task
 	 * @throws AAIException
 	 * @throws Exception
 	 */
-	
+
 	public static void run (LoaderFactory loaderFactory, EdgeIngestor edgeIngestor, SchemaVersions schemaVersions, String[] args, boolean isSystemExit) {
 		//
 		MDC.put("logFilenameAppender", DynamicPayloadGenerator.class.getSimpleName());
@@ -143,7 +143,7 @@ public class DynamicPayloadGenerator {
 		else {
 			AAISystemExitUtil.systemExitCloseAAIGraph(0);
 		}
-	
+
 	}
 	public static void main(String[] args) throws AAIException {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
@@ -152,7 +152,8 @@ public class DynamicPayloadGenerator {
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai.setup"
+					"org.onap.aai.setup",
+          "org.onap.aai.introspection"
 			);
 			ctx.refresh();
 		} catch (Exception e) {
@@ -167,8 +168,8 @@ public class DynamicPayloadGenerator {
 		SchemaVersions schemaVersions = (SchemaVersions) ctx.getBean("schemaVersions");
 		run (loaderFactory, edgeIngestor, schemaVersions, args, true);
 	}
-	
-	
+
+
 	public void taskExit() {
 		if ( this.exitFlag ) {
 			AAISystemExitUtil.systemExitCloseAAIGraph(1);
@@ -191,7 +192,7 @@ public class DynamicPayloadGenerator {
 		LOGGER.debug("schema enabled " + cArgs.schemaEnabled);
 		LOGGER.debug("Multiple snapshots " + cArgs.isMultipleSnapshot);
 		LOGGER.debug("Is Partial Graph " + cArgs.isPartialGraph);
-		
+
 		if (cArgs.config.isEmpty())
 			cArgs.config = AAIConstants.AAI_HOME_ETC_APP_PROPERTIES + "dynamic.properties";
 
@@ -226,26 +227,26 @@ public class DynamicPayloadGenerator {
 
 		List<Map<String, List<String>>> nodeFilters = readFile(cArgs.nodePropertyFile);
 		/*
-		 * Read the inputFilters which will include for each node-type the regex that needs to be 
+		 * Read the inputFilters which will include for each node-type the regex that needs to be
 		 * applied and the filtered-node-type
 		 * For eg: complex --> apply regex on cloud-region and then traverse to complex
 		 * complex --> filtered-node-type: cloud-region, filters: include regex on cloud-region
 		 */
 		/*
-		 * Example: 
-		 * { "cloud-region" : 
+		 * Example:
+		 * { "cloud-region" :
 		 *		 {"filtered-node-type":"cloud-region",
-		 * 		  "filters": [ { "property": "cloud-owner", "regex": "att-aic" }, 
+		 * 		  "filters": [ { "property": "cloud-owner", "regex": "att-aic" },
 		 * 					 { "property": "cloud-region-id", "regex": "M*" },
 		 *                   { "property":"cloud-region-version", "regex": "aic2.5|aic3.0" }
-		 *                 ] }, 
+		 *                 ] },
 		 *  "complex" : {
-		 * 		"filtered-node-type":"cloud-region", 
-		 *       "filters": [ { "property": "cloud-owner", "regex": "att-aic" }, 
+		 * 		"filtered-node-type":"cloud-region",
+		 *       "filters": [ { "property": "cloud-owner", "regex": "att-aic" },
 		 * 					 { "property": "cloud-region-id", "regex": "M*" },
 		 *                   { "property":"cloud-region-version", "regex": "aic2.5|aic3.0" }
-		 *                 ] }, 
-		 * 
+		 *                 ] },
+		 *
 		 * } }
 		 */
 		Map<String, Map<String, String>> inputFilters = readInputFilterPropertyFile(cArgs.inputFilterPropertyFile);
@@ -334,7 +335,7 @@ public class DynamicPayloadGenerator {
   "complex" : {
            "filters":[
            ]
-           
+
   }
 }
 */
@@ -503,7 +504,7 @@ public class DynamicPayloadGenerator {
 		GraphTraversal<Vertex, Vertex> gtraversal = inMemGraph.getGraph().traversal().V().has("aai-node-type",
 				filteredNodeType);
 
-		
+
 		// input regex
 		if (nodeInputFilters != null && (!nodeInputFilters.isEmpty())) {
 			for (Map.Entry<String, String> entry : nodeInputFilters.entrySet()) {
@@ -604,7 +605,7 @@ public class DynamicPayloadGenerator {
 						String emsg = "Caught exception while processing [" + counter + "-" + nodeType + "] continuing";
 						System.out.println(emsg);
 						LOGGER.error(emsg);
-						
+
 					}
 				}
 			}

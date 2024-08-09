@@ -39,14 +39,15 @@ public class SendMigrationNotificationsMain {
 		Arrays.asList(args).stream().forEach(System.out::println);
 
 		String requestId = UUID.randomUUID().toString();
-		
+
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
 		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai.setup"
+					"org.onap.aai.setup",
+					"org.onap.aai.introspection"
 			);
 			ctx.refresh();
 		} catch (Exception e) {
@@ -104,5 +105,3 @@ class CommandLineArgs {
 	@Parameter (names = "--eventSource", description = "source of truth for notification, defaults to DMAAP-LOAD")
 	public String eventSource = "DMAAP-LOAD";
 }
-
-

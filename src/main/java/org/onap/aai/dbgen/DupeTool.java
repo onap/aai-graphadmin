@@ -371,7 +371,7 @@ public class DupeTool {
                         + " sets of duplicates that we think can be deleted. ";
                 logger.debug(msg);
                 System.out.println(msg);
-               
+
                 if (dupeSetsToFix.size() > 0) {
                     msg = " Here is what the sets look like: ";
                     logger.debug(msg);
@@ -475,7 +475,8 @@ public class DupeTool {
         try {
             ctx.scan(
                     "org.onap.aai.config",
-                    "org.onap.aai.setup"
+                    "org.onap.aai.setup",
+                    "org.onap.aai.introspection"
             );
             ctx.refresh();
         } catch (Exception e) {
@@ -1024,9 +1025,9 @@ public class DupeTool {
                                           Boolean specialTenantRule, Loader loader, Logger logger)
             throws AAIException {
 
-		// This method assumes that it is being passed a List of 
+		// This method assumes that it is being passed a List of
 		// vertex objects which violate our uniqueness constraints.
-		// Note - returning a null vertex means we could not 
+		// Note - returning a null vertex means we could not
 		//   safely pick one to keep (Ie. safely know which to delete.)
         Vertex nullVtx = null;
         GraphTraversalSource gts = g.traversal();
@@ -1041,9 +1042,9 @@ public class DupeTool {
         if (listSize == 1) {
             return (dupeVertexList.get(0));
         }
-        
-		// If they don't all have the same aai-uri, then we will not 
-		// choose between them - we'll need someone to manually 
+
+		// If they don't all have the same aai-uri, then we will not
+		// choose between them - we'll need someone to manually
 		// check to pick which one makes sense to keep.
 		Object uriOb = dupeVertexList.get(0).<Object>property("aai-uri").orElse(null);
 		if( uriOb == null || uriOb.toString().equals("") ){
@@ -1059,7 +1060,7 @@ public class DupeTool {
 			}
 			String nextUri = uriOb.toString();
 			if( !thisUri.equals(nextUri)){
-				// there are different URI's on these - so we can't pick 
+				// there are different URI's on these - so we can't pick
 				// a dupe to keep.  Someone will need to look at it.
 				return nullVtx;
 			}
@@ -1268,7 +1269,7 @@ public class DupeTool {
             if (allTheSame) {
                 if ( checkAaiUriOk(gts, vtxA, logger) ) {
                 	preferredVtx = vtxA;
-            	} 
+            	}
             	else if ( checkAaiUriOk(gts, vtxB, logger) ) {
             		preferredVtx = vtxB;
             	}
@@ -1539,8 +1540,8 @@ public class DupeTool {
 
     }// End of getNodeKeyVals()
 
-    
-	
+
+
 	/**
 	 * makes sure aai-uri exists and can be used to get this node back
      *
@@ -1552,7 +1553,7 @@ public class DupeTool {
 	 */
 	private Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx, Logger eLogger ) {
 		String aaiUriStr = "";
-		try { 
+		try {
 			Object ob = origVtx.<Object>property("aai-uri").orElse(null);
 			String origVid = origVtx.id().toString();
 			if (ob == null || ob.toString().equals("")) {
@@ -1575,11 +1576,11 @@ public class DupeTool {
 				}
 				if( count == 0 ){
 					eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] could not be used to query for that vertex. ", aaiUriStr, origVid));
-					return false;	
+					return false;
 				}
 				else if( count > 1 ){
 					eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] brought back multiple (%d) vertices instead of just one. ", aaiUriStr, origVid, count));
-					return false;	
+					return false;
 				}
 			}
 		}
@@ -1587,9 +1588,9 @@ public class DupeTool {
 			eLogger.error(" ERROR trying to get node with aai-uri: [" + aaiUriStr + "]" + LogFormatTools.getStackTop(ex));
 		}
 		return true;
-		
-	}// End of checkAaiUriOk() 
-	
+
+	}// End of checkAaiUriOk()
+
 
     /**
      * Get values of the key properties for a node as a single string
@@ -1869,6 +1870,5 @@ public class DupeTool {
 	public void setDupeGroupCount(int dgCount) {
 		this.dupeGroupCount = dgCount;
 	}
-	
-}
 
+}
