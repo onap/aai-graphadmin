@@ -170,7 +170,8 @@ public class SchemaMod4Hist {
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai.setup"
+					"org.onap.aai.setup",
+					"org.onap.aai.introspection"
 			);
 			ctx.refresh();
 		} catch (Exception e) {

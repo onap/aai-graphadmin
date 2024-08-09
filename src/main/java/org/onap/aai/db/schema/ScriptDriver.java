@@ -67,7 +67,7 @@ public class ScriptDriver {
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai"
+					"org.onap.aai.introspection"
 			);
 			ctx.refresh();
 

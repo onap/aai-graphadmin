@@ -40,14 +40,14 @@ public class GenTester4Hist {
 
 	private static Logger LOGGER;
 	private static boolean historyEnabled;
-	
+
 	/**
 	 * The main method.
 	 *
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) throws AAIException{
-	   
+
 		JanusGraph graph = null;
 		System.setProperty("aai.service.name", GenTester4Hist.class.getSimpleName());
 		// Set the logging file properties to be used by EELFManager
@@ -56,14 +56,15 @@ public class GenTester4Hist {
 		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 		LOGGER = LoggerFactory.getLogger(GenTester4Hist.class);
 		boolean addDefaultCR = false;  // For History, we do not add the default CloudRegion
-		
+
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
 		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai.setup"
+					"org.onap.aai.setup",
+					"org.onap.aai.introspection"
 			);
 			ctx.refresh();
 		} catch (Exception e) {
@@ -72,7 +73,7 @@ public class GenTester4Hist {
 			ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
 			throw aai;
 		}
-		
+
 		historyEnabled = Boolean.parseBoolean(ctx.getEnvironment().getProperty("history.enabled","false"));
 		if( !historyEnabled ) {
 	    	   String amsg = "GenTester4Hist may only be used when history.enabled=true. ";
@@ -80,14 +81,14 @@ public class GenTester4Hist {
 	    	   LOGGER.debug(amsg);
 	           return;
 		}
-		 
+
 		try {
             LOGGER.debug("GenTester4Hist uses either cql jar or Cassandra jar");
 
 			AAIConfig.init();
 	    	if (args != null && args.length > 0 ){
 	    		if( "genDbRulesOnly".equals(args[0]) ){
-	    			ErrorLogHelper.logError("AAI_3100", 
+	    			ErrorLogHelper.logError("AAI_3100",
 	    					" This option is no longer supported. What was in DbRules is now derived from the OXM files. ");
 	    			return;
 	    		}
@@ -98,7 +99,7 @@ public class GenTester4Hist {
 	            	System.out.println(imsg);
 	            	LOGGER.debug(imsg);
 					graph = AAIGraph.getInstance().getGraph();
-			    	
+
 			       if( graph == null ){
 					   ErrorLogHelper.logError("AAI_5102", "Error creating JanusGraph graph.");
 			           return;
@@ -114,26 +115,26 @@ public class GenTester4Hist {
 	    		}
 	    		else {
 	    			ErrorLogHelper.logError("AAI_3000", "Unrecognized argument passed to GenTester4Hist.java: [" + args[0] + "]. ");
-	    			
+
 	    			String emsg = "Unrecognized argument passed to GenTester4Hist.java: [" + args[0] + "]. ";
 	    			System.out.println(emsg);
 	    			LOGGER.error(emsg);
-	    			
+
 	    			emsg = "Either pass no argument for normal processing, or use 'GEN_DB_WITH_NO_SCHEMA'.";
 	    			System.out.println(emsg);
 	    			LOGGER.error(emsg);
-	    			
+
 	    			return;
 	    		}
 	    	}
-	    	
+
 			//AAIConfig.init();
 			ErrorLogHelper.loadProperties();
 			String imsg = "    ---- NOTE --- about to open graph (takes a little while)--------;";
         	System.out.println(imsg);
         	LOGGER.debug(imsg);
 			graph = AAIGraph.getInstance().getGraph();
-	    	
+
 			if( graph == null ){
 				ErrorLogHelper.logError("AAI_5102", "Error creating JanusGraph graph. ");
 				return;
@@ -146,7 +147,7 @@ public class GenTester4Hist {
 
 	       	imsg = "-- Loading new schema elements into JanusGraph --";
        		System.out.println(imsg);
-       		LOGGER.debug(imsg);      					
+       		LOGGER.debug(imsg);
        		SchemaGenerator4Hist.loadSchemaIntoJanusGraph(graphMgt, null);
 
             if( graph != null ){
@@ -165,7 +166,7 @@ public class GenTester4Hist {
 	    	ErrorLogHelper.logError("AAI_4000", ex.getMessage());
 	    	System.exit(1);
 	    }
-	    	    
+
 	    LOGGER.debug("-- all done, if program does not exit, please kill.");
 	    System.exit(0);
     }

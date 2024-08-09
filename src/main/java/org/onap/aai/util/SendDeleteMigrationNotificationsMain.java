@@ -46,7 +46,8 @@ public class SendDeleteMigrationNotificationsMain {
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
-					"org.onap.aai.setup"
+					"org.onap.aai.setup",
+					"org.onap.aai.introspection"
 			);
 			ctx.refresh();
 		} catch (Exception e) {
@@ -103,5 +104,3 @@ class CommandLineDeleteArgs {
 	@Parameter (names = "--eventSource", description = "source of truth for notification, defaults to DMAAP-LOAD")
 	public String eventSource = "DMAAP-LOAD";
 }
-
-
