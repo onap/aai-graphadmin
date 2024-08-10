@@ -23,33 +23,22 @@ RESOURCES_HOME=${APP_HOME}/resources/;
 
 export SERVER_PORT=${SERVER_PORT:-8449};
 
-find /opt/app/ -name "*.sh" -exec chmod +x {} +
+scriptName=$1;
 
-if [ -f ${APP_HOME}/aai.sh ]; then
-    ln -s bin scripts
-    ln -s /opt/aai/logroot/AAI-GA logs
+if [ ! -z $scriptName ]; then
 
-    mv ${APP_HOME}/aai.sh /etc/profile.d/aai.sh
-    chmod 755 /etc/profile.d/aai.sh
-
-    scriptName=$1;
-
-    if [ ! -z $scriptName ]; then
-
-        if [ -f ${APP_HOME}/bin/${scriptName} ]; then
-            shift 1;
-            ${APP_HOME}/bin/${scriptName} "$@" || {
-                echo "Failed to run the ${scriptName}";
-                exit 1;
-            }
-        else
-            echo "Unable to find the script ${scriptName} in ${APP_HOME}/bin";
+    if [ -f ${APP_HOME}/bin/${scriptName} ]; then
+        shift 1;
+        ${APP_HOME}/bin/${scriptName} "$@" || {
+            echo "Failed to run the ${scriptName}";
             exit 1;
-        fi;
-
-        exit 0;
+        }
+    else
+        echo "Unable to find the script ${scriptName} in ${APP_HOME}/bin";
+        exit 1;
     fi;
 
+    exit 0;
 fi;
 
 if [ -f ${APP_HOME}/resources/aai-graphadmin-swm-vars.sh ]; then
