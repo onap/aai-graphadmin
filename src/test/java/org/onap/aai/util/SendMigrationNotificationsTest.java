@@ -24,8 +24,12 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.*;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
@@ -39,10 +43,10 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodName.class)
 public class SendMigrationNotificationsTest extends AAISetup {
 
 	private final static String FILE = "./test.txt";
@@ -55,7 +59,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 
 	private static final String REALTIME_CONFIG = "./src/main/resources/etc/appprops/janusgraph-realtime.properties";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		System.setProperty("realtime.db.config", REALTIME_CONFIG);
 		AAIGraph.getInstance();
@@ -119,12 +123,12 @@ public class SendMigrationNotificationsTest extends AAISetup {
 			graphCreated.compareAndSet(false, true);
 		}
 	}
-	@AfterClass
+	@AfterAll
 	public static void cleanUp() throws IOException {
 		Files.delete(Paths.get(FILE));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 		if (tx.isOpen()) {
 			tx.tx().rollback();
@@ -138,7 +142,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
-		assertEquals("4 events are created ", 4, s.notificationHelper.getNotifications().getEvents().size());
+		assertEquals(4, s.notificationHelper.getNotifications().getEvents().size(), "4 events are created ");
 
 	}
 
@@ -149,7 +153,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
-		assertEquals("2 events are created ", 2, s.notificationHelper.getNotifications().getEvents().size());
+		assertEquals(2, s.notificationHelper.getNotifications().getEvents().size(), "2 events are created ");
 
 	}
 
@@ -160,7 +164,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
-		assertEquals("3 events are created ", 3, s.notificationHelper.getNotifications().getEvents().size());
+		assertEquals(3, s.notificationHelper.getNotifications().getEvents().size(), "3 events are created ");
 
 	}
 

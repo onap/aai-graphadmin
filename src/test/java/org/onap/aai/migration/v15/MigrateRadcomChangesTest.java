@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v15;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +28,8 @@ import java.util.Optional;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -52,7 +53,7 @@ public class MigrateRadcomChangesTest extends AAISetup {
 	private MigrateRadcomChanges migration;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		g = tx.traversal();
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -280,83 +281,116 @@ public class MigrateRadcomChangesTest extends AAISetup {
 	public void testGenericVnfsUpdated() throws Exception {
 		// check if generic-vnf nodes are updated
 		
-		assertEquals("First generic-vnf updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-1").next().value("model-invariant-id-local"));
-		assertEquals("First generic-vnf updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-1").next().value("model-version-id-local"));
-		assertEquals("First generic-vnf updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-1").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-1").next().value("model-invariant-id-local"), 
+				"First generic-vnf updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-1").next().value("model-version-id-local"), 
+				"First generic-vnf updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-1").next().value("model-customization-id"), 
+				"First generic-vnf updated customization");
 		
-		assertEquals("Second generic-vnf updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-2").next().value("model-invariant-id-local"));
-		assertEquals("Second generic-vnf updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-2").next().value("model-version-id-local"));
-		assertEquals("Second generic-vnf updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-2").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-2").next().value("model-invariant-id-local"), 
+				"Second generic-vnf updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-2").next().value("model-version-id-local"), 
+				"Second generic-vnf updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "name-2").next().value("model-customization-id"), 
+				"Second generic-vnf updated customization");
 		
-		assertEquals("Generic-vnf with no service updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-service").next().value("model-invariant-id-local"));
-		assertEquals("Generic-vnf with no service updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-service").next().value("model-version-id-local"));
-		assertEquals("Generic-vnf with no service updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-service").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-service").next().value("model-invariant-id-local"), 
+				"Generic-vnf with no service updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-service").next().value("model-version-id-local"), 
+				"Generic-vnf with no service updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-service").next().value("model-customization-id"), 
+				"Generic-vnf with no service updated customization");
 		
-		assertEquals("Generic-vnf with no invariant updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-invariant").next().value("model-invariant-id-local"));
-		assertEquals("Generic-vnf with no invariant updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-invariant").next().value("model-version-id-local"));
-		assertEquals("Generic-vnf with no invariant updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-invariant").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-invariant").next().value("model-invariant-id-local"), 
+				"Generic-vnf with no invariant updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-invariant").next().value("model-version-id-local"), 
+				"Generic-vnf with no invariant updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-invariant").next().value("model-customization-id"), 
+				"Generic-vnf with no invariant updated customization");
 		
-		assertEquals("Generic-vnf with no version updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-invariant-id-local"));
-		assertEquals("Generic-vnf with no version updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-version-id-local"));
-		assertEquals("Generic-vnf with no version updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-invariant-id-local"), 
+				"Generic-vnf with no version updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-version-id-local"), 
+				"Generic-vnf with no version updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-customization-id"), 
+				"Generic-vnf with no version updated customization");
 		
-		assertEquals("Generic-vnf with no customization updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-customization").next().value("model-invariant-id-local"));
-		assertEquals("Generic-vnf with no customization updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-customization").next().value("model-version-id-local"));
-		assertEquals("Generic-vnf with no customization updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-customization").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-customization").next().value("model-invariant-id-local"), 
+				"Generic-vnf with no customization updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-customization").next().value("model-version-id-local"), 
+				"Generic-vnf with no customization updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-customization").next().value("model-customization-id"), 
+				"Generic-vnf with no customization updated customization");
 		
-		assertEquals("Generic-vnf with no ids updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no ids").next().value("model-invariant-id-local"));
-		assertEquals("Generic-vnf with no ids updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no ids").next().value("model-version-id-local"));
-		assertEquals("Generic-vnf with no version updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no ids").next().value("model-invariant-id-local"), 
+				"Generic-vnf with no ids updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no ids").next().value("model-version-id-local"), 
+				"Generic-vnf with no ids updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "no-version").next().value("model-customization-id"), 
+				"Generic-vnf with no version updated customization");
 		
-		assertEquals("First generic-vnf for many-to-service test updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-1").next().value("model-invariant-id-local"));
-		assertEquals("First generic-vnf for many-to-service test updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-1").next().value("model-version-id-local"));
-		assertEquals("First generic-vnf for many-to-service test updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-1").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-1").next().value("model-invariant-id-local"), 
+				"First generic-vnf for many-to-service test updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-1").next().value("model-version-id-local"), 
+				"First generic-vnf for many-to-service test updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-1").next().value("model-customization-id"), 
+				"First generic-vnf for many-to-service test updated customization");
 		
-		assertEquals("Second generic-vnf for many-to-service test updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-2").next().value("model-invariant-id-local"));
-		assertEquals("Second generic-vnf for many-to-service test updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-2").next().value("model-version-id-local"));
-		assertEquals("Second generic-vnf for many-to-service test updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-2").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-2").next().value("model-invariant-id-local"), 
+				"Second generic-vnf for many-to-service test updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-2").next().value("model-version-id-local"), 
+				"Second generic-vnf for many-to-service test updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "many-service-2").next().value("model-customization-id"), 
+				"Second generic-vnf for many-to-service test updated customization");
 		
 		
-		assertEquals("First generic-vnf for multi-name test updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-10").next().value("model-invariant-id-local"));
-		assertEquals("First generic-vnf for multi-name test updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-10").next().value("model-version-id-local"));
-		assertEquals("First generic-vnf for multi-name test updated customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-10").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-10").next().value("model-invariant-id-local"), 
+				"First generic-vnf for multi-name test updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-10").next().value("model-version-id-local"), 
+				"First generic-vnf for multi-name test updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-10").next().value("model-customization-id"), 
+				"First generic-vnf for multi-name test updated customization");
 		
-		assertEquals("Second generic-vnf for multi-name test updated invariant", "new-resource-inv", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-11").next().value("model-invariant-id-local"));
-		assertEquals("Second generic-vnf for multi-name test updated version", "new-resource-ver", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-11").next().value("model-version-id-local"));
-		assertEquals("Second generic-vnf for multi-name test customization", "new-resource-cust", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-11").next().value("model-customization-id"));
+		assertEquals("new-resource-inv", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-11").next().value("model-invariant-id-local"), 
+				"Second generic-vnf for multi-name test updated invariant");
+		assertEquals("new-resource-ver", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-11").next().value("model-version-id-local"), 
+				"Second generic-vnf for multi-name test updated version");
+		assertEquals("new-resource-cust", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "test-11").next().value("model-customization-id"), 
+				"Second generic-vnf for multi-name test customization");
 	}
 	
 
@@ -364,128 +398,155 @@ public class MigrateRadcomChangesTest extends AAISetup {
 	public void testServiceInstancesUpdated() throws Exception {
 		// check if service-instance nodes are updated	
 		
-		assertEquals("First service-instance updated invariant", "new-service-inv", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-1").next().value("model-invariant-id-local"));
-		assertEquals("First service-instance-updated version", "new-service-ver", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-1").next().value("model-version-id-local"));
+		assertEquals("new-service-inv", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-1").next().value("model-invariant-id-local"), 
+				"First service-instance updated invariant");
+		assertEquals("new-service-ver", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-1").next().value("model-version-id-local"), 
+				"First service-instance-updated version");
 		
-		assertEquals("Second service-instance updated invariant", "new-service-inv", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-2").next().value("model-invariant-id-local"));
-		assertEquals("Second service-instance-updated version", "new-service-ver", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-2").next().value("model-version-id-local"));
+		assertEquals("new-service-inv", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-2").next().value("model-invariant-id-local"), 
+				"Second service-instance updated invariant");
+		assertEquals("new-service-ver", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-2").next().value("model-version-id-local"), 
+				"Second service-instance-updated version");
 		
-		assertEquals("Service-instance with no invariant updated invariant", "new-service-inv", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-invariant").next().value("model-invariant-id-local"));
-		assertEquals("Service-instance with no invariant updated version", "new-service-ver", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-invariant").next().value("model-version-id-local"));
+		assertEquals("new-service-inv", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-invariant").next().value("model-invariant-id-local"), 
+				"Service-instance with no invariant updated invariant");
+		assertEquals("new-service-ver", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-invariant").next().value("model-version-id-local"), 
+				"Service-instance with no invariant updated version");
 		
-		assertEquals("Service-instance with no version updated invariant", "new-service-inv", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-version").next().value("model-invariant-id-local"));
-		assertEquals("Service-instance with no version updated version", "new-service-ver", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-version").next().value("model-version-id-local"));
+		assertEquals("new-service-inv", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-version").next().value("model-invariant-id-local"), 
+				"Service-instance with no version updated invariant");
+		assertEquals("new-service-ver", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no-version").next().value("model-version-id-local"), 
+				"Service-instance with no version updated version");
 		
-		assertEquals("Service-instance with no ids updated invariant", "new-service-inv", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no ids").next().value("model-invariant-id-local"));
-		assertEquals("Service-instance with no ids updated version", "new-service-ver", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no ids").next().value("model-version-id-local"));
+		assertEquals("new-service-inv", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no ids").next().value("model-invariant-id-local"), 
+				"Service-instance with no ids updated invariant");
+		assertEquals("new-service-ver", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "no ids").next().value("model-version-id-local"), 
+				"Service-instance with no ids updated version");
 		
-		assertEquals("Service-instance for many-to-service test updated invariant", "new-service-inv", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-many").next().value("model-invariant-id-local"));
-		assertEquals("Service-instance for many-to-service test updated version", "new-service-ver", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-many").next().value("model-version-id-local"));		
+		assertEquals("new-service-inv", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-many").next().value("model-invariant-id-local"), 
+				"Service-instance for many-to-service test updated invariant");
+		assertEquals("new-service-ver", 
+				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "service-many").next().value("model-version-id-local"), 
+				"Service-instance for many-to-service test updated version");		
 	}
 	
 	@Test
 	public void testVfModulesUpdated() throws Exception {
 		//test if vf-module nodes are updated
 		
-		assertEquals("First vf-module updated invariant", "new-vf-module-inv-1", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-1").next().value("model-invariant-id-local"));
-		assertEquals("First vf-module updated version", "new-vf-module-ver-1", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-1").next().value("model-version-id-local"));
+		assertEquals("new-vf-module-inv-1", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-1").next().value("model-invariant-id-local"), 
+				"First vf-module updated invariant");
+		assertEquals("new-vf-module-ver-1", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-1").next().value("model-version-id-local"), 
+				"First vf-module updated version");
 		
-		assertEquals("Second vf-module updated invariant", "new-vf-module-inv-2", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-2").next().value("model-invariant-id-local"));
-		assertEquals("Second vf-module updated version", "new-vf-module-ver-2", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-2").next().value("model-version-id-local"));
+		assertEquals("new-vf-module-inv-2", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-2").next().value("model-invariant-id-local"), 
+				"Second vf-module updated invariant");
+		assertEquals("new-vf-module-ver-2", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module-2").next().value("model-version-id-local"), 
+				"Second vf-module updated version");
 		
-		assertEquals("Vf-module with no invariant updated invariant", "new-vf-module-inv-3", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-invariant").next().value("model-invariant-id-local"));
-		assertEquals("Vf-module with no invariant updated version", "new-vf-module-ver-3", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-invariant").next().value("model-version-id-local"));
+		assertEquals("new-vf-module-inv-3", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-invariant").next().value("model-invariant-id-local"), 
+				"Vf-module with no invariant updated invariant");
+		assertEquals("new-vf-module-ver-3", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-invariant").next().value("model-version-id-local"), 
+				"Vf-module with no invariant updated version");
 		
-		assertEquals("Vf-module with no version updated invariant", "new-vf-module-inv-4", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ver").next().value("model-invariant-id-local"));
-		assertEquals("Vf-module with no version updated version", "new-vf-module-ver-4", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ver").next().value("model-version-id-local"));
+		assertEquals("new-vf-module-inv-4", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ver").next().value("model-invariant-id-local"), 
+				"Vf-module with no version updated invariant");
+		assertEquals("new-vf-module-ver-4", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ver").next().value("model-version-id-local"), 
+				"Vf-module with no version updated version");
 		
-		assertEquals("Vf-module with no ids updated invariant", "new-vf-module-inv-5", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ids").next().value("model-invariant-id-local"));
-		assertEquals("Vf-module with no ids updated version", "new-vf-module-ver-5", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ids").next().value("model-version-id-local"));
+		assertEquals("new-vf-module-inv-5", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ids").next().value("model-invariant-id-local"), 
+				"Vf-module with no ids updated invariant");
+		assertEquals("new-vf-module-ver-5", 
+				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "no-ids").next().value("model-version-id-local"), 
+				"Vf-module with no ids updated version");
 	}
 	
 	@Test
 	public void testVserverAndImageUpdated() throws Exception {
 		//test if vserver-image relationships are updated
-		assertTrue("Vserver not connected to image is connected to new image",
-				g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver-1").out("org.onap.relationships.inventory.Uses")
-				.has("aai-node-type", "image").has("image-id", "image-id-1").hasNext());
-		assertTrue("Vserver connected to existing image is connected to new image",
-				g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver-2").out("org.onap.relationships.inventory.Uses")
-				.has("aai-node-type", "image").has("image-id", "image-id-2").hasNext());
-		assertFalse("Vserver connected to existing image is not connected to that image",
-				g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver-2").out("org.onap.relationships.inventory.Uses")
-				.has("aai-node-type", "image").has("image-id", "image-old").hasNext());	
-		assertTrue("Existing image still exists",
-				g.V().has("aai-node-type", "image").has("image-id", "image-old").hasNext());
+		assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver-1").out("org.onap.relationships.inventory.Uses")
+				.has("aai-node-type", "image").has("image-id", "image-id-1").hasNext(),
+				"Vserver not connected to image is connected to new image");
+		assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver-2").out("org.onap.relationships.inventory.Uses")
+				.has("aai-node-type", "image").has("image-id", "image-id-2").hasNext(),
+				"Vserver connected to existing image is connected to new image");
+		assertFalse(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver-2").out("org.onap.relationships.inventory.Uses")
+				.has("aai-node-type", "image").has("image-id", "image-old").hasNext(),
+				"Vserver connected to existing image is not connected to that image");	
+		assertTrue(g.V().has("aai-node-type", "image").has("image-id", "image-old").hasNext(),
+				"Existing image still exists");
 	}
 	
 	@Test
 	public void testNodesNotUpdated() throws Exception {
 		// negative tests
 	
-		assertFalse("Generic-vnf with wrong type has unchanged invariant", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-type").next()
-				.property("model-invariant-id-local").isPresent());
-		assertFalse("Generic-vnf with wrong type has unchanged version", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-type").next()
-				.property("model-version-id-local").isPresent());
-		assertFalse("Generic-vnf with wrong type has unchanged customization", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-type").next()
-				.property("model-customizaiton-id").isPresent());
+		assertFalse(g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-type").next()
+				.property("model-invariant-id-local").isPresent(), 
+				"Generic-vnf with wrong type has unchanged invariant");
+		assertFalse(g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-type").next()
+				.property("model-version-id-local").isPresent(), 
+				"Generic-vnf with wrong type has unchanged version");
+		assertFalse(g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-type").next()
+				.property("model-customizaiton-id").isPresent(), 
+				"Generic-vnf with wrong type has unchanged customization");
 		
-		assertEquals("Generic-vnf with wrong name has unchanged invariant", "test", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-name").next().value("model-invariant-id-local"));
-		assertEquals("Generic-vnf with wrong name has unchanged version", "test", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-name").next().value("model-version-id-local"));
-		assertEquals("Generic-vnf with wrong name has unchanged customization", "test", 
-				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-name").next().value("model-customization-id"));
+		assertEquals("test", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-name").next().value("model-invariant-id-local"), 
+				"Generic-vnf with wrong name has unchanged invariant");
+		assertEquals("test", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-name").next().value("model-version-id-local"), 
+				"Generic-vnf with wrong name has unchanged version");
+		assertEquals("test", 
+				g.V().has("aai-node-type", "generic-vnf").has("vnf-name", "wrong-name").next().value("model-customization-id"), 
+				"Generic-vnf with wrong name has unchanged customization");
 		
-		assertFalse("Unconnected service-instance has unchanged invariant", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "wrong").next()
-				.property("model-invariant-id-local").isPresent());
-		assertFalse("Unconnected service-instance has unchanged version", 
-				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "wrong").next()
-				.property("model-version-id-local").isPresent());
+		assertFalse(g.V().has("aai-node-type", "service-instance").has("service-instance-id", "wrong").next()
+				.property("model-invariant-id-local").isPresent(), 
+				"Unconnected service-instance has unchanged invariant");
+		assertFalse(g.V().has("aai-node-type", "service-instance").has("service-instance-id", "wrong").next()
+				.property("model-version-id-local").isPresent(), 
+				"Unconnected service-instance has unchanged version");
 		
-		assertEquals("Service-instance connected to unctouched generic-vnf has unchanged invariant", "test", 
+		assertEquals("test", 
 				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "connected-wrong")
-				.next().value("model-invariant-id-local"));
-		assertEquals("Service-instance connected to untouched generic-vnf has unchanged version", "test", 
+				.next().value("model-invariant-id-local"), 
+				"Service-instance connected to unctouched generic-vnf has unchanged invariant");
+		assertEquals("test", 
 				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "connected-wrong")
-				.next().value("model-version-id-local"));	
+				.next().value("model-version-id-local"), 
+				"Service-instance connected to untouched generic-vnf has unchanged version");	
 		
-		assertFalse("Vf-module connected to untouched generic-vnf has unchanged invariant", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "bad")
-				.next().property("model-invariant-id-local").isPresent());
-		assertFalse("Vf-module connected to untouched generic-vnf has unchanged version", 
-				g.V().has("aai-node-type", "vf-module").has("vf-module-id", "bad")
-				.next().property("model-version-id-local").isPresent());
+		assertFalse(g.V().has("aai-node-type", "vf-module").has("vf-module-id", "bad")
+				.next().property("model-invariant-id-local").isPresent(), 
+				"Vf-module connected to untouched generic-vnf has unchanged invariant");
+		assertFalse(g.V().has("aai-node-type", "vf-module").has("vf-module-id", "bad")
+				.next().property("model-version-id-local").isPresent(), 
+				"Vf-module connected to untouched generic-vnf has unchanged version");
 
-		assertTrue("Untouched vserver still connected to image",
-				g.V().has("aai-node-type", "vserver").has("vserver-id", "unchanged").out("org.onap.relationships.inventory.Uses")
-				.has("aai-node-type", "image").has("image-id", "image-bad").hasNext());
+		assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "unchanged").out("org.onap.relationships.inventory.Uses")
+				.has("aai-node-type", "image").has("image-id", "image-bad").hasNext(),
+				"Untouched vserver still connected to image");
 	}
 	
 	@Test

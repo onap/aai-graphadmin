@@ -20,19 +20,17 @@
 
 package org.onap.aai;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.config.SpringContextAware;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
@@ -48,8 +46,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -63,12 +59,6 @@ import org.springframework.web.client.RestTemplate;
 @Import(GraphAdminTestConfiguration.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class MetricsConfigurationTest {
-
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     RestTemplate restTemplate;
@@ -86,13 +76,13 @@ public class MetricsConfigurationTest {
     private String actuatorUrl;
     private HttpHeaders headers;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupConfig() throws AAIException {
         System.setProperty("AJSC_HOME", "./");
         System.setProperty("BUNDLECONFIG_DIR", "src/main/resources/");
     }
 
-    @Before
+    @BeforeEach
     public void setup() throws UnsupportedEncodingException {
 
         headers = new HttpHeaders();

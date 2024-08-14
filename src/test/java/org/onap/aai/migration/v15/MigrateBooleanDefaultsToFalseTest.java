@@ -30,8 +30,9 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
@@ -42,12 +43,11 @@ import org.onap.aai.migration.v15.MigrateBooleanDefaultsToFalse;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
-import static org.junit.Assert.assertTrue;
 
 public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
 
@@ -76,7 +76,7 @@ public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
     private BooleanDefaultMigrator migration;
     private GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -247,137 +247,137 @@ public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
     @Test
     public void testMissingProperty(){
     	//is-closed-loop-disabled
-        assertTrue("Value of generic-vnf should be updated since the property is-closed-loop-disabled doesn't exist",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf0").has("is-closed-loop-disabled", false).hasNext());
-        assertTrue("Value of vnfc should be updated since the property is-closed-loop-disabled doesn't exist",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc0").has("is-closed-loop-disabled", false).hasNext());
-        assertTrue("Value of vserver should be updated since the property is-closed-loop-disabled doesn't exist",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver0").has("is-closed-loop-disabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf0").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of generic-vnf should be updated since the property is-closed-loop-disabled doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc0").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of vnfc should be updated since the property is-closed-loop-disabled doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver0").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of vserver should be updated since the property is-closed-loop-disabled doesn't exist");
         //dhcp-enabled
-        assertTrue("Value of subnet should be updated since the property dhcp-enabled doesn't exist",
-                g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet0").has("dhcp-enabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet0").has("dhcp-enabled", false).hasNext(),
+                "Value of subnet should be updated since the property dhcp-enabled doesn't exist");
         //l3-network: is-bound-to-vpn, is-shared-network, is-external-network
-        assertTrue("Value of l3-network should be updated since the property is-bound-to-vpn doesn't exist",
-                g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-bound-to-vpn", false).hasNext());  
-        assertTrue("Value of l3-network should be updated since the property is-provider-network doesn't exist",
-                g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-provider-network", false).hasNext());  
-        assertTrue("Value of l3-network should be updated since the property is-shared-network doesn't exist",
-                g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-shared-network", false).hasNext());  
-		assertTrue("Value of l3-network should be updated since the property is-external-network doesn't exist",
-                g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-external-network", false).hasNext()); 
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-bound-to-vpn", false).hasNext(),
+                "Value of l3-network should be updated since the property is-bound-to-vpn doesn't exist");  
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-provider-network", false).hasNext(),
+                "Value of l3-network should be updated since the property is-provider-network doesn't exist");  
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-shared-network", false).hasNext(),
+                "Value of l3-network should be updated since the property is-shared-network doesn't exist");  
+		assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network0").has("network-name", "l3-network-name0").has("is-external-network", false).hasNext(),
+                "Value of l3-network should be updated since the property is-external-network doesn't exist"); 
 		//l-interface: is-port-mirrored, is-ip-unnumbered
-		assertTrue("Value of l-interface should be updated since the property is-port-mirrored doesn't exist",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface0").has("is-port-mirrored", false).hasNext());  
-		assertTrue("Value of l-interface should be updated since the property is-ip-unnumbered doesn't exist",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface0").has("is-ip-unnumbered", false).hasNext());
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface0").has("is-port-mirrored", false).hasNext(),
+                "Value of l-interface should be updated since the property is-port-mirrored doesn't exist");  
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface0").has("is-ip-unnumbered", false).hasNext(),
+                "Value of l-interface should be updated since the property is-ip-unnumbered doesn't exist");
 		//vf-module: is-base-vf-module
-		assertTrue("Value of vf-module should be updated since the property is-base-vf-module doesn't exist",
-                g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module0").has("is-base-vf-module", false).hasNext());  
+		assertTrue(g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module0").has("is-base-vf-module", false).hasNext(),
+                "Value of vf-module should be updated since the property is-base-vf-module doesn't exist");  
 		//vlan: is-ip-unnumbered
-		assertTrue("Value of vlan should be updated since the property is-ip-unnumbered doesn't exist",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan0").has("is-ip-unnumbered", false).hasNext());
+		assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan0").has("is-ip-unnumbered", false).hasNext(),
+                "Value of vlan should be updated since the property is-ip-unnumbered doesn't exist");
     }
 
     @Test
     public void testEmptyValue() {                         
       //is-closed-loop-disabled
-        assertTrue("Value of generic-vnf should be updated since the value for is-closed-loop-disabled is an empty string",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("is-closed-loop-disabled", false).hasNext());
-        assertTrue("Value of vnfc should be updated since the value for is-closed-loop-disabled is an empty string",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc1").has("is-closed-loop-disabled", false).hasNext());
-        assertTrue("Value of vserver should be updated since the value for is-closed-loop-disabled is an empty string",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver1").has("is-closed-loop-disabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of generic-vnf should be updated since the value for is-closed-loop-disabled is an empty string");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc1").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of vnfc should be updated since the value for is-closed-loop-disabled is an empty string");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver1").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of vserver should be updated since the value for is-closed-loop-disabled is an empty string");
         //dhcp-enabled
-        assertTrue("Value of subnet should be updated since the value for dhcp-enabled is an empty string",
-                g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet1").has("dhcp-enabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet1").has("dhcp-enabled", false).hasNext(),
+                "Value of subnet should be updated since the value for dhcp-enabled is an empty string");
         //l3-network: is-bound-to-vpn, is-shared-network, is-external-network
-        assertTrue("Value of l3-network should be updated since the value for is-bound-to-vpn is an empty string",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-bound-to-vpn", false).hasNext());         
-        assertTrue("Value of l3-network should be updated since the value for is-provider-network is an empty string",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-provider-network", false).hasNext());        
-		assertTrue("Value of l3-network should be updated since the value for is-shared-network is an empty string",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-shared-network", false).hasNext());
-		assertTrue("Value of l3-network should be updated since the value for is-external-network is an empty string",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-external-network", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-bound-to-vpn", false).hasNext(),
+				"Value of l3-network should be updated since the value for is-bound-to-vpn is an empty string");         
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-provider-network", false).hasNext(),
+				"Value of l3-network should be updated since the value for is-provider-network is an empty string");        
+		assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-shared-network", false).hasNext(),
+				"Value of l3-network should be updated since the value for is-shared-network is an empty string");
+		assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network1").has("network-name", "l3-network-name1").has("is-external-network", false).hasNext(),
+				"Value of l3-network should be updated since the value for is-external-network is an empty string");
 		//l-interface: is-port-mirrored, is-ip-unnumbered
-		assertTrue("Value of l-interface should be updated since the property is-port-mirrored  is an empty string",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("is-port-mirrored", false).hasNext());  
-		assertTrue("Value of l-interface should be updated since the property is-ip-unnumbered  is an empty string",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("is-ip-unnumbered", false).hasNext());
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("is-port-mirrored", false).hasNext(),
+                "Value of l-interface should be updated since the property is-port-mirrored  is an empty string");  
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("is-ip-unnumbered", false).hasNext(),
+                "Value of l-interface should be updated since the property is-ip-unnumbered  is an empty string");
 		//vf-module: is-base-vf-module, is-ip-unnumbered
-		assertTrue("Value of vf-module should be updated since the property is-base-vf-module  is an empty string",
-                g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module1").has("is-base-vf-module", false).hasNext());  
+		assertTrue(g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module1").has("is-base-vf-module", false).hasNext(),
+                "Value of vf-module should be updated since the property is-base-vf-module  is an empty string");  
 		//vlan: is-ip-unnumbered
-		assertTrue("Value of vlan should be updated since the property is-ip-unnumbered is an empty string",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan1").has("is-ip-unnumbered", false).hasNext());
+		assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan1").has("is-ip-unnumbered", false).hasNext(),
+                "Value of vlan should be updated since the property is-ip-unnumbered is an empty string");
     }
     
     @Test
     public void testExistingTrueValues() {
       //is-closed-loop-disabled
-        assertTrue("Value of generic-vnf shouldn't be update since is-closed-loop-disabled already exists",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("is-closed-loop-disabled", true).hasNext());
-        assertTrue("Value of vnfc shouldn't be update since is-closed-loop-disabled already exists",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc2").has("is-closed-loop-disabled", true).hasNext());
-        assertTrue("Value of vserver shouldn't be update since is-closed-loop-disabled already exists",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver2").has("is-closed-loop-disabled", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("is-closed-loop-disabled", true).hasNext(),
+                "Value of generic-vnf shouldn't be update since is-closed-loop-disabled already exists");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc2").has("is-closed-loop-disabled", true).hasNext(),
+                "Value of vnfc shouldn't be update since is-closed-loop-disabled already exists");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver2").has("is-closed-loop-disabled", true).hasNext(),
+                "Value of vserver shouldn't be update since is-closed-loop-disabled already exists");
        //dhcp-enabled
-        assertTrue("Value of subnet shouldn't be update since dhcp-enabled already exists",
-                g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet2").has("dhcp-enabled", true).hasNext()); 
+        assertTrue(g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet2").has("dhcp-enabled", true).hasNext(),
+                "Value of subnet shouldn't be update since dhcp-enabled already exists"); 
       //l3-network: is-bound-to-vpn, is-shared-network, is-external-network
-        assertTrue("Value of l3-network shouldn't be updated since is-bound-to-vpn already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-bound-to-vpn", true).hasNext());
-        assertTrue("Value of l3-network shouldn't be updated since is-provider-network already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-provider-network", true).hasNext());
-		assertTrue("Value of l3-network shouldn't be updated since is-shared-network already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-shared-network", true).hasNext());
-		assertTrue("Value of l3-network shouldn't be updated since is-external-network already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-external-network", true).hasNext());				
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-bound-to-vpn", true).hasNext(),
+				"Value of l3-network shouldn't be updated since is-bound-to-vpn already exists");
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-provider-network", true).hasNext(),
+				"Value of l3-network shouldn't be updated since is-provider-network already exists");
+		assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-shared-network", true).hasNext(),
+				"Value of l3-network shouldn't be updated since is-shared-network already exists");
+		assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network2").has("network-name", "l3-network-name2").has("is-external-network", true).hasNext(),
+				"Value of l3-network shouldn't be updated since is-external-network already exists");				
 		//l-interface: is-port-mirrored, is-ip-unnumbered
-		assertTrue("Value of l-interface shouldn't be updated since is-port-mirrored already exists",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface2").has("is-port-mirrored", true).hasNext());  
-		assertTrue("Value of ll-interface shouldn't be updated since is-ip-unnumbered already exists",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface2").has("is-ip-unnumbered", true).hasNext());		
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface2").has("is-port-mirrored", true).hasNext(),
+                "Value of l-interface shouldn't be updated since is-port-mirrored already exists");  
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface2").has("is-ip-unnumbered", true).hasNext(),
+                "Value of ll-interface shouldn't be updated since is-ip-unnumbered already exists");		
 		//vf-module: is-base-vf-module
-		assertTrue("Value of vf-module shouldn't be updated since is-base-vf-module already exists",
-                g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module2").has("is-base-vf-module", true).hasNext());  
+		assertTrue(g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module2").has("is-base-vf-module", true).hasNext(),
+                "Value of vf-module shouldn't be updated since is-base-vf-module already exists");  
 		//vlan: is-ip-unnumbered
-		assertTrue("Value of vlan shouldn't be updated since is-ip-unnumbered already exists",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan2").has("is-ip-unnumbered", true).hasNext());
+		assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan2").has("is-ip-unnumbered", true).hasNext(),
+                "Value of vlan shouldn't be updated since is-ip-unnumbered already exists");
         
     }
     
     @Test
     public void testExistingFalseValues() {
     	//is-closed-loop-disabled
-        assertTrue("Value of generic-vnf shouldn't be update since is-closed-loop-disabled already exists",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf3").has("is-closed-loop-disabled", false).hasNext());
-        assertTrue("Value of vnfc shouldn't be update since is-closed-loop-disabled already exists",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc3").has("is-closed-loop-disabled", false).hasNext());
-        assertTrue("Value of vserver shouldn't be update since is-closed-loop-disabled already exists",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver3").has("is-closed-loop-disabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf3").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of generic-vnf shouldn't be update since is-closed-loop-disabled already exists");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc3").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of vnfc shouldn't be update since is-closed-loop-disabled already exists");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver3").has("is-closed-loop-disabled", false).hasNext(),
+                "Value of vserver shouldn't be update since is-closed-loop-disabled already exists");
         //dhcp-enabled
-        assertTrue("Value of subnet shouldn't be update since dhcp-enabled already exists",
-                g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet3").has("dhcp-enabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "subnet").has("subnet-id", "subnet3").has("dhcp-enabled", false).hasNext(),
+                "Value of subnet shouldn't be update since dhcp-enabled already exists");
         //l3-network: is-bound-to-vpn, is-shared-network, is-external-network
-        assertTrue("Value of l3-network shouldn't be updated since is-bound-to-vpn already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-bound-to-vpn", false).hasNext());  
-        assertTrue("Value of l3-network shouldn't be updated since is-provider-network already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-provider-network", false).hasNext());  
-        assertTrue("Value of l3-network shouldn't be updated since is-shared-network already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-shared-network", false).hasNext());
-		assertTrue("Value of l3-network shouldn't be updated since is-external-network already exists",
-				g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-external-network", false).hasNext());			
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-bound-to-vpn", false).hasNext(),
+				"Value of l3-network shouldn't be updated since is-bound-to-vpn already exists");  
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-provider-network", false).hasNext(),
+				"Value of l3-network shouldn't be updated since is-provider-network already exists");  
+        assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-shared-network", false).hasNext(),
+				"Value of l3-network shouldn't be updated since is-shared-network already exists");
+		assertTrue(g.V().has("aai-node-type", "l3-network").has("network-id", "l3-network3").has("network-name", "l3-network-name3").has("is-external-network", false).hasNext(),
+				"Value of l3-network shouldn't be updated since is-external-network already exists");			
 		//l-interface: is-port-mirrored, is-ip-unnumbered
-		assertTrue("Value of l-interface shouldn't be updated since is-port-mirrored already exists",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface3").has("is-port-mirrored", false).hasNext());  
-		assertTrue("Value of ll-interface shouldn't be updated since is-ip-unnumbered already exists",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface3").has("is-ip-unnumbered", false).hasNext());				
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface3").has("is-port-mirrored", false).hasNext(),
+                "Value of l-interface shouldn't be updated since is-port-mirrored already exists");  
+		assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface3").has("is-ip-unnumbered", false).hasNext(),
+                "Value of ll-interface shouldn't be updated since is-ip-unnumbered already exists");				
 		//vf-module: is-base-vf-module
-		assertTrue("Value of vf-module shouldn't be updated since is-base-vf-module already exists",
-                g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module3").has("is-base-vf-module", false).hasNext());  
+		assertTrue(g.V().has("aai-node-type", "vf-module").has("vf-module-id", "vf-module3").has("is-base-vf-module", false).hasNext(),
+                "Value of vf-module shouldn't be updated since is-base-vf-module already exists");  
 		//vlan: is-ip-unnumbered
-		assertTrue("Value of vlan shouldn't be updated since is-ip-unnumbered already exists",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan3").has("is-ip-unnumbered", false).hasNext());
+		assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan3").has("is-ip-unnumbered", false).hasNext(),
+                "Value of vlan shouldn't be updated since is-ip-unnumbered already exists");
     } 
 }

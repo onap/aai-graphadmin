@@ -22,7 +22,11 @@ package org.onap.aai;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
@@ -37,8 +41,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
@@ -49,7 +51,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * A sample junit test using spring boot that provides the ability to spin
@@ -76,12 +78,6 @@ import static org.junit.Assert.fail;
 )
 public class AAIGremlinQueryTest {
 
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
     @Autowired
     RestTemplate restTemplate;
 
@@ -94,7 +90,7 @@ public class AAIGremlinQueryTest {
 
     private String baseUrl;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupConfig() throws AAIException {
         System.setProperty("AJSC_HOME", "./");
         System.setProperty("BUNDLECONFIG_DIR", "src/main/resources/");
@@ -130,7 +126,7 @@ public class AAIGremlinQueryTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
 
         AAIConfig.init();
@@ -190,7 +186,7 @@ public class AAIGremlinQueryTest {
         assertThat(result, containsString("v["));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
 
         JanusGraphTransaction transaction = AAIGraph.getInstance().getGraph().newTransaction();

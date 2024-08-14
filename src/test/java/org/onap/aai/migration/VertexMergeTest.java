@@ -26,10 +26,11 @@ import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.introspection.Loader;
@@ -43,13 +44,13 @@ import org.onap.aai.setup.SchemaVersion;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@Ignore
+@Disabled
 public class VertexMergeTest extends AAISetup {
 	
 	
@@ -63,7 +64,7 @@ public class VertexMergeTest extends AAISetup {
 	private GraphTraversalSource g;
 	private Graph tx;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -150,7 +151,7 @@ public class VertexMergeTest extends AAISetup {
 		merge.performMerge(pserverCanopi, pserverSkeleton, forceCopy, basePath);
 	}
 
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -159,18 +160,18 @@ public class VertexMergeTest extends AAISetup {
 	@Test
 	public void run() throws UnsupportedEncodingException {
 
-		assertEquals("pserver merged", false, g.V().has("hostname", "TEST1").has("source-of-truth", "AAI-EXTENSIONS").hasNext());
+		assertEquals(false, g.V().has("hostname", "TEST1").has("source-of-truth", "AAI-EXTENSIONS").hasNext(), "pserver merged");
 		assertThat("pserver list merge", Arrays.asList("value1", "value2"), containsInAnyOrder(g.V().has("hostname", "TEST1").values("test-list").toList().toArray()));
-		assertEquals("canopi pserver has one edge to vserver2", 1, g.V().has("hostname", "TEST1").both().has("vserver-id", "vserver2").toList().size());
-		assertEquals("canopi pserver has one edge to vserver1", 1, g.V().has("hostname", "TEST1").both().has("vserver-id", "vserver1").toList().size());
-		assertEquals("canopi pserver retained edge to complex2", true, g.V().has("hostname", "TEST1").both().has("physical-location-id", "complex2").hasNext());
-		assertEquals("canopi pserver received forced prop", "test1.com", g.V().has("hostname", "TEST1").values("fqdn").next());
-		assertEquals("pserver skeleton child copied", true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface1").hasNext());
-		assertEquals("pserver skeleton child merged", true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").has("special-prop", "value").hasNext());
-		assertEquals("l-interface child merged", true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").both().has("interface-name", "l-interface1").has("special-prop", "value").hasNext());
-		assertEquals("l-interface child cousin edge merged", true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").both().has("interface-name", "l-interface1").both().has("link-name", "logical-link1").hasNext());
-		assertEquals("one l-interface1 found", new Long(1), g.V().has("interface-name", "l-interface1").count().next());
-		assertEquals("one p-interface2 found", new Long(1), g.V().has("interface-name", "p-interface2").count().next());
+		assertEquals(1, g.V().has("hostname", "TEST1").both().has("vserver-id", "vserver2").toList().size(), "canopi pserver has one edge to vserver2");
+		assertEquals(1, g.V().has("hostname", "TEST1").both().has("vserver-id", "vserver1").toList().size(), "canopi pserver has one edge to vserver1");
+		assertEquals(true, g.V().has("hostname", "TEST1").both().has("physical-location-id", "complex2").hasNext(), "canopi pserver retained edge to complex2");
+		assertEquals("test1.com", g.V().has("hostname", "TEST1").values("fqdn").next(), "canopi pserver received forced prop");
+		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface1").hasNext(), "pserver skeleton child copied");
+		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").has("special-prop", "value").hasNext(), "pserver skeleton child merged");
+		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").both().has("interface-name", "l-interface1").has("special-prop", "value").hasNext(), "l-interface child merged");
+		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").both().has("interface-name", "l-interface1").both().has("link-name", "logical-link1").hasNext(), "l-interface child cousin edge merged");
+		assertEquals(new Long(1), g.V().has("interface-name", "l-interface1").count().next(), "one l-interface1 found");
+		assertEquals(new Long(1), g.V().has("interface-name", "p-interface2").count().next(), "one p-interface2 found");
 
 	}
 }

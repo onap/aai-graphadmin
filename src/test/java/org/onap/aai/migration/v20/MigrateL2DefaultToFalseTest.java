@@ -20,8 +20,9 @@
 package org.onap.aai.migration.v20;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Loader;
@@ -35,7 +36,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +59,7 @@ public class MigrateL2DefaultToFalseTest extends
     private L2DefaultMigrator migration;
     private GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -101,35 +102,35 @@ public class MigrateL2DefaultToFalseTest extends
     
     @Test
     public void testAllValuesSet() {
-    	assertTrue("Value of node 1 \"no-value\" should have " + L2_MULTI_PROPERTY + " of false ",
-    			g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "no-value")
-    			.has(L2_MULTI_PROPERTY,false).hasNext());
+    	assertTrue(g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "no-value")
+    			.has(L2_MULTI_PROPERTY,false).hasNext(),
+    			"Value of node 1 \"no-value\" should have " + L2_MULTI_PROPERTY + " of false ");
     	
-    	assertTrue("Value of node 2 \"empty-value\" should have " + L2_MULTI_PROPERTY + " of false ",
-    			g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "empty-value")
-    			.has(L2_MULTI_PROPERTY,false).hasNext());
+    	assertTrue(g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "empty-value")
+    			.has(L2_MULTI_PROPERTY,false).hasNext(),
+    			"Value of node 2 \"empty-value\" should have " + L2_MULTI_PROPERTY + " of false ");
     	
-    	assertTrue("Value of node 3 \"true-value\" should have " + L2_MULTI_PROPERTY + " of true ",
-    			g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "true-value")
-    			.has(L2_MULTI_PROPERTY,true).hasNext()); 
+    	assertTrue(g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "true-value")
+    			.has(L2_MULTI_PROPERTY,true).hasNext(),
+    			"Value of node 3 \"true-value\" should have " + L2_MULTI_PROPERTY + " of true "); 
     	
-    	assertTrue("Value of node 4 \"false-value\" should have " + L2_MULTI_PROPERTY + " of false ",
-    			g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "false-value")
-    			.has(L2_MULTI_PROPERTY,false).hasNext()); 
+    	assertTrue(g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "false-value")
+    			.has(L2_MULTI_PROPERTY,false).hasNext(),
+    			"Value of node 4 \"false-value\" should have " + L2_MULTI_PROPERTY + " of false "); 
 
-    	assertTrue("Value of node 5 \"extra\" should have " + L2_MULTI_PROPERTY + " of false ",
-    			g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "extra")
-    			.has(L2_MULTI_PROPERTY,false).hasNext());     	
+    	assertTrue(g.V().has("aai-node-type", L_INTERFACE_NODE_TYPE).has("interface-name", "extra")
+    			.has(L2_MULTI_PROPERTY,false).hasNext(),
+    			"Value of node 5 \"extra\" should have " + L2_MULTI_PROPERTY + " of false ");     	
     }
     
     @Test
     public void testOtherMethods() {
-    	assertTrue("getStatus function works", migration.getStatus().toString().contains("SUCCESS"));
+    	assertTrue(migration.getStatus().toString().contains("SUCCESS"), "getStatus function works");
     	
-    	assertTrue("getAffectedNodeTypes returns " + L_INTERFACE_NODE_TYPE, 
-    			Arrays.asList(migration.getAffectedNodeTypes().get()).contains(L_INTERFACE_NODE_TYPE));
+    	assertTrue(Arrays.asList(migration.getAffectedNodeTypes().get()).contains(L_INTERFACE_NODE_TYPE), 
+    			"getAffectedNodeTypes returns " + L_INTERFACE_NODE_TYPE);
 
-    	assertTrue("getMigrationName returns MigrateL2DefaultToFalse", 
-    			migration.getMigrationName().equals("MigrateL2DefaultToFalse"));
+    	assertTrue(migration.getMigrationName().equals("MigrateL2DefaultToFalse"), 
+    			"getMigrationName returns MigrateL2DefaultToFalse");
     }
 }

@@ -23,18 +23,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodName.class)
 public class SchemaMod4HistTest extends AAISetup {
 
 	private static final Logger logger = LoggerFactory.getLogger(SchemaMod4HistTest.class);
@@ -42,7 +42,7 @@ public class SchemaMod4HistTest extends AAISetup {
 	private SchemaMod4Hist schemaMod4H;
 
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		schemaMod4H = new SchemaMod4Hist(loaderFactory, schemaVersions);
 		
@@ -84,12 +84,12 @@ public class SchemaMod4HistTest extends AAISetup {
 			executedWithoutError = false;
 		}
 
-		assertTrue("Ran schemaMod without throwing exception ", executedWithoutError);
+		assertTrue(executedWithoutError, "Ran schemaMod without throwing exception ");
 				
 	}
 
 	
-	@After
+	@AfterEach
 	public void tearDown() {
 
 		JanusGraphTransaction transaction = AAIGraph.getInstance().getGraph().newTransaction();

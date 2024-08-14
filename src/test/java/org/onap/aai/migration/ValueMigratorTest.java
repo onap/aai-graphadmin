@@ -23,8 +23,9 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Loader;
@@ -40,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +75,7 @@ public class ValueMigratorTest extends AAISetup{
     private JanusGraphTransaction tx;
     private SampleValueMigrator existingValuesMigration;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         graph = JanusGraphFactory.build().set("storage.backend", "inmemory").open();
         tx = graph.newTransaction();
@@ -121,25 +122,25 @@ public class ValueMigratorTest extends AAISetup{
 
     @Test
     public void testMissingProperty(){
-        assertTrue("Value of pnf should be updated since the property doesn't exist",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver0").has("in-maint", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver0").has("in-maint", true).hasNext(),
+                "Value of pnf should be updated since the property doesn't exist");
     }
 
     @Test
     public void testExistingValue() {
-        assertTrue("Value of pserver shouldn't be updated since it already exists",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver2").has("in-maint", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver2").has("in-maint", false).hasNext(),
+                "Value of pserver shouldn't be updated since it already exists");
     }
 
     @Test
     public void testEmptyValue() {
-        assertTrue("Value of pserver should be updated since the value is an empty string",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver1").has("in-maint", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver1").has("in-maint", true).hasNext(),
+                "Value of pserver should be updated since the value is an empty string");
     }
 
     @Test
     public void testUpdateExistingValues() {
-        assertTrue("Value of pnf should be updated even though it already exists",
-                g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf1").has("in-maint", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf1").has("in-maint", true).hasNext(),
+                "Value of pnf should be updated even though it already exists");
     }
 }

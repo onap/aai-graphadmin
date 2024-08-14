@@ -24,9 +24,10 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -37,7 +38,7 @@ import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +65,7 @@ public class MigrateDataFromASDCToConfigurationTest extends AAISetup {
     private final String PARENT_NODE_TYPE = "generic-vnf";
     private String VNT = "";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
         tx = graph.newTransaction();
@@ -149,7 +150,7 @@ public class MigrateDataFromASDCToConfigurationTest extends AAISetup {
     }
 
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tx.rollback();
         graph.close();

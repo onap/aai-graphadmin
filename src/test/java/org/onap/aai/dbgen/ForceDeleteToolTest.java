@@ -22,14 +22,16 @@ package org.onap.aai.dbgen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
+
+import static org.junit.jupiter.api.Assertions.fail;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 
@@ -37,9 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.Assert.fail;
-
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodName.class)
 public class ForceDeleteToolTest extends AAISetup {
 
     private static final Logger logger = LoggerFactory.getLogger(ForceDeleteToolTest.class);
@@ -48,7 +48,7 @@ public class ForceDeleteToolTest extends AAISetup {
 
     private Vertex cloudRegionVertex;
 
-    @Before
+    @BeforeEach
     public void setup(){
         deleteTool = new ForceDeleteTool();
         deleteTool.SHOULD_EXIT_VM = false;
@@ -177,7 +177,7 @@ public class ForceDeleteToolTest extends AAISetup {
         deleteTool.main(args);
         System.setIn(systemInputStream);
     }
-    @After
+    @AfterEach
     public void tearDown(){
 
         JanusGraphTransaction transaction = AAIGraph.getInstance().getGraph().newTransaction();

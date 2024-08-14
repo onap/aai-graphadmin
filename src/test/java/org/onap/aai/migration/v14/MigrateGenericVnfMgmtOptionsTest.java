@@ -30,8 +30,9 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
@@ -41,14 +42,13 @@ import org.onap.aai.migration.Status;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
 import javax.validation.constraints.AssertFalse;
-
-import static org.junit.Assert.assertTrue;
 
 public class MigrateGenericVnfMgmtOptionsTest extends AAISetup {
 	
@@ -79,7 +79,7 @@ public class MigrateGenericVnfMgmtOptionsTest extends AAISetup {
     private MigrateVnfType migration;
     private GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -174,35 +174,35 @@ public class MigrateGenericVnfMgmtOptionsTest extends AAISetup {
     @Test
     public void testMissingProperty(){
     	//management-option
-        assertTrue("Value of generic-vnf should be updated since the property management-option doesn't exist",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf0").has("management-option", "AT&T Managed-Basic").hasNext());      
-        assertTrue("Value of generic-vnf  should be updated since the property management-option doesn't exist",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf10").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf  should be updated since the property management-option doesn't exist",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf20").has("management-option", "AT&T Managed-Basic").hasNext());              
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf0").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf should be updated since the property management-option doesn't exist");      
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf10").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf  should be updated since the property management-option doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf20").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf  should be updated since the property management-option doesn't exist");              
     }
 
     @Test
     public void testEmptyValue() {                         
       //management-option
-        assertTrue("Value of generic-vnf should be updated since the value for management-option is an empty string",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf should be updated since the value for management-option is an empty string",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf11").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf should be updated since the value for management-option is an empty string",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf21").has("management-option", "AT&T Managed-Basic").hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf should be updated since the value for management-option is an empty string");
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf11").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf should be updated since the value for management-option is an empty string");
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf21").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf should be updated since the value for management-option is an empty string");
     
     }
     
     @Test
     public void testExistingValues() {
       //management-option
-        assertTrue("Value of generic-vnf shouldn't be updated since management-option already exists",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf shouldn't be updated since management-option already exists",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf12").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf shouldn't be updated since management-option already exists",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf22").has("management-option", "AT&T Managed-Basic").hasNext());
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf shouldn't be updated since management-option already exists");
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf12").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf shouldn't be updated since management-option already exists");
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf22").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf shouldn't be updated since management-option already exists");
        
         
     }
@@ -210,19 +210,19 @@ public class MigrateGenericVnfMgmtOptionsTest extends AAISetup {
    @Test
     public void testExistingVnfsNotMigrated() {
     	//management-option
-        assertTrue("Value of generic-vnf shouldn't be updated since vnf-type is not affected",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf30").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf  shouldn't be updated since vnf-type is not affected",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf31").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf  shouldn't be updated since vnf-type is not affected and management-option already exists",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf32").has("management-option", "AT&T Managed-Basic").hasNext());
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf30").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf shouldn't be updated since vnf-type is not affected");
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf31").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf  shouldn't be updated since vnf-type is not affected");
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf32").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf  shouldn't be updated since vnf-type is not affected and management-option already exists");
         
-        assertTrue("Value of generic-vnf shouldn't be updated since vnf-type is not present",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf40").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf  shouldn't be updated since vnf-type is not present",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf41").has("management-option", "AT&T Managed-Basic").hasNext());
-        assertTrue("Value of generic-vnf  shouldn't be updated since vnf-type is not present and management-option already exists",
-                !g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf42").has("management-option", "AT&T Managed-Basic").hasNext());
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf40").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf shouldn't be updated since vnf-type is not present");
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf41").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf  shouldn't be updated since vnf-type is not present");
+        assertTrue(!g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf42").has("management-option", "AT&T Managed-Basic").hasNext(),
+                "Value of generic-vnf  shouldn't be updated since vnf-type is not present and management-option already exists");
       
     } 
 }

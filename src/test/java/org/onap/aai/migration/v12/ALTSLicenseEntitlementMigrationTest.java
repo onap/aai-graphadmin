@@ -19,14 +19,16 @@
  */
 package org.onap.aai.migration.v12;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.io.UnsupportedEncodingException;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -53,7 +55,7 @@ public class ALTSLicenseEntitlementMigrationTest extends AAISetup {
     private GraphTraversalSource g;
     private JanusGraphTransaction tx;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
         tx = graph.newTransaction();
@@ -116,7 +118,7 @@ public class ALTSLicenseEntitlementMigrationTest extends AAISetup {
         migration.run();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tx.rollback();
         graph.close();
@@ -124,35 +126,42 @@ public class ALTSLicenseEntitlementMigrationTest extends AAISetup {
 
     @Test
     public void testEntitlementsUpdated() throws UnsupportedEncodingException {
-        assertEquals("Found 1 entitlement", (Long)1L,
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").count().next());
-        assertEquals("Entitlement's resource-uuid is updated ", true,
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement").hasNext());
-        assertEquals("Entitlement's resource-uuid is updated by migration ", true,
+        assertEquals((Long)1L,
+                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").count().next(),
+                "Found 1 entitlement");
+        assertEquals(true,
+                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement").hasNext(),
+                "Entitlement's resource-uuid is updated ");
+        assertEquals(true,
                 g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo")
-                .has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement").has("last-mod-source-of-truth", "ALTSLicenseEntitlementMigration").hasNext());
+                .has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement").has("last-mod-source-of-truth", "ALTSLicenseEntitlementMigration").hasNext(),
+                "Entitlement's resource-uuid is updated by migration ");
     }
     @Test
     public void testLicensesUpdated() throws UnsupportedEncodingException {
-        assertEquals("Found 1 License", (Long)1L,
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").count().next());
-        assertEquals("License's resource-uuid is updated ", true,
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").has("resource-uuid", "new-ruuid-license").hasNext());
+        assertEquals((Long)1L,
+                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").count().next(),
+                "Found 1 License");
+        assertEquals(true,
+                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").has("resource-uuid", "new-ruuid-license").hasNext(),
+                "License's resource-uuid is updated ");
     }
 
     @Test
     public void verifyUri() {
-        assertEquals("Uri should be updated", "/network/generic-vnfs/generic-vnf/123456789/entitlements/entitlement/ruuideuuid/new-ruuid-entitlement",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement").next().property(AAIProperties.AAI_URI).value());
-        assertEquals("Uri should be updated", "/network/generic-vnfs/generic-vnf/123456789/licenses/license/ruuideuuid/new-ruuid-license",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").has("resource-uuid", "new-ruuid-license").next().property(AAIProperties.AAI_URI).value());
+        assertEquals("/network/generic-vnfs/generic-vnf/123456789/entitlements/entitlement/ruuideuuid/new-ruuid-entitlement",
+                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement").next().property(AAIProperties.AAI_URI).value(),
+                "Uri should be updated");
+        assertEquals("/network/generic-vnfs/generic-vnf/123456789/licenses/license/ruuideuuid/new-ruuid-license",
+                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "123456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").has("resource-uuid", "new-ruuid-license").next().property(AAIProperties.AAI_URI).value(),
+                "Uri should be updated");
     }
 
     @Test
     public void duplicateGroupUuid() {
         Long count = g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "23456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "license").has("resource-uuid", "new-ruuid-license2").count().next() +
                 g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "23456789").in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "entitlement").has("resource-uuid", "new-ruuid-entitlement2").count().next();
-        assertEquals("Duplicate Entitlement or License Group Uuid should be skipped", (Long)1L, count);
+        assertEquals((Long)1L, count, "Duplicate Entitlement or License Group Uuid should be skipped");
 
 
     }
