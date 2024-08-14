@@ -27,9 +27,9 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.javatuples.Pair;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
@@ -47,7 +47,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -100,7 +100,7 @@ public class EdgeMigratorTest extends AAISetup {
     private Graph tx;
     private EdgeMigratorImpl edgeMigrator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
         JanusGraphManagement janusgraphManagement = graph.openManagement();
@@ -148,7 +148,7 @@ public class EdgeMigratorTest extends AAISetup {
         edgeMigrator = new EdgeMigratorImpl(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tx.tx().rollback();
         graph.close();
@@ -157,63 +157,57 @@ public class EdgeMigratorTest extends AAISetup {
     @Test
     public void verifyVnfHasOnlyNewEdgeTest() {
         edgeMigrator.rebuildEdges(g.E().toSet());
-        assertTrue("edge direction and label were migrated", g.V().has(AAIProperties.NODE_TYPE,
+        assertTrue(g.V().has(AAIProperties.NODE_TYPE,
                 "generic-vnf").has("vnf-id", "toscaMigration-test-vnf").inE()
-                .hasLabel("org.onap.relationships.inventory.BelongsTo").hasNext());
+                .hasLabel("org.onap.relationships.inventory.BelongsTo").hasNext(), "edge direction and label were migrated");
 
 
-        assertFalse("if we look for old edge, it should be gone", g.V().has(AAIProperties.NODE_TYPE,
+        assertFalse(g.V().has(AAIProperties.NODE_TYPE,
                 "generic-vnf").has("vnf-id", "toscaMigration-test-vnf").outE()
-                .hasLabel("hasLInterface").hasNext());
+                .hasLabel("hasLInterface").hasNext(), "if we look for old edge, it should be gone");
     }
 
     @Test
     public void verifyGraphHasNoOldEdgeLabelsTest() {
         edgeMigrator.rebuildEdges(g.E().toSet());
-        assertEquals("Graph should have none of the old edge label"
-                , Long.valueOf(0)
-                , g.E().hasLabel("hasLInterface","usesLogicalLink").count().next());
-        assertEquals("Graph should have none of the old edge label"
-                , Long.valueOf(3)
+        assertEquals(Long.valueOf(0)
+                , g.E().hasLabel("hasLInterface","usesLogicalLink").count().next(), "Graph should have none of the old edge label");
+        assertEquals(Long.valueOf(3)
                 , g.E().hasLabel("org.onap.relationships.inventory.BelongsTo",
                         "tosca.relationships.network.LinksTo","org.onap.relationships.inventory.Source")
-                        .count().next());
+                        .count().next(), "Graph should have none of the old edge label");
     }
 
     @Test
     public void verifyGenericVnfHas1EdgeTest() {
         edgeMigrator.rebuildEdges(g.E().toSet());
-        assertEquals("Generic vnf should have 1 edge"
-                , Long.valueOf(1)
+        assertEquals(Long.valueOf(1)
                 , g.V().has(AAIProperties.NODE_TYPE, "generic-vnf")
                         .both()
-                        .count().next());
+                        .count().next(), "Generic vnf should have 1 edge");
 
     }
 
     @Test
     public void verifyLogicalLinkHas2EdgesTest() {
         edgeMigrator.rebuildEdges(g.E().toSet());
-        assertEquals("Logical Link should have 2 edges"
-                , Long.valueOf(2)
+        assertEquals(Long.valueOf(2)
                 , g.V().has(AAIProperties.NODE_TYPE, "logical-link")
                         .both()
-                        .count().next());
+                        .count().next(), "Logical Link should have 2 edges");
 
-        assertTrue("Logical Link has source edge"
-                , g.V().has(AAIProperties.NODE_TYPE, "logical-link")
-                        .bothE("org.onap.relationships.inventory.Source").hasNext());
+        assertTrue(g.V().has(AAIProperties.NODE_TYPE, "logical-link")
+                        .bothE("org.onap.relationships.inventory.Source").hasNext(), "Logical Link has source edge");
 
-        assertTrue("Logical Link has default edge"
-                , g.V().has(AAIProperties.NODE_TYPE, "logical-link")
-                        .bothE("tosca.relationships.network.LinksTo").hasNext());
+        assertTrue(g.V().has(AAIProperties.NODE_TYPE, "logical-link")
+                        .bothE("tosca.relationships.network.LinksTo").hasNext(), "Logical Link has default edge");
 
     }
 
     @Test
     public void checkThatEdgeWithNoRulesDoesNotGetMigratedTest() {
         edgeMigrator.rebuildEdges(g.E().toSet());
-        assertTrue("Edge with no rule did not get migrated ", g.E().hasLabel("blah").hasNext());
+        assertTrue(g.E().hasLabel("blah").hasNext(), "Edge with no rule did not get migrated ");
     }
     
     @Test

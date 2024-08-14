@@ -19,9 +19,7 @@
  */
 package org.onap.aai.migration.v12;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -30,9 +28,10 @@ import java.util.Optional;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -60,7 +59,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 	private JanusGraphTransaction tx;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -306,7 +305,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 		migration.run();
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -316,43 +315,49 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 	public void testRun_checkFevc1AndFevc2AreUpdated() throws Exception {
 		
 		// check if forwarder-evc nodes get updated
-		assertEquals("forwarder-evc evc-name-1-1 updated with ivlan", true, 
+		assertEquals(true, 
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-1-1")
 				.has("ivlan","4054")
-				.hasNext());
+				.hasNext(), 
+				"forwarder-evc evc-name-1-1 updated with ivlan");
 		
-		assertEquals("forwarder-evc evc-name-2-2 updated with ivlan", true, 
+		assertEquals(true, 
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-2-2")
 				.has("ivlan","4084")
-				.hasNext());
-		assertEquals("forwarder-evc evc-name-2-3 updated with ivlan", true, 
+				.hasNext(), 
+				"forwarder-evc evc-name-2-2 updated with ivlan");
+		assertEquals(true, 
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-2-3")
 				.has("ivlan","4054")
-				.hasNext());
+				.hasNext(), 
+				"forwarder-evc evc-name-2-3 updated with ivlan");
 		
-		assertEquals("4 forwarder-evcs exist for evc evc-name-2", new Long(4L), 
+		assertEquals(new Long(4L), 
 				g.V().has("forwarding-path-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder-evc")
-				.count().next());
+				.count().next(), 
+				"4 forwarder-evcs exist for evc evc-name-2");
 		
-		assertEquals("3 forwarder-evcs updated for evc evc-name-2", new Long(3L), 
+		assertEquals(new Long(3L), 
 				g.V().has("forwarding-path-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id").has("ivlan")
-				.count().next());
+				.count().next(), 
+				"3 forwarder-evcs updated for evc evc-name-2");
 		
-		assertEquals("forwarder-evc evc-name-3-1 updated with ivlan", false, 
+		assertEquals(false, 
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-3-1")
 				.has("ivlan")
-				.hasNext());
+				.hasNext(), 
+				"forwarder-evc evc-name-3-1 updated with ivlan");
 	}
 
 	

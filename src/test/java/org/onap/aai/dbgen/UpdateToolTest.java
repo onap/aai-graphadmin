@@ -25,18 +25,18 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.util.AAIConstants;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore("Test prevents Janusgraph update. Fails only in the pipeline")
+@Disabled("Test prevents Janusgraph update. Fails only in the pipeline")
 public class UpdateToolTest extends AAISetup {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateToolTest.class);
@@ -49,7 +49,7 @@ public class UpdateToolTest extends AAISetup {
     JanusGraphTransaction transaction;
     GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup(){
         updatePropertyTool = new UpdatePropertyTool();
         updatePropertyToolInternal = new UpdatePropertyToolInternal();
@@ -192,7 +192,7 @@ public class UpdateToolTest extends AAISetup {
         assertFalse(updatePropertyToolInternal.run(null, args));
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
 
         JanusGraphTransaction transaction = AAIGraph.getInstance().getGraph().newTransaction();

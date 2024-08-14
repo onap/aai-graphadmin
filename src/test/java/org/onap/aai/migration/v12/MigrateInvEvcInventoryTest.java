@@ -19,9 +19,7 @@
  */
 package org.onap.aai.migration.v12;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +28,9 @@ import java.util.Optional;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -57,7 +57,7 @@ public class MigrateInvEvcInventoryTest extends AAISetup {
 	private static JanusGraphTransaction tx;
 	private static GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -93,7 +93,7 @@ public class MigrateInvEvcInventoryTest extends AAISetup {
 		migration.run();
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -102,32 +102,37 @@ public class MigrateInvEvcInventoryTest extends AAISetup {
 	@Test
 	public void testRun_updateEvcNode() throws Exception {
 		// check if graph nodes exist
-		assertEquals("evc node exists", true, 
+		assertEquals(true, 
 				g.V().has("aai-node-type", "evc")
 					 .has("evc-id", "evc-name-1")
-				.hasNext());
+				.hasNext(), 
+				"evc node exists");
 		
 		// check if evc object is updated to set the value for inter-connect-type-ingress
-		assertEquals("evc is updated", true, 
+		assertEquals(true, 
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-1")
 				.has("inter-connect-type-ingress", "SHARED")
-				.hasNext());
+				.hasNext(), 
+				"evc is updated");
 	}
 	
 	@Test
 	public void testRun_evcNotCreated() throws Exception {
 		
-		assertEquals("evc node does not exist", false, 
+		assertEquals(false, 
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-3")
-				.hasNext());
+				.hasNext(), 
+				"evc node does not exist");
 		
 		//inter-connect-type-ingress is not present on the evc
-		assertEquals("evc node exists", true, 
+		assertEquals(true, 
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-2")
-				.hasNext());
-		assertEquals("evc node not updated with inter-connect-type-ingress", false, 
+				.hasNext(), 
+				"evc node exists");
+		assertEquals(false, 
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-2").has("inter-connect-type-ingress")
-				.hasNext());
+				.hasNext(), 
+				"evc node not updated with inter-connect-type-ingress");
 		
 	}
 

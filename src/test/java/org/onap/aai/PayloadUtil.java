@@ -22,13 +22,13 @@ package org.onap.aai;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertNotNull;
 
 public class PayloadUtil {
 
@@ -40,7 +40,7 @@ public class PayloadUtil {
         InputStream inputStream = PayloadUtil.class.getClassLoader().getResourceAsStream("payloads/expected/" + fileName);
 
         String message = String.format("Unable to find the %s in src/test/resources", fileName);
-        assertNotNull(message, inputStream);
+        assertNotNull(inputStream, message);
 
         String resource = IOUtils.toString(inputStream);
 
@@ -53,7 +53,7 @@ public class PayloadUtil {
         InputStream inputStream = PayloadUtil.class.getClassLoader().getResourceAsStream("payloads/resource/" + fileName);
 
         String message = String.format("Unable to find the %s in src/test/resources", fileName);
-        assertNotNull(message, inputStream);
+        assertNotNull(inputStream, message);
 
         String resource = IOUtils.toString(inputStream);
 
@@ -66,7 +66,7 @@ public class PayloadUtil {
         InputStream inputStream = PayloadUtil.class.getClassLoader().getResourceAsStream("payloads/templates/" + fileName);
 
         String message = String.format("Unable to find the %s in src/test/resources", fileName);
-        assertNotNull(message, inputStream);
+        assertNotNull(inputStream, message);
 
         String resource;
 
@@ -101,7 +101,7 @@ public class PayloadUtil {
         InputStream inputStream = PayloadUtil.class.getClassLoader().getResourceAsStream("payloads/named-queries/" + fileName);
 
         String message = String.format("Unable to find the %s in src/test/resources/payloads/named-queries", fileName);
-        assertNotNull(message, inputStream);
+        assertNotNull(inputStream, message);
 
         String resource = IOUtils.toString(inputStream);
 

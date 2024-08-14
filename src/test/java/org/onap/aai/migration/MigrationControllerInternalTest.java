@@ -24,10 +24,11 @@ import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +43,7 @@ public class MigrationControllerInternalTest extends AAISetup {
 
     private MigrationControllerInternal migrationControllerInternal;
 
-    @Before
+    @BeforeEach
     public void setup() {
         migrationControllerInternal = new MigrationControllerInternal(loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
         clearGraph();
@@ -199,7 +200,7 @@ public class MigrationControllerInternalTest extends AAISetup {
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testListAllOfMigrations() throws Exception {
         PrintStream oldOutputStream = System.out;
@@ -297,7 +298,7 @@ public class MigrationControllerInternalTest extends AAISetup {
         System.setOut(oldOutputStream);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testRunDisabledExcludeAndCommit() throws Exception {
         assertThat("rebuildAllEdges shouldn't have enabled annotation", !RebuildAllEdges.class.isAnnotationPresent(Enabled.class));
@@ -328,7 +329,7 @@ public class MigrationControllerInternalTest extends AAISetup {
         migrationControllerInternal.run(args);
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         clearGraph();
     }

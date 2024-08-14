@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v14;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -33,8 +33,9 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -64,7 +65,7 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 	private MigrateSdnaIvlanData migration;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		g = tx.traversal();
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -187,8 +188,7 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 	@Test
 	public void testSdnaIvlanMigration() {		
 	
-		assertTrue("Value of node-type forwarder-evc, forwarder-evc-id of test/evc/one-1 has ben updated with the ivlan property value of 111 ",
-				g.V()
+		assertTrue(g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf1")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, P_INTERFACE_NODE_TYPE).has("interface-name", "11111.1")
@@ -196,10 +196,10 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/one"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "111").hasNext());
+				.has("ivlan", "111").hasNext(),
+				"Value of node-type forwarder-evc, forwarder-evc-id of test/evc/one-1 has ben updated with the ivlan property value of 111 ");
 		
-		assertTrue("Value of node-type forwarder-evc, forwarder-evc-id of test/evc/one-2 has ben updated with the ivlan property value of 222 ",
-				g.V()
+		assertTrue(g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf1")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, LAG_INTERFACE_NODE_TYPE).has("interface-name", "lag-interface1")
@@ -207,10 +207,10 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/one"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "222").hasNext());
+				.has("ivlan", "222").hasNext(),
+				"Value of node-type forwarder-evc, forwarder-evc-id of test/evc/one-2 has ben updated with the ivlan property value of 222 ");
 		
-		assertTrue("Value of node-type P-INTERFACE with an interface-name of l11111.2 does not exist in Graph. Ivlan not Updated ",
-				!g.V()
+		assertTrue(!g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf1")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, P_INTERFACE_NODE_TYPE).has("interface-name", "11111.2")
@@ -218,10 +218,10 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/one"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "333").hasNext());
+				.has("ivlan", "333").hasNext(),
+				"Value of node-type P-INTERFACE with an interface-name of l11111.2 does not exist in Graph. Ivlan not Updated ");
 		
-		assertTrue("Value of node-type LAG-INTERFACE with an interface-name of lag-interface2 does not exist in Graph. Ivlan not Updated ",
-				!g.V()
+		assertTrue(!g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf1")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, LAG_INTERFACE_NODE_TYPE).has("interface-name", "lag-interface2")
@@ -229,11 +229,11 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/one"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "444").hasNext());
+				.has("ivlan", "444").hasNext(),
+				"Value of node-type LAG-INTERFACE with an interface-name of lag-interface2 does not exist in Graph. Ivlan not Updated ");
 		
 		
-		assertTrue("Value of node-type P-INTERFACE with an interface-name of 11111.3 and evc of test/evc/one_2 does not exist in Graph. Ivlan not Updated ",
-				!g.V()
+		assertTrue(!g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf1")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, P_INTERFACE_NODE_TYPE).has("interface-name", "11111.3")
@@ -241,10 +241,10 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/one_2"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "555").hasNext());
+				.has("ivlan", "555").hasNext(),
+				"Value of node-type P-INTERFACE with an interface-name of 11111.3 and evc of test/evc/one_2 does not exist in Graph. Ivlan not Updated ");
 		
-		assertTrue("Value of node-type LAG-INTERFACE with an interface-name of lag-interface3 and evc of test/evc/one_2 does not exist in Graph. Ivlan not Updated ",
-				!g.V()
+		assertTrue(!g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf1")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, LAG_INTERFACE_NODE_TYPE).has("interface-name", "lag-interface3")
@@ -252,10 +252,10 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/one_2"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "666").hasNext());	
+				.has("ivlan", "666").hasNext(),
+				"Value of node-type LAG-INTERFACE with an interface-name of lag-interface3 and evc of test/evc/one_2 does not exist in Graph. Ivlan not Updated ");	
 		
-		assertTrue("Value of node-type PNF with an pnf-name of pnf2 does not exist in Graph. Ivlan not Updated ",
-				!g.V()
+		assertTrue(!g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf2")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, P_INTERFACE_NODE_TYPE).has("interface-name", "22222.2")
@@ -263,10 +263,10 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/two"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "777").hasNext());
+				.has("ivlan", "777").hasNext(),
+				"Value of node-type PNF with an pnf-name of pnf2 does not exist in Graph. Ivlan not Updated ");
 		
-		assertTrue("Value of node-type PNF with an pnf-name of pnf2 does not exist in Graph. Ivlan not Updated ",
-				!g.V()
+		assertTrue(!g.V()
 				.has(AAIProperties.NODE_TYPE, PNF_NODE_TYPE).has("pnf-name", "pnf2")
 				.in("tosca.relationships.network.BindsTo")
 				.has(AAIProperties.NODE_TYPE, LAG_INTERFACE_NODE_TYPE).has("interface-name", "lag-interface2")
@@ -274,7 +274,8 @@ public class MigrateSdnaIvlanDataTest extends AAISetup {
 				.where(__.out("org.onap.relationships.inventory.BelongsTo").has("forwarding-path-id", "test/evc/two"))
 				.out("org.onap.relationships.inventory.Uses")
 				.in("org.onap.relationships.inventory.BelongsTo")
-				.has("ivlan", "888").hasNext());
+				.has("ivlan", "888").hasNext(),
+				"Value of node-type PNF with an pnf-name of pnf2 does not exist in Graph. Ivlan not Updated ");
 		
 	}
 	

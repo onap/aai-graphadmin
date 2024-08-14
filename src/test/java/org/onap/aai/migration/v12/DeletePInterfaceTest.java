@@ -24,10 +24,11 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -39,10 +40,11 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-@Ignore
+
+@Disabled
 public class DeletePInterfaceTest extends AAISetup {
 
 	private final static ModelType introspectorFactoryType = ModelType.MOXY;
@@ -54,7 +56,7 @@ public class DeletePInterfaceTest extends AAISetup {
 	private GraphTraversalSource g;
 	private JanusGraphTransaction tx;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -118,7 +120,7 @@ public class DeletePInterfaceTest extends AAISetup {
 		migration.run();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		tx.rollback();
 		graph.close();
@@ -126,19 +128,19 @@ public class DeletePInterfaceTest extends AAISetup {
 
 	@Test
 	public void test() {
-		assertEquals("pInterface1 deleted", false, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name1")
-				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").has("interface-name", "interface-name1").hasNext());
+		assertEquals(false, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name1")
+				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").has("interface-name", "interface-name1").hasNext(), "pInterface1 deleted");
 		
-		assertEquals("pInterface2 skipped", true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name2")
-				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").hasNext());
+		assertEquals(true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name2")
+				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").hasNext(), "pInterface2 skipped");
 		
-		assertEquals("pInterface3 skipped", true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name3")
-				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").hasNext());
+		assertEquals(true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name3")
+				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").hasNext(), "pInterface3 skipped");
 		
-		assertEquals("pInterface4 should not be deleted", true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name4")
-				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").has("interface-name", "interface-name4").hasNext());
+		assertEquals(true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name4")
+				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").has("interface-name", "interface-name4").hasNext(), "pInterface4 should not be deleted");
 		
-		assertEquals("Status should be success", Status.SUCCESS, migration.getStatus());
+		assertEquals(Status.SUCCESS, migration.getStatus(), "Status should be success");
 	}
 
 }

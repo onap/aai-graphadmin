@@ -19,9 +19,7 @@
  */
 package org.onap.aai.migration.v12;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +28,10 @@ import java.util.Optional;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -51,7 +52,7 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 	private MigratePATHEvcInventory migration;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		g = tx.traversal();
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -239,45 +240,49 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 		// check if graph nodes exist
 		
 		// check if service-instance node gets created
-		assertEquals("service subscription node, service-type=SAREA", true, 
+		assertEquals(true, 
 				g.V().has("service-instance-id", "evc-name-1")
 				.out("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
-				.hasNext());
+				.hasNext(), 
+				"service subscription node, service-type=SAREA");
 		
-		assertEquals("fowarding-path node exists", true, 
+		assertEquals(true, 
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
 				.in("org.onap.relationships.inventory.AppliesTo")
 				.has("aai-node-type", "forwarding-path")
 				.has("forwarding-path-id", "evc-name-1")
-				.hasNext());
-		assertEquals("fowarding-path node exists", true, 
+				.hasNext(), 
+				"fowarding-path node exists");
+		assertEquals(true, 
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.AppliesTo")
 				.has("aai-node-type", "forwarding-path")
 				.has("forwarding-path-id", "evc-name-2")
-				.hasNext());
-		assertEquals("fowarding-path node exists", true, 
+				.hasNext(), 
+				"fowarding-path node exists");
+		assertEquals(true, 
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
 				.in("org.onap.relationships.inventory.AppliesTo")
 				.has("aai-node-type", "forwarding-path")
 				.has("forwarding-path-id", "evc-name-3")
-				.hasNext());
+				.hasNext(), 
+				"fowarding-path node exists");
 		
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testRun_checkForwardersForEvc1AreCreated() throws Exception {
 		// check if graph nodes exist
 		// check if forwarder node gets created
 		
-		assertEquals("forwarder node is created for evc-name-1 ", true,
+		assertEquals(true,
 		g.V().has("global-customer-id", "customer-id-1")
 		.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 		.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
@@ -285,9 +290,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 		.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 		.has("sequence", 1)
 		.has("forwarder-role", "ingress")
-		.hasNext());
+		.hasNext(),
+		"forwarder node is created for evc-name-1 ");
 		
-		assertEquals("forwarder node is created for evc-name-1 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
@@ -295,42 +301,47 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 2)
 				.has("forwarder-role", "egress")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-1 ");
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testRun_checkForwardersForEvc2AreCreated() throws Exception {
 		
 		// check if forwarder node gets created
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-2 ");
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.AppliesTo").has("aai-node-type", "forwarding-path")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-2 ");
 		
-		assertEquals("4 forwarders are created for evc-name-2 ", (Long)4l,
+		assertEquals((Long)4l,
 				g.V().
 					has("aai-node-type", "forwarding-path").has("forwarding-path-id","evc-name-2")
 					.in("org.onap.relationships.inventory.BelongsTo")
-					.has("aai-node-type", "forwarder").count().next()); //org.onap.relationships.inventory.BelongsTo
+					.has("aai-node-type", "forwarder").count().next(),
+				"4 forwarders are created for evc-name-2 "); //org.onap.relationships.inventory.BelongsTo
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 		g.V().has("aai-node-type", "forwarding-path").has("forwarding-path-id","evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 1)
 				.has("forwarder-role", "ingress")
-				.hasNext());
+				.hasNext(),
+		"forwarder node is created for evc-name-2 ");
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 		g.V().has("global-customer-id", "customer-id-1")
 		.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 		.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
@@ -338,9 +349,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 		.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 		.has("sequence", 1)
 		.has("forwarder-role", "ingress")
-		.hasNext());
+		.hasNext(),
+		"forwarder node is created for evc-name-2 ");
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
@@ -348,9 +360,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 2)
 				.has("forwarder-role", "intermediate")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-2 ");
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
@@ -358,9 +371,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 3)
 				.has("forwarder-role", "intermediate")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-2 ");
 		
-		assertEquals("forwarder node is created for evc-name-2 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
@@ -368,16 +382,17 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 4)
 				.has("forwarder-role", "egress")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-2 ");
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testRun_checkForwardersForEvc3AreCreated() throws Exception {
 		
 		// check if forwarder node gets created
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 		g.V().has("global-customer-id", "customer-id-1")
 		.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 		.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -385,9 +400,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 		.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 		.has("sequence", 1)
 		.has("forwarder-role", "ingress")
-		.hasNext());
+		.hasNext(),
+		"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -398,9 +414,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.out("org.onap.relationships.inventory.ForwardsTo")
 				.has("aai-node-type", "p-interface")
 				.has("interface-name","1.7")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder-evc node is created for forwarder with sequence 1 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -415,9 +432,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("circuit-id","M0651881")
 				.has("cvlan","34")
 				.has("svlan","8")
-				.hasNext());
+				.hasNext(),
+				"forwarder-evc node is created for forwarder with sequence 1 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -425,10 +443,11 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 2)
 				.has("forwarder-role", "intermediate")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
 		//forwarder to interface check
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -439,9 +458,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.out("org.onap.relationships.inventory.ForwardsTo")
 				.has("aai-node-type", "lag-interface")
 				.has("interface-name","ae101")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder-evc node is created for forwarder with sequence 2 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -455,9 +475,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("forwarder-evc-id","evc-name-3-2")
 				.has("cvlan","34")
 				.has("svlan","740")
-				.hasNext());
+				.hasNext(),
+				"forwarder-evc node is created for forwarder with sequence 2 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -465,9 +486,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 3)
 				.has("forwarder-role", "intermediate")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -478,9 +500,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.out("org.onap.relationships.inventory.ForwardsTo")
 				.has("aai-node-type", "lag-interface")
 				.has("interface-name","101")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder-evc node is created for forwarder with sequence 3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -494,9 +517,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("forwarder-evc-id","evc-name-3-3")
 				.has("cvlan","35")
 				.has("svlan","740")
-				.hasNext());
+				.hasNext(),
+				"forwarder-evc node is created for forwarder with sequence 3 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -504,9 +528,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 4)
 				.has("forwarder-role", "intermediate")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -517,9 +542,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.out("org.onap.relationships.inventory.ForwardsTo")
 				.has("aai-node-type", "lag-interface")
 				.has("interface-name","104")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder-evc node is created for forwarder with sequence 4 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -533,9 +559,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("forwarder-evc-id","evc-name-3-4")
 				.has("cvlan","37")
 				.has("svlan","740")
-				.hasNext());
+				.hasNext(),
+				"forwarder-evc node is created for forwarder with sequence 4 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -543,9 +570,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 5)
 				.has("forwarder-role", "intermediate")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -556,11 +584,12 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.out("org.onap.relationships.inventory.ForwardsTo")
 				.has("aai-node-type", "lag-interface")
 				.has("interface-name","ae104")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
 		
 		
-		assertEquals("configuration node is created for forwarder with sequence 5 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -570,9 +599,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("forwarder-role", "intermediate")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.has("configuration-id","evc-name-3-5").has("configuration-type","forwarder").has("configuration-sub-type", "forwarder")
-				.hasNext());
+				.hasNext(),
+				"configuration node is created for forwarder with sequence 5 ");
 		
-		assertEquals("forwarder-evc node is created for forwarder with sequence 5 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -586,9 +616,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("forwarder-evc-id","evc-name-3-5")
 				.has("cvlan","36")
 				.has("svlan","740")
-				.hasNext());
+				.hasNext(),
+				"forwarder-evc node is created for forwarder with sequence 5 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -596,9 +627,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.has("sequence", 6)
 				.has("forwarder-role", "egress")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("forwarder node is created for evc-name-3 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -609,9 +641,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.out("org.onap.relationships.inventory.ForwardsTo")
 				.has("aai-node-type", "p-interface")
 				.has("interface-name","1.39")
-				.hasNext());
+				.hasNext(),
+				"forwarder node is created for evc-name-3 ");
 		
-		assertEquals("configuration node is created for forwarder with sequence 6 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -621,9 +654,10 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("forwarder-role", "egress")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.has("configuration-id","evc-name-3-6").has("configuration-type","forwarder").has("configuration-sub-type", "forwarder")
-				.hasNext());
+				.hasNext(),
+				"configuration node is created for forwarder with sequence 6 ");
 		
-		assertEquals("configuration node is created for forwarder with sequence 6 ", true,
+		assertEquals(true,
 				g.V().has("global-customer-id", "customer-id-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
@@ -635,7 +669,8 @@ public class MigratePATHEvcInventoryTest extends AAISetup {
 				.has("configuration-id","evc-name-3-6").has("configuration-type","forwarder").has("configuration-sub-type", "forwarder")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id","evc-name-3-6").has("circuit-id","IZEZ.597112..ATI").has("cvlan","36").has("svlan","3")
-				.hasNext());
+				.hasNext(),
+				"configuration node is created for forwarder with sequence 6 ");
 		
 	}
 

@@ -20,8 +20,9 @@
 package org.onap.aai.migration.v16;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Loader;
@@ -36,7 +37,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +68,7 @@ public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
     private BooleanDefaultMigrator migration;
     private GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -105,29 +106,29 @@ public class MigrateBooleanDefaultsToFalseTest extends AAISetup {
     @Test
     public void testMissingProperty(){
     	//orchestration-disabled
-        assertTrue("Value of cloud-region should be updated since the property orchestration-disabled doesn't exist",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region0").has("orchestration-disabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region0").has("orchestration-disabled", false).hasNext(),
+                "Value of cloud-region should be updated since the property orchestration-disabled doesn't exist");
     }
 
     @Test
     public void testEmptyValue() {                         
       //orchestration-disabled
-        assertTrue("Value of cloud-region should be updated since the value for orchestration-disabled is an empty string",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region1").has("orchestration-disabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region1").has("orchestration-disabled", false).hasNext(),
+                "Value of cloud-region should be updated since the value for orchestration-disabled is an empty string");
     }
     
     @Test
     public void testExistingTrueValues() {
       //orchestration-disabled
-        assertTrue("Value of cloud-region shouldn't be update since orchestration-disabled already exists",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region2").has("orchestration-disabled", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region2").has("orchestration-disabled", true).hasNext(),
+                "Value of cloud-region shouldn't be update since orchestration-disabled already exists");
         
     }
     
     @Test
     public void testExistingFalseValues() {
     	//orchestration-disabled
-        assertTrue("Value of cloud-region shouldn't be update since orchestration-disabled already exists",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region3").has("orchestration-disabled", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region3").has("orchestration-disabled", false).hasNext(),
+                "Value of cloud-region shouldn't be update since orchestration-disabled already exists");
     } 
 }

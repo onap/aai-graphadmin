@@ -28,14 +28,18 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-import org.springframework.boot.test.system.OutputCaptureRule;
+
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,38 +55,37 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-
+@ExtendWith(OutputCaptureExtension.class)
 public class DataSnapshot4HistInitTest extends AAISetup {
 
     private GraphTraversalSource g;
-    
+
     private JanusGraphTransaction currentTransaction;
 
     private List<Vertex> vertexes;
-    
+
     private DataSnapshot4HistInit dataSnapshot4HistInit;
 
-    @Rule
-    public OutputCaptureRule outputCapture = new OutputCaptureRule();
-
-    @Before
+    @BeforeEach
     public void setup() throws AAIException {
-    	dataSnapshot4HistInit = new DataSnapshot4HistInit(loaderFactory, schemaVersions);  	
-    	
+    	dataSnapshot4HistInit = new DataSnapshot4HistInit(loaderFactory, schemaVersions);
+
     	JanusGraph graph = AAIGraph.getInstance().getGraph();
         currentTransaction = graph.newTransaction();
         g = currentTransaction.traversal();
-        
+
         // Setup the graph so it has one pserver vertex
         vertexes = setupPserverData(g);
         currentTransaction.commit();
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
 
         JanusGraph graph = AAIGraph.getInstance().getGraph();
@@ -92,9 +95,9 @@ public class DataSnapshot4HistInitTest extends AAISetup {
         vertexes.stream().forEach((v) -> g.V(v).next().remove());
         currentTransaction.commit();
     }
-    
+
     @Test
-    public void testClearEntireDatabaseAndVerifyDataIsRemoved() throws IOException {
+    public void testClearEntireDatabaseAndVerifyDataIsRemoved(CapturedOutput outputCapture) throws IOException {
 
         // Copy the pserver.graphson file from src/test/resoures to ${AJSC_HOME}/logs/data/dataSnapshots/ folder
         String sourceFileName = "src/test/resources/pserver.graphson";
@@ -116,7 +119,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
 
 
     @Test
-    public void testClearEntireDatabaseWithEmptyGraphSONFileAndItShouldNotClearDatabase() throws IOException {
+    public void testClearEntireDatabaseWithEmptyGraphSONFileAndItShouldNotClearDatabase(CapturedOutput outputCapture) throws IOException {
 
         // Create a empty file called empty.graphson in src/test/resources/
 
@@ -135,7 +138,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
          assertThat(outputCapture.toString(), containsString("graphson had no data."));
     }
 
-    
+
     @Test
     public void testTakeSnapshotAndItShouldCreateASnapshotFileWithOneVertex() throws IOException, InterruptedException {
 
@@ -163,7 +166,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
         List<String> fileContents = Files.readAllLines(snapshotPathList.get(0));
         assertThat(fileContents.get(0), containsString("id"));
     }
-    
+
 
     @Test
     public void testTakeSnapshotMultiAndItShouldCreateMultipleSnapshotFiles() throws IOException {
@@ -202,7 +205,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
 
         // Run the clear dataSnapshot and this time it should fail
         String [] args = {"-c","THREADED_SNAPSHOT", "-threadCount","foo","-debugFlag", "DEBUG"};
-        
+
         dataSnapshot4HistInit.executeCommand(args);
 
         // For this test if there is only one vertex in the graph, not sure if it will create multiple files
@@ -286,7 +289,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
 
         dataSnapshot4HistInit.executeCommand(args);
     }
-   
+
 
     @Test
     public void testReloadDataAndVerifyDataInGraphMatchesGraphson() throws IOException {
@@ -307,7 +310,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
         dataSnapshot4HistInit.executeCommand(args);
     }
 
-   
+
     @Test
     public void testMultiReloadDataAndVerifyDataInGraphMatchesGraphson() throws IOException, AAIException {
 
@@ -325,12 +328,12 @@ public class DataSnapshot4HistInitTest extends AAISetup {
         // After reload remove the added vertexes in the graph
         // The reason for this so each test is independent
         // as there shouldn't be dependencies and cause weird issues
-    	
+
         String [] args = {"-c","MULTITHREAD_RELOAD","-f", "pserver2.graphson"};
         dataSnapshot4HistInit.executeCommand(args);
-        
-    }       
-    
+
+    }
+
     @Test
     public void testMultiReloadDataWithNonExistentFilesAndItShouldFail() throws IOException {
 
@@ -363,7 +366,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
 
         dataSnapshot4HistInit.executeCommand(args);
     }
-    
+
     @Test
     public void testCanRetrieveNamesOfKeyProps() throws IOException {
 
@@ -375,21 +378,21 @@ public class DataSnapshot4HistInitTest extends AAISetup {
     		String nodeType = (String)entry.getKey();
     		ArrayList<String> keyNames = (ArrayList<String>)entry.getValue();
     		keyNamesHash.put(nodeType,keyNames);
-    	}   
+    	}
 
     	assertTrue(keyNamesHash != null );
     	assertFalse(keyNamesHash.isEmpty());
     }
-    
-    
+
+
     private void showVertProperties(String propKey, String propVal)  {
-    	
+
     	Vertex v1 = g.V().has(propKey, propVal).next();
         Iterator<VertexProperty<Object>> pI = v1.properties();
      	while( pI.hasNext() ){
      		VertexProperty<Object> tp = pI.next();
      		String infStr = " [" + tp.key() + "][" + tp.value() + "] ";
-     		System.out.println("Regular ole properties are: " + infStr  ); 
+     		System.out.println("Regular ole properties are: " + infStr  );
      		Iterator<Property<Object>> fullPropI = tp.properties();
      		while( fullPropI.hasNext() ){
      			// Note - the 'real' key/value of a property are not part of this list, just the
@@ -398,12 +401,12 @@ public class DataSnapshot4HistInitTest extends AAISetup {
          		String infStr2 = " [" + propOfProp.key() + "][" + propOfProp.value() + "] ";
      			System.out.println("For " + infStr + ", got sub-property:" + infStr2 );
      		}
-     	}  
+     	}
     }
-    
-    
+
+
     private List<Vertex> setupOneHistoryNode(GraphTraversalSource g) throws AAIException {
-    	
+
         Vertex v1 = g.addV().property("aai-node-type", "pserver","start-ts", 9988707,"source-of-truth","N/A")
             .property("hostname", "historyHOstGuy--8","start-ts", 9988707,"source-of-truth","N/A")
             .property("equip-vendor", "historyVendor","start-ts", 9988707,"source-of-truth","N/A")
@@ -411,12 +414,12 @@ public class DataSnapshot4HistInitTest extends AAISetup {
             .next();
        List<Vertex> list = new ArrayList<>();
         list.add(v1);
-        
+
         Iterator<VertexProperty<Object>> pI = v1.properties();
      	while( pI.hasNext() ){
      		VertexProperty<Object> tp = pI.next();
      		String infStr = " [" + tp.key() + "|" + tp.value() + "] ";
-     		System.out.println("Regular ole properties are: " + infStr  ); 
+     		System.out.println("Regular ole properties are: " + infStr  );
      		Iterator<Property<Object>> fullPropI = tp.properties();
      		while( fullPropI.hasNext() ){
      			// Note - the 'real' key/value of a property are not part of this list, just the
@@ -425,10 +428,10 @@ public class DataSnapshot4HistInitTest extends AAISetup {
          		String infStr2 = " [" + propOfProp.key() + "|" + propOfProp.value() + "] ";
      			System.out.println("For " + infStr + ", got sub-property:" + infStr2 );
      		}
-     	}    
+     	}
      	return list;
     }
-    
+
     private List<Vertex> setupPserverData(GraphTraversalSource g) throws AAIException {
         Vertex v1 = g.addV().property("aai-node-type", "pserver")
             .property("hostname", "somerandomhostname")

@@ -23,8 +23,9 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.edges.EdgeIngestor;
@@ -40,9 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Optional;
 
 public class PropertyMigratorTest extends AAISetup {
 
@@ -71,7 +72,7 @@ public class PropertyMigratorTest extends AAISetup {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup(){
         AAIGraph.getInstance();
         JanusGraphTransaction janusgraphTransaction = AAIGraph.getInstance().getGraph().newTransaction();
@@ -111,7 +112,7 @@ public class PropertyMigratorTest extends AAISetup {
 
         PropertyMigrator propertyMigrator = new PserverPropMigrator(dbEngine, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions, oldPropName, newPropName, String.class, Cardinality.SINGLE);
         propertyMigrator.run();
-        assertEquals("Expecting the property to be success", Status.SUCCESS, propertyMigrator.getStatus());
+        assertEquals(Status.SUCCESS, propertyMigrator.getStatus(), "Expecting the property to be success");
         dbEngine.commit();
 
         JanusGraphTransaction janusgraphTransaction = AAIGraph.getInstance().getGraph().newTransaction();
@@ -120,8 +121,8 @@ public class PropertyMigratorTest extends AAISetup {
         List<Vertex> oldVList = g.V().has("aai-node-type", "pserver").has(oldPropName).toList();
         List<Vertex> newVList = g.V().has("aai-node-type", "pserver").has(newPropName).toList();
 
-        assertEquals("Expecting the vertex list with old property to be zero", 0, oldVList.size());
-        assertEquals("Expecting the vertex list with new property to be 1", 1, newVList.size());
-        assertEquals("Expecting the equipment type to be some equipment", "some status", newVList.get(0).property(newPropName).value());
+        assertEquals(0, oldVList.size(), "Expecting the vertex list with old property to be zero");
+        assertEquals(1, newVList.size(), "Expecting the vertex list with new property to be 1");
+        assertEquals("some status", newVList.get(0).property(newPropName).value(), "Expecting the equipment type to be some equipment");
     }
 }

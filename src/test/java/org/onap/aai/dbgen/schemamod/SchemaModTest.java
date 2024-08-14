@@ -24,17 +24,17 @@ import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodName.class)
 public class SchemaModTest extends AAISetup {
 
 	private static final Logger logger = LoggerFactory.getLogger(SchemaModTest.class);
@@ -45,7 +45,7 @@ public class SchemaModTest extends AAISetup {
 
 	private boolean setUp = false;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		schemaMod = new SchemaMod(loaderFactory, schemaVersions);
 		// deleteTool.SHOULD_EXIT_VM = false;
@@ -97,7 +97,7 @@ public class SchemaModTest extends AAISetup {
 
 
 	
-	@After
+	@AfterEach
 	public void tearDown() {
 
 		JanusGraphTransaction transaction = AAIGraph.getInstance().getGraph().newTransaction();

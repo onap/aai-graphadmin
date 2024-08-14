@@ -24,9 +24,10 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -42,7 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +63,7 @@ public class UriMigrationTest extends AAISetup {
 	private Vertex lInterface3;
 	private Vertex plink3;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -103,7 +104,7 @@ public class UriMigrationTest extends AAISetup {
 
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		graph.close();
 	}

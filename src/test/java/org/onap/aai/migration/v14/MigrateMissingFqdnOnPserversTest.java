@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v14;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -28,9 +28,10 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -57,7 +58,7 @@ public class MigrateMissingFqdnOnPserversTest extends AAISetup{
     Vertex pserver5;
     
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     	
     	graph = JanusGraphFactory.build().set("storage.backend", "inmemory").open();
@@ -105,7 +106,7 @@ public class MigrateMissingFqdnOnPserversTest extends AAISetup{
         migration.run();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tx.rollback();
         graph.close();

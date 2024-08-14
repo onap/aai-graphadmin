@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v13;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -27,9 +27,8 @@ import java.util.Optional;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -61,7 +60,7 @@ public class MigrateBadWidgetModelsPartOneTest extends AAISetup {
 	private Vertex modelVer1 = null;
 	private Vertex modelVer3 = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
 		JanusGraphManagement janusgraphManagement = graph.openManagement();

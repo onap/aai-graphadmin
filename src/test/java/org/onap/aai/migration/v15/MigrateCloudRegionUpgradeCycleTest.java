@@ -19,15 +19,16 @@
  */
 package org.onap.aai.migration.v15;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -59,7 +60,7 @@ public class MigrateCloudRegionUpgradeCycleTest extends AAISetup{
     Vertex cloudRegion3;
    
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     	
     	graph = JanusGraphFactory.build().set("storage.backend", "inmemory").open();
@@ -99,7 +100,7 @@ public class MigrateCloudRegionUpgradeCycleTest extends AAISetup{
         migration.run();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tx.rollback();
         graph.close();

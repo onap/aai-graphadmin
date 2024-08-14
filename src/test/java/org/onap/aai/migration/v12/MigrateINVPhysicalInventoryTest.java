@@ -25,7 +25,9 @@ import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -38,7 +40,7 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +56,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 	private JanusGraphTransaction tx;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -96,7 +98,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 		migration.run();
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -106,17 +108,19 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 	@Test
 	public void pnfsExistTest() throws Exception {
 		// check if pnf node gets created
-		assertEquals("2 PNFs exist", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "pnf")
-						.count().next());
+						.count().next(),
+				"2 PNFs exist");
 	}
 
 	@Test
 	public void pInterfacesExistTest() throws Exception {
 
-		assertEquals("4 Pinterfaces exist", new Long(4L),
+		assertEquals(new Long(4L),
 				g.V().has("aai-node-type", "p-interface")
-						.count().next());
+						.count().next(),
+				"4 Pinterfaces exist");
 	}
 
 	@Test
@@ -124,27 +128,31 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 		// check if graph nodes exist
 		
 		// check if pnf node gets created
-		assertEquals("2 PNFs exist", new Long(2L), 
+		assertEquals(new Long(2L), 
 				g.V().has("aai-node-type", "pnf")
-				.count().next());
+				.count().next(), 
+				"2 PNFs exist");
 		
 		System.out.println("cOUNT:" +g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-collector-1").in("tosca.relationships.network.BindsTo").count().next());
 				
-		assertEquals("p-interfaces created for pnfs", new Long(1L),
+		assertEquals(new Long(1L),
 				g.V().has("aai-node-type", "pnf")
-				.has("pnf-name", "pnf-name-collector-1").count().next());
+				.has("pnf-name", "pnf-name-collector-1").count().next(),
+				"p-interfaces created for pnfs");
 		
-		assertEquals("p-interface 1.7 created for pnf-name-collector-1", true,
+		assertEquals(true,
 				g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-collector-1")
 				.in("tosca.relationships.network.BindsTo")
 				.has("interface-name","1.7")
-				.hasNext());
-		assertEquals("p-interfaces created for pnfs", new Long(2L),
+				.hasNext(),
+				"p-interface 1.7 created for pnf-name-collector-1");
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-1")
-				.in("tosca.relationships.network.BindsTo").count().next());
+				.in("tosca.relationships.network.BindsTo").count().next(),
+				"p-interfaces created for pnfs");
 	}
 	
 	@Test

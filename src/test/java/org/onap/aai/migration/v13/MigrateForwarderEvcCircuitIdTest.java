@@ -19,10 +19,7 @@
  */
 package org.onap.aai.migration.v13;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +28,8 @@ import java.util.Optional;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -56,7 +54,7 @@ public class MigrateForwarderEvcCircuitIdTest extends AAISetup {
 	private MigrateForwarderEvcCircuitId migration;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		g = tx.traversal();
 		loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -158,20 +156,23 @@ public class MigrateForwarderEvcCircuitIdTest extends AAISetup {
 	public void testCircuitIdsUpdated() throws Exception {
 		// check if graph nodes are updated
 		
-		assertEquals("First circuit-id updated", "10", 
-				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "10").next().value("circuit-id").toString());
+		assertEquals("10", 
+				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "10").next().value("circuit-id").toString(), 
+				"First circuit-id updated");
 
-		assertEquals("Second circuit-id updated", "20", 
-				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "20").next().value("circuit-id").toString());
+		assertEquals("20", 
+				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "20").next().value("circuit-id").toString(), 
+				"Second circuit-id updated");
 
-		assertFalse("Third circuit-id remains empty", g.V().has("aai-node-type", "forwarder-evc").has("forwarder-evc-id", "evc-3")
-				.next().property("circuit-id").isPresent());
+		assertFalse(g.V().has("aai-node-type", "forwarder-evc").has("forwarder-evc-id", "evc-3")
+				.next().property("circuit-id").isPresent(), "Third circuit-id remains empty");
 
-		assertEquals("Fourth circuit-id not updated", "3", 
-				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "3").next().value("circuit-id").toString());
+		assertEquals("3", 
+				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "3").next().value("circuit-id").toString(), 
+				"Fourth circuit-id not updated");
 
-		assertFalse("Fifth circuit-id remains empty", g.V().has("aai-node-type", "forwarder-evc").has("forwarder-evc-id", "evc-5")
-				.next().property("circuit-id").isPresent());
+		assertFalse(g.V().has("aai-node-type", "forwarder-evc").has("forwarder-evc-id", "evc-5")
+				.next().property("circuit-id").isPresent(), "Fifth circuit-id remains empty");
 	}
 	
 	@Test

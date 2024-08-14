@@ -25,15 +25,18 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-import org.springframework.boot.test.system.OutputCaptureRule;
+
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +49,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(OutputCaptureExtension.class)
 public class DataSnapshotTest extends AAISetup {
 
     private GraphTraversalSource g;
@@ -59,10 +64,7 @@ public class DataSnapshotTest extends AAISetup {
 
     private static final int DELAYSINGLETHREADTEST = 90;
 
-    @Rule
-    public OutputCaptureRule outputCapture = new OutputCaptureRule();
-
-    @Before
+    @BeforeEach
     public void setup() throws AAIException {
         JanusGraph graph = AAIGraph.getInstance().getGraph();
         currentTransaction = graph.newTransaction();
@@ -73,7 +75,7 @@ public class DataSnapshotTest extends AAISetup {
         currentTransaction.commit();
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
 
         JanusGraph graph = AAIGraph.getInstance().getGraph();
@@ -85,7 +87,7 @@ public class DataSnapshotTest extends AAISetup {
     }
 
     @Test
-    public void testClearEntireDatabaseAndVerifyDataIsRemoved() throws IOException {
+    public void testClearEntireDatabaseAndVerifyDataIsRemoved(CapturedOutput outputCapture) throws IOException {
 
         // Copy the pserver.graphson file from src/test/resoures to ${AJSC_HOME}/logs/data/dataSnapshots/ folder
         String sourceFileName = "src/test/resources/pserver.graphson";
@@ -107,7 +109,7 @@ public class DataSnapshotTest extends AAISetup {
 
 
     @Test
-    public void testClearEntireDatabaseWithEmptyGraphSONFileAndItShouldNotClearDatabase() throws IOException {
+    public void testClearEntireDatabaseWithEmptyGraphSONFileAndItShouldNotClearDatabase(CapturedOutput outputCapture) throws IOException {
 
         // Create a empty file called empty.graphson in src/test/resources/
 
