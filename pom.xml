@@ -107,7 +107,8 @@
         <!-- fix the driver version to match the one defined in janusgraph-cql
             spring-boot (2.4) is otherwise downgrading it to 4.9.0 -->
         <!-- see https://github.com/JanusGraph/janusgraph/blob/v0.6.0/pom.xml#L120 -->
-        <cassandra-driver.version>4.13.0</cassandra-driver.version>
+        <cassandra-driver.version>4.17.0</cassandra-driver.version>
+        <datastax.native-protocol.version>1.5.1</datastax.native-protocol.version>
     </properties>
 
     <profiles>
@@ -327,11 +328,23 @@
                 <artifactId>guava</artifactId>
                 <version>25.0-jre</version>
             </dependency>
+            <!-- cassandra driver -->
             <dependency>
                 <groupId>com.datastax.oss</groupId>
                 <artifactId>java-driver-core</artifactId>
                 <version>${cassandra-driver.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-query-builder</artifactId>
+                <version>${cassandra-driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>native-protocol</artifactId>
+                <version>${datastax.native-protocol.version}</version>
+            </dependency>
+            <!-- /cassandra driver -->
         </dependencies>
     </dependencyManagement>
     <dependencies>
