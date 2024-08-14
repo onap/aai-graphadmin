@@ -25,9 +25,9 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.introspection.Loader;
@@ -36,7 +36,7 @@ import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class RebuildAllEdgesTest extends AAISetup {
@@ -48,7 +48,7 @@ public class RebuildAllEdgesTest extends AAISetup {
 	private Graph tx;
 	private RebuildAllEdges spyRebuildAllEdges;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		JanusGraphManagement janusgraphManagement = graph.openManagement();
@@ -71,7 +71,7 @@ public class RebuildAllEdgesTest extends AAISetup {
         spyRebuildAllEdges.run();
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();

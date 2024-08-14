@@ -28,10 +28,11 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.datagrooming.DataGrooming;
 import org.onap.aai.dbmap.AAIGraph;
@@ -53,8 +54,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class DataSnapshotTest4HistInit extends AAISetup {
@@ -70,7 +73,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
     @Rule
     public OutputCaptureRule outputCapture = new OutputCaptureRule();
 
-    @Before
+    @BeforeEach
     public void setup() throws AAIException {
     	dataSnapshot4HistInit = new DataSnapshot4HistInit(loaderFactory, schemaVersions);
     	
@@ -83,7 +86,7 @@ public class DataSnapshotTest4HistInit extends AAISetup {
         currentTransaction.commit();
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
 
         JanusGraph graph = AAIGraph.getInstance().getGraph();

@@ -20,8 +20,9 @@
 package org.onap.aai.migration.v16;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Loader;
@@ -36,7 +37,7 @@ import org.onap.aai.setup.SchemaVersions;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -71,7 +72,7 @@ public class MigrateInMaintDefaultToFalseTest extends
     private InMaintDefaultMigrator migration;
     private GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -124,37 +125,37 @@ public class MigrateInMaintDefaultToFalseTest extends
 
     @Test
     public void testMissingProperty(){
-        assertTrue("Value of zone should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "zone").has("zone-id", "zone0").has("in-maint", false).hasNext());
-        assertTrue("Value of cloud-region should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region0").has("in-maint", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "zone").has("zone-id", "zone0").has("in-maint", false).hasNext(),
+                "Value of zone should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region0").has("in-maint", false).hasNext(),
+                "Value of cloud-region should be updated since the property in-maint doesn't exist");
         
     }
 
     @Test
     public void testEmptyValue() {                
-        assertTrue("Value of zone should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "zone").has("zone-id", "zone1").has("in-maint", false).hasNext());
-        assertTrue("Value of cloud-region should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region1").has("in-maint", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "zone").has("zone-id", "zone1").has("in-maint", false).hasNext(),
+                "Value of zone should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region1").has("in-maint", false).hasNext(),
+                "Value of cloud-region should be updated since the value for in-maint is an empty string");
         
     }
     
     @Test
     public void testExistingTrueValues() {
-        assertTrue("Value of zone shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "zone").has("zone-id", "zone2").has("in-maint", true).hasNext());
-        assertTrue("Value of cloud-region shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region2").has("in-maint", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "zone").has("zone-id", "zone2").has("in-maint", true).hasNext(),
+                "Value of zone shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region2").has("in-maint", true).hasNext(),
+                "Value of cloud-region shouldn't be updated since in-maint already exists");
         
     }
     
     @Test
     public void testExistingFalseValues() {
-        assertTrue("Value of zone shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "zone").has("zone-id", "zone3").has("in-maint", false).hasNext());
-        assertTrue("Value of cloud-region shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region3").has("in-maint", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "zone").has("zone-id", "zone3").has("in-maint", false).hasNext(),
+                "Value of zone shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region3").has("in-maint", false).hasNext(),
+                "Value of cloud-region shouldn't be updated since in-maint already exists");
         
     }
 }

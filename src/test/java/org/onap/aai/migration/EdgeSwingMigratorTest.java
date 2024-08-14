@@ -27,8 +27,8 @@ import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.javatuples.Pair;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.edges.EdgeIngestor;
@@ -44,8 +44,8 @@ import org.onap.aai.setup.SchemaVersions;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +61,7 @@ public class EdgeSwingMigratorTest extends AAISetup {
 	private Vertex modelVer3 = null;
 	
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		JanusGraphManagement janusgraphManagement = graph.openManagement();
 		g = graph.traversal();
@@ -216,8 +216,8 @@ public class EdgeSwingMigratorTest extends AAISetup {
          	}
 		}
 			
-		assertTrue("New IsA edge has aai-uuid property ", haveUuidProp );
-		assertTrue("New IsA edge has delete-other-v property ", haveDelOtherVProp );
+		assertTrue(haveUuidProp, "New IsA edge has aai-uuid property " );
+		assertTrue(haveDelOtherVProp, "New IsA edge has delete-other-v property " );
 	}
 		
 		

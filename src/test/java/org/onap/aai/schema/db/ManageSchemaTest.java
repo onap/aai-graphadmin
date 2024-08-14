@@ -25,9 +25,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.schema.DBIndex;
 import org.onap.aai.db.schema.ManageJanusGraphSchema;
@@ -35,12 +36,12 @@ import org.onap.aai.db.schema.ManageJanusGraphSchema;
 import java.io.IOException;
 import java.util.Set;
 
-@Ignore("not ready yet")
+@Disabled("not ready yet")
 public class ManageSchemaTest extends AAISetup {
 
 	private JanusGraph graph = null;
 
-	@Before
+	@BeforeEach
 	public void beforeTest() {
 		graph = JanusGraphFactory.open("bundleconfig-local/etc/appprops/aaiconfig.properties");
 	}

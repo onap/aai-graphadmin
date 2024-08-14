@@ -23,10 +23,11 @@ import org.apache.commons.io.IOUtils;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.onap.aai.config.*;
 import org.onap.aai.db.schema.AuditorFactory;
 import org.onap.aai.edges.EdgeIngestor;
@@ -41,17 +42,17 @@ import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-
+@SpringBootTest
 @ContextConfiguration(classes = {
         ConfigConfiguration.class,
         AAIConfigTranslator.class,
@@ -104,16 +105,10 @@ public abstract class AAISetup {
     @Value("${schema.uri.base.path}")
     protected String basePath;
 
-    @ClassRule
-    public static final SpringClassRule springClassRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
     protected static JanusGraph graph;
     protected static JanusGraphTransaction tx;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupBundleconfig() throws Exception {
         System.setProperty("AJSC_HOME", "./");
         System.setProperty("BUNDLECONFIG_DIR", "src/main/resources/");
@@ -122,7 +117,7 @@ public abstract class AAISetup {
         tx = graph.newTransaction();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanUpGraph() {
         tx.tx().rollback();
         graph.close();
@@ -135,7 +130,7 @@ public abstract class AAISetup {
                 .getResourceAsStream(filename);
 
         String message = String.format("Unable to find the %s in src/test/resources", filename);
-        assertNotNull(message, inputStream);
+        assertNotNull(inputStream, message);
 
         String resource = IOUtils.toString(inputStream);
         return resource;

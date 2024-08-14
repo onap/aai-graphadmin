@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v13;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -29,9 +29,9 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -55,7 +55,7 @@ public class MigrateModelVerTest extends AAISetup{
 	private JanusGraphTransaction tx;
 	private MigrateModelVer migration;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend", "inmemory").open();
 		JanusGraphManagement janusgraphManagement = graph.openManagement();
@@ -271,7 +271,7 @@ public class MigrateModelVerTest extends AAISetup{
 		migration.run();
 	}
 
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.rollback();
 		graph.close();
@@ -284,14 +284,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-1").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "connector").has("resource-instance-id", "connector2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-1").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-1").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to 2 connectors", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-1")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to 2 connectors");
 	}
 
 
@@ -302,14 +304,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-2").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "service-instance").has("service-instance-id", "serviceinstance2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-2").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-2").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 service-instances", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-2")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 service-instances");
 	}
 	
 	@Test
@@ -319,14 +323,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-3").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "pnf").has("pnf-name", "pnfName2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-3").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-3").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 pnfs", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-3")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 pnfs");
 	}
 	
 	@Test
@@ -336,14 +342,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-4").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "logical-link").has("link-name", "linkName2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-4").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-4").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 logical-link", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-4")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 logical-link");
 	}
 	
 	@Test
@@ -353,14 +361,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-5").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-5").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-5").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 logical-link", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-5")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 logical-link");
 	}
 	
 	@Test
@@ -370,14 +380,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-6").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "vnf2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-6").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-6").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 generic-vnfs", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-6")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 generic-vnfs");
 	}
 	
 	@Test
@@ -387,14 +399,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-7").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "configuration").has("configuration-id", "configuration2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-7").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-7").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 configurations", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-7")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 configurations");
 	}
 	
 	@Test
@@ -404,14 +418,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-8").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "l3-network").has("network-id", "l3Network2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-8").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-8").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 l3-networks", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-8")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 l3-networks");
 	}
 	
 	@Test
@@ -421,14 +437,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-9").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "vf-module").has(" vf-module-id", "vfModule2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-9").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-9").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 vf-modules", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-9")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 vf-modules");
 	}
 	
 	@Test
@@ -438,14 +456,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-10").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "collection").has("collection-id", "collection2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-10").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-10").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 collections", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-10")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 collections");
 	}
 	
 	@Test
@@ -455,14 +475,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-11").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "instance-group").has("collection-id", "instanceGroup2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-11").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-11").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 instance-group2", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-11")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 instance-group2");
 	}
 	
 	@Test
@@ -472,14 +494,16 @@ public class MigrateModelVerTest extends AAISetup{
 						.out()
 						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-12").hasNext());
 
-		assertEquals( "Edge not created", false,
+		assertEquals( false,
 				g.V().has("aai-node-type", "allotted-resource").has("id", "allottedResource2")
 						.out()
-						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-12").hasNext());
+						.has("aai-node-type", "model-ver").has("model-version-id","model-version-id-12").hasNext(),
+				"Edge not created");
 
-		assertEquals("Edge exists to only 2 allotted-resource", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-12")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to only 2 allotted-resource");
 	}
 
 }

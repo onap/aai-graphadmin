@@ -25,7 +25,9 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -36,7 +38,7 @@ import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +54,7 @@ public class MigrateVnfcModelInvariantIdTest extends AAISetup{
 	private JanusGraphTransaction tx;
 	private GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -86,7 +88,7 @@ public class MigrateVnfcModelInvariantIdTest extends AAISetup{
 		migration.run();
 	}
 
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -96,13 +98,15 @@ public class MigrateVnfcModelInvariantIdTest extends AAISetup{
     public void testIdsUpdated() throws Exception {
         assertEquals(true,
                 g.V().has("aai-node-type", "vnfc").has("vnfcName", "vnfc-name-1").has("model-invariant-id-local").next().property("model-invariant-id-local").isPresent());
-        assertEquals("model-invariant-id renamed to model-invariant-id-local for vnfc", "vnfc-invariant-id-1",
-                g.V().has("aai-node-type", "vnfc").has("vnfcName", "vnfc-name-1").next().value("model-invariant-id-local").toString());
+        assertEquals("vnfc-invariant-id-1",
+                g.V().has("aai-node-type", "vnfc").has("vnfcName", "vnfc-name-1").next().value("model-invariant-id-local").toString(),
+                "model-invariant-id renamed to model-invariant-id-local for vnfc");
     }
 
     @Test
     public void testIdsNotUpdated() throws Exception {
-	    assertEquals("model-invariant-id-local should not be renamed for vnfc", "vnfc-invariant-id-2",
-                g.V().has("aai-node-type", "vnfc").has("vnfcName", "vnfc-name-2").next().value("model-invariant-id-local").toString());
+	    assertEquals("vnfc-invariant-id-2",
+                g.V().has("aai-node-type", "vnfc").has("vnfcName", "vnfc-name-2").next().value("model-invariant-id-local").toString(),
+                "model-invariant-id-local should not be renamed for vnfc");
     }
 }

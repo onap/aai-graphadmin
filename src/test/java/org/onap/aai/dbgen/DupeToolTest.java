@@ -25,15 +25,16 @@ import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DupeToolTest extends AAISetup {
 
@@ -41,7 +42,7 @@ public class DupeToolTest extends AAISetup {
 
     private DupeTool dupeTool;
 
-    @Before
+    @BeforeEach
     public void setup(){
         dupeTool = new DupeTool(loaderFactory, schemaVersions, false);
         createGraph();
@@ -206,7 +207,7 @@ public class DupeToolTest extends AAISetup {
     }
 
 
-    @After
+    @AfterEach
     public void tearDown(){
 
         JanusGraphTransaction transaction = AAIGraph.getInstance().getGraph().newTransaction();

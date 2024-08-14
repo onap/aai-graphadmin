@@ -31,8 +31,9 @@ import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -47,15 +48,13 @@ import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public class MigrateInMaintDefaultToFalseTest extends
 		AAISetup {
@@ -97,7 +96,7 @@ public class MigrateInMaintDefaultToFalseTest extends
     private InMaintDefaultMigrator migration;
     private GraphTraversalSource g;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception{
         g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -306,105 +305,105 @@ public class MigrateInMaintDefaultToFalseTest extends
 
     @Test
     public void testMissingProperty(){
-        assertTrue("Value of generic-vnf should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf0").has("in-maint", false).hasNext());
-        assertTrue("Value of l-interface should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface0").has("in-maint", false).hasNext());
-        assertTrue("Value of lag-interface should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface0").has("in-maint", false).hasNext());
-        assertTrue("Value of logical-link should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link0").has("in-maint", false).hasNext());
-        assertTrue("Value of p-interface should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface0").has("in-maint", false).hasNext());
-        assertTrue("Value of pnf should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf0").has("in-maint", false).hasNext());
-        assertTrue("Value of pserver should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver0").has("in-maint", false).hasNext());
-        assertTrue("Value of vlan should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan0").has("in-maint", false).hasNext());
-        assertTrue("Value of vnfc should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc0").has("in-maint", false).hasNext());
-        assertTrue("Value of vserver should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver0").has("in-maint", false).hasNext());    
-        assertTrue("Value of nos-server should be updated since the property in-maint doesn't exist",
-                g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server0").has("in-maint", false).hasNext()); 
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf0").has("in-maint", false).hasNext(),
+                "Value of generic-vnf should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface0").has("in-maint", false).hasNext(),
+                "Value of l-interface should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface0").has("in-maint", false).hasNext(),
+                "Value of lag-interface should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link0").has("in-maint", false).hasNext(),
+                "Value of logical-link should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface0").has("in-maint", false).hasNext(),
+                "Value of p-interface should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf0").has("in-maint", false).hasNext(),
+                "Value of pnf should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver0").has("in-maint", false).hasNext(),
+                "Value of pserver should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan0").has("in-maint", false).hasNext(),
+                "Value of vlan should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc0").has("in-maint", false).hasNext(),
+                "Value of vnfc should be updated since the property in-maint doesn't exist");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver0").has("in-maint", false).hasNext(),
+                "Value of vserver should be updated since the property in-maint doesn't exist");    
+        assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server0").has("in-maint", false).hasNext(),
+                "Value of nos-server should be updated since the property in-maint doesn't exist"); 
     }
 
     @Test
     public void testEmptyValue() {                
-        assertTrue("Value of generic-vnf should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("in-maint", false).hasNext());
-        assertTrue("Value of l-interface should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("in-maint", false).hasNext());
-        assertTrue("Value of lag-interface should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface1").has("in-maint", false).hasNext());
-        assertTrue("Value of logical-link should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link1").has("in-maint", false).hasNext());
-        assertTrue("Value of p-interface should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface1").has("in-maint", false).hasNext());
-        assertTrue("Value of pnf should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf1").has("in-maint", false).hasNext());
-        assertTrue("Value of pserver should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver1").has("in-maint", false).hasNext());
-        assertTrue("Value of vlan should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan1").has("in-maint", false).hasNext());
-        assertTrue("Value of vnfc should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc1").has("in-maint", false).hasNext());
-        assertTrue("Value of vserver should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver1").has("in-maint", false).hasNext());
-        assertTrue("Value of nos-server should be updated since the value for in-maint is an empty string",
-                g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server1").has("in-maint", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("in-maint", false).hasNext(),
+                "Value of generic-vnf should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("in-maint", false).hasNext(),
+                "Value of l-interface should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface1").has("in-maint", false).hasNext(),
+                "Value of lag-interface should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link1").has("in-maint", false).hasNext(),
+                "Value of logical-link should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface1").has("in-maint", false).hasNext(),
+                "Value of p-interface should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf1").has("in-maint", false).hasNext(),
+                "Value of pnf should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver1").has("in-maint", false).hasNext(),
+                "Value of pserver should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan1").has("in-maint", false).hasNext(),
+                "Value of vlan should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc1").has("in-maint", false).hasNext(),
+                "Value of vnfc should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver1").has("in-maint", false).hasNext(),
+                "Value of vserver should be updated since the value for in-maint is an empty string");
+        assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server1").has("in-maint", false).hasNext(),
+                "Value of nos-server should be updated since the value for in-maint is an empty string");
     }
     
     @Test
     public void testExistingTrueValues() {
-        assertTrue("Value of generic-vnf shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("in-maint", true).hasNext());
-        assertTrue("Value of l-interface shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface2").has("in-maint", true).hasNext());
-        assertTrue("Value of lag-interface shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface2").has("in-maint", true).hasNext());
-        assertTrue("Value of logical-link shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link2").has("in-maint", true).hasNext());
-        assertTrue("Value of p-interface shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface2").has("in-maint", true).hasNext());
-        assertTrue("Value of pnf shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf2").has("in-maint", true).hasNext());
-        assertTrue("Value of pserver shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver2").has("in-maint", true).hasNext());
-        assertTrue("Value of vlan shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan2").has("in-maint", true).hasNext());
-        assertTrue("Value of vnfc shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc2").has("in-maint", true).hasNext());
-        assertTrue("Value of vserver shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver2").has("in-maint", true).hasNext());
-        assertTrue("Value of nos-server shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server2").has("in-maint", true).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("in-maint", true).hasNext(),
+                "Value of generic-vnf shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface2").has("in-maint", true).hasNext(),
+                "Value of l-interface shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface2").has("in-maint", true).hasNext(),
+                "Value of lag-interface shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link2").has("in-maint", true).hasNext(),
+                "Value of logical-link shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface2").has("in-maint", true).hasNext(),
+                "Value of p-interface shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf2").has("in-maint", true).hasNext(),
+                "Value of pnf shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver2").has("in-maint", true).hasNext(),
+                "Value of pserver shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan2").has("in-maint", true).hasNext(),
+                "Value of vlan shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc2").has("in-maint", true).hasNext(),
+                "Value of vnfc shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver2").has("in-maint", true).hasNext(),
+                "Value of vserver shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server2").has("in-maint", true).hasNext(),
+                "Value of nos-server shouldn't be updated since in-maint already exists");
     }
     
     @Test
     public void testExistingFalseValues() {
-        assertTrue("Value of generic-vnf shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf3").has("in-maint", false).hasNext());
-        assertTrue("Value of l-interface shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface3").has("in-maint", false).hasNext());
-        assertTrue("Value of lag-interface shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface3").has("in-maint", false).hasNext());
-        assertTrue("Value of logical-link shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link3").has("in-maint", false).hasNext());
-        assertTrue("Value of p-interface shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface3").has("in-maint", false).hasNext());
-        assertTrue("Value of pnf shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf3").has("in-maint", false).hasNext());
-        assertTrue("Value of pserver shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver3").has("in-maint", false).hasNext());
-        assertTrue("Value of vlan shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan3").has("in-maint", false).hasNext());
-        assertTrue("Value of vnfc shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc3").has("in-maint", false).hasNext());
-        assertTrue("Value of vserver shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver3").has("in-maint", false).hasNext());
-        assertTrue("Value of nos-server shouldn't be updated since in-maint already exists",
-                g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server3").has("in-maint", false).hasNext());
+        assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf3").has("in-maint", false).hasNext(),
+                "Value of generic-vnf shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface3").has("in-maint", false).hasNext(),
+                "Value of l-interface shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "lag-interface").has("interface-name", "lag-interface3").has("in-maint", false).hasNext(),
+                "Value of lag-interface shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "logical-link").has("link-name", "logical-link3").has("in-maint", false).hasNext(),
+                "Value of logical-link shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "p-interface").has("interface-name", "p-interface3").has("in-maint", false).hasNext(),
+                "Value of p-interface shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf3").has("in-maint", false).hasNext(),
+                "Value of pnf shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "pserver").has("pserver-id", "pserver3").has("in-maint", false).hasNext(),
+                "Value of pserver shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "vlan").has("vlan-interface", "vlan3").has("in-maint", false).hasNext(),
+                "Value of vlan shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc3").has("in-maint", false).hasNext(),
+                "Value of vnfc shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver3").has("in-maint", false).hasNext(),
+                "Value of vserver shouldn't be updated since in-maint already exists");
+        assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server3").has("in-maint", false).hasNext(),
+                "Value of nos-server shouldn't be updated since in-maint already exists");
     }
 }

@@ -19,9 +19,7 @@
  */
 package org.onap.aai.migration.v12;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -39,9 +37,10 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.javatuples.Pair;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
@@ -61,7 +60,7 @@ public class MigrateINVPhysicalInventoryMethodTest extends AAISetup {
 	private GraphTraversalSource g;
 	private TransactionalGraphEngine spy;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -84,7 +83,7 @@ public class MigrateINVPhysicalInventoryMethodTest extends AAISetup {
 		when(adminSpy.getReadOnlyTraversalSource()).thenReturn(readOnly);
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -118,13 +117,13 @@ public class MigrateINVPhysicalInventoryMethodTest extends AAISetup {
 		MigrateINVPhysicalInventory m = new MigrateINVPhysicalInventory(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 		String line = "pnf-name-collector-1,06000D.121,5150,AED,,2001:1890:fcfe:7000:7021:0:1:2,64,,,,,\"1.7	\",SFP_1GE/Ethernet_10/100/1000M,ACCESS,N,N,M0651881_ST,SHARED,DOUBLE,SFP-1GE-LX,1000Mbps,,evc-name-1\n";
 		Pair<String, String> pair = m.processLine(Arrays.asList(line.split(",", -1))).get();
-		assertEquals("Test 1","pnf-name-collector-1", pair.getValue0());
-		assertEquals("Test 1","1.7", pair.getValue1());
+		assertEquals("pnf-name-collector-1", pair.getValue0(), "Test 1");
+		assertEquals("1.7", pair.getValue1(), "Test 1");
 
 		line = "pnf-name-1,06000D.121,5150,AED,,2001:1890:fcfe:7000:7021:0:1:2,64,,,,,1.2,SFP_1GE/Ethernet_10/100/1000M,ACCESS,N,N,M0651882_ST,SHARED,DOUBLE,SFP-1GE-LX,1000Mbps,,evc-name-3";
 		pair = m.processLine(Arrays.asList(line.split(",", -1))).get();
-		assertEquals("Test 1","pnf-name-1", pair.getValue0());
-		assertEquals("Test 1","1.2", pair.getValue1());
+		assertEquals("pnf-name-1", pair.getValue0(), "Test 1");
+		assertEquals("1.2", pair.getValue1(), "Test 1");
 
 	}
 

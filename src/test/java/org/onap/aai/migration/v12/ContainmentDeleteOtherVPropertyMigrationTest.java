@@ -26,9 +26,9 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
@@ -42,7 +42,7 @@ import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +58,7 @@ public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 	private GraphTraversalSource g;
 	private Graph tx;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		JanusGraphManagement janusgraphManagement = graph.openManagement();
@@ -91,7 +91,7 @@ public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 		migration.run();
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -99,12 +99,15 @@ public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 	
 	@Test
 	public void run() {
-		assertEquals("del other now OUT", true, 
-				g.E().hasLabel("hasLInterface").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.OUT.toString()).hasNext());
-		assertEquals("contains val still same", true, 
-				g.E().hasLabel("hasLInterface").has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).hasNext());
-		assertEquals("non-containment unchanged", true,
-				g.E().hasLabel("uses").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.NONE.toString()).hasNext());
+		assertEquals(true, 
+				g.E().hasLabel("hasLInterface").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.OUT.toString()).hasNext(), 
+				"del other now OUT");
+		assertEquals(true, 
+				g.E().hasLabel("hasLInterface").has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).hasNext(), 
+				"contains val still same");
+		assertEquals(true,
+				g.E().hasLabel("uses").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.NONE.toString()).hasNext(),
+				"non-containment unchanged");
 	}
 
 }

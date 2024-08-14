@@ -25,9 +25,10 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -39,7 +40,7 @@ import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +56,7 @@ public class MigrateInstanceGroupModelVersionIdTest extends AAISetup {
 	private static JanusGraphTransaction tx;
 	private static GraphTraversalSource g;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
 		tx = graph.newTransaction();
@@ -87,7 +88,7 @@ public class MigrateInstanceGroupModelVersionIdTest extends AAISetup {
 		migration.run();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
@@ -97,13 +98,15 @@ public class MigrateInstanceGroupModelVersionIdTest extends AAISetup {
     public void testIdsUpdated() throws Exception {
         assertEquals(true,
                 g.V().has("aai-node-type", "instance-group").has("id", "instance-id-1").has("model-version-id-local").next().property("model-version-id-local").isPresent());
-        assertEquals("model-version-id renamed to model-version-id-local for instance-group", "instance-version-id-1",
-                g.V().has("aai-node-type", "instance-group").has("id", "instance-id-1").next().value("model-version-id-local").toString());
+        assertEquals("instance-version-id-1",
+                g.V().has("aai-node-type", "instance-group").has("id", "instance-id-1").next().value("model-version-id-local").toString(),
+                "model-version-id renamed to model-version-id-local for instance-group");
     }
 
     @Test
     public void testIdsNotUpdated() throws Exception {
-        assertEquals("model-version-id-local remains the same for instance-group", "instance-version-id-2",
-                g.V().has("aai-node-type", "instance-group").has("id", "instance-id-2").next().value("model-version-id-local").toString());
+        assertEquals("instance-version-id-2",
+                g.V().has("aai-node-type", "instance-group").has("id", "instance-id-2").next().value("model-version-id-local").toString(),
+                "model-version-id-local remains the same for instance-group");
     }
 }

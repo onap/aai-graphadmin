@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v14;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +28,9 @@ import java.util.List;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.strategy.verification.ReadOnlyStrategy;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -84,7 +86,7 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
     Vertex zoneScn61;
     Vertex zoneScn62;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         graph = JanusGraphFactory.build().set("storage.backend","inmemory").open();
         tx = graph.newTransaction();
@@ -382,7 +384,7 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
         migration.run();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tx.tx().rollback();
         graph.close();
@@ -415,8 +417,8 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
         assertEquals("Scn4.pserverROSPlinkScn4",pserverRCTPlinkScn4.property("fqdn").value().toString());
         assertEquals(true, g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTPlinkScn4").in("tosca.relationships.network.BindsTo")
         		.has("aai-node-type","p-interface").has("interface-name","pintPlinkScn4").hasNext());
-        assertEquals("only 1 p-int is present on RCT pserver", new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTPlinkScn4").in("tosca.relationships.network.BindsTo")
-        		.has("aai-node-type","p-interface").has("interface-name","pintPlinkScn4").count().next());
+        assertEquals(new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTPlinkScn4").in("tosca.relationships.network.BindsTo")
+        		.has("aai-node-type","p-interface").has("interface-name","pintPlinkScn4").count().next(), "only 1 p-int is present on RCT pserver");
         assertEquals("/cloud-infrastructure/pservers/pserver/pserverRCTPlinkScn4/p-interfaces/p-interface/pintPlinkScn4", samePintScn4RCT.property("aai-uri").value().toString());
         //plink is not  moved from RO to RCT when p-int matches
         assertEquals(false, g.V().has("aai-node-type", "pserver").has("hostname","pserverRCT").in("tosca.relationships.network.BindsTo")
@@ -442,15 +444,15 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
     @Test
     public void checkRCTPserverHasRelnToOnly1Complex() throws Exception {
 
-               assertEquals("Edge to only 1 complex exists", new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTScn3").out("org.onap.relationships.inventory.LocatedIn")
-                .has("aai-node-type","complex").count().next());
+               assertEquals(new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTScn3").out("org.onap.relationships.inventory.LocatedIn")
+                .has("aai-node-type","complex").count().next(), "Edge to only 1 complex exists");
     }
     
     @Test
     public void checkRCTPserverHasRelnToOnly1Zone() throws Exception {
 
-               assertEquals("Edge to only 1 Zone exists", new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTScn6").out("org.onap.relationships.inventory.LocatedIn")
-                .has("aai-node-type","zone").count().next());
+               assertEquals(new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTScn6").out("org.onap.relationships.inventory.LocatedIn")
+                .has("aai-node-type","zone").count().next(), "Edge to only 1 Zone exists");
                assertEquals(true, g.V().has("aai-node-type", "zone").has("zone-id","zone-62").hasNext());
                //Verify no edge exists from zone62 to RO pserver
                assertEquals(false, g.V().has("aai-node-type", "zone").has("zone-id","zone-62").in().has("aai-node-type", "pserver").hasNext());
@@ -460,8 +462,8 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
     @Test
     public void checkRCTPserverHasRelnTo2GenericVnfs() throws Exception {
 
-               assertEquals("Edge to 2 generic-vnfs exists", new Long(2L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTScn6").in("tosca.relationships.HostedOn")
-                .has("aai-node-type","generic-vnf").count().next());
+               assertEquals(new Long(2L), g.V().has("aai-node-type", "pserver").has("hostname","pserverRCTScn6").in("tosca.relationships.HostedOn")
+                .has("aai-node-type","generic-vnf").count().next(), "Edge to 2 generic-vnfs exists");
                assertEquals(true, g.V().has("aai-node-type", "generic-vnf").has("vnf-id","vnf-2").out().has("aai-node-type", "pserver").has("hostname", "pserverRCTScn6").hasNext());
                //Verify no edge exists from zone62 to RO pserver
                assertEquals(false, g.V().has("aai-node-type", "generic-vnf").has("vnf-id","vnf-2").out().has("aai-node-type", "pserver").has("hostname", "pserverROScn6").hasNext());
@@ -486,8 +488,8 @@ public class  PserverDedupWithDifferentSourcesOfTruthTest extends AAISetup{
 
     	
     	//2. lagint12 int-name matches with lagint31. So, verify that lag-int does not move from rctP1 to rctP3
-    	assertEquals("rctP1 has only 1 lag-interface with name lagint12", new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","rctP1").in("tosca.relationships.network.BindsTo")
-        		.has("aai-node-type","lag-interface").has("interface-name","lagint12").count().next());
+    	assertEquals(new Long(1L), g.V().has("aai-node-type", "pserver").has("hostname","rctP1").in("tosca.relationships.network.BindsTo")
+        		.has("aai-node-type","lag-interface").has("interface-name","lagint12").count().next(), "rctP1 has only 1 lag-interface with name lagint12");
     	
     }
 

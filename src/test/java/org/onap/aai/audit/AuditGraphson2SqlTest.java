@@ -21,12 +21,13 @@
 package org.onap.aai.audit;
 
 import com.google.gson.JsonObject;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import org.onap.aai.AAISetup;
@@ -37,8 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import static org.junit.Assert.*;
 
 public class AuditGraphson2SqlTest extends AAISetup {
 
@@ -51,7 +50,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
 	@Mock
 	private ApertureService apertureServiceMock;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		
 		auditG2S = new AuditGraphson2Sql(ei, schemaVersions, loaderFactory, apertureServiceMock);
@@ -119,7 +118,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
     	assertTrue(resultOk);   	
     }
     
-    @Ignore
+    @Disabled
     @Test
     public void testGetDateTimeStamp() {
     	long dts = 0;
@@ -184,7 +183,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
     }
     
 
-    @Ignore
+    @Disabled
     @Test
     public void testGetCounts() throws IOException, EdgeRuleNotFoundException {
     	Boolean resultOk = true;
@@ -204,7 +203,7 @@ public class AuditGraphson2SqlTest extends AAISetup {
     }
     
 
-    @Ignore
+    @Disabled
     @Test
     public void testGoodRun() throws IOException, EdgeRuleNotFoundException {
     	

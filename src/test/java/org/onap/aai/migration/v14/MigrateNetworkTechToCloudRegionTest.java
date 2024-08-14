@@ -19,14 +19,15 @@
  */
 package org.onap.aai.migration.v14;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
@@ -45,7 +46,7 @@ public class MigrateNetworkTechToCloudRegionTest extends AAISetup{
 	private GraphTraversalSource g;
 	private MigrateNetworkTechToCloudRegion migration;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		g = tx.traversal();
         loader = loaderFactory.createLoaderForVersion(introspectorFactoryType, schemaVersions.getDefaultVersion());
@@ -117,20 +118,23 @@ public class MigrateNetworkTechToCloudRegionTest extends AAISetup{
 						.has("aai-node-type", "network-technology").has("network-technology-id","network-technology-4").hasNext());
 	
 		
-		assertEquals("Edge not created", false,
+		assertEquals(false,
 				g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region-id-1")
 						.out()
-						.has("aai-node-type", "network-technology").has("network-technology-id","network-technology-3").hasNext());
+						.has("aai-node-type", "network-technology").has("network-technology-id","network-technology-3").hasNext(),
+				"Edge not created");
 		
-		assertEquals("Edge not created", false,
+		assertEquals(false,
 				g.V().has("aai-node-type", "cloud-region").has("cloud-region-id", "cloud-region-id-2")
 						.out()
-						.has("aai-node-type", "network-technology").has("network-technology-id","network-technology-1").hasNext());
+						.has("aai-node-type", "network-technology").has("network-technology-id","network-technology-1").hasNext(),
+				"Edge not created");
 		
 		
-		assertEquals("Edge exists to 2 cloud regions", new Long(2L),
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "network-technology").has("network-technology-id", "network-technology-1")
-						.in().count().next());
+						.in().count().next(),
+				"Edge exists to 2 cloud regions");
 		
 		/*
 		try {
