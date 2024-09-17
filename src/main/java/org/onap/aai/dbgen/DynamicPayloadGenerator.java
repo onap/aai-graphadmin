@@ -21,15 +21,16 @@ package org.onap.aai.dbgen;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.step.util.Tree;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.type.TypeReference;
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.InMemoryGraph;
@@ -280,7 +281,7 @@ public class DynamicPayloadGenerator {
 
 		JsonNode rootNode = mapper.readTree(jsonFile);
 
-		Iterator<Entry<String, JsonNode>> nodeFields = rootNode.getFields();
+		Iterator<Entry<String, JsonNode>> nodeFields = rootNode.fields();
 
 		while (nodeFields.hasNext()) {
 			Entry<String, JsonNode> entry = nodeFields.next();
@@ -354,7 +355,7 @@ public class DynamicPayloadGenerator {
 
 		JsonNode rootNode = mapper.readTree(jsonFile);
 
-		Iterator<Entry<String, JsonNode>> nodeFields = rootNode.getFields();
+		Iterator<Entry<String, JsonNode>> nodeFields = rootNode.fields();
 
 		while (nodeFields.hasNext()) {
 			Entry<String, JsonNode> entry = nodeFields.next();
@@ -390,7 +391,7 @@ public class DynamicPayloadGenerator {
 
 		JsonNode rootNode = mapper.readTree(jsonFile);
 
-		Iterator<Entry<String, JsonNode>> nodeFields = rootNode.getFields();
+		Iterator<Entry<String, JsonNode>> nodeFields = rootNode.fields();
 
 		while (nodeFields.hasNext()) {
 			Entry<String, JsonNode> entry = nodeFields.next();

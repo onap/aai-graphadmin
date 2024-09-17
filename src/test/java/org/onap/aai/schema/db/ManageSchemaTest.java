@@ -20,8 +20,6 @@
 package org.onap.aai.schema.db;
 
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphManagement;
@@ -32,6 +30,9 @@ import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
 import org.onap.aai.db.schema.DBIndex;
 import org.onap.aai.db.schema.ManageJanusGraphSchema;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Set;
@@ -45,14 +46,14 @@ public class ManageSchemaTest extends AAISetup {
 	public void beforeTest() {
 		graph = JanusGraphFactory.open("bundleconfig-local/etc/appprops/aaiconfig.properties");
 	}
-	
+
 	/*
 	@Test
 	public void populateEmptyGraph() {
 		ManageJanusGraphSchema schema = new ManageJanusGraphSchema(graph);
 		schema.buildSchema();
 	}
-	
+
 	@Test
 	public void modifyIndex() {
 		ManageJanusGraphSchema schema = new ManageJanusGraphSchema(graph);
@@ -66,37 +67,37 @@ public class ManageSchemaTest extends AAISetup {
 		index.setName("internet-topology");
 		index.setUnique(false);
 		schema.updateIndex(index);
-		
+
 	}
 	*/
 	@Test
 	public void closeRunningInstances() {
-		
+
 		JanusGraphManagement mgmt = graph.openManagement();
  		Set<String> instances = mgmt.getOpenInstances();
-		
+
 		for (String instance : instances) {
-			
+
 			if (!instance.contains("(current)")) {
 				mgmt.forceCloseInstance(instance);
 			}
 		}
 		mgmt.commit();
-		
+
 		graph.close();
-		
+
 	}
 	@Test
 	public void addNewIndex() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = " {\r\n" + 
-				"    \"name\" : \"equipment-name\",\r\n" + 
-				"    \"unique\" : false,\r\n" + 
-				"    \"properties\" : [ {\r\n" + 
-				"      \"name\" : \"equipment-name\",\r\n" + 
-				"      \"cardinality\" : \"SINGLE\",\r\n" + 
-				"      \"typeClass\" : \"java.lang.String\"\r\n" + 
-				"    } ]\r\n" + 
+		String content = " {\r\n" +
+				"    \"name\" : \"equipment-name\",\r\n" +
+				"    \"unique\" : false,\r\n" +
+				"    \"properties\" : [ {\r\n" +
+				"      \"name\" : \"equipment-name\",\r\n" +
+				"      \"cardinality\" : \"SINGLE\",\r\n" +
+				"      \"typeClass\" : \"java.lang.String\"\r\n" +
+				"    } ]\r\n" +
 				"  }";
 		DBIndex index = mapper.readValue(content, DBIndex.class);
 		ManageJanusGraphSchema schema = new ManageJanusGraphSchema(graph, auditorFactory, schemaVersions, edgeIngestor);
@@ -104,9 +105,9 @@ public class ManageSchemaTest extends AAISetup {
 		Set<String> instances = mgmt.getOpenInstances();
 		System.out.println(instances);
 		schema.updateIndex(index);
-		
+
 		graph.close();
-		
+
 	}
-	
+
 }
