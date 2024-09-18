@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8-jre-alpine
+FROM eclipse-temurin:11-jre-alpine
 USER root
 ENV SERVER_PORT=8449
 EXPOSE ${SERVER_PORT}

@@ -19,16 +19,16 @@
  */
 package org.onap.aai.db.schema;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AuditDoc {
 
 	private List<DBProperty> properties;
 	private List<DBIndex> indexes;
 	private List<EdgeProperty> edgeLabels;
-	
+
 	/**
 	 * Gets the properties.
 	 *
@@ -37,7 +37,7 @@ public class AuditDoc {
 	public List<DBProperty> getProperties() {
 		return properties;
 	}
-	
+
 	/**
 	 * Sets the properties.
 	 *
@@ -46,7 +46,7 @@ public class AuditDoc {
 	public void setProperties(List<DBProperty> properties) {
 		this.properties = properties;
 	}
-	
+
 	/**
 	 * Gets the indexes.
 	 *
@@ -55,7 +55,7 @@ public class AuditDoc {
 	public List<DBIndex> getIndexes() {
 		return indexes;
 	}
-	
+
 	/**
 	 * Sets the indexes.
 	 *
@@ -64,17 +64,17 @@ public class AuditDoc {
 	public void setIndexes(List<DBIndex> indexes) {
 		this.indexes = indexes;
 	}
-    
-    /**
-     * Gets the edge labels.
-     *
-     * @return the edge labels
-     */
-    @JsonProperty("edge-labels")
+
+	/**
+	 * Gets the edge labels.
+	 *
+	 * @return the edge labels
+	 */
+	@JsonProperty("edge-labels")
 	public List<EdgeProperty> getEdgeLabels() {
 		return edgeLabels;
 	}
-	
+
 	/**
 	 * Sets the edge labels.
 	 *
@@ -83,6 +83,4 @@ public class AuditDoc {
 	public void setEdgeLabels(List<EdgeProperty> edgeLabels) {
 		this.edgeLabels = edgeLabels;
 	}
-	
-	
 }

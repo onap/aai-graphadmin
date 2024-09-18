@@ -19,7 +19,6 @@
  */
 package org.onap.aai.schema.db;
 
-import org.codehaus.jackson.JsonParseException;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphManagement;
@@ -31,6 +30,7 @@ import org.onap.aai.AAISetup;
 import org.onap.aai.db.schema.DBIndex;
 import org.onap.aai.db.schema.ManageJanusGraphSchema;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

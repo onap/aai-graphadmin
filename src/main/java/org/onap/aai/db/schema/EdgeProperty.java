@@ -19,34 +19,35 @@
  */
 package org.onap.aai.db.schema;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.janusgraph.core.Multiplicity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "label", "multiplicity" })
 public class EdgeProperty implements Named {
 
 	private String name = null;
 	private Multiplicity multiplicity = null;
-	
+
     /**
      * Gets the name
      */
-    @JsonProperty("label")
+  @JsonProperty("label")
 	public String getName() {
 		return name;
 	}
-    
-    /**
-     * Sets the name.
-     *
-     * @param name the new name
-     */
-    @JsonProperty("label")
+
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+  @JsonProperty("label")
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Gets the multiplicity.
 	 *
@@ -55,7 +56,7 @@ public class EdgeProperty implements Named {
 	public Multiplicity getMultiplicity() {
 		return multiplicity;
 	}
-	
+
 	/**
 	 * Sets the multiplicity.
 	 *
@@ -64,5 +65,5 @@ public class EdgeProperty implements Named {
 	public void setMultiplicity(Multiplicity multiplicity) {
 		this.multiplicity = multiplicity;
 	}
-	
+
 }

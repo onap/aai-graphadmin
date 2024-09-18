@@ -23,7 +23,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.codehaus.jackson.JsonGenerationException;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
