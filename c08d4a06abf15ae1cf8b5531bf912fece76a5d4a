@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc717652_30bb448a",
+        "filename": "src/main/java/org/onap/aai/rest/util/AaiGraphChecker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-10-01T12:44:40Z",
+      "side": 1,
+      "message": "This @Scope annotation is not needed, since singleton [is the default scope](https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html)",
+      "revId": "c08d4a06abf15ae1cf8b5531bf912fece76a5d4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35d41558_85ea7a05",
+        "filename": "src/test/java/org/onap/aai/config/WebClientConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-10-01T12:44:40Z",
+      "side": 1,
+      "message": "This can be removed I guess, right?",
+      "range": {
+        "startLine": 40,
+        "startChar": 1,
+        "endLine": 54,
+        "endChar": 4
+      },
+      "revId": "c08d4a06abf15ae1cf8b5531bf912fece76a5d4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
