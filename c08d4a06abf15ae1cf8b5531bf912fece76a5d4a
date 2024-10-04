@@ -18,6 +18,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd6837e5_36dcde3f",
+        "filename": "src/main/java/org/onap/aai/rest/util/AaiGraphChecker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-10-04T08:45:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc717652_30bb448a",
+      "revId": "c08d4a06abf15ae1cf8b5531bf912fece76a5d4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "35d41558_85ea7a05",
@@ -31,6 +49,30 @@
       "writtenOn": "2024-10-01T12:44:40Z",
       "side": 1,
       "message": "This can be removed I guess, right?",
+      "range": {
+        "startLine": 40,
+        "startChar": 1,
+        "endLine": 54,
+        "endChar": 4
+      },
+      "revId": "c08d4a06abf15ae1cf8b5531bf912fece76a5d4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21bbf729_df74e398",
+        "filename": "src/test/java/org/onap/aai/config/WebClientConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-10-04T08:45:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35d41558_85ea7a05",
       "range": {
         "startLine": 40,
         "startChar": 1,
