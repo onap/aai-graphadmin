@@ -1,0 +1,8 @@
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Code-Review+2: Fiete Ostkamp <fiete.ostkamp@telekom.de>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: Fiete Ostkamp <fiete.ostkamp@telekom.de>
+Submitted-at: Fri, 04 Oct 2024 06:04:41 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/aai/graphadmin/+/139051
+Project: aai/graphadmin
+Branch: refs/heads/master
