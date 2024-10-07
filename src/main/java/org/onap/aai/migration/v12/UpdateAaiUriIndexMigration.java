@@ -200,7 +200,7 @@ public class UpdateAaiUriIndexMigration extends Migrator {
 			aaiUriIndex = graphMgmt.getGraphIndex(index.getIndexName());
 			if (aaiUriIndex.getIndexStatus(graphMgmt.getPropertyKey(index.getPropertyName())).equals(SchemaStatus.DISABLED)) {
 				logger.info("Removing index: " + index.getIndexName());
-				graphMgmt.updateIndex(aaiUriIndex, SchemaAction.REMOVE_INDEX);
+				graphMgmt.updateIndex(aaiUriIndex, SchemaAction.DISCARD_INDEX);
 				graphMgmt.commit();
 			}
 			if(graphMgmt.isOpen()) {

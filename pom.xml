@@ -26,11 +26,11 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.14.7</version>
+        <version>1.15.0</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.14.7-SNAPSHOT</version>
+    <version>1.15.0-SNAPSHOT</version>
 
     <properties>
 
@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.5</aai.schema.service.version>
-        <aai.common.version>1.14.7</aai.common.version>
+        <aai.common.version>1.15.0</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -101,8 +101,8 @@
         <activemq.version>5.16.7</activemq.version>
         <antlr.version>4.9.3</antlr.version>
         <jcommander.version>1.78</jcommander.version>
-        <gremlin.version>3.5.8</gremlin.version>
-        <janusgraph.version>0.6.4</janusgraph.version>
+        <gremlin.version>3.7.1</gremlin.version>
+        <janusgraph.version>1.0.0</janusgraph.version>
 
         <!-- fix the driver version to match the one defined in janusgraph-cql
             spring-boot (2.4) is otherwise downgrading it to 4.9.0 -->
@@ -424,14 +424,6 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
         </dependency>
 
         <!-- Start of Logback Dependencies -->
@@ -1120,12 +1112,6 @@
             <name>AJSC repository</name>
             <url>https://mvnrepository.com/artifact/com.att.ajsc</url>
         </repository>
-        <repository>
-            <id>restlet</id>
-            <name>maven reslet</name>
-            <url>https://maven.restlet.com/</url>
-        </repository>
-
         <repository>
             <id>central</id>
             <name>Maven 2 repository 2</name>

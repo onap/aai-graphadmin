@@ -51,7 +51,7 @@ RESULTDIR=$PROJECT_HOME/logs/data/migration-input-files
 
 if [ ! -d ${RESULTDIR} ]; then
         mkdir -p ${RESULTDIR}
-        chown aaiadmin:aaiadmin ${RESULTDIR}
+        # chown aaiadmin:aaiadmin ${RESULTDIR}
         chmod u+w ${RESULTDIR}
 fi
 
@@ -76,12 +76,6 @@ fi
 
 if [ ! -z "$4" ]; then
    XTRANSID=$4
-fi
-
-userid=$( id | cut -f2 -d"(" | cut -f1 -d")" )
-if [ "${userid}" != "aaiadmin" ]; then
-    echo "You must be aaiadmin to run $0. The id used $userid."
-    exit 1
 fi
 
 prop_file=$PROJECT_HOME/resources/etc/appprops/aaiconfig.properties
