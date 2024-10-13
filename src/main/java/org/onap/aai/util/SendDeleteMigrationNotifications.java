@@ -20,12 +20,15 @@
 package org.onap.aai.util;
 
 import com.att.eelf.configuration.Configuration;
+
+import org.onap.aai.config.SpringContextAware;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
+import org.onap.aai.kafka.NotificationProducer;
 import org.onap.aai.migration.EventAction;
 import org.onap.aai.migration.NotificationHelper;
 import org.onap.aai.serialization.db.DBSerializer;
@@ -66,7 +69,7 @@ public class SendDeleteMigrationNotifications {
 	protected final LoaderFactory loaderFactory;
 	protected final SchemaVersions schemaVersions;
 	protected final SchemaVersion version;
-	
+
 	public SendDeleteMigrationNotifications(LoaderFactory loaderFactory, SchemaVersions schemaVersions, String config, String path, int sleepInMilliSecs, int numToBatch, String requestId, EventAction eventAction, String eventSource) {
 		System.setProperty("aai.service.name", SendDeleteMigrationNotifications.class.getSimpleName());
 		Properties props = System.getProperties();
@@ -157,7 +160,8 @@ public class SendDeleteMigrationNotifications {
 		} catch (AAIException e) {
 			throw new RuntimeException("could not create serializer", e);
 		}
-		this.notificationHelper = new NotificationHelper(loader, serializer, loaderFactory, schemaVersions, engine, requestId, this.eventSource);
+		NotificationProducer notificationProducer = SpringContextAware.getBean(NotificationProducer.class);
+		this.notificationHelper = new NotificationHelper(notificationProducer, loader, serializer, loaderFactory, schemaVersions, engine, requestId, this.eventSource);
 	}
 
 	protected void initGraph() {

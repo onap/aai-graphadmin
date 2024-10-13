@@ -64,7 +64,8 @@ import java.util.Map;
         XmlFormatTransformerConfiguration.class,
         RestBeanConfig.class,
         LoaderFactory.class,
-        NotificationService.class
+        NotificationService.class,
+        KafkaConfig.class
 })
 @TestPropertySource(properties = {
         "schema.uri.base.path = /aai",

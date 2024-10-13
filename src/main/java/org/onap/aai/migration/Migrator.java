@@ -38,6 +38,7 @@ import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.onap.aai.aailog.logs.AaiDebugLog;
+import org.onap.aai.config.SpringContextAware;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.enums.EdgeType;
 import org.onap.aai.edges.exceptions.AmbiguousRuleChoiceException;
@@ -47,6 +48,7 @@ import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
+import org.onap.aai.kafka.NotificationProducer;
 import org.onap.aai.serialization.db.DBSerializer;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.db.exceptions.NoEdgeRuleFoundException;
@@ -63,7 +65,7 @@ import org.slf4j.MDC;
 @MigrationPriority(0)
 @MigrationDangerRating(0)
 public abstract class Migrator implements Runnable {
-	
+
 	protected Logger logger = null;
 
 	protected DBSerializer serializer = null;
@@ -80,7 +82,7 @@ public abstract class Migrator implements Runnable {
 
 	protected static final String MIGRATION_ERROR = "Migration Error: ";
 	protected static final String MIGRATION_SUMMARY_COUNT = "Migration Summary Count: ";
-	
+
 	private static AaiDebugLog debugLog = new AaiDebugLog();
 	static {
 		debugLog.setupMDC();
@@ -99,8 +101,9 @@ public abstract class Migrator implements Runnable {
 		this.edgeIngestor = edgeIngestor;
 		this.edgeSerializer = edgeSerializer;
 		this.schemaVersions = schemaVersions;
-        initDBSerializer();
-        this.notificationHelper = new NotificationHelper(loader, serializer, loaderFactory, schemaVersions, engine, "AAI-MIGRATION", this.getMigrationName());
+		initDBSerializer();
+		NotificationProducer notificationProducer = SpringContextAware.getBean(NotificationProducer.class);
+		this.notificationHelper = new NotificationHelper(notificationProducer, loader, serializer, loaderFactory, schemaVersions, engine, "AAI-MIGRATION", this.getMigrationName());
 		MDC.put("logFilenameAppender", this.getClass().getSimpleName());
         logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 		logAndPrint(logger,"\tInitilization of " + this.getClass().getSimpleName() + " migration script complete.");
@@ -141,8 +144,8 @@ public abstract class Migrator implements Runnable {
 		if (dmaapMsgList.size() > 0) {
 			try {
 				Files.write(Paths.get(logDirectory+"/"+fileName), (Iterable<String>)dmaapMsgList.stream()::iterator);
-			} catch (IOException e) {				
-				System.out.println("Unable to generate file with dmaap msgs for " + getMigrationName() + 
+			} catch (IOException e) {
+				System.out.println("Unable to generate file with dmaap msgs for " + getMigrationName() +
 						" Exception is: " + e.getMessage());
 				logger.error("Unable to generate file with dmaap msgs for " + getMigrationName(), e);
 			}
@@ -299,7 +302,7 @@ public abstract class Migrator implements Runnable {
 		}
 
 	}
-	
+
 	/**
 	 * Creates the edge
 	 *
@@ -321,7 +324,7 @@ public abstract class Migrator implements Runnable {
 		}
 		return newEdge;
 	}
-	
+
 	/**
 	 * Creates the edge
 	 *
@@ -363,7 +366,7 @@ public abstract class Migrator implements Runnable {
 	}
 
 	/**
-	 * Creates the TREE edge 
+	 * Creates the TREE edge
 	 *
 	 * @param out the out
 	 * @param in the in
@@ -373,9 +376,9 @@ public abstract class Migrator implements Runnable {
 		Edge newEdge = createEdge(EdgeType.TREE, out, in);
 		return newEdge;
 	}
-	
+
 	/**
-	 * Creates the COUSIN edge 
+	 * Creates the COUSIN edge
 	 *
 	 * @param out the out
 	 * @param in the in
@@ -396,19 +399,19 @@ public abstract class Migrator implements Runnable {
 			throw new RuntimeException("could not create seralizer", e);
 		}
 	}
-	
+
 	/**
 	 * These are the node types you would like your traversal to process
 	 * @return
 	 */
 	public abstract Optional<String[]> getAffectedNodeTypes();
-	
+
 	/**
 	 * used as the "fromAppId" when modifying vertices
 	 * @return
 	 */
 	public abstract String getMigrationName();
-	
+
 	/**
 	 * updates all internal vertex properties
 	 * @param v
@@ -417,11 +420,11 @@ public abstract class Migrator implements Runnable {
 	protected void touchVertexProperties(Vertex v, boolean isNewVertex) {
 		this.serializer.touchStandardVertexProperties(v, isNewVertex);
 	}
-	
+
 	public NotificationHelper getNotificationHelper() {
 		return this.notificationHelper;
 	}
-	
+
 	/**
 	 * Log and print.
 	 *
