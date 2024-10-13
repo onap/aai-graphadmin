@@ -138,7 +138,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 	@Test
 	public void processEverything() throws Exception {
 		SendMigrationNotifications s  = spy(new SendMigrationNotifications(
-				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, Collections.EMPTY_SET, 0, 0, "test", EventAction.UPDATE, "DMAAP-LOAD"));
+				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, Collections.emptySet(), 0, 0, "test", EventAction.UPDATE, "DMAAP-LOAD"));
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
@@ -171,7 +171,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 	@Test
 	public void processEverythingBatched2() throws Exception {
 		SendMigrationNotifications s  = spy(new SendMigrationNotifications(
-				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, Collections.EMPTY_SET, 0, 2, "test", EventAction.UPDATE, "DMAAP-LOAD"));
+				loaderFactory, schemaVersions, REALTIME_CONFIG, FILE, Collections.emptySet(), 0, 2, "test", EventAction.UPDATE, "DMAAP-LOAD"));
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");
@@ -182,7 +182,7 @@ public class SendMigrationNotificationsTest extends AAISetup {
 	@Test
 	public void processEverythingBatched3() throws Exception {
 		SendMigrationNotifications s  = spy(new SendMigrationNotifications(
-				loaderFactory, schemaVersions,  REALTIME_CONFIG, FILE, Collections.EMPTY_SET, 0, 3, "test", EventAction.UPDATE, "DMAAP-LOAD"));
+				loaderFactory, schemaVersions,  REALTIME_CONFIG, FILE, Collections.emptySet(), 0, 3, "test", EventAction.UPDATE, "DMAAP-LOAD"));
 		doNothing().when(s).trigger();
 		doNothing().when(s).cleanup();
 		s.process("/aai/");

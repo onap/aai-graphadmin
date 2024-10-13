@@ -26,11 +26,11 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.15.0</version>
+        <version>1.15.1-SNAPSHOT</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.15.0-SNAPSHOT</version>
+    <version>1.15.1-SNAPSHOT</version>
 
     <properties>
 
@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.5</aai.schema.service.version>
-        <aai.common.version>1.15.0</aai.common.version>
+        <aai.common.version>1.15.1-SNAPSHOT</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -98,7 +98,6 @@
         <!-- End of Default ONAP Schema Properties -->
 
         <micrometer.version>1.8.1</micrometer.version>
-        <activemq.version>5.16.7</activemq.version>
         <antlr.version>4.9.3</antlr.version>
         <jcommander.version>1.78</jcommander.version>
         <gremlin.version>3.7.1</gremlin.version>
@@ -374,21 +373,12 @@
         <!-- End of graphadmin metric collection dependencies -->
 
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.onap.aai.aai-common</groupId>
             <artifactId>aai-core</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>io.dropwizard.metrics</groupId>
                     <artifactId>metrics-jmx</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.onap.aai.aai-common</groupId>
-                    <artifactId>aai-aaf-auth</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -521,21 +511,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
-        <!--
-            Do not use activemq-all because they force you to use a specific logging
-            and they shade it so you can't simply exclude it and when you deploy the
-            jar, you will notice failure
-        -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <version>${activemq.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-client</artifactId>
-            <version>${activemq.version}</version>
-        </dependency>
         <!-- Do not use the jersey-client since jersey client 1.0 version clashes
             with jersey 2 which we are using -->
         <!-- Use this to make http requests instead of jersey 1.0 client -->
@@ -559,16 +534,6 @@
                 <exclusion>
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcpkix-jdk15on</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>jersey-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

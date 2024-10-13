@@ -32,6 +32,7 @@ import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.exceptions.AAIUnknownObjectException;
+import org.onap.aai.kafka.NotificationProducer;
 import org.onap.aai.rest.notification.UEBNotification;
 import org.onap.aai.serialization.db.DBSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
@@ -54,14 +55,16 @@ public class NotificationHelper {
 	protected final String transactionId;
 	protected final String sourceOfTruth;
 	protected final UEBNotification	notification;
+	protected final NotificationProducer notificationProducer;
 
-	public NotificationHelper(Loader loader, DBSerializer serializer, LoaderFactory loaderFactory, SchemaVersions schemaVersions, TransactionalGraphEngine engine, String transactionId, String sourceOfTruth) {
+	public NotificationHelper(NotificationProducer notificationProducer, Loader loader, DBSerializer serializer, LoaderFactory loaderFactory, SchemaVersions schemaVersions, TransactionalGraphEngine engine, String transactionId, String sourceOfTruth) {
 		this.loader = loader;
 		this.serializer = serializer;
 		this.engine = engine;
 		this.transactionId = transactionId;
 		this.sourceOfTruth = sourceOfTruth;
-		this.notification = new UEBNotification(loader, loaderFactory, schemaVersions);
+		this.notification = new UEBNotification(loaderFactory, schemaVersions);
+		this.notificationProducer = notificationProducer;
 		MDC.put("logFilenameAppender", this.getClass().getSimpleName());
 		LOGGER = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -113,7 +116,7 @@ public class NotificationHelper {
 	}
 
 	public void triggerEvents() throws AAIException {
-		notification.triggerEvents();
+		notificationProducer.sendUEBNotification(notification);
 	}
 
 	public UEBNotification getNotifications() {
