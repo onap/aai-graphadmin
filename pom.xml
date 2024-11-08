@@ -26,11 +26,11 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.15.1</version>
+        <version>1.15.2</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.15.1-SNAPSHOT</version>
+    <version>1.15.2-SNAPSHOT</version>
 
     <properties>
 
@@ -55,7 +55,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.12.5</aai.schema.service.version>
-        <aai.common.version>1.15.1</aai.common.version>
+        <aai.common.version>1.15.2</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -104,8 +104,8 @@
         <janusgraph.version>1.0.0</janusgraph.version>
 
         <!-- fix the driver version to match the one defined in janusgraph-cql
-            spring-boot (2.4) is otherwise downgrading it to 4.9.0 -->
-        <!-- see https://github.com/spring-projects/spring-boot/blob/d336a96b7f204a398b8237560c5dfa7095c53460/spring-boot-project/spring-boot-dependencies/build.gradle#L163 -->
+            spring-boot (2.6) is otherwise downgrading it to 4.13.0 -->
+        <!-- see https://github.com/spring-projects/spring-boot/blob/f8c9fee3b0c8ff9ef48cf12fb4a9f8a51630a485/spring-boot-project/spring-boot-dependencies/build.gradle#L170 -->
         <!-- see https://github.com/JanusGraph/janusgraph/blob/6105d67f412def90ed6e704fa01cbf656602e6c9/pom.xml#L112 -->
         <cassandra-driver.version>4.17.0</cassandra-driver.version>
         <datastax.native-protocol.version>1.5.1</datastax.native-protocol.version>
@@ -326,7 +326,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>25.0-jre</version>
+                <version>33.3.1-jre</version>
             </dependency>
             <!-- cassandra driver -->
             <dependency>
@@ -349,12 +349,12 @@
     </dependencyManagement>
     <dependencies>
         <!-- Start of graphadmin metric collection dependencies -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.30</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
@@ -436,6 +436,7 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
+            <version>3.1.12</version>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -589,7 +590,7 @@
             <version>${netty.handler.version}</version>
         </dependency>
         <!-- End of Netty Dependencies -->
-		<!-- Only used for the WebTestClient -->
+        <!-- Only used for the WebTestClient -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>

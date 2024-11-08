@@ -40,12 +40,14 @@ import org.onap.logging.filter.base.ONAPComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
+@ConditionalOnProperty(name="datagroomingtasks.enabled", havingValue = "true", matchIfMissing = true)
 public class DataGroomingTasks {
 
 	private AaiScheduledTaskAuditLog auditLog;
