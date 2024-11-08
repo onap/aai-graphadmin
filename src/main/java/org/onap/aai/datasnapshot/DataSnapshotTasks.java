@@ -26,24 +26,21 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
-import org.onap.aai.datagrooming.DataGrooming;
-import org.onap.aai.datagrooming.DataGroomingTasks;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAIConfig;
 import org.onap.logging.filter.base.ONAPComponents;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
+@ConditionalOnProperty(name="datasnapshottasks.enabled", havingValue = "true", matchIfMissing = true)
 public class DataSnapshotTasks {
 
 	private AaiScheduledTaskAuditLog auditLog;
