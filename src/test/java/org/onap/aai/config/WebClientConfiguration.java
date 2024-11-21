@@ -48,4 +48,17 @@ public class WebClientConfiguration {
       })
       .build();
   }
+
+  @Lazy
+  @Bean
+  @Primary
+  WebTestClient appClient(@Value("${server.port}") int port) {
+    return WebTestClient.bindToServer()
+      .baseUrl("http://localhost:" + port)
+      .responseTimeout(Duration.ofSeconds(300))
+      .defaultHeaders(headers -> {
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+      })
+      .build();
+  }
 }
