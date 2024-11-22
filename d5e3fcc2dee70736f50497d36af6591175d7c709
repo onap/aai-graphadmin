@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0f53387_83cb20d5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Hi @Fiete thanks for the review comments. I have addressed most of them, just have doubts on 2. Please check",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1e09977c_152ed783",
@@ -35,6 +52,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4c0db733_73a8bf4c",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "93051b97_f00351a5",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9be6eabc_d3e50472",
@@ -48,6 +83,24 @@
       "writtenOn": "2024-11-22T07:13:18Z",
       "side": 1,
       "message": "Please don\u0027t let it extend RESTAPI. It\u0027s not necessary and I personally consider that something that we should get rid of (also in the other places where it is used)",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "73a89bdf_38132a2c",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9be6eabc_d3e50472",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -69,6 +122,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "896e8f8c_68e99549",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c230c74c_4ce58a31",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cd73c3e9_9096cedc",
@@ -82,6 +153,24 @@
       "writtenOn": "2024-11-22T07:13:18Z",
       "side": 1,
       "message": "I think it would be a good idea to declare the `\"schema-initialized\"` as a class-level constant, since we are using that at least four times here",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "93bd5476_ce3eefee",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cd73c3e9_9096cedc",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -103,6 +192,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd5eea24_d9050adf",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a96cfab_3b837f71",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b413147d_50cebe95",
@@ -120,6 +227,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f769edff_cc1579e4",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b413147d_50cebe95",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a288676f_e2dc61dc",
@@ -133,6 +258,24 @@
       "writtenOn": "2024-11-22T07:13:18Z",
       "side": 1,
       "message": "Please use the appropriate copyright here",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0e57e1e_1895ae52",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a288676f_e2dc61dc",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -156,6 +299,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ef789a0b_962ab11c",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Having issue- not sure how @RequiredArgsConstructor will initilaize AAIGraph.getInstance().getGraph()",
+      "parentUuid": "d445fdfe_72ecd73a",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "eb318859_fe0a169b",
         "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
         "patchSetId": 1
@@ -167,6 +328,24 @@
       "writtenOn": "2024-11-22T07:13:18Z",
       "side": 1,
       "message": "Please add a space here `} finally {`",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c254b1e5_c33941dd",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Removed finally block fully as you mentioned in next comment we dont need to close the graph",
+      "parentUuid": "eb318859_fe0a169b",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -188,6 +367,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ace585a6_3cdfa5e0",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7de1795_fac519f5",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e37afcf5_1d9391c4",
@@ -201,6 +398,24 @@
       "writtenOn": "2024-11-22T07:13:18Z",
       "side": 1,
       "message": "Copyright",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d36ec910_224ceef1",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e37afcf5_1d9391c4",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -222,6 +437,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e9782ead_a0ab6244",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ce487a96_28e14a04",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "160c4e4c_78300da1",
@@ -235,6 +468,24 @@
       "writtenOn": "2024-11-22T07:40:55Z",
       "side": 1,
       "message": "This annotation is not necessary here, please remove it",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c14c065a_9f04f64e",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "160c4e4c_78300da1",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -258,6 +509,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "eb5feca5_bb88330c",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5694f5a_0e3b5a0b",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "3e276ce3_e4d788fa",
         "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
         "patchSetId": 1
@@ -269,6 +538,24 @@
       "writtenOn": "2024-11-22T07:40:55Z",
       "side": 1,
       "message": "Please remove this @BeforeEach method. We should rely on `@Autowired` here as well",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "486a4c16_59dc98ff",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e276ce3_e4d788fa",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -290,6 +577,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "93d968df_e4b46e89",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c71d178_d58e5037",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7f28620e_e4eaa843",
@@ -303,6 +608,24 @@
       "writtenOn": "2024-11-22T07:13:18Z",
       "side": 1,
       "message": "Is it really necessary to add the file in this change?",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f20a074b_20dda61e",
+        "filename": "src/test/resources/retired.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-11-22T11:39:49Z",
+      "side": 1,
+      "message": "If I don\u0027t add it, my tests are failing with error - \n\njava.lang.IllegalStateException: Failed to load ApplicationContext\n\nCaused by: java.io.FileNotFoundException: class path resource [retired.properties] cannot be opened because it does not exist\n\nThis file exists in src/main/resources, hence copied as is from there to src/test/resources too.",
+      "parentUuid": "7f28620e_e4eaa843",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
