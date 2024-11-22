@@ -19,7 +19,6 @@
  */
 package org.onap.aai.util;
 
-import com.att.eelf.configuration.Configuration;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.config.SpringContextAware;
@@ -74,9 +73,6 @@ public class SendMigrationNotifications {
 
 	public SendMigrationNotifications(LoaderFactory loaderFactory, SchemaVersions schemaVersions, String config, String path, Set<String> notifyOn, int sleepInMilliSecs, int numToBatch, String requestId, EventAction eventAction, String eventSource) {
 		System.setProperty("aai.service.name", SendMigrationNotifications.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "migration-logback.xml");
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_ETC_APP_PROPERTIES);
 
 		MDC.put("logFilenameAppender", SendMigrationNotifications.class.getSimpleName());
 

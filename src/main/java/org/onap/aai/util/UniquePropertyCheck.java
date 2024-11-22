@@ -39,26 +39,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.att.eelf.configuration.Configuration;
-
 public class UniquePropertyCheck {
 
 
 	private static 	final  String    FROMAPPID = "AAI-UTILS";
 	private static 	final  String    TRANSID   = UUID.randomUUID().toString();
 	private static 	final  String    COMPONENT = "UniquePropertyCheck";
-	
+
 	/**
 	 * The main method.
 	 *
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
-		
-		
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
+
 		Logger logger = LoggerFactory.getLogger(UniquePropertyCheck.class);
 		MDC.put("logFilenameAppender", UniquePropertyCheck.class.getSimpleName());
 		AaiScheduledTaskAuditLog auditLog = new AaiScheduledTaskAuditLog();
@@ -72,7 +66,7 @@ public class UniquePropertyCheck {
 		}
 	  	String propertyName = args[0];
 	  	Graph graph = null;
-		
+
 		try(JanusGraph tGraph = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(UniquePropertyCheck.class.getSimpleName()).withGraphType("realtime").buildConfiguration())) {
     		AAIConfig.init();
     		System.out.println("    ---- NOTE --- about to open graph (takes a little while)--------\n");
@@ -81,7 +75,7 @@ public class UniquePropertyCheck {
     			logAndPrint(logger, " Error:  Could not get JanusGraph ");
     			System.exit(1);
     		}
-    		
+
     		graph = tGraph.newTransaction();
     		if( graph == null ){
     			logAndPrint(logger, "could not get graph object in UniquePropertyCheck() \n");
@@ -98,14 +92,14 @@ public class UniquePropertyCheck {
 			logAndPrint(logger, msg);
 	 		System.exit(0);
         }
-		
+
 		runTheCheckForUniqueness( TRANSID, FROMAPPID, graph, propertyName, logger );
 		auditLog.logAfter();
 		System.exit(0);
-		
+
 	}// End main()
-	
-	
+
+
 	/**
 	 * Run the check for uniqueness.
 	 *
@@ -116,17 +110,17 @@ public class UniquePropertyCheck {
 	 * @param logger the logger
 	 * @return the boolean
 	 */
-	public static Boolean runTheCheckForUniqueness( String transId, String fromAppId, Graph graph, 
+	public static Boolean runTheCheckForUniqueness( String transId, String fromAppId, Graph graph,
 			String propertyName, Logger logger ){
-		
-		// Note - property can be found in more than one nodetype 
-		//    our uniqueness constraints are always across the entire db - so this 
+
+		// Note - property can be found in more than one nodetype
+		//    our uniqueness constraints are always across the entire db - so this
 		//   tool looks across all nodeTypes that the property is found in.
 		Boolean foundDupesFlag = false;
-		
+
 		HashMap <String,String> valuesAndVidHash = new HashMap <> ();
 		HashMap <String,String> dupeHash = new HashMap <> ();
-	
+
 		int propCount = 0;
 		int dupeCount = 0;
 		Iterator<Vertex> vertItor = graph.traversal().V().has(propertyName);
@@ -151,10 +145,10 @@ public class UniquePropertyCheck {
     		}
     		else {
     			valuesAndVidHash.put(val.toString(), thisVid);
-    		}  		
+    		}
        	}
-    		
-    	
+
+
     	String info = "\n Found this property [" + propertyName + "] " + propCount + " times in our db.";
     	logAndPrint(logger, info);
     	info = " Found " + dupeCount + " cases of duplicate values for this property.\n\n";
@@ -169,9 +163,9 @@ public class UniquePropertyCheck {
 	    			String dupeValue = pair.getKey().toString();
 	    			    			String vidsStr = pair.getValue().toString();
 	    			String[] vidArr = vidsStr.split("\\|");
-	    			logAndPrint(logger, "\n\n -------------- Found " + vidArr.length 
+	    			logAndPrint(logger, "\n\n -------------- Found " + vidArr.length
 	    					+ " nodes with " + propertyName + " of this value: [" + dupeValue + "].  Node details: ");
-	    			
+
 	    			for( int i = 0; i < vidArr.length; i++ ){
 	    				String vidString = vidArr[i];
 	    				Long idLong = Long.valueOf(vidString);
@@ -183,14 +177,14 @@ public class UniquePropertyCheck {
     	}
     	catch( Exception e2 ){
 	 		logAndPrint(logger, "Threw Exception: [" + e2.toString() + "]");
-    	} 
-    	
-    	
+    	}
+
+
     	return foundDupesFlag;
-    	
+
 	}// end of runTheCheckForUniqueness()
-	
-	
+
+
 	/**
 	 * Show properties and edges.
 	 *
@@ -200,7 +194,7 @@ public class UniquePropertyCheck {
 	 * @param logger the logger
 	 */
 	private static void showPropertiesAndEdges( String transId, String fromAppId, Vertex tVert,
-			Logger logger ){ 
+			Logger logger ){
 
 		if( tVert == null ){
 			logAndPrint(logger, "Null node passed to showPropertiesAndEdges.");
@@ -214,16 +208,16 @@ public class UniquePropertyCheck {
 			else{
 				nodeType = ob.toString();
 			}
-			
+
 			logAndPrint(logger, " AAINodeType/VtxID for this Node = [" + nodeType + "/" + tVert.id() + "]");
 			logAndPrint(logger, " Property Detail: ");
 			Iterator<VertexProperty<Object>> pI = tVert.properties();
 			while( pI.hasNext() ){
 				VertexProperty<Object> tp = pI.next();
 				Object val = tp.value();
-				logAndPrint(logger, "Prop: [" + tp.key() + "], val = [" + val + "] ");		
+				logAndPrint(logger, "Prop: [" + tp.key() + "], val = [" + val + "] ");
 			}
-			
+
 			Iterator <Edge> eI = tVert.edges(Direction.BOTH);
 			if( ! eI.hasNext() ){
 				logAndPrint(logger, "No edges were found for this vertex. ");
@@ -249,7 +243,7 @@ public class UniquePropertyCheck {
 		}
 	} // End of showPropertiesAndEdges()
 
-	
+
 	/**
 	 * Log and print.
 	 *
@@ -260,5 +254,5 @@ public class UniquePropertyCheck {
 		System.out.println(msg);
 		logger.info(msg);
 	}
-	
+
 }

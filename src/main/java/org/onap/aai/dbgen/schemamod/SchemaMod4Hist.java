@@ -19,7 +19,6 @@
  */
 package org.onap.aai.dbgen.schemamod;
 
-import com.att.eelf.configuration.Configuration;
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
@@ -56,11 +55,6 @@ public class SchemaMod4Hist {
 	}
 
 	public void execute(String[] args) {
-
-		// Set the logging file properties to be used by EELFManager
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_SCHEMA_MOD_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 
 		Logger logger = LoggerFactory.getLogger(SchemaMod4Hist.class.getSimpleName());
 		MDC.put("logFilenameAppender", SchemaMod4Hist.class.getSimpleName());

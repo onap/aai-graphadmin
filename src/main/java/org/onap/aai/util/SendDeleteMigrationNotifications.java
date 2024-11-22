@@ -19,7 +19,6 @@
  */
 package org.onap.aai.util;
 
-import com.att.eelf.configuration.Configuration;
 
 import org.onap.aai.config.SpringContextAware;
 import org.onap.aai.dbmap.AAIGraph;
@@ -72,9 +71,6 @@ public class SendDeleteMigrationNotifications {
 
 	public SendDeleteMigrationNotifications(LoaderFactory loaderFactory, SchemaVersions schemaVersions, String config, String path, int sleepInMilliSecs, int numToBatch, String requestId, EventAction eventAction, String eventSource) {
 		System.setProperty("aai.service.name", SendDeleteMigrationNotifications.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "migration-logback.xml");
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_ETC_APP_PROPERTIES);
 
 		MDC.put("logFilenameAppender", SendDeleteMigrationNotifications.class.getSimpleName());
 

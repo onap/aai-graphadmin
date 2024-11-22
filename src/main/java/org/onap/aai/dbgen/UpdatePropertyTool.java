@@ -22,7 +22,6 @@ package org.onap.aai.dbgen;
 
 import org.janusgraph.core.JanusGraph;
 import org.onap.aai.util.AAIConstants;
-import com.att.eelf.configuration.Configuration;
 import org.slf4j.MDC;
 
 import java.util.Properties;
@@ -55,10 +54,6 @@ public class UpdatePropertyTool {
     public static void main(String[] args)
     {
         System.setProperty("aai.service.name", UpdatePropertyTool.class.getSimpleName());
-		// Set the logging file properties to be used by EELFManager
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, PROPERTY_LOGGING_FILE_NAME);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 		MDC.put("logFilenameAppender", UpdatePropertyTool.class.getSimpleName());
 
 
