@@ -19,7 +19,6 @@
  */
 package org.onap.aai.dbgen.schemamod;
 
-import com.att.eelf.configuration.Configuration;
 import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
@@ -173,10 +172,6 @@ public class SchemaMod {
 	}
 
 	public static void main(String[] args) throws AAIException {
-
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_SCHEMA_MOD_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 
 		MDC.put("logFilenameAppender", SchemaMod.class.getSimpleName());
 

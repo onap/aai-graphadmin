@@ -26,11 +26,11 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.15.2</version>
+        <version>1.15.3-SNAPSHOT</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
-    <version>1.15.2-SNAPSHOT</version>
+    <version>1.15.3-SNAPSHOT</version>
 
     <properties>
 
@@ -54,8 +54,8 @@
         <!-- This value should be overwritten at runtime to wherever need to be pushed to -->
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
-        <aai.schema.service.version>1.12.5</aai.schema.service.version>
-        <aai.common.version>1.15.2</aai.common.version>
+        <aai.schema.service.version>1.12.6</aai.schema.service.version>
+        <aai.common.version>1.15.3-SNAPSHOT</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -418,10 +418,6 @@
 
         <!-- Start of Logback Dependencies -->
         <dependency>
-            <groupId>com.att.eelf</groupId>
-            <artifactId>eelf-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
         </dependency>
@@ -582,12 +578,10 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>${netty.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
-            <version>${netty.handler.version}</version>
         </dependency>
         <!-- End of Netty Dependencies -->
         <!-- Only used for the WebTestClient -->
