@@ -52,6 +52,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "018b01b7_90342913",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T12:24:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e09977c_152ed783",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "93051b97_f00351a5",
@@ -334,6 +352,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "de4df759_fdac15c8",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T12:24:35Z",
+      "side": 1,
+      "message": "Oh, absolutely right, my bad",
+      "parentUuid": "ef789a0b_962ab11c",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "eb318859_fe0a169b",
         "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
         "patchSetId": 1
@@ -556,6 +592,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "c5694f5a_0e3b5a0b",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c458ad99_bb7e2c0f",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T12:24:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eb5feca5_bb88330c",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
