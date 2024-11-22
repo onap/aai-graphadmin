@@ -207,6 +207,91 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ce487a96_28e14a04",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:40:55Z",
+      "side": 1,
+      "message": "Imports in line 22 - 24 are not used",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "160c4e4c_78300da1",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:40:55Z",
+      "side": 1,
+      "message": "This annotation is not necessary here, please remove it",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5694f5a_0e3b5a0b",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:40:55Z",
+      "side": 1,
+      "message": "You can remove the `@Qualifier` here. For that to work, please declare another web client bean in the `WebClientConfiguration` class:\n```java\n  @Lazy\n  @Bean\n  @Primary\n  WebTestClient appClient(@Value(\"${server.port}\") int port) {\n    return WebTestClient.bindToServer()\n      .baseUrl(\"http://localhost:\" + port)\n      .responseTimeout(Duration.ofSeconds(300))\n      .defaultHeaders(headers -\u003e {\n        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));\n      })\n      .build();\n  }\n```\nThe `mgmtClient` is not working, because it is binding to the management port. Your controller is exposed on the \"normal\" app port",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e276ce3_e4d788fa",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:40:55Z",
+      "side": 1,
+      "message": "Please remove this @BeforeEach method. We should rely on `@Autowired` here as well",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c71d178_d58e5037",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:40:55Z",
+      "side": 1,
+      "message": "It would be better to `@Autowired` this here to also test the spring context.\nYou will have to declare a class level `@ContextConfiguration(classes \u003d SchemaJobStatusService.class)` then and delete the `@BeforeEach` method",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7f28620e_e4eaa843",
         "filename": "src/test/resources/retired.properties",
         "patchSetId": 1
