@@ -47,6 +47,8 @@ public class GenTester {
 
 	private static Logger LOGGER;
 	private static boolean historyEnabled;
+	private static boolean isSchemaInitialized;
+    private static final String SCHEMA_INITIALIZED = "schema-initialized";
 
 	/**
 	 * The main method.
@@ -113,7 +115,8 @@ public class GenTester {
 				} else if ("GEN_DB_WITH_NO_DEFAULT_CR".equals(args[0])) {
 					addDefaultCR = false;
 				} else {
-					ErrorLogHelper.logError("AAI_3000", "Unrecognized argument passed to GenTester.java: [" + args[0] + "]. ");
+					ErrorLogHelper.logError("AAI_3000",
+							"Unrecognized argument passed to GenTester.java: [" + args[0] + "]. ");
 
 					String emsg = "Unrecognized argument passed to GenTester.java: [" + args[0] + "]. ";
 					System.out.println(emsg);
@@ -138,6 +141,18 @@ public class GenTester {
 				return;
 			}
 
+			isSchemaInitialized = graph.traversal().V().has(SCHEMA_INITIALIZED).hasNext();
+
+			if (isSchemaInitialized) {
+				// Setting property schema-initialized to false as vertex is already there
+				LOGGER.debug("-- Adding a vertex with property schema-initialized as false");
+				graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, "false");
+			} else {
+				// Adding a new vertex with property schema-initialized to false
+				LOGGER.debug("-- Adding a vertex with property schema-initialized as false");
+				graph.addVertex(SCHEMA_INITIALIZED, "false");
+			}
+
 			GraphAdminDBUtils.logConfigs(graph.configuration());
 
 			LOGGER.debug("-- Loading new schema elements into JanusGraph --");
@@ -158,6 +173,13 @@ public class GenTester {
 					LOGGER.info("Nothing to reindex.");
 				}
 			}
+
+			// Setting property schema-initialized to true
+			LOGGER.debug("-- Updating vertex with property schema-initialized as true ");
+			graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, "true");
+			LOGGER.debug("-- committing transaction ");
+			graph.tx().commit();
+
 			graph.close();
 			LOGGER.info("Closed the graph");
 
@@ -194,7 +216,8 @@ public class GenTester {
 		LOGGER.info("Number of open instances: {}", instances.size());
 		LOGGER.info("Currently open instances: [{}]", instances);
 		instances.stream()
-				.filter(instance -> !instance.contains("graphadmin")) // Potentially comment this out, should there be issues with the schema creation job
+				.filter(instance -> !instance.contains("graphadmin")) // Potentially comment this out, should there be
+																		// issues with the schema creation job
 				.filter(instance -> !instance.contains("(current)"))
 				.forEach(instance -> {
 					LOGGER.debug("Closing open JanusGraph instance [{}] before reindexing procedure", instance);
