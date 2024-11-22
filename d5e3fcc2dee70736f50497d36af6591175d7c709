@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e09977c_152ed783",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "Please use the appropriate copyright here",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93051b97_f00351a5",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "We shouldn\u0027t add that here since we are not doing that anywhere else",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9be6eabc_d3e50472",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "Please don\u0027t let it extend RESTAPI. It\u0027s not necessary and I personally consider that something that we should get rid of (also in the other places where it is used)",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c230c74c_4ce58a31",
+        "filename": "src/main/java/org/onap/aai/rest/SchemaJobStatusController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "We can replace the constructor with Lombok\u0027s @RequiredArgsConstructor as a class-level annotation (which will then add it automatically)",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cd73c3e9_9096cedc",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "I think it would be a good idea to declare the `\"schema-initialized\"` as a class-level constant, since we are using that at least four times here",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4a96cfab_3b837f71",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "I don\u0027t think we need the `hasLabel` here. Or is there any particular reason you added that?",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b413147d_50cebe95",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "I think we should use `.V().has(\"schema-initialized\")` here instead of `hasLabel`",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a288676f_e2dc61dc",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "Please use the appropriate copyright here",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d445fdfe_72ecd73a",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "We can move this to the class level, make it `private final` and initialize it via `@RequiredArgsConstructor`",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "eb318859_fe0a169b",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "Please add a space here `} finally {`",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7de1795_fac519f5",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "We shouldn\u0027t close this here I think. It\u0027s the global graph singleton and thus used in other places.\nThere are other places in the application where it is closed when the app shuts down I believe",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e37afcf5_1d9391c4",
+        "filename": "src/test/java/org/onap/aai/rest/SchemaJobStatusControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "Copyright",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7f28620e_e4eaa843",
+        "filename": "src/test/resources/retired.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T07:13:18Z",
+      "side": 1,
+      "message": "Is it really necessary to add the file in this change?",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
