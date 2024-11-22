@@ -368,6 +368,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "92a43355_3cb1a3d9",
+        "filename": "src/main/java/org/onap/aai/service/SchemaJobStatusService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T13:49:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de4df759_fdac15c8",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "eb318859_fe0a169b",
@@ -733,6 +751,24 @@
       "side": 1,
       "message": "I have removed the file, as testcases ran fine using mvn test -Dtest\u003dSchemaJobStatusServiceTest",
       "parentUuid": "f20a074b_20dda61e",
+      "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f4298680_de26b4df",
+        "filename": "src/test/resources/retired.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-11-22T13:49:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67d6827b_1d0c14ee",
       "revId": "d5e3fcc2dee70736f50497d36af6591175d7c709",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
