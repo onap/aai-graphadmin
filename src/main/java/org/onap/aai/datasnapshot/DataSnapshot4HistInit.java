@@ -67,7 +67,6 @@ import org.onap.aai.util.FormatDate;
 import org.onap.aai.util.GraphAdminDBUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.att.eelf.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.beust.jcommander.JCommander;
@@ -112,10 +111,6 @@ public class DataSnapshot4HistInit {
 
 		// Set the logging file properties to be used by EELFManager
 		System.setProperty("aai.service.name", DataSnapshot4HistInit.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
-
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();

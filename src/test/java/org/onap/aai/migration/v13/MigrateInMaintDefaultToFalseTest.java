@@ -23,9 +23,6 @@ import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
-
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
@@ -119,7 +116,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "generic-vnf")
         		.property("vnf-id", "generic-vnf3")
         		.property("in-maint", false)
-        		.next();        
+        		.next();
       //l-interface
         g.addV().property("aai-node-type", "l-interface")
                 .property("interface-name", "l-interface0")
@@ -135,7 +132,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "l-interface")
         		.property("interface-name", "l-interface3")
         		.property("in-maint", false)
-        		.next();         
+        		.next();
       //lag-interface
         g.addV().property("aai-node-type", "lag-interface")
                 .property("interface-name", "lag-interface0")
@@ -151,7 +148,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "lag-interface")
         		.property("interface-name", "lag-interface3")
         		.property("in-maint", false)
-        		.next();        
+        		.next();
       //logical-link
         g.addV().property("aai-node-type", "logical-link")
                 .property("link-name", "logical-link0")
@@ -167,7 +164,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "logical-link")
         		.property("link-name", "logical-link3")
         		.property("in-maint", false)
-        		.next();      
+        		.next();
       //p-interface
         g.addV().property("aai-node-type", "p-interface")
                 .property("interface-name", "p-interface0")
@@ -183,7 +180,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "p-interface")
         		.property("interface-name", "p-interface3")
         		.property("in-maint", false)
-        		.next();        
+        		.next();
       //pnf
         g.addV().property("aai-node-type", "pnf")
                 .property("pnf-name", "pnf0")
@@ -199,7 +196,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "pnf")
         		.property("pnf-name", "pnf3")
         		.property("in-maint", false)
-        		.next();        
+        		.next();
       //pserver
         g.addV().property("aai-node-type", "pserver")
                 .property("pserver-id", "pserver0")
@@ -215,7 +212,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         g.addV().property("aai-node-type", "pserver")
         		.property("pserver-id", "pserver3")
         		.property("in-maint", false)
-        		.next();       
+        		.next();
       //vlan
         g.addV().property("aai-node-type", "vlan")
                 .property("vlan-interface", "vlan0")
@@ -276,7 +273,7 @@ public class MigrateInMaintDefaultToFalseTest extends
                 .property("nos-server-id", "nos-server1")
 				.property("nos-server-name", "nos-server-name1")
 				.property("vendor", "vendor1")
-				.property("nos-server-selflink", "nos-server-selflink1")				
+				.property("nos-server-selflink", "nos-server-selflink1")
                 .property("in-maint", "")
                 .next();
         g.addV().property("aai-node-type", "nos-server")
@@ -293,7 +290,7 @@ public class MigrateInMaintDefaultToFalseTest extends
 				.property("nos-server-selflink", "nos-server-selflink3")
         		.property("in-maint", false)
         		.next();
-        
+
         TransactionalGraphEngine spy = spy(dbEngine);
         TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
         GraphTraversalSource traversal = g;
@@ -324,13 +321,13 @@ public class MigrateInMaintDefaultToFalseTest extends
         assertTrue(g.V().has("aai-node-type", "vnfc").has("vnfc-name", "vnfc0").has("in-maint", false).hasNext(),
                 "Value of vnfc should be updated since the property in-maint doesn't exist");
         assertTrue(g.V().has("aai-node-type", "vserver").has("vserver-id", "vserver0").has("in-maint", false).hasNext(),
-                "Value of vserver should be updated since the property in-maint doesn't exist");    
+                "Value of vserver should be updated since the property in-maint doesn't exist");
         assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server0").has("in-maint", false).hasNext(),
-                "Value of nos-server should be updated since the property in-maint doesn't exist"); 
+                "Value of nos-server should be updated since the property in-maint doesn't exist");
     }
 
     @Test
-    public void testEmptyValue() {                
+    public void testEmptyValue() {
         assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf1").has("in-maint", false).hasNext(),
                 "Value of generic-vnf should be updated since the value for in-maint is an empty string");
         assertTrue(g.V().has("aai-node-type", "l-interface").has("interface-name", "l-interface1").has("in-maint", false).hasNext(),
@@ -354,7 +351,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server1").has("in-maint", false).hasNext(),
                 "Value of nos-server should be updated since the value for in-maint is an empty string");
     }
-    
+
     @Test
     public void testExistingTrueValues() {
         assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf2").has("in-maint", true).hasNext(),
@@ -380,7 +377,7 @@ public class MigrateInMaintDefaultToFalseTest extends
         assertTrue(g.V().has("aai-node-type", "nos-server").has("nos-server-id", "nos-server2").has("in-maint", true).hasNext(),
                 "Value of nos-server shouldn't be updated since in-maint already exists");
     }
-    
+
     @Test
     public void testExistingFalseValues() {
         assertTrue(g.V().has("aai-node-type", "generic-vnf").has("vnf-id", "generic-vnf3").has("in-maint", false).hasNext(),

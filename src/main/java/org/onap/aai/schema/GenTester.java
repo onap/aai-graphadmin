@@ -19,7 +19,6 @@
  */
 package org.onap.aai.schema;
 
-import com.att.eelf.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.EdgeLabel;
@@ -59,10 +58,7 @@ public class GenTester {
 
 		JanusGraph graph = null;
 		System.setProperty("aai.service.name", GenTester.class.getSimpleName());
-		// Set the logging file properties to be used by EELFManager
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
+
 		LOGGER = LoggerFactory.getLogger(GenTester.class);
 		boolean addDefaultCR = true;
 

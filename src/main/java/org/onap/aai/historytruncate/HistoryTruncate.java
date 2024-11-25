@@ -39,7 +39,6 @@ import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.AAISystemExitUtil;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.att.eelf.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
@@ -73,12 +72,6 @@ public class HistoryTruncate {
 	 *
 	 */
 	public static void main(String[] args) {
-
-		// Set the logging file properties to be used by EELFManager
-		System.setProperty("aai.service.name", HistoryTruncate.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 
 		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext()) {
 			try {

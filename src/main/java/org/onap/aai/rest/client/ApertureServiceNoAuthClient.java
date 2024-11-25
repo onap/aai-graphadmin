@@ -20,9 +20,9 @@
 
 package org.onap.aai.rest.client;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import org.onap.aai.restclient.NoAuthRestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,7 +35,7 @@ import java.util.UUID;
 
 public class ApertureServiceNoAuthClient extends NoAuthRestClient {
 
-    private static EELFLogger logger = EELFManager.getInstance().getLogger(ApertureServiceNoAuthClient.class);
+    private static Logger logger = LoggerFactory.getLogger(ApertureServiceNoAuthClient.class);
 
     @Value("${aperture.service.base.url}")
     private String baseUrl;

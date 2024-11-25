@@ -19,7 +19,6 @@
  */
 package org.onap.aai.dbgen;
 
-import com.att.eelf.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
@@ -462,10 +461,6 @@ public class DupeTool {
     public static void main(String[] args) throws AAIException {
 
         System.setProperty("aai.service.name", DupeTool.class.getSimpleName());
-        // Set the logging file properties to be used by EELFManager
-        Properties props = System.getProperties();
-        props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "dupeTool-logback.xml");
-        props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
         MDC.put("logFilenameAppender", DupeTool.class.getSimpleName());
 
 

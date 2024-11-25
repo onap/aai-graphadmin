@@ -20,7 +20,6 @@
 
 package org.onap.aai.migration;
 
-import com.att.eelf.configuration.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -97,10 +96,6 @@ public class MigrationControllerInternal {
 	public void run(String[] args) {
 		// Set the logging file properties to be used by EELFManager
 		System.setProperty("aai.service.name", MigrationController.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, "migration-logback.xml");
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_ETC_APP_PROPERTIES);
-
 		MDC.put("logFilenameAppender", MigrationController.class.getSimpleName());
         logger = LoggerFactory.getLogger(MigrationControllerInternal.class.getSimpleName());
 

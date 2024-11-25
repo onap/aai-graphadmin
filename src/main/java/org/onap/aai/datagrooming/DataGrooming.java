@@ -19,7 +19,6 @@
  */
 package org.onap.aai.datagrooming;
 
-import com.att.eelf.configuration.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import java.io.BufferedReader;
@@ -286,10 +285,6 @@ public class DataGrooming {
 
 		// Set the logging file properties to be used by EELFManager
 		System.setProperty("aai.service.name", DataGrooming.class.getSimpleName());
-
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();

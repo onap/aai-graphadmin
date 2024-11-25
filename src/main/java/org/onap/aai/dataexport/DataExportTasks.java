@@ -56,7 +56,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.att.eelf.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -81,9 +80,6 @@ public class DataExportTasks {
 
 	static {
 		System.setProperty("aai.service.name", DataExportTasks.class.getSimpleName());
-		Properties props = System.getProperties();
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, AAIConstants.AAI_LOGBACK_PROPS);
-		props.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, AAIConstants.AAI_HOME_BUNDLECONFIG);
 		LOGGER = LoggerFactory.getLogger(DataExportTasks.class);
 	}
 
