@@ -269,6 +269,16 @@ public class DataGrooming {
 						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
 						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 			}
+			LOGGER.info("===== Data Grooming Summary after all fixes =====");
+            LOGGER.info("Ghost Node Count: " + getGhostNodeCount());
+            LOGGER.info("Bad Index Node Count: " + getBadIndexNodeCount());
+            LOGGER.info("Bad URI Node Count: " + getBadUriNodeCount());
+            LOGGER.info("Orphan Node Count: " + getOrphanNodeCount());
+            LOGGER.info("Missing AAI NT Node Count: " + getMissingAaiNtNodeCount());
+            LOGGER.info("One-Armed Edge Hash Count: " + getOneArmedEdgeHashCount());
+ 			// Add more logging if needed for other nodes like Duplicate Groups, Delete Candidates, etc.
+            LOGGER.info("===== End of Data Grooming Summary =====");
+ 
 		} catch (Exception ex) {
 			LOGGER.debug("Exception while grooming data " + LogFormatTools.getStackTop(ex));
 		}
