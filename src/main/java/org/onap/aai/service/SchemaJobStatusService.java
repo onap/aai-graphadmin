@@ -43,7 +43,7 @@ public class SchemaJobStatusService {
         GraphTraversalSource g = graph.traversal();
         try {
             // Check if there is a vertex with the property "schema-initialized" set to "true"
-            return g.V().has("schema-initialized", "true").hasNext();
+            return g.V().has("schema-initialized", true).hasNext();
         } catch (Exception e) {
             LOGGER.error("Error during schema initialization check", e);
             throw new AAIException("Error checking schema initialization: " + e.getMessage(), e);

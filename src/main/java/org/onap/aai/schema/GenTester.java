@@ -19,28 +19,27 @@
  */
 package org.onap.aai.schema;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.janusgraph.core.EdgeLabel;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.JanusGraphVertex;
+import org.janusgraph.core.PropertyKey;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.janusgraph.core.schema.RelationTypeIndex;
 import org.janusgraph.core.schema.SchemaAction;
 import org.janusgraph.graphdb.database.StandardJanusGraph;
 import org.janusgraph.graphdb.database.management.ManagementSystem;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbgen.SchemaGenerator;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.util.*;
+import org.onap.aai.restclient.PropertyPasswordConfiguration;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.ExceptionTranslator;
+import org.onap.aai.util.GraphAdminDBUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
 
 public class GenTester {
 
@@ -48,6 +47,7 @@ public class GenTester {
 	private static boolean historyEnabled;
 	private static boolean isSchemaInitialized;
     private static final String SCHEMA_INITIALIZED = "schema-initialized";
+	private static final String bySchemaInitialized = "bySchemaInitialized";
 
 	/**
 	 * The main method.
@@ -141,13 +141,44 @@ public class GenTester {
 
 			if (isSchemaInitialized) {
 				// Setting property schema-initialized to false as vertex is already there
-				LOGGER.debug("-- Adding a vertex with property schema-initialized as false");
-				graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, "false");
-			} else {
-				// Adding a new vertex with property schema-initialized to false
-				LOGGER.debug("-- Adding a vertex with property schema-initialized as false");
-				graph.addVertex(SCHEMA_INITIALIZED, "false");
+				LOGGER.debug("-- Vertex with property 'schema-initialized' present in db. Updating it to false");
+				graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, false).next();
+		
+				// Reindexing the existing index
+				LOGGER.debug("-- Reindexing existing schema-initialized index");
+				JanusGraphManagement mgmt = graph.openManagement();
+			try {
+				if (mgmt.getGraphIndex(bySchemaInitialized) != null) {
+					LOGGER.info("Reindexing 'bySchemaInitialized' to include existing vertices.");
+					mgmt.updateIndex(mgmt.getGraphIndex(bySchemaInitialized), SchemaAction.REINDEX).get();
+				}
+				mgmt.commit();
+			} catch (Exception e) {
+				mgmt.rollback();
+				LOGGER.error("Error during reindexing: " + e.getMessage());
+				throw e;
 			}
+		} else {
+			LOGGER.debug("-- Adding a new vertex with property schema-initialized as false");
+			JanusGraphManagement mgmt = graph.openManagement();
+			try{
+				//creating  a composite index
+				PropertyKey schemaInitialized = mgmt.makePropertyKey(SCHEMA_INITIALIZED).dataType(Boolean.class).make();
+				mgmt.buildIndex(bySchemaInitialized, Vertex.class)
+										.addKey(schemaInitialized)
+										.buildCompositeIndex();
+				mgmt.commit();
+
+				//Wait for the index to become available
+				ManagementSystem.awaitGraphIndexStatus(graph, bySchemaInitialized).call();
+			}catch(Exception e) {
+				mgmt.rollback();
+				LOGGER.error("Problems creating an index for schema-initialized vertex " + e.getMessage());
+				throw e;
+			}
+			//Adding a new vertex
+			graph.addVertex(SCHEMA_INITIALIZED, false);
+		}
 
 			GraphAdminDBUtils.logConfigs(graph.configuration());
 
@@ -171,11 +202,11 @@ public class GenTester {
 			}
 
 			// Setting property schema-initialized to true
-			LOGGER.debug("-- Updating vertex with property schema-initialized as true ");
-			graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, "true");
+			LOGGER.debug("-- Updating vertex with property schema-initialized to true ");
+			graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, true).next();
 			LOGGER.debug("-- committing transaction ");
 			graph.tx().commit();
-
+			
 			graph.close();
 			LOGGER.info("Closed the graph");
 
