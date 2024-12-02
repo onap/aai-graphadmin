@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "bc7524d5_2b066624",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-12-02T09:45:06Z",
+      "side": 1,
+      "message": "I was able to add tabs now instead of spaces. Plz verify.",
+      "parentUuid": "15a41eea_6ecdc48a",
+      "revId": "dd5c918761db4c56eb7818d088d22de34b1980fb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "49883bba_0f65400b",
         "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
         "patchSetId": 1
