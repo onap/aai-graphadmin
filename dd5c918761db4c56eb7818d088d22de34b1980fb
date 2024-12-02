@@ -54,6 +54,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "324bb43c_c4c4ca39",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-12-02T12:00:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc7524d5_2b066624",
+      "revId": "dd5c918761db4c56eb7818d088d22de34b1980fb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "49883bba_0f65400b",
@@ -85,6 +103,24 @@
       "side": 1,
       "message": "Used the constant and committed. Plz verify",
       "parentUuid": "49883bba_0f65400b",
+      "revId": "dd5c918761db4c56eb7818d088d22de34b1980fb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b2edf87_766e5f6c",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-12-02T12:00:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6dded3f_9121ef69",
       "revId": "dd5c918761db4c56eb7818d088d22de34b1980fb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
