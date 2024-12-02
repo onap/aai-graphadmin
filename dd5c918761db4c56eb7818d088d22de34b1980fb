@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a20cead4_34497e7c",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-12-02T08:17:07Z",
+      "side": 1,
+      "message": "Can you use tabs for your new lines here as well? Otherwise we have mix of spaces and tabs in one class",
+      "revId": "dd5c918761db4c56eb7818d088d22de34b1980fb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49883bba_0f65400b",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-12-02T08:17:07Z",
+      "side": 1,
+      "message": "Please use a constant for `bySchemaInitialized` here too",
+      "revId": "dd5c918761db4c56eb7818d088d22de34b1980fb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
