@@ -46,7 +46,7 @@ public class GenTester {
 	private static Logger LOGGER;
 	private static boolean historyEnabled;
 	private static boolean isSchemaInitialized;
-    private static final String SCHEMA_INITIALIZED = "schema-initialized";
+	private static final String SCHEMA_INITIALIZED = "schema-initialized";
 	private static final String bySchemaInitialized = "bySchemaInitialized";
 
 	/**
@@ -143,42 +143,19 @@ public class GenTester {
 				// Setting property schema-initialized to false as vertex is already there
 				LOGGER.debug("-- Vertex with property 'schema-initialized' present in db. Updating it to false");
 				graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, false).next();
-		
-				// Reindexing the existing index
-				LOGGER.debug("-- Reindexing existing schema-initialized index");
+			} else {
+				LOGGER.debug("-- Adding a new vertex with property schema-initialized as false");
 				JanusGraphManagement mgmt = graph.openManagement();
-			try {
-				if (mgmt.getGraphIndex(bySchemaInitialized) != null) {
-					LOGGER.info("Reindexing 'bySchemaInitialized' to include existing vertices.");
-					mgmt.updateIndex(mgmt.getGraphIndex(bySchemaInitialized), SchemaAction.REINDEX).get();
+				try {
+					createSchemaInitializedIndex(graph, mgmt);
+				} catch (Exception e) {
+					mgmt.rollback();
+					LOGGER.error("Problems creating an index for schema-initialized vertex " + e.getMessage());
+					throw e;
 				}
-				mgmt.commit();
-			} catch (Exception e) {
-				mgmt.rollback();
-				LOGGER.error("Error during reindexing: " + e.getMessage());
-				throw e;
+				// Adding a new vertex
+				graph.addVertex(SCHEMA_INITIALIZED, false);
 			}
-		} else {
-			LOGGER.debug("-- Adding a new vertex with property schema-initialized as false");
-			JanusGraphManagement mgmt = graph.openManagement();
-			try{
-				//creating  a composite index
-				PropertyKey schemaInitialized = mgmt.makePropertyKey(SCHEMA_INITIALIZED).dataType(Boolean.class).make();
-				mgmt.buildIndex(bySchemaInitialized, Vertex.class)
-										.addKey(schemaInitialized)
-										.buildCompositeIndex();
-				mgmt.commit();
-
-				//Wait for the index to become available
-				ManagementSystem.awaitGraphIndexStatus(graph, bySchemaInitialized).call();
-			}catch(Exception e) {
-				mgmt.rollback();
-				LOGGER.error("Problems creating an index for schema-initialized vertex " + e.getMessage());
-				throw e;
-			}
-			//Adding a new vertex
-			graph.addVertex(SCHEMA_INITIALIZED, false);
-		}
 
 			GraphAdminDBUtils.logConfigs(graph.configuration());
 
@@ -206,7 +183,7 @@ public class GenTester {
 			graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, true).next();
 			LOGGER.debug("-- committing transaction ");
 			graph.tx().commit();
-			
+
 			graph.close();
 			LOGGER.info("Closed the graph");
 
@@ -217,6 +194,18 @@ public class GenTester {
 
 		LOGGER.debug("-- all done, if program does not exit, please kill.");
 		System.exit(0);
+	}
+
+	private static void createSchemaInitializedIndex(JanusGraph graph, JanusGraphManagement mgmt) throws InterruptedException {
+		// creating a composite index
+		PropertyKey schemaInitialized = mgmt.makePropertyKey(SCHEMA_INITIALIZED).dataType(Boolean.class).make();
+		mgmt.buildIndex(bySchemaInitialized, Vertex.class)
+				.addKey(schemaInitialized)
+				.buildCompositeIndex();
+		mgmt.commit();
+
+		// Wait for the index to become available
+		ManagementSystem.awaitGraphIndexStatus(graph, bySchemaInitialized).call();
 	}
 
 	/**
@@ -244,7 +233,7 @@ public class GenTester {
 		LOGGER.info("Currently open instances: [{}]", instances);
 		instances.stream()
 				.filter(instance -> !instance.contains("graphadmin")) // Potentially comment this out, should there be
-																		// issues with the schema creation job
+				// issues with the schema creation job
 				.filter(instance -> !instance.contains("(current)"))
 				.forEach(instance -> {
 					LOGGER.debug("Closing open JanusGraph instance [{}] before reindexing procedure", instance);
