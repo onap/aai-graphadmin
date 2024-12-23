@@ -26,7 +26,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.PropertyKey;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.janusgraph.core.schema.SchemaAction;
 import org.janusgraph.graphdb.database.StandardJanusGraph;
 import org.janusgraph.graphdb.database.management.ManagementSystem;
 import org.onap.aai.dbgen.SchemaGenerator;
@@ -45,10 +44,10 @@ public class GenTester {
 
 	private static Logger LOGGER;
 	private static boolean historyEnabled;
-	private static boolean isSchemaInitialized;
-	private static final String SCHEMA_INITIALIZED = "schema-initialized";
-	private static final String bySchemaInitialized = "bySchemaInitialized";
-
+	private static boolean isSchemaInitializedTrue;
+	private static boolean isSchemaInitializedFalse;
+	private static final String SCHEMA_INITIALIZED  = "schema-initialized";
+	
 	/**
 	 * The main method.
 	 *
@@ -137,12 +136,17 @@ public class GenTester {
 				return;
 			}
 
-			isSchemaInitialized = graph.traversal().V().has(SCHEMA_INITIALIZED).hasNext();
+			isSchemaInitializedTrue = graph.traversal().V().has(SCHEMA_INITIALIZED , true).hasNext();
+			isSchemaInitializedFalse = graph.traversal().V().has(SCHEMA_INITIALIZED , false).hasNext();
 
-			if (isSchemaInitialized) {
+			if (isSchemaInitializedTrue) {
 				// Setting property schema-initialized to false as vertex is already there
-				LOGGER.debug("-- Vertex with property 'schema-initialized' present in db. Updating it to false");
-				graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, false).next();
+				LOGGER.debug("-- Vertex with property 'schema-initialized' present in db and is true. Updating it to false");
+				graph.traversal().V().has(SCHEMA_INITIALIZED , true).property(SCHEMA_INITIALIZED , false).next();
+			} else if (isSchemaInitializedFalse) {
+				// Setting property schema-initialized to false as vertex is already there
+				LOGGER.debug("-- Vertex with property 'schema-initialized' present in db and is false. Keeping it false. Do Nothing");
+				// graph.traversal().V().has(PROPERTY_SCHEMA_INITIALIZED , false).property(PROPERTY_SCHEMA_INITIALIZED , false).next();
 			} else {
 				LOGGER.debug("-- Adding a new vertex with property schema-initialized as false");
 				JanusGraphManagement mgmt = graph.openManagement();
@@ -154,7 +158,14 @@ public class GenTester {
 					throw e;
 				}
 				// Adding a new vertex
-				graph.addVertex(SCHEMA_INITIALIZED, false);
+				try {
+					Vertex newVertex = graph.addVertex(SCHEMA_INITIALIZED , false);
+					LOGGER.info("Created a new vertex with property '{}' set to '{}'", SCHEMA_INITIALIZED , 
+						newVertex.property(SCHEMA_INITIALIZED ).value());
+				} catch (Exception e) {
+					LOGGER.error("Error creating a new vertex: {}", e.getMessage(), e);
+					throw e;
+				}
 			}
 
 			GraphAdminDBUtils.logConfigs(graph.configuration());
@@ -180,7 +191,7 @@ public class GenTester {
 
 			// Setting property schema-initialized to true
 			LOGGER.debug("-- Updating vertex with property schema-initialized to true ");
-			graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, true).next();
+			graph.traversal().V().has(SCHEMA_INITIALIZED , false).property(SCHEMA_INITIALIZED , true).next();
 			LOGGER.debug("-- committing transaction ");
 			graph.tx().commit();
 
@@ -199,13 +210,13 @@ public class GenTester {
 	private static void createSchemaInitializedIndex(JanusGraph graph, JanusGraphManagement mgmt) throws InterruptedException {
 		// creating a composite index
 		PropertyKey schemaInitialized = mgmt.makePropertyKey(SCHEMA_INITIALIZED).dataType(Boolean.class).make();
-		mgmt.buildIndex(bySchemaInitialized, Vertex.class)
+		mgmt.buildIndex(SCHEMA_INITIALIZED, Vertex.class)
 				.addKey(schemaInitialized)
 				.buildCompositeIndex();
 		mgmt.commit();
 
 		// Wait for the index to become available
-		ManagementSystem.awaitGraphIndexStatus(graph, bySchemaInitialized).call();
+		ManagementSystem.awaitGraphIndexStatus(graph, SCHEMA_INITIALIZED).call();
 	}
 
 	/**
