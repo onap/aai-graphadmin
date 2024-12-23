@@ -20,13 +20,14 @@
 package org.onap.aai.schema;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.PropertyKey;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.janusgraph.core.schema.SchemaAction;
 import org.janusgraph.graphdb.database.StandardJanusGraph;
 import org.janusgraph.graphdb.database.management.ManagementSystem;
 import org.onap.aai.dbgen.SchemaGenerator;
@@ -45,10 +46,8 @@ public class GenTester {
 
 	private static Logger LOGGER;
 	private static boolean historyEnabled;
-	private static boolean isSchemaInitialized;
-	private static final String SCHEMA_INITIALIZED = "schema-initialized";
-	private static final String bySchemaInitialized = "bySchemaInitialized";
-
+	private static final String SCHEMA_INITIALIZED  = "schema-initialized";
+	
 	/**
 	 * The main method.
 	 *
@@ -137,24 +136,19 @@ public class GenTester {
 				return;
 			}
 
-			isSchemaInitialized = graph.traversal().V().has(SCHEMA_INITIALIZED).hasNext();
+			Optional<Vertex> schemaInitializedVertex = graph.traversal().V()
+				.or(
+					__.has(SCHEMA_INITIALIZED, true),
+					__.has(SCHEMA_INITIALIZED, false)
+				)
+				.tryNext();
 
-			if (isSchemaInitialized) {
-				// Setting property schema-initialized to false as vertex is already there
-				LOGGER.debug("-- Vertex with property 'schema-initialized' present in db. Updating it to false");
-				graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, false).next();
+			if (schemaInitializedVertex.isPresent()) {
+				//Set schema-initialized vertex to false if such vertex is present in db
+				setSchemaInitializedToFalse(graph, schemaInitializedVertex);
 			} else {
-				LOGGER.debug("-- Adding a new vertex with property schema-initialized as false");
-				JanusGraphManagement mgmt = graph.openManagement();
-				try {
-					createSchemaInitializedIndex(graph, mgmt);
-				} catch (Exception e) {
-					mgmt.rollback();
-					LOGGER.error("Problems creating an index for schema-initialized vertex " + e.getMessage());
-					throw e;
-				}
-				// Adding a new vertex
-				graph.addVertex(SCHEMA_INITIALIZED, false);
+				// Creating a new vertex as the vertex is not yet present in db
+				createNewSchemaInitializedVertex(graph);
 			}
 
 			GraphAdminDBUtils.logConfigs(graph.configuration());
@@ -180,7 +174,7 @@ public class GenTester {
 
 			// Setting property schema-initialized to true
 			LOGGER.debug("-- Updating vertex with property schema-initialized to true ");
-			graph.traversal().V().has(SCHEMA_INITIALIZED).property(SCHEMA_INITIALIZED, true).next();
+			graph.traversal().V().has(SCHEMA_INITIALIZED , false).property(SCHEMA_INITIALIZED , true).next();
 			LOGGER.debug("-- committing transaction ");
 			graph.tx().commit();
 
@@ -196,16 +190,57 @@ public class GenTester {
 		System.exit(0);
 	}
 
+	private static void setSchemaInitializedToFalse(JanusGraph graph, Optional<Vertex> schemaInitializedVertex) {
+		Vertex vertex = schemaInitializedVertex.get();
+		Object schemaInitializedValueObj = vertex.property(SCHEMA_INITIALIZED).value();
+		Boolean schemaInitializedValue = schemaInitializedValueObj instanceof Boolean ? (Boolean) schemaInitializedValueObj : Boolean.FALSE;
+
+		//Setting schema-initialized vertex to False
+		if (Boolean.TRUE.equals(schemaInitializedValue)) {
+			// Update the property from true to false
+			LOGGER.debug("-- Vertex with property 'schema-initialized' present in db and is true. Updating it to false");
+			graph.traversal().V()
+				.has(SCHEMA_INITIALIZED, true)
+				.property(SCHEMA_INITIALIZED, false)
+				.next();
+		} else {
+			// Property already false, no action needed
+			LOGGER.debug("-- Vertex with property 'schema-initialized' present in db and is false. Keeping it false. Do Nothing");
+		}
+	}
+
+	private static void createNewSchemaInitializedVertex(JanusGraph graph) throws Exception {
+		LOGGER.debug("-- Adding a new vertex with property schema-initialized as false");
+		JanusGraphManagement mgmt = graph.openManagement();
+		try {
+			// Creating an index
+			createSchemaInitializedIndex(graph, mgmt);
+		} catch (Exception e) {
+			mgmt.rollback();
+			LOGGER.error("Problems creating an index for schema-initialized vertex " + e.getMessage());
+			throw e;
+		}
+		try {
+			Vertex newVertex = graph.addVertex(SCHEMA_INITIALIZED , false);
+			LOGGER.info("Created a new vertex with property '{}' set to '{}'", SCHEMA_INITIALIZED , 
+				newVertex.property(SCHEMA_INITIALIZED ).value());
+		} catch (Exception e) {
+			LOGGER.error("Error creating a new vertex: {}", e.getMessage(), e);
+			throw e;
+		}
+	}
+
 	private static void createSchemaInitializedIndex(JanusGraph graph, JanusGraphManagement mgmt) throws InterruptedException {
 		// creating a composite index
+		LOGGER.debug("-- Building an index on property schema-initialized");
 		PropertyKey schemaInitialized = mgmt.makePropertyKey(SCHEMA_INITIALIZED).dataType(Boolean.class).make();
-		mgmt.buildIndex(bySchemaInitialized, Vertex.class)
+		mgmt.buildIndex(SCHEMA_INITIALIZED, Vertex.class)
 				.addKey(schemaInitialized)
 				.buildCompositeIndex();
 		mgmt.commit();
 
 		// Wait for the index to become available
-		ManagementSystem.awaitGraphIndexStatus(graph, bySchemaInitialized).call();
+		ManagementSystem.awaitGraphIndexStatus(graph, SCHEMA_INITIALIZED).call();
 	}
 
 	/**
