@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b799cebc_d3493062",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2024-12-23T09:53:57Z",
+      "side": 1,
+      "message": "I would suggest that we fetch the vertex once in order to avoid multiple queries. We can then do some assertions based on the value of it. Gremlin offers `tryNext()` to retrieve an Optional\u003cVertex\u003e that we can use to handle the different cases:\n```java\nfinal JanusGraph g \u003d graph;\nOptional\u003cVertex\u003e schemaInitializedVertex \u003d graph.traversal().V().has(SCHEMA_INITIALIZED).tryNext();\nschemaInitializedVertex.ifPresentOrElse((vertex) -\u003e\n\t{\n\t\tif (vertex.property(SCHEMA_INITIALIZED).value().equals(true)) {\n\t\t\tsetSchemaInitializedToFalse(g);\n\t\t}\n\t},\n\t() -\u003e createSchemaInitializedVertex(g));\n```\nYou can use the refactoring function of your IDE to basically put everything that is now in the if bodies into the respective `setSchemaInitializedToFalse` and `createSchemaInitializedVertex` functions",
+      "revId": "b41ab0aed0972832a693b43d1f34da8ea94a855d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
