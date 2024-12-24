@@ -34,6 +34,24 @@
       "parentUuid": "b799cebc_d3493062",
       "revId": "b41ab0aed0972832a693b43d1f34da8ea94a855d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f9a786d_561cc1ef",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 8486
+      },
+      "writtenOn": "2024-12-24T07:52:41Z",
+      "side": 1,
+      "message": "Committed some changes after refactoring. Plz check",
+      "parentUuid": "3fe524a8_7d3f1375",
+      "revId": "b41ab0aed0972832a693b43d1f34da8ea94a855d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
