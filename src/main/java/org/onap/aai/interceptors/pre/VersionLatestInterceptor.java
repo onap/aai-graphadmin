@@ -21,12 +21,11 @@ package org.onap.aai.interceptors.pre;
 
 import org.onap.aai.interceptors.AAIContainerFilter;
 import org.onap.aai.setup.SchemaVersions;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Priority;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.PreMatching;
 import java.net.URI;
 
 @PreMatching
@@ -35,7 +34,6 @@ public class VersionLatestInterceptor extends AAIContainerFilter implements Cont
 
     private final SchemaVersions schemaVersions;
 
-    @Autowired
     public VersionLatestInterceptor(SchemaVersions schemaVersions){
         this.schemaVersions = schemaVersions;
     }

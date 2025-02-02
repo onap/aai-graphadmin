@@ -26,7 +26,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.onap.aai.datasnapshot.DataSnapshot;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.AAIGraph;
@@ -53,7 +53,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -361,7 +360,7 @@ public class MigrationControllerInternal {
 		logAndPrint("Saving snapshot of graph " + phase + " migration to " + fileName);
 		try {
 
-			Path pathToFile = Paths.get(fileName);
+			Path pathToFile = Path.of(fileName);
 			if (!pathToFile.toFile().exists()) {
 				Files.createDirectories(pathToFile.getParent());
 			}

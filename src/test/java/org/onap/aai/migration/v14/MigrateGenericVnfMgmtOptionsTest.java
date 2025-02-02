@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import javax.validation.constraints.AssertFalse;
+import jakarta.validation.constraints.AssertFalse;
 
 public class MigrateGenericVnfMgmtOptionsTest extends AAISetup {
 	

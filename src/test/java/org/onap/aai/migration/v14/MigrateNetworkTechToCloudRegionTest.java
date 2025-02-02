@@ -131,7 +131,7 @@ public class MigrateNetworkTechToCloudRegionTest extends AAISetup{
 				"Edge not created");
 		
 		
-		assertEquals(new Long(2L),
+		assertEquals(Long.valueOf(2L),
 				g.V().has("aai-node-type", "network-technology").has("network-technology-id", "network-technology-1")
 						.in().count().next(),
 				"Edge exists to 2 cloud regions");

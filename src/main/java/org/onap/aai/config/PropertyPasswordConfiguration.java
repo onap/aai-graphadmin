@@ -100,12 +100,11 @@ public class PropertyPasswordConfiguration implements ApplicationContextInitiali
     }
 
     private void decodePasswords(PropertySource<?> source, Map<String, Object> propertyOverrides) {
-        if (source instanceof EnumerablePropertySource) {
-            EnumerablePropertySource<?> enumerablePropertySource = (EnumerablePropertySource<?>) source;
+        if (source instanceof EnumerablePropertySource<?> enumerablePropertySource) {
             for (String key : enumerablePropertySource.getPropertyNames()) {
                 Object rawValue = source.getProperty(key);
-                if (rawValue instanceof String) {
-                    String decodedValue = decodePasswordsInString((String) rawValue);
+                if (rawValue instanceof String string) {
+                    String decodedValue = decodePasswordsInString(string);
                     propertyOverrides.put(key, decodedValue);
                 }
             }

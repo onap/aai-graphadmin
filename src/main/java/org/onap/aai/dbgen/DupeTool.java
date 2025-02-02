@@ -800,7 +800,7 @@ public class DupeTool {
                     vtx = ed.outVertex();
                 }
                 if (vtx == null) {
-                    retArr.add(String.format(" >>> COULD NOT FIND VERTEX on the other side of this edge edgeId = %s <<< ", ed.id()));
+                    retArr.add(" >>> COULD NOT FIND VERTEX on the other side of this edge edgeId = %s <<< ".formatted(ed.id()));
                 } else {
                     String nType = vtx.<String>property("aai-node-type").orElse(null);
                     if (displayAllVidsFlag) {
@@ -906,7 +906,7 @@ public class DupeTool {
         }
 
         if (retVertList.size() == 0) {
-            logger.debug(String.format("DEBUG No node found for nodeType = [%s], propsAndVal = %s", nodeType, propsAndValuesForMsg));
+            logger.debug("DEBUG No node found for nodeType = [%s], propsAndVal = %s".formatted(nodeType, propsAndValuesForMsg));
         }
 
         return retVertList;
@@ -993,7 +993,7 @@ public class DupeTool {
         }
 
         if (retVertList.size() == 0) {
-            logger.debug(String.format("DEBUG No node found for: [%s, with aai-created-ts > %d", qStringForMsg, windowStartTime));
+            logger.debug("DEBUG No node found for: [%s, with aai-created-ts > %d".formatted(qStringForMsg, windowStartTime));
         }
 
         return retVertList;
@@ -1109,8 +1109,8 @@ public class DupeTool {
         Vertex nullVtx = null;
         Vertex preferredVtx = null;
 
-        Long vidA = new Long(vtxA.id().toString());
-        Long vidB = new Long(vtxB.id().toString());
+        Long vidA = Long.valueOf(vtxA.id().toString());
+        Long vidB = Long.valueOf(vtxB.id().toString());
 
         String vtxANodeType = "";
         String vtxBNodeType = "";
@@ -1553,7 +1553,7 @@ public class DupeTool {
 			String origVid = origVtx.id().toString();
 			if (ob == null || ob.toString().equals("")) {
 				// It is missing its aai-uri
-				eLogger.debug(String.format("DEBUG No [aai-uri] property found for vid = [%s] ", origVid));
+				eLogger.debug("DEBUG No [aai-uri] property found for vid = [%s] ".formatted(origVid));
 				return false;
 			}
 			else {
@@ -1565,16 +1565,16 @@ public class DupeTool {
 					Vertex foundV = verts.next();
 					String foundVid = foundV.id().toString();
 					if( !origVid.equals(foundVid) ){
-						eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] brought back different vertex with vid = [%s].", aaiUriStr, origVid, foundVid));
+						eLogger.debug("DEBUG aai-uri key property [%s] for vid = [%s] brought back different vertex with vid = [%s].".formatted(aaiUriStr, origVid, foundVid));
 						return false;
 					}
 				}
 				if( count == 0 ){
-					eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] could not be used to query for that vertex. ", aaiUriStr, origVid));
+					eLogger.debug("DEBUG aai-uri key property [%s] for vid = [%s] could not be used to query for that vertex. ".formatted(aaiUriStr, origVid));
 					return false;
 				}
 				else if( count > 1 ){
-					eLogger.debug(String.format("DEBUG aai-uri key property [%s] for vid = [%s] brought back multiple (%d) vertices instead of just one. ", aaiUriStr, origVid, count));
+					eLogger.debug("DEBUG aai-uri key property [%s] for vid = [%s] brought back multiple (%d) vertices instead of just one. ".formatted(aaiUriStr, origVid, count));
 					return false;
 				}
 			}

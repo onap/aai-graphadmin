@@ -70,7 +70,6 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -477,7 +476,7 @@ public class DynamicPayloadGenerator {
 		// FileLocation
 		Path pathDir = null;
 		try {
-			pathDir = Paths.get(dirName);
+			pathDir = Path.of(dirName);
 		} catch (InvalidPathException i) {
 			String emsg = "Directory " + dirName + " could not be found.";
 			LOGGER.error(emsg);

@@ -29,7 +29,6 @@ import org.onap.aai.edges.EdgeRule;
 import org.onap.aai.edges.EdgeRuleQuery;
 import org.onap.aai.edges.exceptions.AmbiguousRuleChoiceException;
 import org.onap.aai.edges.exceptions.EdgeRuleNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +67,6 @@ public class DslListener extends AAIDslBaseListener {
 	/**
 	 * Instantiates a new DslListener.
 	 */
-	@Autowired
 	public DslListener(EdgeIngestor edgeIngestor) {
 		this.edgeRules = edgeIngestor;
 	}

@@ -170,8 +170,8 @@ public class VertexMergeTest extends AAISetup {
 		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").has("special-prop", "value").hasNext(), "pserver skeleton child merged");
 		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").both().has("interface-name", "l-interface1").has("special-prop", "value").hasNext(), "l-interface child merged");
 		assertEquals(true, g.V().has("hostname", "TEST1").both().has("interface-name", "p-interface2").both().has("interface-name", "l-interface1").both().has("link-name", "logical-link1").hasNext(), "l-interface child cousin edge merged");
-		assertEquals(new Long(1), g.V().has("interface-name", "l-interface1").count().next(), "one l-interface1 found");
-		assertEquals(new Long(1), g.V().has("interface-name", "p-interface2").count().next(), "one p-interface2 found");
+		assertEquals(Long.valueOf(1), g.V().has("interface-name", "l-interface1").count().next(), "one l-interface1 found");
+		assertEquals(Long.valueOf(1), g.V().has("interface-name", "p-interface2").count().next(), "one p-interface2 found");
 
 	}
 }

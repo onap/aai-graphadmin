@@ -21,7 +21,7 @@ package org.onap.aai.migration.v12;
 
 import java.util.Optional;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.enums.EdgeProperty;
