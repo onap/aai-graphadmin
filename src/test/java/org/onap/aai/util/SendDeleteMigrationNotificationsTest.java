@@ -38,7 +38,7 @@ import org.onap.aai.migration.EventAction;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -103,25 +103,25 @@ public class SendDeleteMigrationNotificationsTest extends AAISetup {
 			tx.commit();
 			
 			try{
-				Files.createFile(Paths.get(FILE));
+				Files.createFile(Path.of(FILE));
 			}catch(Exception e) {
 				System.out.println("Create File error : " + e.getMessage());
 			}
 			String finalStr = "";
 			finalStr = "pserver" + "#@#" + "/cloud-infrastructure/pservers/pserver/"+SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-1" + "#@#" + "{\"hostname\":\""+ SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-1\",\"resource-version\":\"333\"}" + "\n";
-			Files.write(Paths.get(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
+			Files.write(Path.of(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
 			finalStr = "pserver" + "#@#" + "/cloud-infrastructure/pservers/pserver/"+SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-2" + "#@#" + "{\"hostname\":\""+ SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-2\",\"resource-version\":\"334\"}" + "\n";
-			Files.write(Paths.get(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
+			Files.write(Path.of(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
 			finalStr = "pserver" + "#@#" + "/cloud-infrastructure/pservers/pserver/"+SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-3" + "#@#" + "{\"hostname\":\""+ SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-3\",\"resource-version\":\"335\"}" + "\n";
-			Files.write(Paths.get(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
+			Files.write(Path.of(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
 			finalStr = "pserver" + "#@#" + "/cloud-infrastructure/pservers/pserver/"+SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-4" + "#@#" + "{\"hostname\":\""+ SendDeleteMigrationNotifications.class.getSimpleName()+"-pserver-4\",\"resource-version\":\"336\"}" + "\n";
-			Files.write(Paths.get(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
+			Files.write(Path.of(FILE), finalStr.getBytes(),StandardOpenOption.APPEND);
 			graphCreated.compareAndSet(false, true);
 		}
 	}
 	@AfterAll
 	public static void cleanUp() throws IOException {
-		Files.delete(Paths.get(FILE));
+		Files.delete(Path.of(FILE));
 	}
 
 	@AfterEach

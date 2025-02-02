@@ -38,7 +38,7 @@ import org.onap.aai.migration.EventAction;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -118,13 +118,13 @@ public class SendMigrationNotificationsTest extends AAISetup {
 			list.add(pnf3.id().toString() + "_222"); // invalid: wrong resource version
 			list.add("345_345"); // invalid
 			list.add(pserver1.id().toString() + "_333"); // valid
-			Files.write(Paths.get(FILE), (Iterable<String>)list.stream()::iterator);
+			Files.write(Path.of(FILE), (Iterable<String>)list.stream()::iterator);
 			graphCreated.compareAndSet(false, true);
 		}
 	}
 	@AfterAll
 	public static void cleanUp() throws IOException {
-		Files.delete(Paths.get(FILE));
+		Files.delete(Path.of(FILE));
 	}
 
 	@AfterEach

@@ -51,7 +51,6 @@ import java.util.Map;
 import java.util.Set;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -144,7 +143,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
 
         String logsFolder     = System.getProperty("AJSC_HOME") + "/logs/data/dataSnapshots/";
 
-        Set<Path> preSnapshotFiles = Files.walk(Paths.get(logsFolder)).collect(Collectors.toSet());
+        Set<Path> preSnapshotFiles = Files.walk(Path.of(logsFolder)).collect(Collectors.toSet());
 
         // Run the clear dataSnapshot and this time it should fail
         //String [] args = {"JUST_TAKE_SNAPSHOT"};  >> default behavior is now to use 15 threads
@@ -155,7 +154,7 @@ public class DataSnapshot4HistInitTest extends AAISetup {
 
         // Add sleep so the file actually gets created with the data
 
-        Set<Path> postSnapshotFiles = Files.walk(Paths.get(logsFolder)).collect(Collectors.toSet());
+        Set<Path> postSnapshotFiles = Files.walk(Path.of(logsFolder)).collect(Collectors.toSet());
 
         assertThat(postSnapshotFiles.size(), is(preSnapshotFiles.size()+1));
         postSnapshotFiles.removeAll(preSnapshotFiles);

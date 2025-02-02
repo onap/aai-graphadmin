@@ -25,14 +25,14 @@ import com.sun.istack.SAXParseException2;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +59,7 @@ public class ExceptionHandler implements ExceptionMapper<Exception> {
 
     	//the general case is that cxf will give us a WebApplicationException
     	//with a linked exception
-    	if (exception instanceof WebApplicationException) { 
-    		WebApplicationException e = (WebApplicationException) exception;
+    	if (exception instanceof WebApplicationException e) {
     		if (e.getCause() != null) {
     			if (e.getCause() instanceof SAXParseException2) {
     				templateVars.add("UnmarshalException");
@@ -93,8 +92,7 @@ public class ExceptionHandler implements ExceptionMapper<Exception> {
     	if (response == null) { 
     		
     		Exception actual_e = exception;
-    		if (exception instanceof WebApplicationException) { 
-    			WebApplicationException e = (WebApplicationException) exception;
+    		if (exception instanceof WebApplicationException e) {
     			response = e.getResponse();
     		} else { 
     			templateVars.add(request.getMethod());

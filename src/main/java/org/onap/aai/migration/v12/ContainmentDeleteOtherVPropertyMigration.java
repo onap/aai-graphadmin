@@ -21,7 +21,7 @@ package org.onap.aai.migration.v12;
 
 import java.util.Optional;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.edges.enums.EdgeProperty;
@@ -42,22 +42,22 @@ import org.onap.aai.setup.SchemaVersions;
 public class ContainmentDeleteOtherVPropertyMigration extends Migrator {
 
 	private boolean success = true;
-	
+
 	public ContainmentDeleteOtherVPropertyMigration(TransactionalGraphEngine engine, LoaderFactory loaderFactory, EdgeIngestor edgeIngestor, EdgeSerializer edgeSerializer, SchemaVersions schemaVersions) {
 		super(engine, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 	}
-	
+
 	//just for testing using test edge rule files
 	public ContainmentDeleteOtherVPropertyMigration(TransactionalGraphEngine engine, LoaderFactory loaderFactory, EdgeIngestor edgeIngestor, EdgeSerializer edgeSerializer, SchemaVersions schemaVersions, String edgeRulesFile) {
 		super(engine, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 	}
-	
+
 	@Override
 	public void run() {
 		try {
 			engine.asAdmin().getTraversalSource().E().sideEffect(t -> {
 				Edge e = t.get();
-				logger.info("out vertex: " + e.outVertex().property("aai-node-type").value() + 
+				logger.info("out vertex: " + e.outVertex().property("aai-node-type").value() +
 								" in vertex: " + e.inVertex().property("aai-node-type").value() +
 								" label : " + e.label());
 				if (e.property(EdgeProperty.CONTAINS.toString()).isPresent() &&
@@ -77,11 +77,11 @@ public class ContainmentDeleteOtherVPropertyMigration extends Migrator {
 				}
 			}).iterate();
 		} catch (Exception e) {
-			logger.info("error encountered " + e.getClass() + " " + e.getMessage() + " " + ExceptionUtils.getFullStackTrace(e));
-			logger.error("error encountered " + e.getClass() + " " + e.getMessage() + " " + ExceptionUtils.getFullStackTrace(e));
+			logger.info("error encountered " + e.getClass() + " " + e.getMessage() + " " + ExceptionUtils.getStackTrace(e));
+			logger.error("error encountered " + e.getClass() + " " + e.getMessage() + " " + ExceptionUtils.getStackTrace(e));
 			success = false;
 		}
-		
+
 	}
 
 	@Override

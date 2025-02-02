@@ -128,7 +128,7 @@ public abstract class AAISetup {
                 .getClassLoader()
                 .getResourceAsStream(filename);
 
-        String message = String.format("Unable to find the %s in src/test/resources", filename);
+        String message = "Unable to find the %s in src/test/resources".formatted(filename);
         assertNotNull(inputStream, message);
 
         String resource = IOUtils.toString(inputStream);

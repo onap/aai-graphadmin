@@ -21,14 +21,14 @@ package org.onap.aai;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -51,15 +51,19 @@ public class GraphAdminTestConfiguration {
     RestTemplate restTemplate(RestTemplateBuilder builder) throws Exception {
 
         SSLContext sslContext = SSLContext.getDefault();
+        PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+            .setSSLSocketFactory(
+                SSLConnectionSocketFactoryBuilder.create()
+                    .setSslContext(sslContext)
+                    .build()
+                )
+            .build();
+        HttpClient client = HttpClients
+            .custom()
+            .setConnectionManager(connectionManager)
+            .build();
 
-        HttpClient client = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier((s, sslSession) -> true)
-                .build();
-
-        RestTemplate restTemplate =  builder
-                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(client))
-                .build();
+        RestTemplate restTemplate = builder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(client)).build();
 
         restTemplate.setErrorHandler(new ResponseErrorHandler() {
             @Override

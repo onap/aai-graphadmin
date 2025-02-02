@@ -21,12 +21,11 @@ package org.onap.aai.rest.client;
 
 
 import com.google.gson.JsonObject;
-import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.restclient.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -72,7 +71,6 @@ public class ApertureService {
     private final String appName;
 
 
-    @Autowired
     public ApertureService(
         @Qualifier("apertureRestClient") RestClient apertureRestClient,
         @Value("${spring.application.name}") String appName

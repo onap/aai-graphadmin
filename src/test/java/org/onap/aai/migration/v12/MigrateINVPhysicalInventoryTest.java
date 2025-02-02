@@ -105,7 +105,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 	@Test
 	public void pnfsExistTest() throws Exception {
 		// check if pnf node gets created
-		assertEquals(new Long(2L),
+		assertEquals(Long.valueOf(2L),
 				g.V().has("aai-node-type", "pnf")
 						.count().next(),
 				"2 PNFs exist");
@@ -114,7 +114,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 	@Test
 	public void pInterfacesExistTest() throws Exception {
 
-		assertEquals(new Long(4L),
+		assertEquals(Long.valueOf(4L),
 				g.V().has("aai-node-type", "p-interface")
 						.count().next(),
 				"4 Pinterfaces exist");
@@ -145,7 +145,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 				.has("interface-name","1.7")
 				.hasNext(),
 				"p-interface 1.7 created for pnf-name-collector-1");
-		assertEquals(new Long(2L),
+		assertEquals(Long.valueOf(2L),
 				g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-1")
 				.in("tosca.relationships.network.BindsTo").count().next(),

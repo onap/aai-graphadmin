@@ -150,7 +150,7 @@ public class ALTSLicenseEntitlementMigration extends Migrator{
         }
         else if (vertices.size() == 1) {
             try {
-                logger.info(String.format("Updating %s with groupUuid %s from generic-vnf with vnfId %s with newResourceUuid %s", nodeType, groupUuid, vnfId, newResourceUuid));
+                logger.info("Updating %s with groupUuid %s from generic-vnf with vnfId %s with newResourceUuid %s".formatted(nodeType, groupUuid, vnfId, newResourceUuid));
                 Vertex v = vertices.get(0);
                 String resourceUuid = v.<String>property("resource-uuid").value();
                 logger.info("\tOriginal resource-uuid: " + resourceUuid);

@@ -32,8 +32,8 @@ import org.onap.aai.restcore.util.URITools;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.serialization.queryformats.SubGraphStyle;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.*;
