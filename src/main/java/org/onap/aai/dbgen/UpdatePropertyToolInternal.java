@@ -270,7 +270,7 @@ public class UpdatePropertyToolInternal {
                 logAndPrint("All vertex IDs from file " + filePath + ":\n" + allVertexIdsString);
             } catch (IOException ioe) {
                 if(ioe instanceof FileNotFoundException) {
-                    logErrorAndPrint(String.format("File %s not found.", filePath));
+                    logErrorAndPrint("File %s not found.".formatted(filePath));
                 } else {
                     logErrorAndPrint("ERROR reading in text file failed.", ioe);
                 }

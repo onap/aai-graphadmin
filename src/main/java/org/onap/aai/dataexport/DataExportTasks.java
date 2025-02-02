@@ -47,7 +47,6 @@ import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
 import org.onap.logging.filter.base.ONAPComponents;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -83,7 +82,6 @@ public class DataExportTasks {
 	private EdgeIngestor edgeIngestor;
 	private SchemaVersions schemaVersions;
 
-	@Autowired
 	public DataExportTasks(LoaderFactory loaderFactory, EdgeIngestor edgeIngestor, SchemaVersions schemaVersions){
 	    this.loaderFactory  = loaderFactory;
 	    this.edgeIngestor   = edgeIngestor;

@@ -42,7 +42,7 @@ package org.onap.aai.migration.v12;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -113,7 +113,7 @@ public class MigrateHUBEvcInventory extends Migrator {
         logger.info("---------- Processing HUB Entries from file  ----------");
         try {
             String line;
-            List<String> lines = Files.readAllLines(Paths.get(fileName));
+            List<String> lines = Files.readAllLines(Path.of(fileName));
             Iterator<String> lineItr = lines.iterator();
             while (lineItr.hasNext()){
             	line = lineItr.next();
