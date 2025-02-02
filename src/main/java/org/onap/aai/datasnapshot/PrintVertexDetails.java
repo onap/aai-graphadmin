@@ -77,7 +77,7 @@ public class PrintVertexDetails implements Runnable{
 				try(FileOutputStream subFileStr = new FileOutputStream(fname)) {
 					int okCount = 0;
 					int failCount = 0;
-					Long debugDelayMsL = new Long(debugDelayMs);
+					Long debugDelayMsL = Long.valueOf(debugDelayMs);
 					
 					GraphWriter graphWriter = null;
 					if ("gryo".equalsIgnoreCase(snapshotType)) {

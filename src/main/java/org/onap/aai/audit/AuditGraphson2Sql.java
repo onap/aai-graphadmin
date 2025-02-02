@@ -30,7 +30,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -53,7 +52,6 @@ import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.FormatDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -70,7 +68,6 @@ public class AuditGraphson2Sql {
     public static final String DEFAULT_OUTPUT_DIR = "logs/data/audit";
 
     //DEBUG -- should be getting default-src-dir, default-output-dir and rdbms-db-name from param file
-	@Autowired
 	public AuditGraphson2Sql( EdgeIngestor ei, SchemaVersions schemaVersions, LoaderFactory loaderFactory, ApertureService apertureService) {
 		this.schemaVersions = schemaVersions;
 		this.loader = loaderFactory.createLoaderForVersion(ModelType.MOXY, schemaVersions.getDefaultVersion());
@@ -411,7 +408,7 @@ public class AuditGraphson2Sql {
         	throw new Exception(msg);
         }
         
-        final List<File> graphsons = Files.walk(Paths.get(graphsonDir))
+        final List<File> graphsons = Files.walk(Path.of(graphsonDir))
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .sorted()

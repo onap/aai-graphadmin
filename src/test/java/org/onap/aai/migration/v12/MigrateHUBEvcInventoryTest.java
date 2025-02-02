@@ -33,12 +33,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.onap.aai.AAISetup;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
@@ -335,7 +333,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 				.hasNext(), 
 				"forwarder-evc evc-name-2-3 updated with ivlan");
 		
-		assertEquals(new Long(4L), 
+		assertEquals(Long.valueOf(4L), 
 				g.V().has("forwarding-path-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
@@ -343,7 +341,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 				.count().next(), 
 				"4 forwarder-evcs exist for evc evc-name-2");
 		
-		assertEquals(new Long(3L), 
+		assertEquals(Long.valueOf(3L), 
 				g.V().has("forwarding-path-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")

@@ -22,7 +22,7 @@ package org.onap.aai.migration.v15;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -187,7 +187,7 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 	 * @throws Exception
 	 */
 	protected ArrayList loadFile(String fileName) throws Exception {
-		List<String> lines = Files.readAllLines(Paths.get(fileName));
+		List<String> lines = Files.readAllLines(Path.of(fileName));
 		return this.getFileContents(lines);
 	}
 
@@ -209,7 +209,7 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 		logger.info("Total rows count excluding header: " + lines.size());
 
 		lines.stream().filter(line -> !line.isEmpty()).map(line -> Arrays.stream(line.split(",", -1)).map(String::trim).collect(Collectors.toList()))
-				.map(this::processRegionUpgradeCycle).filter(Optional::isPresent).map(Optional::get).forEach(p -> {
+				.map(this::processRegionUpgradeCycle).flatMap(Optional::stream).forEach(p -> {
 					processedRowsCount.getAndIncrement();
 					String pnfName = p.getValue0();
 					if (!regionMap.containsKey(pnfName)) {
@@ -220,7 +220,7 @@ public class MigrateCloudRegionUpgradeCycle extends Migrator {
 		fileContent.add(regionMap);
 
 		lines.stream().filter(line -> !line.isEmpty()).map(line -> Arrays.stream(line.split(",", -1)).map(String::trim).collect(Collectors.toList()))
-				.map(this::processRegionAlias).filter(Optional::isPresent).map(Optional::get).forEach(p -> {
+				.map(this::processRegionAlias).flatMap(Optional::stream).forEach(p -> {
 					processedRowsCount.getAndIncrement();
 					String pnfName = p.getValue0();
 					if (!aliasMap.containsKey(pnfName)) {

@@ -288,7 +288,7 @@ public final class GraphSONPartialReader implements GraphReader {
         if (unwrapAdjacencyList) {
         	final JsonNode root = mapper.readTree(inputStream);
             final JsonNode vertices = root.get(GraphSONTokens.VERTICES);
-            if (!vertices.getNodeType().equals(JsonNodeType.ARRAY)) throw new IOException(String.format("The '%s' key must be an array", GraphSONTokens.VERTICES));
+            if (!vertices.getNodeType().equals(JsonNodeType.ARRAY)) throw new IOException("The '%s' key must be an array".formatted(GraphSONTokens.VERTICES));
             return IteratorUtils.stream(vertices.elements()).map(Object::toString);
         } else {
         	final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));

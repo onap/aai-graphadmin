@@ -27,7 +27,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.onap.aai.AAIDslLexer;
 import org.onap.aai.AAIDslParser;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -42,7 +41,6 @@ public class DslQueryProcessor {
 
 	private DslListener dslListener;
 
-	@Autowired
 	public DslQueryProcessor(DslListener dslListener){
 		this.dslListener = dslListener;
 	}

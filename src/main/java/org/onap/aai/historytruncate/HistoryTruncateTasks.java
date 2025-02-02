@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
 import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.exceptions.AAIException;
@@ -31,14 +31,12 @@ import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAIConfig;
 import org.onap.logging.filter.base.ONAPComponents;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")

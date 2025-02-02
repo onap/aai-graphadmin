@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onap.aai.config.WebClientConfiguration;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.service.SchemaJobStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,10 +36,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @Import(WebClientConfiguration.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = PropertyPasswordConfiguration.class)
+@ContextConfiguration()
 public class SchemaJobStatusControllerTest {
 
-    @MockBean 
+    @MockBean
     private SchemaJobStatusService schemaJobStatusService;
 
     @Autowired
@@ -58,7 +57,7 @@ public class SchemaJobStatusControllerTest {
     @Test
     void testIsSchemaInitializedTrue() throws Exception {
         when(schemaJobStatusService.isSchemaInitialized()).thenReturn(true);
-       
+
         webClient.get()
                .uri("/isSchemaInitialized")
                .exchange()
@@ -70,7 +69,7 @@ public class SchemaJobStatusControllerTest {
     @Test
     void testIsSchemaInitializedFalse() throws Exception {
         when(schemaJobStatusService.isSchemaInitialized()).thenReturn(false);
-       
+
         webClient.get()
                .uri("/isSchemaInitialized")
                .exchange()

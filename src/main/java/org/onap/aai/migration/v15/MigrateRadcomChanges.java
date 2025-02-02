@@ -42,7 +42,7 @@ package org.onap.aai.migration.v15;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -176,7 +176,7 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
         logger.info("---------- Reading all file types and vf-modules ----------");
         ArrayList<String> fileTypeList = new ArrayList<String>();
         try  {
-        	List<String> lines = Files.readAllLines(Paths.get(fileName));
+        	List<String> lines = Files.readAllLines(Path.of(fileName));
             Iterator<String> lineItr = lines.iterator();
             int typeFileLineCounter = 0;
             while (lineItr.hasNext()){
@@ -231,7 +231,7 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
         	logger.info(fileName);
         	logger.info("---------- Processing Entries from file  ----------");
         	try  {
-        		List<String> lines = Files.readAllLines(Paths.get(fileName));
+        		List<String> lines = Files.readAllLines(Path.of(fileName));
         		Iterator<String> lineItr = lines.iterator();
         		while (lineItr.hasNext()){
         			String line = lineItr.next().replace("\n", "").replace("\r", "");
@@ -254,7 +254,7 @@ public class MigrateRadcomChanges extends EdgeSwingMigrator {
         		fileName = feedDir+ "INPUT-VNF.csv";
         		logger.info(fileName);
         		logger.info("---------- Processing Entries from file  ----------");
-        		lines = Files.readAllLines(Paths.get(fileName));
+        		lines = Files.readAllLines(Path.of(fileName));
         		lineItr = lines.iterator();
         		while (lineItr.hasNext()){
         			String line = lineItr.next().replace("\n", "").replace("\r", "");
