@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,7 +149,7 @@ public class MigrateSdnaIvlanData extends Migrator {
         
 				
         try  {
-        	List<String> lines = Files.readAllLines(Paths.get(fileName));
+        	List<String> lines = Files.readAllLines(Path.of(fileName));
             Iterator<String> lineItr = lines.iterator();
             while (lineItr.hasNext()){
                 String line = lineItr.next().trim();
@@ -270,7 +270,7 @@ public class MigrateSdnaIvlanData extends Migrator {
 						forwarderEvcId = forwarderEvcVtx.property("forwarder-evc-id").value().toString();
 						try{
 							forwarderEvcVtx.property("ivlan", ivlanValue);
-							logger.info(String.format("Updating Node Type forwarder-evc Property ivlan value %s", ivlanValue.toString()));
+							logger.info("Updating Node Type forwarder-evc Property ivlan value %s".formatted(ivlanValue.toString()));
 							this.touchVertexProperties(forwarderEvcVtx, false);
 							updateDmaapList(forwarderEvcVtx);
 							migrationSuccess++;	

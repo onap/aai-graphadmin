@@ -55,7 +55,7 @@ import org.onap.aai.setup.SchemaVersions;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -211,7 +211,7 @@ public class MigrateINVPhysicalInventory extends Migrator {
 	 * @throws Exception
 	 */
 	protected Map<String,Set<String>> loadFile(String fileName) throws Exception {
-		List<String> lines = Files.readAllLines(Paths.get(fileName));
+		List<String> lines = Files.readAllLines(Path.of(fileName));
 		return this.getFileContents(lines);
 	}
 
@@ -234,8 +234,7 @@ public class MigrateINVPhysicalInventory extends Migrator {
 			.map(line -> Arrays.stream(line.split(",", -1)).map(String::trim).collect(Collectors.toList()))
 //			.filter(this::verifyLine)
 			.map(this::processLine)
-			.filter(Optional::isPresent)
-			.map(Optional::get)
+			.flatMap(Optional::stream)
 			.forEach(p -> {
 				processedRowsCount.getAndIncrement();
 				String pnfName = p.getValue0();

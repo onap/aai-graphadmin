@@ -19,9 +19,9 @@
  */
 package org.onap.aai.rest;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.service.SchemaJobStatusService;

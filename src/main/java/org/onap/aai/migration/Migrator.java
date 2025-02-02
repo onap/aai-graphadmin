@@ -22,7 +22,7 @@ package org.onap.aai.migration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.Iterator;
@@ -143,7 +143,7 @@ public abstract class Migrator implements Runnable {
 
 		if (dmaapMsgList.size() > 0) {
 			try {
-				Files.write(Paths.get(logDirectory+"/"+fileName), (Iterable<String>)dmaapMsgList.stream()::iterator);
+				Files.write(Path.of(logDirectory+"/"+fileName), (Iterable<String>)dmaapMsgList.stream()::iterator);
 			} catch (IOException e) {
 				System.out.println("Unable to generate file with dmaap msgs for " + getMigrationName() +
 						" Exception is: " + e.getMessage());
@@ -167,7 +167,7 @@ public abstract class Migrator implements Runnable {
 			f.mkdirs();
 
 			try {
-				Files.createFile(Paths.get(logDirectory + "/" + fileName));
+				Files.createFile(Path.of(logDirectory + "/" + fileName));
 			} catch (Exception e) {
 				logger.error("Unable to create file", e);
 			}
@@ -180,7 +180,7 @@ public abstract class Migrator implements Runnable {
 						try {
 							finalStr =
 									svIntr.getName() + "#@#" + svIntr.getURI() + "#@#" + str + "\n";
-							Files.write(Paths.get(logDirectory + "/" + fileName),
+							Files.write(Path.of(logDirectory + "/" + fileName),
 									finalStr.getBytes(), StandardOpenOption.APPEND);
 						} catch (IOException e) {
 							System.out.println("Unable to generate file with dmaap msgs for " +

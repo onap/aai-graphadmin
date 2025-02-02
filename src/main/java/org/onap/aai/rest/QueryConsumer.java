@@ -43,15 +43,14 @@ import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 
 @Component
@@ -74,7 +73,6 @@ public class QueryConsumer extends RESTAPI {
 
 	private String basePath;
 
-	@Autowired
 	public QueryConsumer(
 		@Qualifier("traversalUriHttpEntry") HttpEntry traversalUriHttpEntry,
 		DslQueryProcessor dslQueryProcessor,

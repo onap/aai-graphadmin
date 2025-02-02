@@ -43,7 +43,7 @@ import org.slf4j.MDC;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -130,7 +130,7 @@ public class SendDeleteMigrationNotifications {
 	}
 
 	private Map<Integer,String> processFile() throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(path));
+		List<String> lines = Files.readAllLines(Path.of(path));
 		final Map<Integer,String> data = new LinkedHashMap<>();
 		AtomicInteger counter = new AtomicInteger(0);
 		lines.stream().forEach(line -> {

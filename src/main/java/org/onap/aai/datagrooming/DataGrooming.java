@@ -1857,8 +1857,8 @@ public class DataGrooming {
 		Vertex nullVtx = null;
 		Vertex preferredVtx = null;
 
-		Long vidA = new Long(vtxA.id().toString());
-		Long vidB = new Long(vtxB.id().toString());
+		Long vidA = Long.valueOf(vtxA.id().toString());
+		Long vidB = Long.valueOf(vtxB.id().toString());
 
 		String vtxANodeType = "";
 		String vtxBNodeType = "";

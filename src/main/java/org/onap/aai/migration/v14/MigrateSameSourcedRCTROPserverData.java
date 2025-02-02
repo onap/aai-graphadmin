@@ -43,7 +43,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.onap.aai.setup.SchemaVersions;
 import org.springframework.web.util.UriUtils;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
