@@ -197,7 +197,7 @@ public class GenTester {
 	private static void setSchemaInitializedToFalse(JanusGraph graph, Optional<Vertex> schemaInitializedVertex) {
 		Vertex vertex = schemaInitializedVertex.get();
 		Object schemaInitializedValueObj = vertex.property(SCHEMA_INITIALIZED).value();
-		Boolean schemaInitializedValue = schemaInitializedValueObj instanceof Boolean ? (Boolean) schemaInitializedValueObj : Boolean.FALSE;
+		Boolean schemaInitializedValue = schemaInitializedValueObj instanceof Boolean b ? b : Boolean.FALSE;
 
 		//Setting schema-initialized vertex to False
 		if (Boolean.TRUE.equals(schemaInitializedValue)) {

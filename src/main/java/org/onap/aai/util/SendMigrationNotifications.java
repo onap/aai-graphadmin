@@ -45,7 +45,7 @@ import org.slf4j.MDC;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 
 public class SendMigrationNotifications {
@@ -142,7 +142,7 @@ public class SendMigrationNotifications {
 	}
 
 	private Map<String, String> processFile() throws IOException {
-		List<String> lines = Files.readAllLines(Paths.get(path));
+		List<String> lines = Files.readAllLines(Path.of(path));
 		final Map<String,String> vertexIds = new LinkedHashMap<>();
 		lines.stream().forEach(line -> {
 			if (line.contains("_")) {

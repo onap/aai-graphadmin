@@ -137,15 +137,15 @@ public abstract class ValueMigrator extends Migrator {
             String propertyValue = v.property(property).value().toString();
             if (propertyValue.isEmpty()) {
                 v.property(property, newValue);
-               logAndPrint(logger,String.format("Node Type %s: Property %s is empty, adding value %s",
-                        nodeType, property, newValue.toString()));
+               logAndPrint(logger,"Node Type %s: Property %s is empty, adding value %s".formatted(
+						nodeType, property, newValue.toString()));
                 this.touchVertexProperties(v, false);
                 updateDmaapList(v);
                 this.migrationSuccess++;
                 this.subTotal++;
             } else {
-            	logAndPrint(logger,String.format("Node Type %s: Property %s value already exists - skipping",
-                        nodeType, property));
+            	logAndPrint(logger,"Node Type %s: Property %s value already exists - skipping".formatted(
+						nodeType, property));
             }
         } else {
         	logAndPrint(logger,String.format("Node Type %s: Property %s does not exist or " +

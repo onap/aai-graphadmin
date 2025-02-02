@@ -42,7 +42,7 @@ package org.onap.aai.migration.v13;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -148,7 +148,7 @@ public class MigrateForwarderEvcCircuitId extends Migrator {
         logger.info(fileName);
         logger.info("---------- Processing Entries from file  ----------");
         try  {
-        	List<String> lines = Files.readAllLines(Paths.get(fileName));
+        	List<String> lines = Files.readAllLines(Path.of(fileName));
             Iterator<String> lineItr = lines.iterator();
             while (lineItr.hasNext()){
                 String line = lineItr.next().replace("\n", "").replace("\r", "");
