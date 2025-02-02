@@ -42,7 +42,6 @@ package org.onap.aai.migration.v13;
 import org.janusgraph.core.Cardinality;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.Enabled;
 import org.onap.aai.migration.MigrationDangerRating;
 import org.onap.aai.migration.MigrationPriority;
 import org.onap.aai.migration.PropertyMigrator;

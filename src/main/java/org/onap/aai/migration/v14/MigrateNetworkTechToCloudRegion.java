@@ -19,17 +19,14 @@
  */
 package org.onap.aai.migration.v14;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.Enabled;
 import org.onap.aai.migration.MigrationDangerRating;
 import org.onap.aai.migration.MigrationPriority;
 import org.onap.aai.migration.Migrator;

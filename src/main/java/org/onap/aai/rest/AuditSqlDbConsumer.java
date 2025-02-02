@@ -27,13 +27,12 @@ import org.onap.aai.restcore.RESTAPI;
 import org.onap.aai.util.AAIConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Response.Status;
 
 @Component
 @Path("{version: v1}/audit-sql-db")
@@ -47,7 +46,6 @@ public class AuditSqlDbConsumer extends RESTAPI {
 	private String rdbmsDbName;
 	private AuditGraphson2Sql auditGraphson2Sql;
 
-	@Autowired
 	public AuditSqlDbConsumer(
 		AuditGraphson2Sql auditGraphson2Sql,
 		@Value("${aperture.rdbmsname}") String rdbmsDbName

@@ -19,7 +19,9 @@
  */
 package org.onap.aai.historytruncate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,6 @@ import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.AAISystemExitUtil;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

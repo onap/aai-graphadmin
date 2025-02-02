@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v13;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onap.aai.AAISetup;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
@@ -39,14 +38,11 @@ import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.schema.JanusGraphManagement;
 
 public class MigrateBadWidgetModelsPartTwoTest extends AAISetup {

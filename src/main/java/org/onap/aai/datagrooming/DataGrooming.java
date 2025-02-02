@@ -35,7 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
@@ -59,7 +58,6 @@ import org.onap.aai.introspection.ModelType;
 import org.onap.aai.introspection.exceptions.AAIUnknownObjectException;
 import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.logging.LogFormatTools;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
@@ -278,7 +276,7 @@ public class DataGrooming {
             LOGGER.info("One-Armed Edge Hash Count: " + getOneArmedEdgeHashCount());
  			// Add more logging if needed for other nodes like Duplicate Groups, Delete Candidates, etc.
             LOGGER.info("===== End of Data Grooming Summary =====");
- 
+
 		} catch (Exception ex) {
 			LOGGER.debug("Exception while grooming data " + LogFormatTools.getStackTop(ex));
 		}
@@ -297,8 +295,6 @@ public class DataGrooming {
 		System.setProperty("aai.service.name", DataGrooming.class.getSimpleName());
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 
 		try {
 			ctx.scan(
@@ -1861,8 +1857,8 @@ public class DataGrooming {
 		Vertex nullVtx = null;
 		Vertex preferredVtx = null;
 
-		Long vidA = new Long(vtxA.id().toString());
-		Long vidB = new Long(vtxB.id().toString());
+		Long vidA = Long.valueOf(vtxA.id().toString());
+		Long vidB = Long.valueOf(vtxB.id().toString());
 
 		String vtxANodeType = "";
 		String vtxBNodeType = "";

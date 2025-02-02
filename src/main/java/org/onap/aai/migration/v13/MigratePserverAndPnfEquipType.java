@@ -25,7 +25,6 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.Enabled;
 import org.onap.aai.migration.MigrationDangerRating;
 import org.onap.aai.migration.MigrationPriority;
 import org.onap.aai.migration.Migrator;

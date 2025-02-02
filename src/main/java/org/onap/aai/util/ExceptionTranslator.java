@@ -38,7 +38,7 @@ public class ExceptionTranslator {
         	aai = new  AAIException("AAI_3025","Error parsing exception - Please Investigate" + 
                 	LogFormatTools.getStackTop(ex));
         } else {
-	        LOGGER.info(String.format("Exception is %sRoot cause is%s", ExceptionUtils.getRootCause(ex).getMessage(), ExceptionUtils.getRootCause(ex).toString()));
+	        LOGGER.info("Exception is %sRoot cause is%s".formatted(ExceptionUtils.getRootCause(ex).getMessage(), ExceptionUtils.getRootCause(ex).toString()));
 	        if(ExceptionUtils.getRootCause(ex).getMessage().contains("NodeIngestor")){
 	            aai = new  AAIException("AAI_3026","Error reading OXM from SchemaService - Investigate");
 	        }

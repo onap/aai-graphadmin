@@ -31,7 +31,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.step.util.Tree;
 import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.dbmap.InMemoryGraph;
 import org.onap.aai.edges.EdgeIngestor;
@@ -70,7 +69,6 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -148,8 +146,6 @@ public class DynamicPayloadGenerator {
 	}
 	public static void main(String[] args) throws AAIException {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
@@ -477,7 +473,7 @@ public class DynamicPayloadGenerator {
 		// FileLocation
 		Path pathDir = null;
 		try {
-			pathDir = Paths.get(dirName);
+			pathDir = Path.of(dirName);
 		} catch (InvalidPathException i) {
 			String emsg = "Directory " + dirName + " could not be found.";
 			LOGGER.error(emsg);
