@@ -59,8 +59,6 @@ JVM_OPTS="${JVM_OPTS} -XX:MaxNewSize=512m";
 JVM_OPTS="${JVM_OPTS} -XX:SurvivorRatio=8";
 JVM_OPTS="${JVM_OPTS} -XX:+DisableExplicitGC";
 JVM_OPTS="${JVM_OPTS} -XX:+UseG1GC";
-JVM_OPTS="${JVM_OPTS} -XX:+CMSParallelRemarkEnabled";
-JVM_OPTS="${JVM_OPTS} -XX:+CMSClassUnloadingEnabled";
 JVM_OPTS="${JVM_OPTS} -XX:-UseBiasedLocking";
 JVM_OPTS="${JVM_OPTS} -XX:ParallelGCThreads=4";
 JVM_OPTS="${JVM_OPTS} -XX:LargePageSizeInBytes=128m";

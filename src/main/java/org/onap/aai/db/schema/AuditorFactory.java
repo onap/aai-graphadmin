@@ -22,7 +22,6 @@ package org.onap.aai.db.schema;
 import org.janusgraph.core.JanusGraph;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.setup.SchemaVersion;
 
 public class AuditorFactory {

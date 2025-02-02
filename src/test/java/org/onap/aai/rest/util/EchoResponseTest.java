@@ -21,8 +21,7 @@ package org.onap.aai.rest.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyObject;import static org.mockito.ArgumentMatchers.anyObject;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -32,12 +31,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,7 +111,7 @@ public class EchoResponseTest extends AAISetup {
         when(uriInfo.getQueryParameters(false)).thenReturn(queryParameters);
 
         // TODO - Check if this is valid since RemoveDME2QueryParameters seems to be very unreasonable
-        Mockito.doReturn(null).when(queryParameters).remove(anyObject());
+        Mockito.doReturn(null).when(queryParameters).remove(any());
 
         when(httpHeaders.getMediaType()).thenReturn(APPLICATION_JSON);
     }

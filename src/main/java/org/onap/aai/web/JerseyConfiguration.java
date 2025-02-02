@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.annotation.Priority;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseFilter;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseFilter;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletProperties;
@@ -34,9 +34,9 @@ import org.onap.aai.rest.QueryConsumer;
 import org.onap.aai.rest.util.EchoResponse;
 import org.onap.logging.filter.base.AuditLogContainerFilter;
 import org.reflections8.Reflections;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -46,7 +46,6 @@ public class JerseyConfiguration extends ResourceConfig {
 
     private Environment env;
 
-    @Autowired
     public JerseyConfiguration(Environment env) {
 
         this.env = env;
@@ -91,7 +90,7 @@ public class JerseyConfiguration extends ResourceConfig {
                 .stream()
                 .filter(f -> {
                     if (f.isAnnotationPresent(Profile.class)
-                            && !env.acceptsProfiles(f.getAnnotation(Profile.class).value())) {
+                            && !env.acceptsProfiles(Profiles.of(f.getAnnotation(Profile.class).value()))) {
                         return false;
                     }
                     return true;

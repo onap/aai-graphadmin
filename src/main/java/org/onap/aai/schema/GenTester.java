@@ -34,7 +34,6 @@ import org.onap.aai.dbgen.SchemaGenerator;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.ExceptionTranslator;
 import org.onap.aai.util.GraphAdminDBUtils;
@@ -47,7 +46,7 @@ public class GenTester {
 	private static Logger LOGGER;
 	private static boolean historyEnabled;
 	private static final String SCHEMA_INITIALIZED  = "schema-initialized";
-	
+
 	/**
 	 * The main method.
 	 *
@@ -62,8 +61,6 @@ public class GenTester {
 		boolean addDefaultCR = true;
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",
@@ -193,7 +190,7 @@ public class GenTester {
 	private static void setSchemaInitializedToFalse(JanusGraph graph, Optional<Vertex> schemaInitializedVertex) {
 		Vertex vertex = schemaInitializedVertex.get();
 		Object schemaInitializedValueObj = vertex.property(SCHEMA_INITIALIZED).value();
-		Boolean schemaInitializedValue = schemaInitializedValueObj instanceof Boolean ? (Boolean) schemaInitializedValueObj : Boolean.FALSE;
+		Boolean schemaInitializedValue = schemaInitializedValueObj instanceof Boolean b ? b : Boolean.FALSE;
 
 		//Setting schema-initialized vertex to False
 		if (Boolean.TRUE.equals(schemaInitializedValue)) {
@@ -222,7 +219,7 @@ public class GenTester {
 		}
 		try {
 			Vertex newVertex = graph.addVertex(SCHEMA_INITIALIZED , false);
-			LOGGER.info("Created a new vertex with property '{}' set to '{}'", SCHEMA_INITIALIZED , 
+			LOGGER.info("Created a new vertex with property '{}' set to '{}'", SCHEMA_INITIALIZED ,
 				newVertex.property(SCHEMA_INITIALIZED ).value());
 		} catch (Exception e) {
 			LOGGER.error("Error creating a new vertex: {}", e.getMessage(), e);

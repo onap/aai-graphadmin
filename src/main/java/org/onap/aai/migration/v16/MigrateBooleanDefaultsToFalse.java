@@ -27,7 +27,6 @@ import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
-import org.onap.aai.migration.Enabled;
 import org.onap.aai.migration.MigrationDangerRating;
 import org.onap.aai.migration.MigrationPriority;
 import org.onap.aai.migration.Status;

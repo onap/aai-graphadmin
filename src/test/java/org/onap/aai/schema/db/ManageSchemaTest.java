@@ -90,15 +90,17 @@ public class ManageSchemaTest extends AAISetup {
 	@Test
 	public void addNewIndex() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		String content = " {\r\n" +
-				"    \"name\" : \"equipment-name\",\r\n" +
-				"    \"unique\" : false,\r\n" +
-				"    \"properties\" : [ {\r\n" +
-				"      \"name\" : \"equipment-name\",\r\n" +
-				"      \"cardinality\" : \"SINGLE\",\r\n" +
-				"      \"typeClass\" : \"java.lang.String\"\r\n" +
-				"    } ]\r\n" +
-				"  }";
+		String content = """
+				 {
+				    "name" : "equipment-name",
+				    "unique" : false,
+				    "properties" : [ {
+				      "name" : "equipment-name",
+				      "cardinality" : "SINGLE",
+				      "typeClass" : "java.lang.String"
+				    } ]
+				  }\
+				""";
 		DBIndex index = mapper.readValue(content, DBIndex.class);
 		ManageJanusGraphSchema schema = new ManageJanusGraphSchema(graph, auditorFactory, schemaVersions, edgeIngestor);
 		JanusGraphManagement mgmt = graph.openManagement();

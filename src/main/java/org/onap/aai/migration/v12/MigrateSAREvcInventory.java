@@ -42,7 +42,7 @@ package org.onap.aai.migration.v12;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +56,10 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.introspection.Introspector;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.*;
+import org.onap.aai.migration.MigrationDangerRating;
+import org.onap.aai.migration.MigrationPriority;
+import org.onap.aai.migration.Migrator;
+import org.onap.aai.migration.Status;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
@@ -124,7 +127,7 @@ public class MigrateSAREvcInventory extends Migrator {
         try  {
             String line;
             
-            List<String> lines = Files.readAllLines(Paths.get(fileName));
+            List<String> lines = Files.readAllLines(Path.of(fileName));
             Iterator<String> lineItr = lines.iterator();
             while (lineItr.hasNext()){
             	line = lineItr.next().replace("\n", "").replace("\r", "");

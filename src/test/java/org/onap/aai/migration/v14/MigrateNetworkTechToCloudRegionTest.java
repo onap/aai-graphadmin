@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.onap.aai.AAISetup;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
@@ -131,7 +130,7 @@ public class MigrateNetworkTechToCloudRegionTest extends AAISetup{
 				"Edge not created");
 		
 		
-		assertEquals(new Long(2L),
+		assertEquals(Long.valueOf(2L),
 				g.V().has("aai-node-type", "network-technology").has("network-technology-id", "network-technology-1")
 						.in().count().next(),
 				"Edge exists to 2 cloud regions");

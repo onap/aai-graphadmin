@@ -20,7 +20,6 @@
 package org.onap.aai.dbgen;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;

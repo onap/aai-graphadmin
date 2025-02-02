@@ -21,7 +21,6 @@ package org.onap.aai.util;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.tinkerpop.gremlin.structure.Direction;

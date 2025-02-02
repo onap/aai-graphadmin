@@ -24,7 +24,6 @@ import org.janusgraph.core.JanusGraph;
 import org.onap.aai.util.AAIConstants;
 import org.slf4j.MDC;
 
-import java.util.Properties;
 import java.util.UUID;
 
 public class UpdatePropertyTool {

@@ -19,7 +19,6 @@
  */
 package org.onap.aai.dbgen.schemamod;
 
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
@@ -31,15 +30,12 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.ExceptionTranslator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.Properties;
 
 public class SchemaMod {
 
@@ -176,8 +172,6 @@ public class SchemaMod {
 		MDC.put("logFilenameAppender", SchemaMod.class.getSimpleName());
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

@@ -22,7 +22,6 @@ package org.onap.aai;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.onap.aai.aailog.logs.AaiDebugLog;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
@@ -43,8 +42,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 @SpringBootApplication
 // Scan the specific packages that has the beans/components
@@ -116,7 +115,6 @@ public class GraphAdminApp {
         try {
             SpringApplication app = new SpringApplication(GraphAdminApp.class);
             app.setRegisterShutdownHook(true);
-            app.addInitializers(new PropertyPasswordConfiguration());
             env = app.run(args).getEnvironment();
         }
 
