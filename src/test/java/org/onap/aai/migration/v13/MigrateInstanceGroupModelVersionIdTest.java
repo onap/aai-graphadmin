@@ -36,7 +36,7 @@ import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 

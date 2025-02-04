@@ -66,18 +66,18 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 				loader);
 
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
-		
+
 		Vertex customer1 = g.addV()
 				.property("aai-node-type", "customer")
 				.property("global-customer-id", "customer-id-1")
 				.property("subscriber-type", "CUST")
 				.next();
-		
+
 		Vertex servSub1 = g.addV()
 				.property("aai-node-type", "service-subscription")
 				.property("service-type", "SAREA")
 				.next();
-		
+
 		Vertex servInstance1 = g.addV()
 				.property("aai-node-type", "service-instance")
 				.property("service-type", "SAREA")
@@ -93,7 +93,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 				.property("service-type", "SAREA")
 				.property("service-instance-id", "evc-name-2")
 				.next();
-		
+
 		Vertex evc1 = g.addV().property("aai-node-type", "evc")
 				.property("evc-id", "evc-name-1")
 				.next();
@@ -132,9 +132,9 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 				.property("forwarder-evc-id", "evc-name-1-2")
 				.property("svlan",  "16")
 				.next();
-		
-		
-		
+
+
+
 		Vertex evc2 = g.addV().property("aai-node-type", "evc")
 				.property("evc-id", "evc-name-2")
 				.next();
@@ -242,24 +242,24 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 				.property("forwarder-evc-id", "evc-name-3-2")
 //				.property("svlan",  "16")
 				.next();
-		
+
 		// graph 1
 		edgeSerializer.addTreeEdge(g, customer1, servSub1);
 		edgeSerializer.addTreeEdge(g, servSub1, servInstance1);
 		edgeSerializer.addTreeEdge(g, servSub1, servInstance2);
 		edgeSerializer.addTreeEdge(g, servSub1, servInstance3);
-		
+
 		edgeSerializer.addEdge(g, servInstance1, fp1);
 		edgeSerializer.addEdge(g, servInstance2, fp2);
-		
+
 		edgeSerializer.addEdge(g, fp1, config1);
 		edgeSerializer.addEdge(g, fp2, config2);
 		edgeSerializer.addEdge(g, fp3, config3);
-		
+
 		edgeSerializer.addTreeEdge(g, evc1,  config1);
 		edgeSerializer.addTreeEdge(g, evc2, config2);
 		edgeSerializer.addTreeEdge(g, evc3, config3);
-		
+
 		edgeSerializer.addTreeEdge(g, fp1, for11);
 		edgeSerializer.addTreeEdge(g, fp1, for12);
 		edgeSerializer.addTreeEdge(g, fp2, for21);
@@ -268,7 +268,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 		edgeSerializer.addTreeEdge(g, fp2, for24);
 		edgeSerializer.addTreeEdge(g, fp3, for31);
 		edgeSerializer.addTreeEdge(g, fp3, for32);
-		
+
 		edgeSerializer.addEdge(g,  for11, config11);
 		edgeSerializer.addEdge(g,  for12, config12);
 		edgeSerializer.addEdge(g,  for21, config21);
@@ -277,7 +277,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 		edgeSerializer.addEdge(g,  for24, config24);
 		edgeSerializer.addEdge(g,  for31, config31);
 		edgeSerializer.addEdge(g,  for32, config32);
-		
+
 		edgeSerializer.addTreeEdge(g, config11, fevc11);
 		edgeSerializer.addTreeEdge(g, config12, fevc12);
 		edgeSerializer.addTreeEdge(g, config21, fevc21);
@@ -286,7 +286,7 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 		edgeSerializer.addTreeEdge(g, config24, fevc24);
 		edgeSerializer.addTreeEdge(g, config31, fevc31);
 		edgeSerializer.addTreeEdge(g, config32, fevc32);
-		
+
 		TransactionalGraphEngine spy = spy(dbEngine);
 		TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
 
@@ -296,72 +296,72 @@ public class MigrateHUBEvcInventoryTest extends AAISetup {
 		when(spy.asAdmin()).thenReturn(adminSpy);
 		when(adminSpy.getTraversalSource()).thenReturn(traversal);
 		when(adminSpy.getReadOnlyTraversalSource()).thenReturn(readOnly);
-		
+
 		migration = new MigrateHUBEvcInventory(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 		migration.run();
 	}
-	
+
 	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
 	}
-	
+
 	@Test
 	public void testRun_checkFevc1AndFevc2AreUpdated() throws Exception {
-		
+
 		// check if forwarder-evc nodes get updated
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-1-1")
 				.has("ivlan","4054")
-				.hasNext(), 
+				.hasNext(),
 				"forwarder-evc evc-name-1-1 updated with ivlan");
-		
-		assertEquals(true, 
+
+		assertEquals(true,
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-2-2")
 				.has("ivlan","4084")
-				.hasNext(), 
+				.hasNext(),
 				"forwarder-evc evc-name-2-2 updated with ivlan");
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-2-3")
 				.has("ivlan","4054")
-				.hasNext(), 
+				.hasNext(),
 				"forwarder-evc evc-name-2-3 updated with ivlan");
-		
-		assertEquals(new Long(4L), 
+
+		assertEquals(new Long(4L),
 				g.V().has("forwarding-path-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder-evc")
-				.count().next(), 
+				.count().next(),
 				"4 forwarder-evcs exist for evc evc-name-2");
-		
-		assertEquals(new Long(3L), 
+
+		assertEquals(new Long(3L),
 				g.V().has("forwarding-path-id", "evc-name-2")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id").has("ivlan")
-				.count().next(), 
+				.count().next(),
 				"3 forwarder-evcs updated for evc evc-name-2");
-		
-		assertEquals(false, 
+
+		assertEquals(false,
 				g.V().has("aai-node-type", "forwarder-evc")
 				.has("forwarder-evc-id", "evc-name-3-1")
 				.has("ivlan")
-				.hasNext(), 
+				.hasNext(),
 				"forwarder-evc evc-name-3-1 updated with ivlan");
 	}
 
-	
+
 	@Test
 	public void testGetAffectedNodeTypes() {
 		Optional<String[]> types = migration.getAffectedNodeTypes();
 		Optional<String[]> expected = Optional.of(new String[]{"forwarder-evc"});
-		
+
 		assertNotNull(types);
 		assertArrayEquals(expected.get(), types.get());
 	}

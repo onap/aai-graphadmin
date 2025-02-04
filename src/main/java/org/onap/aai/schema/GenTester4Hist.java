@@ -23,14 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbgen.SchemaGenerator4Hist;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.util.*;
+import org.onap.aai.util.AAIConfig;
+import org.onap.aai.util.ExceptionTranslator;
+import org.onap.aai.util.GraphAdminDBUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 
 
 public class GenTester4Hist {
@@ -52,8 +52,6 @@ public class GenTester4Hist {
 		boolean addDefaultCR = false;  // For History, we do not add the default CloudRegion
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

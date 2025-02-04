@@ -65,17 +65,17 @@ public class MigrateInvEvcInventoryTest extends AAISetup {
 				loader);
 
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
-		
+
 		Vertex evc = g.addV()
 				.property("aai-node-type", "evc")
 				.property("evc-id", "evc-name-1")
 				.next();
-		
+
 		Vertex evc2 = g.addV()
 				.property("aai-node-type", "evc")
 				.property("evc-id", "evc-name-2")
 				.next();
-		
+
 		TransactionalGraphEngine spy = spy(dbEngine);
 		TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
 
@@ -85,59 +85,59 @@ public class MigrateInvEvcInventoryTest extends AAISetup {
 		when(spy.asAdmin()).thenReturn(adminSpy);
 		when(adminSpy.getTraversalSource()).thenReturn(traversal);
 		when(adminSpy.getReadOnlyTraversalSource()).thenReturn(readOnly);
-		
+
 		migration = new MigrateINVEvcInventory(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 		migration.run();
 	}
-	
+
 	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
 	}
-	
+
 	@Test
 	public void testRun_updateEvcNode() throws Exception {
 		// check if graph nodes exist
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("aai-node-type", "evc")
 					 .has("evc-id", "evc-name-1")
-				.hasNext(), 
+				.hasNext(),
 				"evc node exists");
-		
+
 		// check if evc object is updated to set the value for inter-connect-type-ingress
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-1")
 				.has("inter-connect-type-ingress", "SHARED")
-				.hasNext(), 
+				.hasNext(),
 				"evc is updated");
 	}
-	
+
 	@Test
 	public void testRun_evcNotCreated() throws Exception {
-		
-		assertEquals(false, 
+
+		assertEquals(false,
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-3")
-				.hasNext(), 
+				.hasNext(),
 				"evc node does not exist");
-		
+
 		//inter-connect-type-ingress is not present on the evc
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-2")
-				.hasNext(), 
+				.hasNext(),
 				"evc node exists");
-		assertEquals(false, 
+		assertEquals(false,
 				g.V().has("aai-node-type", "evc").has("evc-id", "evc-name-2").has("inter-connect-type-ingress")
-				.hasNext(), 
+				.hasNext(),
 				"evc node not updated with inter-connect-type-ingress");
-		
+
 	}
 
 	@Test
 	public void testGetAffectedNodeTypes() {
 		Optional<String[]> types = migration.getAffectedNodeTypes();
 		Optional<String[]> expected = Optional.of(new String[]{"evc"});
-		
+
 		assertNotNull(types);
 		assertArrayEquals(expected.get(), types.get());
 	}

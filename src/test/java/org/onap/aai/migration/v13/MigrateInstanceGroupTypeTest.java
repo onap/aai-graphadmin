@@ -67,12 +67,12 @@ public class MigrateInstanceGroupTypeTest extends AAISetup{
                 queryStyle,
                 loader);
          instanceGroup = g.addV().property("aai-node-type", MigrateInstanceGroupType.INSTANCE_GROUP_NODE_TYPE)
-                .property( MigrateInstanceGroupType.TYPE_PROPERTY, TYPE_VALUE)                
+                .property( MigrateInstanceGroupType.TYPE_PROPERTY, TYPE_VALUE)
                 .next();
-         
+
          instanceGroupWithoutType = g.addV().property("aai-node-type", MigrateInstanceGroupType.INSTANCE_GROUP_NODE_TYPE)
                  .next();
-         
+
         TransactionalGraphEngine spy = spy(dbEngine);
         TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
         GraphTraversalSource traversal = g;

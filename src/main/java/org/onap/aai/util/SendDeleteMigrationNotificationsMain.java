@@ -21,7 +21,6 @@ package org.onap.aai.util;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
@@ -30,7 +29,10 @@ import org.onap.aai.migration.EventAction;
 import org.onap.aai.setup.SchemaVersions;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class SendDeleteMigrationNotificationsMain {
 
@@ -41,8 +43,6 @@ public class SendDeleteMigrationNotificationsMain {
 		String requestId = UUID.randomUUID().toString();
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

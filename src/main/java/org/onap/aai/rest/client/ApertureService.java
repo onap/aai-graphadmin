@@ -34,7 +34,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ApertureService {

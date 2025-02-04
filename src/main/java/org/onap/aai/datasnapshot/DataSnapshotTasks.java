@@ -23,7 +23,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
 
 import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.exceptions.AAIException;

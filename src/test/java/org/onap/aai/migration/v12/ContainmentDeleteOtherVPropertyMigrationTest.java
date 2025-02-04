@@ -71,11 +71,11 @@ public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 		Vertex v2 = g.addV().property("aai-node-type", "l-interface")
 							.property("interface-name", "delcontains-test-lint")
 							.next();
-		Edge e = v.addEdge("hasLInterface", v2, EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString(), 
+		Edge e = v.addEdge("hasLInterface", v2, EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString(),
 													EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.NONE.toString());
-		
+
 		Vertex v3 = g.addV().property("aai-node-type", "allotted-resource").next();
-		
+
 		Edge e2 = v2.addEdge("uses", v3, EdgeProperty.CONTAINS.toString(), AAIDirection.NONE.toString(),
 											EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.NONE.toString());
 		TransactionalGraphEngine spy = spy(dbEngine);
@@ -87,20 +87,20 @@ public class ContainmentDeleteOtherVPropertyMigrationTest extends AAISetup {
 		migration = new ContainmentDeleteOtherVPropertyMigration(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions, "/edgeMigrationTestRules.json");
 		migration.run();
 	}
-	
+
 	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
 		graph.close();
 	}
-	
+
 	@Test
 	public void run() {
-		assertEquals(true, 
-				g.E().hasLabel("hasLInterface").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.OUT.toString()).hasNext(), 
+		assertEquals(true,
+				g.E().hasLabel("hasLInterface").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.OUT.toString()).hasNext(),
 				"del other now OUT");
-		assertEquals(true, 
-				g.E().hasLabel("hasLInterface").has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).hasNext(), 
+		assertEquals(true,
+				g.E().hasLabel("hasLInterface").has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).hasNext(),
 				"contains val still same");
 		assertEquals(true,
 				g.E().hasLabel("uses").has(EdgeProperty.DELETE_OTHER_V.toString(), AAIDirection.NONE.toString()).hasNext(),

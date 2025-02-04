@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
 
 import org.onap.aai.aailog.logs.AaiScheduledTaskAuditLog;
 import org.onap.aai.exceptions.AAIException;
@@ -37,6 +37,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class HistoryTruncateTasks {

@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v13;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -132,13 +132,13 @@ public class MigrateBadWidgetModelsPartTwoTest extends AAISetup {
 						.out("org.onap.relationships.inventory.BelongsTo").has("model-version-id", "model-version-id-2")
 						.hasNext());
 	}
-	
+
 	@Test
 	public void testBadVerNodeIsGoneX() {
 		assertEquals(false,
 				g.V().has("aai-node-type", "model-ver").has("model-version-id", "model-version-id-1").hasNext());
 	}
-	
+
 	@Test
 	public void testBadModelNodeIsGoneX() {
 		assertEquals(false,
