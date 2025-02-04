@@ -51,16 +51,6 @@ public class ApertureServiceOneWayClient extends OneWaySSLRestClient {
     }
 
     @Override
-    protected String getTruststorePath() {
-        return truststorePath;
-    }
-
-    @Override
-    protected char[] getTruststorePassword() {
-        return truststorePassword.toCharArray();
-    }
-
-    @Override
     protected HttpComponentsClientHttpRequestFactory getHttpRequestFactory() throws Exception {
         HttpComponentsClientHttpRequestFactory requestFactory = super.getHttpRequestFactory();
         requestFactory.setConnectionRequestTimeout(timeout);

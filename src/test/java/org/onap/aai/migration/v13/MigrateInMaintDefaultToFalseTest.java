@@ -23,10 +23,7 @@ import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
-import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.janusgraph.core.schema.JanusGraphManagement;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

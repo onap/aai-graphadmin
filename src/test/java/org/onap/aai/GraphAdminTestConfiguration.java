@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -33,24 +32,16 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyStore;
 
 @TestConfiguration
 public class GraphAdminTestConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphAdminTestConfiguration.class);
-
-    @Autowired
-    private Environment env;
 
     /**
      * Create a RestTemplate bean, using the RestTemplateBuilder provided
@@ -59,21 +50,7 @@ public class GraphAdminTestConfiguration {
     @Bean
     RestTemplate restTemplate(RestTemplateBuilder builder) throws Exception {
 
-        char[] trustStorePassword = env.getProperty("server.ssl.trust-store-password").toCharArray();
-        char[] keyStorePassword   = env.getProperty("server.ssl.key-store-password").toCharArray();
-
-        String keyStore = env.getProperty("server.ssl.key-store");
-        String trustStore = env.getProperty("server.ssl.trust-store");
-
-        SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
-
-        if(env.acceptsProfiles("two-way-ssl")){
-            sslContextBuilder = sslContextBuilder.loadKeyMaterial(loadPfx(keyStore, keyStorePassword), keyStorePassword);
-        }
-
-        SSLContext sslContext = sslContextBuilder
-                .loadTrustMaterial(ResourceUtils.getFile(trustStore), trustStorePassword)
-                .build();
+        SSLContext sslContext = SSLContext.getDefault();
 
         HttpClient client = HttpClients.custom()
                 .setSSLContext(sslContext)
@@ -111,14 +88,5 @@ public class GraphAdminTestConfiguration {
         });
 
         return restTemplate;
-    }
-
-    private KeyStore loadPfx(String file, char[] password) throws Exception {
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        File key = ResourceUtils.getFile(file);
-        try (InputStream in = new FileInputStream(key)) {
-            keyStore.load(in, password);
-        }
-        return keyStore;
     }
 }

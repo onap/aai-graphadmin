@@ -35,13 +35,19 @@ import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.serialization.db.EdgeSerializer;
-import org.onap.aai.migration.*;
+import org.onap.aai.migration.MigrationDangerRating;
+import org.onap.aai.migration.MigrationPriority;
+import org.onap.aai.migration.Migrator;
+import org.onap.aai.migration.Status;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Remove old aai-uri index per

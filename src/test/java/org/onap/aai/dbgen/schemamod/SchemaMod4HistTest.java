@@ -32,7 +32,8 @@ import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodName.class)
 public class SchemaMod4HistTest extends AAISetup {

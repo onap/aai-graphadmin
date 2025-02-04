@@ -19,7 +19,6 @@
  */
 package org.onap.aai.dbgen.schemamod;
 
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
@@ -173,8 +172,6 @@ public class SchemaMod {
 		MDC.put("logFilenameAppender", SchemaMod.class.getSimpleName());
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

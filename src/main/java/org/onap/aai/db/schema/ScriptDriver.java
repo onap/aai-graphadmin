@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
@@ -59,8 +58,6 @@ public class ScriptDriver {
 		}
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

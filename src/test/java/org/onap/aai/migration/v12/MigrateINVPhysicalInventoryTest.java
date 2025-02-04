@@ -64,8 +64,8 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 				loader);
 
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
-		
-		
+
+
 		Vertex pnf1 = g.addV()
 				.property("aai-node-type", "pnf")
 				.property("pnf-name", "pnf-name-1")
@@ -77,7 +77,7 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 				.property("aai-uri", "/network/pnfs/pnf/pnf-name-1/p-interfaces/pinterface/1.1")
 				.next();
 		// graph 1
-				
+
 		edgeSerializer.addTreeEdge(g, pnf1, port11);
 
 
@@ -90,11 +90,11 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 		when(spy.asAdmin()).thenReturn(adminSpy);
 		when(adminSpy.getTraversalSource()).thenReturn(traversal);
 		when(adminSpy.getReadOnlyTraversalSource()).thenReturn(readOnly);
-		
+
 		migration = new MigrateINVPhysicalInventory(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 		migration.run();
 	}
-	
+
 	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
@@ -123,21 +123,21 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 	@Test
 	public void testRun_checkPnfsAndPInterfacesExist() throws Exception {
 		// check if graph nodes exist
-		
+
 		// check if pnf node gets created
-		assertEquals(new Long(2L), 
+		assertEquals(new Long(2L),
 				g.V().has("aai-node-type", "pnf")
-				.count().next(), 
+				.count().next(),
 				"2 PNFs exist");
-		
+
 		System.out.println("cOUNT:" +g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-collector-1").in("tosca.relationships.network.BindsTo").count().next());
-				
+
 		assertEquals(new Long(1L),
 				g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-collector-1").count().next(),
 				"p-interfaces created for pnfs");
-		
+
 		assertEquals(true,
 				g.V().has("aai-node-type", "pnf")
 				.has("pnf-name", "pnf-name-collector-1")
@@ -151,12 +151,12 @@ public class MigrateINVPhysicalInventoryTest extends AAISetup {
 				.in("tosca.relationships.network.BindsTo").count().next(),
 				"p-interfaces created for pnfs");
 	}
-	
+
 	@Test
 	public void testGetAffectedNodeTypes() {
 		Optional<String[]> types = migration.getAffectedNodeTypes();
 		Optional<String[]> expected = Optional.of(new String[]{"pnf"});
-		
+
 		assertNotNull(types);
 		assertArrayEquals(expected.get(), types.get());
 	}

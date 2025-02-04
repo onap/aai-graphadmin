@@ -56,26 +56,6 @@ public class ApertureServiceRestClient extends TwoWaySSLRestClient {
         return baseUrl;
     }
 
-    @Override
-    protected String getKeystorePath() {
-        return keystorePath;
-    }
-
-    @Override
-    protected String getTruststorePath() {
-        return truststorePath;
-    }
-
-    @Override
-    protected char[] getKeystorePassword() {
-        return keystorePassword.toCharArray();
-    }
-
-    @Override
-    protected char[] getTruststorePassword() {
-        return truststorePassword.toCharArray();
-    }
-
     protected HttpComponentsClientHttpRequestFactory getHttpRequestFactory() throws Exception {
         HttpComponentsClientHttpRequestFactory requestFactory = super.getHttpRequestFactory();
         requestFactory.setConnectionRequestTimeout(timeout);

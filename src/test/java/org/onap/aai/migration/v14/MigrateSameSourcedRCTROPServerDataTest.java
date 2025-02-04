@@ -19,7 +19,8 @@
  */
 package org.onap.aai.migration.v14;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -33,10 +34,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onap.aai.AAISetup;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
-import org.onap.aai.migration.v14.MigrateSameSourcedRCTROPserverData;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;

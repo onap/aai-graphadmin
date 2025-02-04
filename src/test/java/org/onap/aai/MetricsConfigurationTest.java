@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
 
 import org.onap.aai.config.SpringContextAware;
 import org.onap.aai.exceptions.AAIException;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.web.server.LocalManagementPort;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -54,7 +53,7 @@ import org.springframework.web.client.RestTemplate;
 @AutoConfigureMetrics
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {SpringContextAware.class, GraphAdminApp.class})
-@ContextConfiguration(initializers = PropertyPasswordConfiguration.class, classes = {SpringContextAware.class})
+@ContextConfiguration(classes = {SpringContextAware.class})
 @EnableAutoConfiguration(exclude={CassandraDataAutoConfiguration.class, CassandraAutoConfiguration.class}) // there is no running cassandra instance for the test
 @Import(GraphAdminTestConfiguration.class)
 @TestPropertySource(locations = "classpath:application-test.properties")

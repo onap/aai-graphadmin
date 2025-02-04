@@ -24,7 +24,6 @@ import org.onap.aai.edges.EdgeIngestor;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.logging.ErrorLogHelper;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.ExceptionTranslator;
@@ -45,8 +44,6 @@ public class MigrationController {
 	public static void main(String[] args) throws AAIException {
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

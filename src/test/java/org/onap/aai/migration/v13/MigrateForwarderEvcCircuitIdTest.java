@@ -54,7 +54,7 @@ public class MigrateForwarderEvcCircuitIdTest extends AAISetup {
 		dbEngine = new JanusGraphDBEngine(
 				queryStyle,
 				loader);
-		
+
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
 
 		Vertex pnf1 = g.addV().property("aai-node-type", "pnf").property("pnf-name", "pnf-1").next();
@@ -79,8 +79,8 @@ public class MigrateForwarderEvcCircuitIdTest extends AAISetup {
 				.property("forwarder-role",  "ingress").next();
 		Vertex forwarder5 = g.addV().property("aai-node-type", "forwarder").property("sequence", 1)
 				.property("forwarder-role",  "ingress").next();
-		
-		
+
+
 		Vertex configuration1 = g.addV().property("aai-node-type", "configuration").property("configuration-id", "config-1")
 				.property("configuration-type", "test").property("configuration-subt-type", "test").next();
 		Vertex configuration2 = g.addV().property("aai-node-type", "configuration").property("configuration-id", "config-2")
@@ -102,30 +102,30 @@ public class MigrateForwarderEvcCircuitIdTest extends AAISetup {
 		Vertex forwarderEvc4 = g.addV().property("aai-node-type", "forwarder-evc").property("forwarder-evc-id", "evc-4")
 				.property("circuit-id", "3").property("resource-version", "v13").next();
 		Vertex forwarderEvc5 = g.addV().property("aai-node-type", "forwarder-evc").property("forwarder-evc-id", "evc-5")
-				.property("resource-version", "v13").next();		
-		
+				.property("resource-version", "v13").next();
 
-		
+
+
 		edgeSerializer.addTreeEdge(g, pnf1, pInterface1);
 		edgeSerializer.addEdge(g, pInterface1, forwarder1);
 		edgeSerializer.addEdge(g, forwarder1, configuration1);
 		edgeSerializer.addTreeEdge(g, configuration1, forwarderEvc1);
-		
+
 		edgeSerializer.addTreeEdge(g, pnf2, pInterface2);
 		edgeSerializer.addEdge(g, pInterface2, forwarder2);
 		edgeSerializer.addEdge(g, forwarder2, configuration2);
 		edgeSerializer.addTreeEdge(g, configuration2, forwarderEvc2);
-		
+
 		edgeSerializer.addTreeEdge(g, pnf3, pInterface3);
 		edgeSerializer.addEdge(g, pInterface3, forwarder3);
 		edgeSerializer.addEdge(g, forwarder3, configuration3);
 		edgeSerializer.addTreeEdge(g, configuration3, forwarderEvc3);
-		
+
 		edgeSerializer.addTreeEdge(g, pnf4, pInterface4);
 		edgeSerializer.addEdge(g, pInterface4, forwarder4);
 		edgeSerializer.addEdge(g, forwarder4, configuration4);
 		edgeSerializer.addTreeEdge(g, configuration4, forwarderEvc4);
-		
+
 		edgeSerializer.addTreeEdge(g, pnf5, pInterface5);
 		edgeSerializer.addEdge(g, pInterface5, forwarder5);
 		edgeSerializer.addEdge(g, forwarder5, configuration5);
@@ -140,39 +140,39 @@ public class MigrateForwarderEvcCircuitIdTest extends AAISetup {
 		when(spy.asAdmin()).thenReturn(adminSpy);
 		when(adminSpy.getTraversalSource()).thenReturn(traversal);
 		when(adminSpy.getReadOnlyTraversalSource()).thenReturn(readOnly);
-		
+
 		migration = new MigrateForwarderEvcCircuitId(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 		migration.run();
 	}
-	
+
 	@Test
 	public void testCircuitIdsUpdated() throws Exception {
 		// check if graph nodes are updated
-		
-		assertEquals("10", 
-				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "10").next().value("circuit-id").toString(), 
+
+		assertEquals("10",
+				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "10").next().value("circuit-id").toString(),
 				"First circuit-id updated");
 
-		assertEquals("20", 
-				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "20").next().value("circuit-id").toString(), 
+		assertEquals("20",
+				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "20").next().value("circuit-id").toString(),
 				"Second circuit-id updated");
 
 		assertFalse(g.V().has("aai-node-type", "forwarder-evc").has("forwarder-evc-id", "evc-3")
 				.next().property("circuit-id").isPresent(), "Third circuit-id remains empty");
 
-		assertEquals("3", 
-				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "3").next().value("circuit-id").toString(), 
+		assertEquals("3",
+				g.V().has("aai-node-type", "forwarder-evc").has("circuit-id", "3").next().value("circuit-id").toString(),
 				"Fourth circuit-id not updated");
 
 		assertFalse(g.V().has("aai-node-type", "forwarder-evc").has("forwarder-evc-id", "evc-5")
 				.next().property("circuit-id").isPresent(), "Fifth circuit-id remains empty");
 	}
-	
+
 	@Test
 	public void testGetAffectedNodeTypes() {
 		Optional<String[]> types = migration.getAffectedNodeTypes();
 		Optional<String[]> expected = Optional.of(new String[]{"forwarder-evc"});
-		
+
 		assertNotNull(types);
 		assertArrayEquals(expected.get(), types.get());
 	}

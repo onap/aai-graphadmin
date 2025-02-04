@@ -19,7 +19,6 @@
  */
 package org.onap.aai.dbgen.schemamod;
 
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 
 public class SchemaMod4Hist {
 
@@ -157,8 +155,6 @@ public class SchemaMod4Hist {
 	public static void main(String[] args) throws AAIException {
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

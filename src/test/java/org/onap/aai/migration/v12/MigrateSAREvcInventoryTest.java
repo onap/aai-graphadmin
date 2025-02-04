@@ -66,59 +66,59 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				loader);
 
 		System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
-		
+
 		Vertex customer1 = g.addV()
 				.property("aai-node-type", "customer")
 				.property("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.property("subscriber-type", "CUST")
 				.next();
-		
+
 		Vertex servSub1 = g.addV()
 				.property("aai-node-type", "service-subscription")
 				.property("service-type", "SAREA")
 				.next();
-		
+
 		Vertex servInst1 = g.addV()
 				.property("aai-node-type", "service-instance")
 				.property("service-instance-id", "evc-name-1")
 				.next();
-		
+
 		Vertex customer2 = g.addV()
 				.property("aai-node-type", "customer")
 				.property("global-customer-id", "cust-1")
 				.property("subscriber-type", "CUST")
 				.next();
-		
+
 		Vertex servSub2 = g.addV()
 				.property("aai-node-type", "service-subscription")
 				.property("service-type", "SAREA")
 				.next();
-		
+
 		Vertex servInst2 = g.addV()
 				.property("aai-node-type", "service-instance")
 				.property("service-instance-id", "evc-name-1")
 				.next();
-		
+
 		Vertex collectorPnf = g.addV()
 				.property("aai-node-type", "pnf")
 				.property("pnf-name", "pnf-name-collector-1")
 				.next();
-		
+
 		Vertex bearerPnf = g.addV()
 				.property("aai-node-type", "pnf")
 				.property("pnf-name", "pnf-name-bearer-1")
 				.next();
-		
+
 		Vertex collectorPort = g.addV()
 				.property("aai-node-type", "p-interface")
 				.property("interface-name", "p-int-collector-1")
 				.next();
-		
+
 		Vertex bearerPort = g.addV()
 				.property("aai-node-type", "p-interface")
 				.property("interface-name", "p-int-bearer-1")
 				.next();
-		
+
 		Vertex servInst4 = g.addV()
 				.property("aai-node-type", "service-instance")
 				.property("service-instance-id", "evc-name-4")
@@ -142,11 +142,11 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 		when(spy.asAdmin()).thenReturn(adminSpy);
 		when(adminSpy.getTraversalSource()).thenReturn(traversal);
 		when(adminSpy.getReadOnlyTraversalSource()).thenReturn(readOnly);
-		
+
 		migration = new MigrateSAREvcInventory(spy, loaderFactory, edgeIngestor, edgeSerializer, schemaVersions);
 		migration.run();
 	}
-	
+
 	@AfterEach
 	public void cleanUp() {
 		tx.tx().rollback();
@@ -157,25 +157,25 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 	@Test
 	public void testRun_createServiceInstanceNode() throws Exception {
 		// check if graph nodes exist
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("service-instance-id", "evc-name-1")
-				.hasNext(), 
+				.hasNext(),
 				"service instance node exists");
-		
+
 		// check if service-instance node gets created
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("service-instance-id", "evc-name-1")
 				.out("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
-				.hasNext(), 
+				.hasNext(),
 				"service subscription node, service-type=SAREA");
-		
-	
-		
+
+
+
 		// check if fowarding-path node gets created
 		assertEquals(true, g.V().has("forwarding-path-id", "evc-name-1")
 				.has("forwarding-path-name", "evc-name-1").hasNext(), "fowarding-path is created");
-		
-		assertEquals(true, 
+
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
@@ -183,9 +183,9 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				.has("aai-node-type", "forwarding-path")
 				.has("forwarding-path-id", "evc-name-1")
 				.has("forwarding-path-name", "evc-name-1")
-				.hasNext(), 
+				.hasNext(),
 				"fowarding-path node exists");
-		
+
 		// check if configuration node gets created
 		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
@@ -197,20 +197,20 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				.has("configuration-sub-type", "evc")
 				.hasNext(),
 				"configuration node, configuration-type= forwarding-path");
-		
+
 		//check if evc node gets created
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
 				.in("org.onap.relationships.inventory.AppliesTo").has("aai-node-type", "forwarding-path")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "evc")
-				.hasNext(), 
+				.hasNext(),
 				"evc is created");
-		
+
 		// check if evc node gets created
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
@@ -223,57 +223,57 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				.has("cir-units", "Mbps")
 				.has("tagmode-access-ingress", "DOUBLE")
 				.has("tagmode-access-egress", "DOUBLE")
-				.hasNext(), 
+				.hasNext(),
 				"configuration node, configuration-type= evc");
 	}
 
 	@Test
 	public void testRun_evcNotCreated() throws Exception {
 		// check if graph nodes exist
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
-				.hasNext(), 
+				.hasNext(),
 				"customer node exists");
-		
-		assertEquals(true, 
+
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
-				.hasNext(), 
+				.hasNext(),
 				"service subscription node, service-type=SAREA");
-		
+
 		//service-instance should not be created
-		assertEquals(false, 
+		assertEquals(false,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-2")
-				.hasNext(), 
+				.hasNext(),
 				"service instance node created");
-		
-		assertEquals(true, 
+
+		assertEquals(true,
 				g.V().has("global-customer-id", "cust-1")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
-				.hasNext(), 
+				.hasNext(),
 				"service instance node already exists");
-		
+
 		// fowarding-path node should not be created
 		assertEquals(false, g.V().has("aai-node-type", "forwarding-path")
 				.has("forwarding-path-name", "evc-name-2").hasNext(), "fowarding-path created");
-		
+
 		// configuration node should not be created
 		assertEquals(false, g.V().has("aai-node-type", "configuration")
 				.has("configuration-id", "evc-name-2").hasNext(), "configuration node created");
-		
+
 		// evc node should not be created
 		assertEquals(false, g.V().has("aai-node-type", "evc")
 				.has("evc-id", "evc-name-2").hasNext(), "evc node created");
-		
+
 		// service-instance is not created because pnf exists, but p-interface does not
-		assertEquals(false, 
+		assertEquals(false,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-3")
-				.hasNext(), 
+				.hasNext(),
 				"service instance node created");
 	}
 
@@ -281,25 +281,25 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 	@Test
 	public void testRun_createFPConfigurationEvcNode4() throws Exception {
 		// check if graph nodes exist
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("service-instance-id", "evc-name-4")
-				.hasNext(), 
+				.hasNext(),
 				"service instance node exists");
-		
+
 		// check if service-instance node gets created
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("service-instance-id", "evc-name-4")
 				.out("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
-				.hasNext(), 
+				.hasNext(),
 				"service subscription node, service-type=SAREA");
-		
-	
-		
+
+
+
 		// check if fowarding-path node gets created
 		assertEquals(true, g.V().has("forwarding-path-id", "evc-name-4")
 				.has("forwarding-path-name", "evc-name-4").hasNext(), "fowarding-path is created");
-		
-		assertEquals(true, 
+
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-4")
@@ -307,9 +307,9 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				.has("aai-node-type", "forwarding-path")
 				.has("forwarding-path-id", "evc-name-4")
 				.has("forwarding-path-name", "evc-name-4")
-				.hasNext(), 
+				.hasNext(),
 				"fowarding-path node exists");
-		
+
 		// check if configuration node gets created
 		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
@@ -321,20 +321,20 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				.has("configuration-sub-type", "evc")
 				.hasNext(),
 				"configuration node, configuration-type= forwarding-path");
-		
+
 		//check if evc node gets created
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-4")
 				.in("org.onap.relationships.inventory.AppliesTo").has("aai-node-type", "forwarding-path")
 				.out("org.onap.relationships.inventory.Uses").has("aai-node-type", "configuration")
 				.in("org.onap.relationships.inventory.BelongsTo").has("aai-node-type", "evc")
-				.hasNext(), 
+				.hasNext(),
 				"evc is created");
-		
+
 		// check if evc node gets created
-		assertEquals(true, 
+		assertEquals(true,
 				g.V().has("global-customer-id", "8a00890a-e6ae-446b-9dbe-b828dbeb38bd")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-type", "SAREA")
 				.in("org.onap.relationships.inventory.BelongsTo").has("service-instance-id", "evc-name-1")
@@ -347,15 +347,15 @@ public class MigrateSAREvcInventoryTest extends AAISetup {
 				.has("cir-units", "Mbps")
 				.has("tagmode-access-ingress", "DOUBLE")
 				.has("tagmode-access-egress", "DOUBLE")
-				.hasNext(), 
+				.hasNext(),
 				"configuration node, configuration-type= evc");
 	}
-	
+
 	@Test
 	public void testGetAffectedNodeTypes() {
 		Optional<String[]> types = migration.getAffectedNodeTypes();
 		Optional<String[]> expected = Optional.of(new String[]{"service-instance"});
-		
+
 		assertNotNull(types);
 		assertArrayEquals(expected.get(), types.get());
 	}

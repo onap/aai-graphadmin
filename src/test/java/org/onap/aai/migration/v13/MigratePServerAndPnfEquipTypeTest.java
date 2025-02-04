@@ -71,11 +71,11 @@ public class MigratePServerAndPnfEquipTypeTest extends AAISetup{
          pserver1 = g.addV().property("aai-node-type", MigratePserverAndPnfEquipType.PSERVER_NODE_TYPE)
                 .property( MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY, "Server")
                 .next();
-         
+
          pserver2 = g.addV().property("aai-node-type", MigratePserverAndPnfEquipType.PSERVER_NODE_TYPE)
                  .property( MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY, "server")
                  .next();
-         
+
          pnf1 = g.addV().property("aai-node-type", MigratePserverAndPnfEquipType.PNF_NODE_TYPE)
                  .property( MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY, "Switch")
                  .next();
@@ -86,7 +86,7 @@ public class MigratePServerAndPnfEquipTypeTest extends AAISetup{
          pserver3 = g.addV().property("aai-node-type", MigratePserverAndPnfEquipType.PSERVER_NODE_TYPE)
                  .property( MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY, "server1")
                  .next();
-         
+
          pnf2 = g.addV().property("aai-node-type", MigratePserverAndPnfEquipType.PNF_NODE_TYPE)
                  .property( MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY, "Switch1")
                  .next();
@@ -119,15 +119,15 @@ public class MigratePServerAndPnfEquipTypeTest extends AAISetup{
         assertEquals("SWITCH",pnf1.property(MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY).value());
         assertEquals("SWITCH",pnf22.property(MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY).value());
     }
-    
+
     @Test
     public void verifyEquipTypeIsNotChanged() {
     	assertEquals("server1",pserver3.property(MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY).value());
         assertEquals("Switch1",pnf2.property(MigratePserverAndPnfEquipType.EQUIP_TYPE_PROPERTY).value());
     }
-    
-    
-    
+
+
+
 
 
 }
