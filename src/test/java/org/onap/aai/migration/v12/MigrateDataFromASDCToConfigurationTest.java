@@ -71,7 +71,7 @@ public class MigrateDataFromASDCToConfigurationTest extends AAISetup {
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
                 loader);
-        
+
         System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
         Vertex genericvnf1 = g.addV().property("aai-node-type", "generic-vnf")
                 .property("vnf-id", "vnfId1")

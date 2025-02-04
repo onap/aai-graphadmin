@@ -39,7 +39,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.tinkerpop.gremlin.structure.io.IoCore;
@@ -112,8 +111,6 @@ public class DataSnapshot4HistInit {
 		System.setProperty("aai.service.name", DataSnapshot4HistInit.class.getSimpleName());
 
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-		PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-		initializer.initialize(ctx);
 		try {
 			ctx.scan(
 					"org.onap.aai.config",

@@ -54,11 +54,11 @@ public class MigrateCloudRegionUpgradeCycleTest extends AAISetup{
     Vertex cloudRegion1;
     Vertex cloudRegion2;
     Vertex cloudRegion3;
-   
+
 
     @BeforeEach
     public void setUp() throws Exception {
-    	
+
     	graph = JanusGraphFactory.build().set("storage.backend", "inmemory").open();
         tx = graph.newTransaction();
         g = tx.traversal();
@@ -66,27 +66,27 @@ public class MigrateCloudRegionUpgradeCycleTest extends AAISetup{
         dbEngine = new JanusGraphDBEngine(
                 queryStyle,
                 loader);
-        
+
         System.setProperty("BUNDLECONFIG_DIR", "src/test/resources");
-		
+
         cloudRegion1 = g.addV().property("aai-node-type", MigrateCloudRegionUpgradeCycle.CLOUD_REGION_NODE_TYPE)
         		.property(MigrateCloudRegionUpgradeCycle.CLOUD_REGION_ID, "akr1")
         		.property(MigrateCloudRegionUpgradeCycle.CLOUD_OWNER, "att-aic")
                 .property( MigrateCloudRegionUpgradeCycle.UPGRADE_CYCLE, "Test")
                 .next();
-         
+
          cloudRegion2 = g.addV().property("aai-node-type", MigrateCloudRegionUpgradeCycle.CLOUD_REGION_NODE_TYPE)
         		 .property(MigrateCloudRegionUpgradeCycle.CLOUD_REGION_ID, "amsnl1b")
         		 .property(MigrateCloudRegionUpgradeCycle.CLOUD_OWNER, "att-aic")
                  //.property( MigrateCloudRegionUpgradeCycle.UPGRADE_CYCLE, "server")
                  .next();
-         
+
          cloudRegion3 = g.addV().property("aai-node-type", MigrateCloudRegionUpgradeCycle.CLOUD_REGION_NODE_TYPE)
         		 .property(MigrateCloudRegionUpgradeCycle.CLOUD_REGION_ID, "alp1")
         		 .property(MigrateCloudRegionUpgradeCycle.CLOUD_OWNER, "Test")
                  .property( MigrateCloudRegionUpgradeCycle.UPGRADE_CYCLE, "server1")
                  .next();
-        
+
         TransactionalGraphEngine spy = spy(dbEngine);
         TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
         GraphTraversalSource traversal = g;

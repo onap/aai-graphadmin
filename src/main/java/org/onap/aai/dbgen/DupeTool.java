@@ -27,7 +27,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.*;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
-import org.onap.aai.restclient.PropertyPasswordConfiguration;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.dbmap.AAIGraphConfig;
 import org.onap.aai.edges.enums.AAIDirection;
@@ -465,8 +464,6 @@ public class DupeTool {
 
 
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        PropertyPasswordConfiguration initializer = new PropertyPasswordConfiguration();
-        initializer.initialize(ctx);
         try {
             ctx.scan(
                     "org.onap.aai.config",

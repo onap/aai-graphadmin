@@ -19,7 +19,7 @@
  */
 package org.onap.aai.migration.v13;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -74,14 +74,14 @@ public class MigrateBadWidgetModelsPartOneTest extends AAISetup {
 	}
 
 	private void createFirstVertexAndRelatedVertexes() throws AAIException {
-		
+
 		// Add model1/model-ver1 -- invalid model/model-ver
 		Vertex model1 = g.addV().property("aai-node-type", "model")
 				.property("model-invariant-id", "model-invariant-id-1").property("model-type", "widget").next();
 		modelVer1 = g.addV().property("aai-node-type", "model-ver").property("model-version-id", "model-version-id-1")
 				.property("model-name", "connector").property("model-version", "v1.0").next();
 		edgeSerializer.addTreeEdge(g, model1, modelVer1);
-		
+
 		// Add named-query and named-query-element nodes.  Point the named-query-element at model1
 		Vertex namedQ1 = g.addV().property("aai-node-type", "named-query")
 		.property("named-query-uuid", "named-query-uuid-1").property("named-query-name", "test-NQ-1").next();
@@ -123,9 +123,9 @@ public class MigrateBadWidgetModelsPartOneTest extends AAISetup {
 		assertEquals(true,
 				g.V().has("aai-node-type", "named-query-element").has("named-query-element-uuid", "named-query-element-uuid-1")
 						.out("org.onap.relationships.inventory.BelongsTo")
-						.has("named-query-uuid", "named-query-uuid-1").hasNext());	
+						.has("named-query-uuid", "named-query-uuid-1").hasNext());
 	}
-	
+
 	@Test
 	public void testBadNodesAreNotGone() {
 		assertEquals(true,
@@ -133,16 +133,16 @@ public class MigrateBadWidgetModelsPartOneTest extends AAISetup {
 		assertEquals(true,
 				g.V().has("aai-node-type", "model").has("model-invariant-id", "model-invariant-id-1").hasNext());
 	}
-	
+
 	@Test
 	public void testNQNodesaAreStillThere() {
 		assertEquals(true,
 				g.V().has("aai-node-type", "named-query").has("named-query-uuid", "named-query-uuid-1").hasNext());
 		assertEquals(true,
 				g.V().has("aai-node-type", "named-query-element").has("named-query-element-uuid", "named-query-element-uuid-1").hasNext());
-		
+
 	}
-	
+
 
 	@Test
 	public void testThatNewEdgeAdded() {
@@ -159,7 +159,7 @@ public class MigrateBadWidgetModelsPartOneTest extends AAISetup {
 						.in("org.onap.relationships.inventory.IsA").has("named-query-element-uuid", "named-query-element-uuid-1")
 						.hasNext());
 	}
-	
-	
+
+
 
 }

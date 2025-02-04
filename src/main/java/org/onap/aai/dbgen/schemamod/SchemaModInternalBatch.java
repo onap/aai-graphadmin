@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.schema.ConsistencyModifier;
@@ -49,8 +50,8 @@ public class SchemaModInternalBatch {
 	private final Cardinality cardinality;
 	private final long commitBlockSize;
 	private final Logger logger;
-	
-	public SchemaModInternalBatch(TransactionalGraphEngine engine, Logger logger, String propName,  
+
+	public SchemaModInternalBatch(TransactionalGraphEngine engine, Logger logger, String propName,
 				String type, String indexType, boolean preserveData, boolean consistencyLock, long commitBlockSize) {
 		this.engine = engine;
 		this.propName = propName;
@@ -62,8 +63,8 @@ public class SchemaModInternalBatch {
 		this.commitBlockSize = commitBlockSize;
 		this.logger = logger;
 	}
-	
-	
+
+
 	private Class<?> determineClass(String type) {
 		final Class<?> result;
 		if (type.equals("String")) {
@@ -87,10 +88,10 @@ public class SchemaModInternalBatch {
 			logAndPrint(logger, emsg);
 			throw new RuntimeException(emsg);
 		}
-		
+
 		return result;
 	}
-	
+
 	private Cardinality determineCardinality(String type) {
 		if (type.equals("Set<String>")) {
 			return Cardinality.SET;
@@ -98,7 +99,7 @@ public class SchemaModInternalBatch {
 			return Cardinality.SINGLE;
 		}
 	}
-	
+
 	public void execute() {
 		JanusGraphManagement graphMgt = null;
 		String retiredName = "";
@@ -106,10 +107,10 @@ public class SchemaModInternalBatch {
 		long timeStart = System.nanoTime();
 		int batchCt = 0;
 		int totalCount = 0;
-		
+
 		ArrayList<HashMap<String,Object>> allVerts = new ArrayList<HashMap<String,Object>>();
 		HashMap<String,Object> batchVHash = new HashMap<String,Object>();
-		
+
 		try {
 			// Make sure this property is in the DB.
 			graphMgt = engine.asAdmin().getManagementSystem();
@@ -124,9 +125,9 @@ public class SchemaModInternalBatch {
 				logAndPrint(logger, emsg);
 				System.exit(1);
 			}
-			
-			// Collect the data that needs to be processed and 
-			// store as hashes of vertex-id's and the original property value 
+
+			// Collect the data that needs to be processed and
+			// store as hashes of vertex-id's and the original property value
 			long timeA = System.nanoTime();
 			int msgEveryXCount = 1000;
 			Graph grTmp1 = engine.startTransaction();
@@ -154,37 +155,37 @@ public class SchemaModInternalBatch {
 					logAndPrint(logger, "Collecting the data for batch # " + batchKey );
 					batchVCount = 0;
 					batchVHash = new HashMap<String,Object>();
-				}	
+				}
 				if( msgCount > msgEveryXCount ) {
 					msgCount = 0;
-					logAndPrint(logger, " Initial processing running...  total so far = " + totalCount );					
+					logAndPrint(logger, " Initial processing running...  total so far = " + totalCount );
 				}
 			}
-			
+
 			if( batchVCount > 0 ) {
 				// Add the last partial set if there is one.
 				allVerts.add(batchKey, batchVHash);
 			}
 			logAndPrint(logger, "Found " + totalCount + " nodes that will be affected. ");
-			
+
 			batchCt = batchKey +1;
-			
+
 			if( totalCount == 0 ) {
 				logAndPrint(logger, "INFO -- No data found to process.  ");
 				System.exit(1);
 			}
-			
+
 			logAndPrint(logger, "INFO -- Total of " + totalCount +
-					" nodes to process.  Will use " + batchCt + 
+					" nodes to process.  Will use " + batchCt +
 					" batches. " );
-			
+
 			long timeB = System.nanoTime();
 			long diffTime =  timeB - timeA;
 			long minCount = TimeUnit.NANOSECONDS.toMinutes(diffTime);
 			long secCount = TimeUnit.NANOSECONDS.toSeconds(diffTime) - (60 * minCount);
 			logAndPrint(logger, "    -- To collect all nodes took: " +
 					minCount + " minutes, " + secCount + " seconds " );
-			
+
 			if (indexType.equals("uniqueIndex")) {
 				// Make sure the data in the property being changed can have a
 				// unique-index put on it.
@@ -209,18 +210,18 @@ public class SchemaModInternalBatch {
 				logAndPrint(logger, "-- Finished/Passed UniquePropertyCheck. ");
 				logAndPrint(logger, "There are " + totalCount + " nodes that have this property. ");
 			}
-					
+
 			// ---- If we made it to here - we must be OK with making this change
-			
+
 			// Rename this property to a backup name (old name with a dateString and
 			//    "-RETIRED" appended)
 			long timeE = System.nanoTime();
 			FormatDate fd = new FormatDate("MMddHHmm", "GMT");
-			String dteStr= fd.getDateTime();			
+			String dteStr= fd.getDateTime();
 			retiredName = propName + "-" + dteStr + "-RETIRED";
-			graphMgt.changeName(origPropKey, retiredName);			
-			logAndPrint(logger, " -- Temporary property name will be: [" + retiredName + "]. "); 
-	
+			graphMgt.changeName(origPropKey, retiredName);
+			logAndPrint(logger, " -- Temporary property name will be: [" + retiredName + "]. ");
+
 			// Create a new property using the original property name and the
 			// targetDataType
 			PropertyKey freshPropKey = graphMgt.makePropertyKey(propName).dataType(type)
@@ -243,18 +244,18 @@ public class SchemaModInternalBatch {
 				logAndPrint(logger, " -- Consistency Lock is being set on the index ");
 				graphMgt.setConsistency(indexG, ConsistencyModifier.LOCK);
 			}
-	
+
 			logAndPrint(logger, "Committing schema changes with graphMgt.commit()");
 			graphMgt.commit();
 			success = true;
-			
+
 			long timeF = System.nanoTime();
 			diffTime =  timeF - timeE;
 			minCount = TimeUnit.NANOSECONDS.toMinutes(diffTime);
 			secCount = TimeUnit.NANOSECONDS.toSeconds(diffTime) - (60 * minCount);
 			logAndPrint(logger, "    -- Temporary property Name Change took: " +
 					minCount + " minutes, " + secCount + " seconds " );
-			
+
 		} catch (Exception ex) {
 			logAndPrint(logger, "Threw a regular Exception: ");
 			logAndPrint(logger, ex.getMessage());
@@ -273,8 +274,8 @@ public class SchemaModInternalBatch {
 				}
 			}
 		}
-			
-		
+
+
 		// For each node that has this property, update the new from the old
 		// and then remove the old property from that node
 		// Note - do it in batches since there can be a LOT of updates.
@@ -284,27 +285,27 @@ public class SchemaModInternalBatch {
 		for( int batNo=0; batNo < batchCt; batNo++ ) {
 			try {
 				logAndPrint(logger, "BEGIN -- Batch # " + batNo );
-				processUpdateForBatch( 	allVerts.get(batNo), retiredName ); 
+				processUpdateForBatch( 	allVerts.get(batNo), retiredName );
 				logAndPrint(logger, "Completed Batch # " + batNo );
 			} catch (Exception e) {
 				String emsg = "ERROR -- Batch # " + batNo +
-					" failed to process.  Please clean up manually. " + 
-					" data in [" + retiredName + 
-					"] will have to be moved to the original property.";		
+					" failed to process.  Please clean up manually. " +
+					" data in [" + retiredName +
+					"] will have to be moved to the original property.";
 				logAndPrint(logger, emsg);
 				emsgList.add(emsg);
 			}
-		}	
+		}
 		long timeF = System.nanoTime();
 		long diffTime =  timeF - timeE;
 		long minCount = TimeUnit.NANOSECONDS.toMinutes(diffTime);
 		long secCount = TimeUnit.NANOSECONDS.toSeconds(diffTime) - (60 * minCount);
 		logAndPrint(logger, "    -- Time to process all batches: " +
 				minCount + " minutes, " + secCount + " seconds " );
-		
+
 		logAndPrint(logger, "\nINFO -- Total of " + totalCount +
 				" nodes processed using: " + batchCt + " batches. " );
-		
+
 		if( !emsgList.isEmpty() ) {
 			Iterator <String> eItr = emsgList.iterator();
 			logAndPrint(logger, ">>> These will need to be taken care of: ");
@@ -312,30 +313,30 @@ public class SchemaModInternalBatch {
 				logAndPrint(logger, (String)eItr.next());
 			}
 		}
-							
+
 		long timeEnd = System.nanoTime();
 		diffTime =  timeEnd - timeStart;
 		minCount = TimeUnit.NANOSECONDS.toMinutes(diffTime);
 		secCount = TimeUnit.NANOSECONDS.toSeconds(diffTime) - (60 * minCount);
 		logAndPrint(logger, "    -- Total Processing time was: " +
 				minCount + " minutes, " + secCount + " seconds " );
-		
+
 	}// End of Execute()
-	
-	
-	private void processUpdateForBatch( HashMap<String,Object> vertHash, 
+
+
+	private void processUpdateForBatch( HashMap<String,Object> vertHash,
 			String retiredName ) throws Exception {
-			
+
 		Iterator<Map.Entry<String, Object>> vertHashItr = vertHash.entrySet().iterator();
 		int vtxCount = 0;
 		Boolean success = false;
-		Graph grTmpBat = engine.startTransaction();	
-		try { 
+		Graph grTmpBat = engine.startTransaction();
+		try {
 			while( vertHashItr.hasNext() ){
-				Map.Entry<String, Object> entry = vertHashItr.next(); 
+				Map.Entry<String, Object> entry = vertHashItr.next();
 				String tmpVid = entry.getKey();
 				Vertex tmpVtx = null;
-				
+
 				Iterator<Vertex> oneVItr = grTmpBat.traversal().V(tmpVid);
 				while( oneVItr.hasNext() ) {
 					// should never find more than one...
@@ -350,7 +351,7 @@ public class SchemaModInternalBatch {
 					}
 					tmpVtx.property(retiredName).remove();
 					logAndPrint(logger, "INFO -- update item: (vid= "
-							+ tmpVid + ", val=[" + origVal + "])");	
+							+ tmpVid + ", val=[" + origVal + "])");
 					vtxCount++;
 				}
 			}
@@ -369,31 +370,31 @@ public class SchemaModInternalBatch {
 					logAndPrint(logger, "ERROR -- rolling back node updates for this batch.");
 					engine.rollback();
 				}
-			}		
+			}
 		}
 		if( ! success ) {
 			throw new Exception ("ERROR - could not process this batch -- see the log for details.");
 		}
-		
-	}// end of processUpdateForBatch()	
-	
+
+	}// end of processUpdateForBatch()
+
 
 	private Boolean doUniquenessCheck( ArrayList<HashMap<String,Object>> allVerts,
 			String propertyName ){
-		// Note - property can be found in more than one nodetype 
-		//   our uniqueness constraints are always across the entire db - so this 
+		// Note - property can be found in more than one nodetype
+		//   our uniqueness constraints are always across the entire db - so this
 		//   tool looks across all nodeTypes that the property is found in.
 		long timeStart = System.nanoTime();
 		int batchCt = allVerts.size();
 		HashMap <String,Object> bigSingleHash = new HashMap <String,Object> ();
-		
+
 		for( int batNo=0; batNo < batchCt; batNo++ ) {
 			bigSingleHash.putAll(allVerts.get(batNo));
 		}
-		
+
 		ArrayList <Object> dupeValues = new ArrayList<Object> ();
 		int dupeCount = 0;
-				
+
 		Iterator bItr = bigSingleHash.entrySet().iterator();
 		while( bItr.hasNext() ) {
 			Map.Entry pair = (Map.Entry)bItr.next();
@@ -414,19 +415,19 @@ public class SchemaModInternalBatch {
     			dupeCount++;
     		}
 		}
-		
+
 		long timeEnd = System.nanoTime();
 		long diffTime =  timeEnd - timeStart;
 		long minCount = TimeUnit.NANOSECONDS.toMinutes(diffTime);
 		long secCount = TimeUnit.NANOSECONDS.toSeconds(diffTime) - (60 * minCount);
 		logAndPrint(logger, "    -- Total Uniqueness Check took: " +
 				minCount + " minutes, " + secCount + " seconds " );
-		
+
 		if( dupeValues.isEmpty() ){
 			logAndPrint(logger, "\n ------------ No Duplicates Found -------- \n");
 		}
 		else {
-			logAndPrint(logger, "\n -------------- Found " + dupeCount + 
+			logAndPrint(logger, "\n -------------- Found " + dupeCount +
     			" cases of duplicate values for property [" + propertyName + "\n\n");
 			logAndPrint(logger, "\n --- These values are in the db twice or more: ");
 	    	Iterator <?> dupeValItr = dupeValues.iterator();
@@ -434,16 +435,16 @@ public class SchemaModInternalBatch {
 	    		logAndPrint(logger, " value = [" + dupeValItr.next() + "]");
 	    	}
     	}
-    	
+
 		if( dupeCount > 0 ) {
 			return true;
 		}else {
 			return false;
 		}
-    	
+
 	}// end of doUniquenessCheck()
-	
-	
+
+
 
 	/**
 	 * Log and print.
@@ -455,5 +456,5 @@ public class SchemaModInternalBatch {
 		System.out.println(msg);
 		logger.debug(msg);
 	}
-	
+
 }

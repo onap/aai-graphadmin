@@ -23,7 +23,9 @@ import java.nio.charset.UnsupportedCharsetException;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
-import org.apache.tinkerpop.gremlin.structure.*;
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.javatuples.Pair;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
@@ -31,7 +33,10 @@ import org.onap.aai.edges.enums.AAIDirection;
 import org.onap.aai.edges.enums.EdgeProperty;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
-import org.onap.aai.migration.*;
+import org.onap.aai.migration.EdgeSwingMigrator;
+import org.onap.aai.migration.MigrationDangerRating;
+import org.onap.aai.migration.MigrationPriority;
+import org.onap.aai.migration.Status;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.springframework.web.util.UriUtils;
 
@@ -63,8 +68,8 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
     private static List<Introspector> dmaapDeleteList = new ArrayList<Introspector>();
     private static int pserversUpdatedCount = 0;
     private static int pserversDeletedCount = 0;
-    
-    
+
+
     private static String[] rctSourceOfTruth = new String[]{"AAIRctFeed", "RCT"};
     private static String[] roSourceOfTruth = new String[]{"AAI-EXTENSIONS", "RO"};
 
@@ -128,7 +133,7 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 
     @Override
     public void run() {
-    	
+
     	int dupCount = 0;
         nodeTypeToUri = loader.getAllObjects().entrySet().stream().filter(e -> e.getValue().getGenericURI().contains("{")).collect(
                 Collectors.toMap(
@@ -144,10 +149,10 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 
         List<Vertex> rctList = graphTraversalSource().V().has("aai-node-type", "pserver").has("source-of-truth", P.within(rctSourceOfTruth)).toList();
         List<Vertex> roList =  graphTraversalSource().V().has("aai-node-type", "pserver").has("source-of-truth", P.within(roSourceOfTruth)).toList();
-        
+
         logger.info("Total number of RCT sourced pservers in A&AI :" +rctList.size());
         logger.info("Total number of RO sourced pservers in A&AI :" +roList.size());
-        
+
         for(int i=0;i<rctList.size();i++){
             Vertex currRct = rctList.get(i);
             Object currRctFqdn = null;
@@ -222,7 +227,7 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 	        Iterator<Vertex> pIntListItr = pIntList.iterator();
 	        while(pIntListItr.hasNext()){
 	        	Vertex pInt = pIntListItr.next();
-	        	
+
 	        	removeROPIntMap.put(pInt.property("interface-name").value().toString(), pInt);
 	        }
 	        Set<String> interfaceNameSet = removeROPIntMap.keySet();
@@ -245,9 +250,9 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 		        	}
 		        }
 	        }
-    	} 
+    	}
 	}
-    
+
     private void dropMatchingROLagInterfaces(Vertex ro, Vertex rct) {
         Map<String, Vertex> removeROLagIntMap = new HashMap<String, Vertex>();
     	List<Vertex> lagIntList = graphTraversalSource().V(ro).in("tosca.relationships.network.BindsTo").has("aai-node-type","lag-interface").toList();
@@ -255,7 +260,7 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 	        Iterator<Vertex> lagIntListItr = lagIntList.iterator();
 	        while(lagIntListItr.hasNext()){
 	        	Vertex lagInt = lagIntListItr.next();
-	        	
+
 	        	removeROLagIntMap.put(lagInt.property("interface-name").value().toString(), lagInt);
 	        }
 	        Set<String> interfaceNameSet = removeROLagIntMap.keySet();
@@ -278,9 +283,9 @@ public class PserverDedupWithDifferentSourcesOfTruth extends EdgeSwingMigrator {
 		        	}
 		        }
 	        }
-    	} 
+    	}
 	}
-    
+
 	public void dropComplexEdge(Vertex ro){
     	List<Vertex> locatedInEdgeVertexList = graphTraversalSource().V(ro).has("aai-node-type", "pserver").out("org.onap.relationships.inventory.LocatedIn").has("aai-node-type","complex").toList();
     	if (locatedInEdgeVertexList != null && !locatedInEdgeVertexList.isEmpty()){

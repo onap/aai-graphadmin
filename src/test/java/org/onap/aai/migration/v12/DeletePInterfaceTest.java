@@ -73,7 +73,7 @@ public class DeletePInterfaceTest extends AAISetup {
 				.property("source-of-truth", "AAI-CSVP-INSTARAMS")
 				.next();
 		edgeSerializer.addTreeEdge(g, pnf1, pInterface1);
-		
+
 		Vertex pnf2 = g.addV().property("aai-node-type", "pnf")
 				.property("pnf-name", "pnf-name2")
 				.next();
@@ -86,7 +86,7 @@ public class DeletePInterfaceTest extends AAISetup {
 				.next();
 		edgeSerializer.addTreeEdge(g, pnf2, pInterface2);
 		edgeSerializer.addEdge(g, pInterface2, pLink);
-		
+
 		Vertex pnf3 = g.addV().property("aai-node-type", "pnf")
 				.property("pnf-name", "pnf-name3")
 				.next();
@@ -99,7 +99,7 @@ public class DeletePInterfaceTest extends AAISetup {
 				.next();
 		edgeSerializer.addTreeEdge(g, pnf3, pInterface3);
 		edgeSerializer.addTreeEdge(g, pInterface3, lInterface);
-		
+
 		Vertex pnf4 = g.addV().property("aai-node-type", "pnf")
 				.property("pnf-name", "pnf-name4")
 				.next();
@@ -107,7 +107,7 @@ public class DeletePInterfaceTest extends AAISetup {
 				.property("interface-name", "interface-name4")
 				.next();
 		edgeSerializer.addTreeEdge(g, pnf4, pInterface4);
-		
+
 		TransactionalGraphEngine spy = spy(dbEngine);
 		TransactionalGraphEngine.Admin adminSpy = spy(dbEngine.asAdmin());
 		GraphTraversalSource traversal = g;
@@ -127,16 +127,16 @@ public class DeletePInterfaceTest extends AAISetup {
 	public void test() {
 		assertEquals(false, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name1")
 				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").has("interface-name", "interface-name1").hasNext(), "pInterface1 deleted");
-		
+
 		assertEquals(true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name2")
 				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").hasNext(), "pInterface2 skipped");
-		
+
 		assertEquals(true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name3")
 				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").hasNext(), "pInterface3 skipped");
-		
+
 		assertEquals(true, g.V().has("aai-node-type", "pnf").has("pnf-name", "pnf-name4")
 				.in("tosca.relationships.network.BindsTo").has("aai-node-type", "p-interface").has("interface-name", "interface-name4").hasNext(), "pInterface4 should not be deleted");
-		
+
 		assertEquals(Status.SUCCESS, migration.getStatus(), "Status should be success");
 	}
 

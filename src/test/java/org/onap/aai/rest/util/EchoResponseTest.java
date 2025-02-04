@@ -154,7 +154,7 @@ public class EchoResponseTest extends AAISetup {
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
-    
+
     @Test
     public void testCheckDbNowAction_Unknown() {
     	when(aaiGraphCheckerMock.isAaiGraphDbAvailable()).thenReturn(null);
