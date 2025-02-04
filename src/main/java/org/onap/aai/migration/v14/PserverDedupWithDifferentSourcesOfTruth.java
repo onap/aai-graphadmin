@@ -24,7 +24,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSo
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.structure.*;
-import org.janusgraph.core.attribute.Text;
 import org.javatuples.Pair;
 import org.onap.aai.db.props.AAIProperties;
 import org.onap.aai.edges.EdgeIngestor;
@@ -39,7 +38,6 @@ import org.springframework.web.util.UriUtils;
 import javax.ws.rs.core.UriBuilder;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 

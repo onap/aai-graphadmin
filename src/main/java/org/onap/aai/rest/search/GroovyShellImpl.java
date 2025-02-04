@@ -22,7 +22,6 @@ package org.onap.aai.rest.search;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.onap.aai.aailog.logs.AaiDBGraphadminMetricLog;
 import org.onap.aai.restcore.search.GremlinGroovyShell;
-import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.GraphAdminConstants;
 
 import java.util.Map;

@@ -31,15 +31,12 @@ import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
-import org.onap.aai.util.AAIConstants;
 import org.onap.aai.util.ExceptionTranslator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.Properties;
 
 public class SchemaMod {
 

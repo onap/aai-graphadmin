@@ -37,20 +37,13 @@ import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.introspection.ModelType;
 import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.migration.Status;
-import org.onap.aai.migration.v13.MigrateInMaintDefaultToFalse;
-import org.onap.aai.migration.v13.MigrateInMaintDefaultToFalseTest.InMaintDefaultMigrator;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
-import org.onap.aai.serialization.engines.TransactionalGraphEngine;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class MigrateInMaintDefaultToFalseTest extends

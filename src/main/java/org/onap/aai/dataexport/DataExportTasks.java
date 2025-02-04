@@ -32,9 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Properties;
 import java.util.TreeMap;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +47,6 @@ import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.util.AAIConfig;
 import org.onap.aai.util.AAIConstants;
 import org.onap.logging.filter.base.ONAPComponents;
-import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.PropertySource;
@@ -58,7 +55,6 @@ import org.springframework.stereotype.Component;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;

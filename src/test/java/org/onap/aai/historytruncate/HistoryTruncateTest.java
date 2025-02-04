@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
-import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +34,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.onap.aai.AAISetup;
 import org.onap.aai.dbmap.AAIGraph;
 import org.onap.aai.exceptions.AAIException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

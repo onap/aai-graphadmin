@@ -37,8 +37,6 @@ import org.onap.aai.util.ExceptionTranslator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
-import java.util.UUID;
-
 public class ScriptDriver {
 
 	/**

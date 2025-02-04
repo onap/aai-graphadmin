@@ -31,8 +31,6 @@ import org.onap.aai.logging.ErrorLogHelper;
 import org.onap.aai.util.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Properties;
-import java.util.UUID;
 
 
 public class GenTester4Hist {

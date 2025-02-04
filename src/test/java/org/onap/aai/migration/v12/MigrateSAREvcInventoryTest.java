@@ -34,11 +34,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.onap.aai.AAISetup;
-import org.onap.aai.dbmap.DBConnectionType;
 import org.onap.aai.introspection.Loader;
 import org.onap.aai.introspection.ModelType;
-import org.onap.aai.setup.SchemaVersions;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.serialization.engines.QueryStyle;
 import org.onap.aai.serialization.engines.JanusGraphDBEngine;
 import org.onap.aai.serialization.engines.TransactionalGraphEngine;

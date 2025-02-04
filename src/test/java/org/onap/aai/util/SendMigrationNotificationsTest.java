@@ -22,7 +22,6 @@ package org.onap.aai.util;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
