@@ -24,13 +24,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.util.AntPathMatcher;
 
 @Configuration
+@EnableWebSecurity
 @ConditionalOnProperty(name = "aai.basic-auth.enabled", havingValue = "true", matchIfMissing = true)
 public class SecurityConfig {
 

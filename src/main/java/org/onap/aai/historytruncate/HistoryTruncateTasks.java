@@ -32,24 +32,37 @@ import org.onap.aai.logging.LogFormatTools;
 import org.onap.aai.util.AAIConfig;
 import org.onap.logging.filter.base.ONAPComponents;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Slf4j
 @Component
 @PropertySource("file:${server.local.startpath}/etc/appprops/datatoolscrons.properties")
 public class HistoryTruncateTasks {
 
-	@Autowired
-    private AaiScheduledTaskAuditLog auditLog;
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(HistoryTruncateTasks.class);
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
+	@Autowired
+  private AaiScheduledTaskAuditLog auditLog;
+
+	@Value("#{new Boolean('${historytruncatetasks.enabled:true}')}")
+	private Boolean historyTruncateTaskEnabled;
+
 	@Scheduled(cron = "${historytruncatetasks.cron}" )
 	public void historyTruncateScheduleTask() throws AAIException, Exception {
+
+		if(historyTruncateTaskEnabled != null && !historyTruncateTaskEnabled) {
+			log.info("Skipping the scheduled history truncate task since historytruncatetasks.enabled=false");
+			return;
+		}
 
 		if(!"true".equals(AAIConfig.get("aai.disable.check.historytruncate.running", "false"))){
 			if(checkIfHistoryTruncateIsRunning()){
