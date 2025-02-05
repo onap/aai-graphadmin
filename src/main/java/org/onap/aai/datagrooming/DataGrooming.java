@@ -298,9 +298,7 @@ public class DataGrooming {
 
 		try {
 			ctx.scan(
-					"org.onap.aai.config",
-					"org.onap.aai.setup",
-					"org.onap.aai.introspection"
+					"org.onap.aai"
 			);
 			ctx.refresh();
 

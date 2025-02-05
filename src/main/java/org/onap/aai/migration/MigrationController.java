@@ -46,9 +46,7 @@ public class MigrationController {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		try {
 			ctx.scan(
-					"org.onap.aai.config",
-					"org.onap.aai.setup",
-					"org.onap.aai.introspection"
+					"org.onap.aai"
 			);
 			ctx.refresh();
 		} catch (Exception e) {

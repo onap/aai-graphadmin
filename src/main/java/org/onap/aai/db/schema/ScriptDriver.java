@@ -60,8 +60,7 @@ public class ScriptDriver {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		try {
 			ctx.scan(
-					"org.onap.aai.config",
-					"org.onap.aai.introspection"
+					"org.onap.aai"
 			);
 			ctx.refresh();
 
