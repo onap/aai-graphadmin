@@ -54,6 +54,18 @@ public class GenTester {
 	 */
 	public static void main(String[] args) throws AAIException {
 
+		try {
+			createSchema(args);
+		} catch (Exception e) {
+			LOGGER.error("Failed to run schema creation", e);
+			System.exit(1);
+		}
+
+		LOGGER.debug("All done, if the program does not exit, please kill it manually.");
+		System.exit(0);
+	}
+
+	private static void createSchema(String[] args) throws AAIException {
 		JanusGraph graph = null;
 		System.setProperty("aai.service.name", GenTester.class.getSimpleName());
 
@@ -180,9 +192,6 @@ public class GenTester {
 			ErrorLogHelper.logError("AAI_4000", ex.getMessage());
 			System.exit(1);
 		}
-
-		LOGGER.debug("-- all done, if program does not exit, please kill.");
-		System.exit(0);
 	}
 
 	private static void setSchemaInitializedToFalse(JanusGraph graph, Optional<Vertex> schemaInitializedVertex) {
