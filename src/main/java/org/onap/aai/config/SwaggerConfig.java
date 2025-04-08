@@ -34,9 +34,10 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Graphadmin API")
-                        .description("This is the API documentation for My Project")
-                        .version("v1.0"));
+                .title("Graphadmin API - Schema Job Status")
+                .description("This API provides operations related to the schema job status for Graphadmin. " +
+                "It allows users to check if the schema has been initialized and other related tasks.")
+                .version("v1.0"));
     }
 
 }

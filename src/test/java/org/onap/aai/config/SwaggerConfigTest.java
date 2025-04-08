@@ -42,7 +42,6 @@ public class SwaggerConfigTest {
                 .andExpect(status().isOk()); // Should now be 200 if permitted
     }
 
-
     @Test
     public void testOpenApiDocsAvailable() throws Exception {
         mockMvc.perform(get("/graphadmin-api-docs"))
