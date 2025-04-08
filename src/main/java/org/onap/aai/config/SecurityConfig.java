@@ -40,12 +40,12 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(requests -> requests
-                .requestMatchers(antMatcher("/util/echo"), antMatcher("/actuator/**"))
-                .permitAll()
-                .anyRequest()
-                .authenticated())
-            .httpBasic();
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(antMatcher("/util/echo"), antMatcher("/actuator/**"), antMatcher("/graphadmin-api-docs/**"), antMatcher("/swagger-ui/**"), antMatcher("/swagger-ui.html"), antMatcher("/swagger-ui/index.html"))
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .httpBasic();
 
         return httpSecurity.build();
     }
@@ -53,13 +53,14 @@ public class SecurityConfig {
     @Bean
     InMemoryUserDetailsManager userDetailsService(AuthProperties userProperties) {
         UserDetails[] users = userProperties.getUsers().stream()
-            .map(user -> User.withDefaultPasswordEncoder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles("someRole")
-                .build())
-            .toArray(UserDetails[]::new);
+                .map(user -> User.withDefaultPasswordEncoder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .roles("someRole")
+                        .build())
+                .toArray(UserDetails[]::new);
 
         return new InMemoryUserDetailsManager(users);
     }
 }
+
