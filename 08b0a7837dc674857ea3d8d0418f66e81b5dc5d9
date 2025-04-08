@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c1f923f4_53785bc6",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-04-08T11:52:43Z",
+      "side": 1,
+      "message": "You can fix the build issue you are facing here by switching to `1.16.0` here. The snapshot release got lost for some unknown reason",
+      "revId": "08b0a7837dc674857ea3d8d0418f66e81b5dc5d9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d1815518_172c799a",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-04-08T11:52:43Z",
+      "side": 1,
+      "message": "You can fix the build issue you are facing here by switching to `1.16.0` here. The snapshot release got lost for some unknown reason",
+      "revId": "08b0a7837dc674857ea3d8d0418f66e81b5dc5d9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
