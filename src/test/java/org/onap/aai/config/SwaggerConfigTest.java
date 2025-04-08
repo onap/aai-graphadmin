@@ -36,13 +36,14 @@ public class SwaggerConfigTest {
     @Autowired
     private MockMvc mockMvc;
 
+    //added test case for html
     @Test
     public void testSwaggerUiPageLoads() throws Exception {
         mockMvc.perform(get("/swagger-ui/index.html"))
                 .andExpect(status().isOk()); // Should now be 200 if permitted
     }
 
-
+//added test case for json
     @Test
     public void testOpenApiDocsAvailable() throws Exception {
         mockMvc.perform(get("/graphadmin-api-docs"))

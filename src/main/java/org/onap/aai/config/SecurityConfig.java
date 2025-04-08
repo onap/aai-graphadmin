@@ -41,7 +41,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(antMatcher("/util/echo"), antMatcher("/actuator/**"), antMatcher("/graphadmin-api-docs/**"), antMatcher("/swagger-ui/**"), antMatcher("/swagger-ui.html"), antMatcher("/swagger-ui/index.html"))
+                        .requestMatchers(antMatcher("/util/echo"), antMatcher("/actuator/**"), antMatcher("/graphadmin-api-docs/**"), antMatcher("/swagger-ui/**"), antMatcher("/swagger-ui.html"), antMatcher("/swagger-ui/index.html")) //added swagger paths
                         .permitAll()
                         .anyRequest()
                         .authenticated())
