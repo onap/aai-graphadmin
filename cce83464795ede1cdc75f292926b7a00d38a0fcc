@@ -18,6 +18,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffc2e5fd_247c2601",
+        "filename": "pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-04-09T12:04:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "64ce4112_13a9820e",
+      "revId": "cce83464795ede1cdc75f292926b7a00d38a0fcc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b0493286_be9b9703",
@@ -31,6 +49,24 @@
       "writtenOn": "2025-04-09T11:21:25Z",
       "side": 1,
       "message": "I don\u0027t think this comment is adding anything valuable. Can you remove it?",
+      "revId": "cce83464795ede1cdc75f292926b7a00d38a0fcc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef935482_cd50b4af",
+        "filename": "src/main/java/org/onap/aai/config/SecurityConfig.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-04-09T12:04:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0493286_be9b9703",
       "revId": "cce83464795ede1cdc75f292926b7a00d38a0fcc",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -52,6 +88,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2b4c226_d9bcd4dc",
+        "filename": "src/test/java/org/onap/aai/config/SwaggerConfigTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-04-09T12:04:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1a6b96_776868db",
+      "revId": "cce83464795ede1cdc75f292926b7a00d38a0fcc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "98d88277_7421e4c4",
@@ -65,6 +119,24 @@
       "writtenOn": "2025-04-09T11:21:25Z",
       "side": 1,
       "message": "I don\u0027t think this comment is adding anything valuable. Can you remove it?",
+      "revId": "cce83464795ede1cdc75f292926b7a00d38a0fcc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b55d5028_9af69abd",
+        "filename": "src/test/java/org/onap/aai/config/SwaggerConfigTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-04-09T12:04:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "98d88277_7421e4c4",
       "revId": "cce83464795ede1cdc75f292926b7a00d38a0fcc",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
