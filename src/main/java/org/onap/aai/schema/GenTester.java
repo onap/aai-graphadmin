@@ -236,6 +236,11 @@ public class GenTester {
 
 	private static void createSchemaInitializedIndex(JanusGraph graph, JanusGraphManagement mgmt) throws InterruptedException {
 		// creating a composite index
+		boolean indexExists = mgmt.containsGraphIndex(SCHEMA_INITIALIZED);
+		if(indexExists) {
+			LOGGER.debug(SCHEMA_INITIALIZED + " index already exists. Skipping creation.");
+			return;
+		}
 		LOGGER.debug("-- Building an index on property schema-initialized");
 		PropertyKey schemaInitialized = mgmt.makePropertyKey(SCHEMA_INITIALIZED).dataType(Boolean.class).make();
 		mgmt.buildIndex(SCHEMA_INITIALIZED, Vertex.class)
