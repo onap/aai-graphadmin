@@ -16,6 +16,23 @@
       "message": "stage-docker-release",
       "revId": "7ac0f8f63e1cc364d8e81ee0edec01f85f4871d2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08e90a35_a43cf344",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-06-11T13:47:41Z",
+      "side": 1,
+      "message": "stage-docker-release",
+      "revId": "7ac0f8f63e1cc364d8e81ee0edec01f85f4871d2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ],
   "submitRequirementResults": [
