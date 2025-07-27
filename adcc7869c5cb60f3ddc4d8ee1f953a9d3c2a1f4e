@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2aa8aabf_054183ce",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-07-27T08:20:18Z",
+      "side": 1,
+      "message": "Please also bump the snapshot version here to `1.16.1-SNAPSHOT` since `1.16.0` [is already released](https://gerrit.onap.org/r/c/aai/graphadmin/+/140959)",
+      "revId": "adcc7869c5cb60f3ddc4d8ee1f953a9d3c2a1f4e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "31c6e8bd_437518e8",
         "filename": "pom.xml",
         "patchSetId": 1
