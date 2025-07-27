@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a140a382_1d21551d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-07-27T08:39:50Z",
+      "side": 1,
+      "message": "...and also in the `version.properties` file",
+      "revId": "adcc7869c5cb60f3ddc4d8ee1f953a9d3c2a1f4e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2aa8aabf_054183ce",
