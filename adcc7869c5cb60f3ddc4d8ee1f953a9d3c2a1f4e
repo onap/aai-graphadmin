@@ -35,6 +35,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4b1ac4a3_c33b57d0",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-07-28T13:06:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2aa8aabf_054183ce",
+      "revId": "adcc7869c5cb60f3ddc4d8ee1f953a9d3c2a1f4e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "31c6e8bd_437518e8",
@@ -48,6 +66,24 @@
       "writtenOn": "2025-07-27T08:18:32Z",
       "side": 1,
       "message": "Please also update the version here",
+      "revId": "adcc7869c5cb60f3ddc4d8ee1f953a9d3c2a1f4e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a026658_c09a8200",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-07-28T13:06:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31c6e8bd_437518e8",
       "revId": "adcc7869c5cb60f3ddc4d8ee1f953a9d3c2a1f4e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
