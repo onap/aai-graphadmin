@@ -50,6 +50,23 @@
       "message": "stage-maven-release",
       "revId": "ae5d2fb32ceeb8221fe53ce1e453f3112d03a2e0",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b976e5a_51702d53",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-08-14T11:44:34Z",
+      "side": 1,
+      "message": "stage-docker-release",
+      "revId": "ae5d2fb32ceeb8221fe53ce1e453f3112d03a2e0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ],
   "submitRequirementResults": [
