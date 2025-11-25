@@ -540,6 +540,57 @@
 		</encoder>
 	</appender>
 	<!-- CreateDBSchema logs ended  -->	
+
+	<!-- SdcRootModelLoader logs started  -->
+	<appender name="sdcRootModelLoader" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<File>${logDirectory}/sdcRootModelLoader/error.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/sdcRootModelLoader/error.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<maxHistory>${maxHistory}</maxHistory>
+			<totalSizeCap>${totalSizeCap}</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${errorPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="sdcRootModelLoaderdebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logDirectory}/sdcRootModelLoader/debug.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/sdcRootModelLoader/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<maxHistory>${maxHistory}</maxHistory>
+			<totalSizeCap>${totalSizeCap}</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${debugPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="sdcRootModelLoadermetric" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logDirectory}/sdcRootModelLoader/metrics.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logDirectory}/sdcRootModelLoader/metrics.log.%d{yyyy-MM-dd}</fileNamePattern>
+			<maxHistory>${maxHistory}</maxHistory>
+			<totalSizeCap>${totalSizeCap}</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${metricPattern}</pattern>
+		</encoder>
+	</appender>
+	<!-- SdcRootModelLoader logs ended  -->	
 	
 	<!-- DataCleanupTasks logs started  -->
 	<appender name="dataCleanuperror" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -1178,6 +1229,13 @@
 		<appender-ref ref="createDBSchema"/>
 		<appender-ref ref="createDBSchemadebug"/>
 		<appender-ref ref="createDBSchemametric"/>
+		<appender-ref ref="STDOUT"/>
+	</logger>
+
+	<logger name="org.onap.aai.schema" level="DEBUG" additivity="false">
+		<appender-ref ref="sdcRootModelLoader"/>
+		<appender-ref ref="sdcRootModelLoaderdebug"/>
+		<appender-ref ref="sdcRootModelLoadermetric"/>
 		<appender-ref ref="STDOUT"/>
 	</logger>
 	
