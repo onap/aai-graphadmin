@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "baf44388_b0713247",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T11:47:05Z",
+      "side": 1,
+      "message": "I have created a separate class SDCRootModelLoader and this is invoked by a separate script sdcRootModelLoader.sh after schema creation.",
+      "parentUuid": "b0e02091_da2a700c",
+      "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fcebd0bc_40b8fe5a",
         "filename": "src/main/resources/etc/appprops/artifact-generator.properties",
         "patchSetId": 1
@@ -31,6 +49,24 @@
       "writtenOn": "2025-12-01T09:39:56Z",
       "side": 1,
       "message": "Please add a comment in the file explaining where these ids come from, particularly with a link to the SDC repo that originally defines them.\nShould something change on the SDC side in the future, then that will be helpful to adjust it here.\n\nAlso a longer term solution should likely rely on the SDC keeping track of these models instead of AAI",
+      "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "181ea100_2bd85306",
+        "filename": "src/main/resources/etc/appprops/artifact-generator.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T11:47:05Z",
+      "side": 1,
+      "message": "comment added with the SDC repo location of Artifact-Generator.properties",
+      "parentUuid": "fcebd0bc_40b8fe5a",
       "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
