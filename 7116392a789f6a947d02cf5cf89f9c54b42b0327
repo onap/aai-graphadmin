@@ -54,6 +54,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "35a25379_3f2cc5f7",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T14:14:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baf44388_b0713247",
+      "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fcebd0bc_40b8fe5a",
