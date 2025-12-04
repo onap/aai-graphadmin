@@ -38,6 +38,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f3dc3171_7a9d2797",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "As discussed this applyLockConsistency is part of Schema creation. So keeping it as it is.",
+      "parentUuid": "baf44388_b0713247",
+      "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "fcebd0bc_40b8fe5a",
         "filename": "src/main/resources/etc/appprops/artifact-generator.properties",
         "patchSetId": 1
@@ -67,6 +85,24 @@
       "side": 1,
       "message": "comment added with the SDC repo location of Artifact-Generator.properties",
       "parentUuid": "fcebd0bc_40b8fe5a",
+      "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b2e7c08d_5a041e96",
+        "filename": "src/main/resources/etc/appprops/artifact-generator.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "181ea100_2bd85306",
       "revId": "7116392a789f6a947d02cf5cf89f9c54b42b0327",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }

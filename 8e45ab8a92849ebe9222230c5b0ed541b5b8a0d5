@@ -18,6 +18,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "767c9267_90be13cc",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75f04a2a_3d29962e",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "286b4003_e95c4481",
@@ -35,6 +53,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "09cb26bc_be63d5f1",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "286b4003_e95c4481",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "93a66cdb_5382f1c8",
@@ -48,6 +84,24 @@
       "writtenOn": "2025-12-04T12:19:08Z",
       "side": 1,
       "message": "This is misleading as it is logging the same thing as line 147.\nWe should adjust the log message or remove the log line here",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fcb994b5_c575df6d",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Removed the logger",
+      "parentUuid": "93a66cdb_5382f1c8",
       "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -71,6 +125,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8cf5bfec_3c3873b2",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "we are actually covering both true \u0026 false case here. In case of AAI_INDEX_LOCK_ENABLED\u003dtrue we are putting LOCK consistency to each vertex \u0026 AAI_INDEX_LOCK_ENABLED\u003dfalse we are using to again apply the DEFAULT consistency to all vertex.",
+      "parentUuid": "1ac0717b_657797bb",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "36aae39b_aceed14c",
         "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
         "patchSetId": 3
@@ -82,6 +154,24 @@
       "writtenOn": "2025-12-04T12:19:08Z",
       "side": 1,
       "message": "Can we log this on debug level?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6514a709_fe1e4018",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "36aae39b_aceed14c",
       "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -103,6 +193,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "57abb25d_3dc4a85b",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1384a87_2db89853",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "357a14b0_2fdfb572",
@@ -116,6 +224,24 @@
       "writtenOn": "2025-12-04T12:19:08Z",
       "side": 1,
       "message": "This should be 2025 copyright for Deutsche Telekom",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "92a1fb49_1c80f1af",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "357a14b0_2fdfb572",
       "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -137,6 +263,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9f858a36_f0962b1f",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69d5f82f_cae0dae2",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6129c19f_c847fe86",
@@ -150,6 +294,24 @@
       "writtenOn": "2025-12-04T12:19:08Z",
       "side": 1,
       "message": "Same comment about initializing the logger here on the class level",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "51ce9975_235473e8",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6129c19f_c847fe86",
       "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -171,6 +333,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "432a332a_baf90b4d",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71e65098_2208f2a3",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2819145f_e9ab0386",
@@ -184,6 +364,24 @@
       "writtenOn": "2025-12-04T12:19:08Z",
       "side": 1,
       "message": "Can we have a dedicated method for lines 90 to 163 here?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9df6258b_c7c0d873",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 8530
+      },
+      "writtenOn": "2025-12-04T14:11:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2819145f_e9ab0386",
       "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
