@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75f04a2a_3d29962e",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "I think we should initialize the logger here instead of in line 70:\n`private static Logger LOGGER \u003d LoggerFactory.getLogger(GenTester.class);`",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "286b4003_e95c4481",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "This should either be removed or logged on a lower log level like `debug` or `trace`",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93a66cdb_5382f1c8",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "This is misleading as it is logging the same thing as line 147.\nWe should adjust the log message or remove the log line here",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ac0717b_657797bb",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "I think we should have the\n```java\n        boolean lockEnabled \u003d Boolean.parseBoolean(\n                Optional.ofNullable(System.getenv(\"AAI_INDEX_LOCK_ENABLED\"))\n                        .orElse(\"false\")\n```\ncheck here and not invoke the method when it is not active.\n\nYou can then remove all the control structures inside the method, which also avoids iterating over all vertex indices (that could potentially be quite a few) when it is not necessary",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "36aae39b_aceed14c",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "Can we log this on debug level?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1384a87_2db89853",
+        "filename": "src/main/java/org/onap/aai/schema/GenTester.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "Can we log this on debug level?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "357a14b0_2fdfb572",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "This should be 2025 copyright for Deutsche Telekom",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "69d5f82f_cae0dae2",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "Can you add a class level comment here briefly explaining what this standalone class does and why that is needed?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6129c19f_c847fe86",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "Same comment about initializing the logger here on the class level",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "71e65098_2208f2a3",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "Can you add a full url (see https://git.onap.org/sdc/tree/) here instead of the path?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2819145f_e9ab0386",
+        "filename": "src/main/java/org/onap/aai/schema/SDCRootModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-04T12:19:08Z",
+      "side": 1,
+      "message": "Can we have a dedicated method for lines 90 to 163 here?",
+      "revId": "8e45ab8a92849ebe9222230c5b0ed541b5b8a0d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
