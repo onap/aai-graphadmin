@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * org.onap.aai
  * ================================================================================
- * Copyright © Deutsche Telekom. All rights reserved.
+ * Copyright © 2025 Deutsche Telekom. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package org.onap.aai.rest.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.onap.aai.datagrooming.DataGrooming;
 import org.onap.aai.introspection.LoaderFactory;
 import org.onap.aai.rest.model.DataGroomingRequest;
@@ -40,28 +41,27 @@ import java.util.concurrent.Executor;
 
 @Service
 @PropertySource("file:${server.local.startpath}/etc/appprops/aaiconfig.properties")
+@RequiredArgsConstructor
 public class DataGroomingService {
 
     private static final Logger logger = LoggerFactory.getLogger(DataGroomingService.class);
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    LoaderFactory loaderFactory;
+    final LoaderFactory loaderFactory;
 
     @Autowired
-    SchemaVersions schemaVersions;
+    final SchemaVersions schemaVersions;
 
     @Async("dataGroomingExecutor")
-    public void executeAsync(String requestBody) throws JsonProcessingException {
+    public void executeAsync(DataGroomingRequest requestBody) throws JsonProcessingException {
 
         try {
             logger.info("Incoming JSON: {}", requestBody);
 
-            DataGroomingRequest request = objectMapper.readValue(requestBody, DataGroomingRequest.class);
-
-            String[] args = getArgsList(request).toArray(new String[0]);
+            String[] args = getArgsList(requestBody).toArray(new String[0]);
 
             DataGrooming tool = new DataGrooming(loaderFactory, schemaVersions);
             tool.execute(args);

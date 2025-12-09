@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * org.onap.aai
  * ================================================================================
- * Copyright © Deutsche Telekom. All rights reserved.
+ * Copyright © 2025 Deutsche Telekom. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ package org.onap.aai.rest.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
+
 import org.onap.aai.dbgen.ReindexingTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 @Service
+@RequiredArgsConstructor
 public class ReindexingToolService {
 
     private static final Logger logger = LoggerFactory.getLogger(ReindexingToolService.class);
@@ -51,8 +54,7 @@ public class ReindexingToolService {
 
             String[] args = getArgsList(requestMap).toArray(new String[0]);
 
-            ReindexingTool reindexingTool = new ReindexingTool();
-            reindexingTool.execute(args);
+            ReindexingTool.execute(args);
 
         } catch (Exception e) {
             logger.error("Error:", e);
@@ -73,7 +75,6 @@ public class ReindexingToolService {
         List<String> argsList = new LinkedList<>();
 
         argsList.add("-indexNames");
-//        argsList.add(request.get("indexNames").toString());
         String indexStr = null;
         Object indexNamesObject = request.get("indexNames");
         if (indexNamesObject instanceof List) {

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * org.onap.aai
  * ================================================================================
- * Copyright © Deutsche Telekom. All rights reserved.
+ * Copyright © 2025 Deutsche Telekom. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@
  */
 package org.onap.aai.rest.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import org.onap.aai.dbgen.DupeTool;
 import org.onap.aai.exceptions.AAIException;
 import org.onap.aai.introspection.LoaderFactory;
@@ -40,29 +40,29 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 @Service
+@RequiredArgsConstructor
 public class DupeToolService {
 
     private static final Logger logger = LoggerFactory.getLogger(DupeToolService.class);
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    LoaderFactory loaderFactory;
+    final LoaderFactory loaderFactory;
 
     @Autowired
-    SchemaVersions schemaVersions;
+    final SchemaVersions schemaVersions;
 
     @Async("dupeExecutor")
-    public void executeAsync(String requestBody) throws AAIException, JsonProcessingException {
+    public void executeAsync(DupeToolRequest requestBody) throws AAIException {
 
         try {
             logger.info("Incoming JSON: {}", requestBody);
 
-            DupeToolRequest request = objectMapper.readValue(requestBody, DupeToolRequest.class);
-            validateRequest(request);
+            validateRequest(requestBody);
 
-            String[] args = getArgsList(request).toArray(new String[0]);
+            String[] args = getArgsList(requestBody).toArray(new String[0]);
 
             DupeTool tool = new DupeTool(loaderFactory, schemaVersions);
             tool.execute(args);
@@ -133,4 +133,3 @@ public class DupeToolService {
         return executor;
     }
 }
-

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * org.onap.aai
  * ================================================================================
- * Copyright © Deutsche Telekom. All rights reserved.
+ * Copyright © 2025 Deutsche Telekom. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@
  */
 package org.onap.aai.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.onap.aai.rest.model.DataGroomingRequest;
+import org.onap.aai.rest.model.DupeToolRequest;
 import org.onap.aai.rest.service.DataGroomingService;
 import org.onap.aai.rest.service.DataGroomingSummaryService;
 import org.onap.aai.rest.service.DupeToolService;
@@ -27,6 +28,7 @@ import org.onap.aai.rest.service.ReindexingToolService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -39,29 +41,39 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/script")
+@RequestMapping("/scripts")
 @EnableAsync
 @PropertySource("file:${schema.ingest.file:${server.local.startpath}/application.properties}")
 public class ScriptsController {
     public static final String RESPONSE = "response";
 
     @Autowired
-    private DataGroomingService dataGroomingService;
+    private final DataGroomingService dataGroomingService;
 
     @Autowired
-    private DupeToolService dupeToolService;
+    private final DupeToolService dupeToolService;
 
     @Autowired
-    private ReindexingToolService reindexingToolService;
+    private final ReindexingToolService reindexingToolService;
 
     @Autowired
-    private DataGroomingSummaryService dataGroomingSummaryService;
+    private final DataGroomingSummaryService dataGroomingSummaryService;
 
     private static final Logger logger = LoggerFactory.getLogger(ScriptsController.class.getSimpleName());
-    private static final String filePath = "/opt/app/aai-graphadmin/logs/data/dataGrooming";
+
+    @Value("${aai.datagrooming.summarypath}")
+    private String filePath;
+
+    public ScriptsController(DataGroomingService dataGroomingService, DupeToolService dupeToolService,
+                             ReindexingToolService reindexingToolService, DataGroomingSummaryService dataGroomingSummaryService) {
+        this.dataGroomingService = dataGroomingService;
+        this.dupeToolService = dupeToolService;
+        this.reindexingToolService = reindexingToolService;
+        this.dataGroomingSummaryService = dataGroomingSummaryService;
+    }
 
     @PostMapping("/grooming")
-    public CompletableFuture<ResponseEntity<Map<String, String>>> runDataGrooming(@RequestBody String requestBody) {
+    public CompletableFuture<ResponseEntity<Map<String, String>>> runDataGrooming(@RequestBody DataGroomingRequest requestBody) {
 
         logger.info(">>> Inside runDataGrooming");
         try {
@@ -74,7 +86,7 @@ public class ScriptsController {
     }
 
     @PostMapping("/dupes")
-    public CompletableFuture<ResponseEntity<Map<String, String>>> runDupeTool(@RequestBody String requestBody) {
+    public CompletableFuture<ResponseEntity<Map<String, String>>> runDupeTool(@RequestBody DupeToolRequest requestBody) {
 
         logger.info(">>> Inside runDupeToolForAllNodes");
         try {
@@ -122,7 +134,7 @@ public class ScriptsController {
         }
     }
 
-   
+
     @GetMapping("/grooming/files/present")
     public ResponseEntity<Map<String, Object>> checkIfFilesPresent() throws IOException {
         boolean present = dataGroomingSummaryService.hasGroomingFiles();
@@ -134,7 +146,5 @@ public class ScriptsController {
                 )
         );
     }
-
-
 
 }
