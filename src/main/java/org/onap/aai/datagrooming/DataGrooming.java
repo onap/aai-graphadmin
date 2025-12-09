@@ -107,8 +107,8 @@ public class DataGrooming {
 		//  is never called via the cron, but this check will prevent it from
 		//  being called from the command line.
 		if( historyEnabled ) {
-	    	LOGGER.debug("ERROR: DataGrooming may not be used when history.enabled=true. ");
-	    	return;
+			LOGGER.debug("ERROR: DataGrooming may not be used when history.enabled=true. ");
+			return;
 		}
 
 		// A value of 0 means that we will not have a time-window -- we will look
@@ -267,18 +267,21 @@ public class DataGrooming {
 						cArgs.skipEdgeCheckFlag, cArgs.timeWindowMinutes,
 						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 			}
-			LOGGER.info("===== Data Grooming Summary after all fixes =====");
-            LOGGER.info("Ghost Node Count: " + getGhostNodeCount());
-            LOGGER.info("Bad Index Node Count: " + getBadIndexNodeCount());
-            LOGGER.info("Bad URI Node Count: " + getBadUriNodeCount());
-            LOGGER.info("Orphan Node Count: " + getOrphanNodeCount());
-            LOGGER.info("Missing AAI NT Node Count: " + getMissingAaiNtNodeCount());
-            LOGGER.info("One-Armed Edge Hash Count: " + getOneArmedEdgeHashCount());
- 			// Add more logging if needed for other nodes like Duplicate Groups, Delete Candidates, etc.
-            LOGGER.info("===== End of Data Grooming Summary =====");
+
+			if(LOGGER.isInfoEnabled()){
+				LOGGER.info("===== Data Grooming Summary after all fixes =====");
+				LOGGER.info("Ghost Node Count: {}" , getGhostNodeCount());
+				LOGGER.info("Bad Index Node Count: {}", getBadIndexNodeCount());
+				LOGGER.info("Bad URI Node Count: {}", getBadUriNodeCount());
+				LOGGER.info("Orphan Node Count: {}", getOrphanNodeCount());
+				LOGGER.info("Missing AAI NT Node Count: {}", getMissingAaiNtNodeCount());
+				LOGGER.info("One-Armed Edge Hash Count: {}}", getOneArmedEdgeHashCount());
+				// Add more logging if needed for other nodes like Duplicate Groups, Delete Candidates, etc.
+				LOGGER.info("===== End of Data Grooming Summary =====");
+			}
 
 		} catch (Exception ex) {
-			LOGGER.debug("Exception while grooming data " + LogFormatTools.getStackTop(ex));
+			LOGGER.debug(String.format("Exception while grooming data %s", LogFormatTools.getStackTop(ex)));
 		}
 		LOGGER.debug(" Done! ");
 		AAISystemExitUtil.systemExitCloseAAIGraph(0);
@@ -334,13 +337,13 @@ public class DataGrooming {
 	 * @return the int
 	 */
 	private int doTheGrooming( String fileNameForFixing,
-			Boolean edgesOnlyFlag, Boolean dontFixOrphansFlag,
-			int maxRecordsToFix, String groomOutFileName, String version,
-			Boolean dupeCheckOff, Boolean dupeFixOn,
-			Boolean ghost2CheckOff, Boolean ghost2FixOn,
-			Boolean finalShutdownFlag, Boolean cacheDbOkFlag,
-			Boolean skipEdgeCheckFlag, int timeWindowMinutes,
-			String singleNodeType, Boolean skipIndexUpdateFix ) {
+							   Boolean edgesOnlyFlag, Boolean dontFixOrphansFlag,
+							   int maxRecordsToFix, String groomOutFileName, String version,
+							   Boolean dupeCheckOff, Boolean dupeFixOn,
+							   Boolean ghost2CheckOff, Boolean ghost2FixOn,
+							   Boolean finalShutdownFlag, Boolean cacheDbOkFlag,
+							   Boolean skipEdgeCheckFlag, int timeWindowMinutes,
+							   String singleNodeType, Boolean skipIndexUpdateFix ) {
 
 		LOGGER.debug(" Entering doTheGrooming ");
 
@@ -361,10 +364,10 @@ public class DataGrooming {
 		Graph g2 = null;
 		try {
 			if( timeWindowMinutes > 0 ){
-		  		// Translate the window value (ie. 30 minutes) into a unix timestamp like
-		  		//    we use in the db - so we can select data created after that time.
-		  		windowStartTime = figureWindowStartTime( timeWindowMinutes );
-		  	}
+				// Translate the window value (ie. 30 minutes) into a unix timestamp like
+				//    we use in the db - so we can select data created after that time.
+				windowStartTime = figureWindowStartTime( timeWindowMinutes );
+			}
 
 			AAIConfig.init();
 			String targetDir = AAIConstants.AAI_HOME + AAIConstants.AAI_FILESEP
@@ -461,7 +464,7 @@ public class DataGrooming {
 			// Note Also - It's a little surprising that we can run
 			// across these when looking for orphans since that search at
 			// least begins based on a given aai-node-type.  But watching
-		 	// where they come up, they are getting discovered when a node
+			// where they come up, they are getting discovered when a node
 			// is looking for its parent node.  So, say, a “tenant” node
 			// follows a “contains” edge and finds the bad node.
 
@@ -486,7 +489,10 @@ public class DataGrooming {
 					}
 
 					LOGGER.debug(" >  Look at : [" + nType + "] ...");
-					ntList = ntList + "," + nType;
+					if(ntList.isEmpty())
+						ntList = nType;
+					else
+						ntList = ntList + "," + nType;
 
 					// Get a collection of the names of the key properties for this nodeType to use later
 					// Determine what the key fields are for this nodeType - use an arrayList so they
@@ -689,20 +695,20 @@ public class DataGrooming {
 									aaiKeysOk = false;
 								}
 
-                              	boolean bothKeysAreBad = false;
-                              	if( !aaiKeysOk && !aaiUriOk ) {
-                              		bothKeysAreBad = true;
-                              	}
-                              	else if ( !aaiKeysOk ){
-                              		// Just the key-index is bad
-                              		// We will not be putting this on the Auto-Delete list, just logging it (AAI-16252)
-                              		badIndexNodeHash.put(thisVid, thisVtx);
-                              	}
-                              	else if ( !aaiUriOk ){
-                              		// Just the aai-uri is bad
-                              		// We will not be putting this on the Auto-Delete list, just logging it (AAI-16252)
-                              		badUriNodeHash.put(thisVid, thisVtx);
-                              	}
+								boolean bothKeysAreBad = false;
+								if( !aaiKeysOk && !aaiUriOk ) {
+									bothKeysAreBad = true;
+								}
+								else if ( !aaiKeysOk ){
+									// Just the key-index is bad
+									// We will not be putting this on the Auto-Delete list, just logging it (AAI-16252)
+									badIndexNodeHash.put(thisVid, thisVtx);
+								}
+								else if ( !aaiUriOk ){
+									// Just the aai-uri is bad
+									// We will not be putting this on the Auto-Delete list, just logging it (AAI-16252)
+									badUriNodeHash.put(thisVid, thisVtx);
+								}
 
 								if( bothKeysAreBad ){
 									// Neither the aai-uri nor key info could retrieve this node - BOTH are bad.
@@ -747,9 +753,9 @@ public class DataGrooming {
 									// Found some DUPLICATES - need to process them
 									LOGGER.debug(" - now check Dupes for this guy - ");
 									List<String> tmpDupeGroups = checkAndProcessDupes(
-												TRANSID, FROMAPPID, g, source1, version,
-												nType, secondGetList, dupeFixOn,
-												deleteCandidateList, dupeGroups, loader);
+											TRANSID, FROMAPPID, g, source1, version,
+											nType, secondGetList, dupeFixOn,
+											deleteCandidateList, dupeGroups, loader);
 									Iterator<String> dIter = tmpDupeGroups.iterator();
 									while (dIter.hasNext()) {
 										// Add in any newly found dupes to our running list
@@ -779,10 +785,10 @@ public class DataGrooming {
 						// For this nodeType, we haven't looked at the possibility of a
 						// non-dependent node where two verts have same key info
 						ArrayList<ArrayList<Vertex>> nonDependentDupeSets = new ArrayList<>();
-							nonDependentDupeSets = getDupeSets4NonDepNodes(
-										TRANSID, FROMAPPID, g,
-										version, nType, tmpList,
-										keyProps, loader );
+						nonDependentDupeSets = getDupeSets4NonDepNodes(
+								TRANSID, FROMAPPID, g,
+								version, nType, tmpList,
+								keyProps, loader );
 						// For each set found (each set is for a unique instance of key-values),
 						//  process the dupes found
 						Iterator<ArrayList<Vertex>> dsItr = nonDependentDupeSets.iterator();
@@ -790,9 +796,9 @@ public class DataGrooming {
 							ArrayList<Vertex> dupeList =  dsItr.next();
 							LOGGER.debug(" - now check Dupes for some non-dependent guys - ");
 							List<String> tmpDupeGroups = checkAndProcessDupes(
-										TRANSID, FROMAPPID, g, source1, version,
-										nType, dupeList, dupeFixOn,
-										deleteCandidateList, dupeGroups, loader);
+									TRANSID, FROMAPPID, g, source1, version,
+									nType, dupeList, dupeFixOn,
+									deleteCandidateList, dupeGroups, loader);
 							Iterator<String> dIter = tmpDupeGroups.iterator();
 							while (dIter.hasNext()) {
 								// Add in any newly found dupes to our running list
@@ -812,318 +818,318 @@ public class DataGrooming {
 			}// end of check to make sure we weren't only supposed to do edges
 
 
-		  if( !skipEdgeCheckFlag ){
-			// ---------------------------------------------------------------
-			// Now, we're going to look for one-armed-edges. Ie. an
-			// edge that should have been deleted (because a vertex on
-			// one side was deleted) but somehow was not deleted.
-			// So the one end of it points to a vertexId -- but that
-			// vertex is empty.
-			// --------------------------------------------------------------
+			if( !skipEdgeCheckFlag ){
+				// ---------------------------------------------------------------
+				// Now, we're going to look for one-armed-edges. Ie. an
+				// edge that should have been deleted (because a vertex on
+				// one side was deleted) but somehow was not deleted.
+				// So the one end of it points to a vertexId -- but that
+				// vertex is empty.
+				// --------------------------------------------------------------
 
-			// To do some strange checking - we need a second graph object
-			LOGGER.debug("    ---- NOTE --- about to open a SECOND graph (takes a little while)-------- ");
-			// Note - graph2 just reads - but we want it to use a fresh connection to
-			//      the database, so we are NOT using the CACHED DB CONFIG here.
+				// To do some strange checking - we need a second graph object
+				LOGGER.debug("    ---- NOTE --- about to open a SECOND graph (takes a little while)-------- ");
+				// Note - graph2 just reads - but we want it to use a fresh connection to
+				//      the database, so we are NOT using the CACHED DB CONFIG here.
 
-			// -- note JanusGraphFactory has been leaving db connections open
-			//graph2 = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(DataGrooming.class.getSimpleName()).withGraphType("realtime2").buildConfiguration());
-			graph2 = AAIGraph.getInstance().getGraph();
-			if (graph2 == null) {
-				String emsg = "null graph2 object in DataGrooming\n";
-				throw new AAIException("AAI_6101", emsg);
-			} else {
-				LOGGER.debug("Got the graph2 object... ");
-			}
-			g2 = graph2.newTransaction();
-			if (g2 == null) {
-				String emsg = "null graphTransaction2 object in DataGrooming\n";
-				throw new AAIException("AAI_6101", emsg);
-			}
+				// -- note JanusGraphFactory has been leaving db connections open
+				//graph2 = JanusGraphFactory.open(new AAIGraphConfig.Builder(AAIConstants.REALTIME_DB_CONFIG).forService(DataGrooming.class.getSimpleName()).withGraphType("realtime2").buildConfiguration());
+				graph2 = AAIGraph.getInstance().getGraph();
+				if (graph2 == null) {
+					String emsg = "null graph2 object in DataGrooming\n";
+					throw new AAIException("AAI_6101", emsg);
+				} else {
+					LOGGER.debug("Got the graph2 object... ");
+				}
+				g2 = graph2.newTransaction();
+				if (g2 == null) {
+					String emsg = "null graphTransaction2 object in DataGrooming\n";
+					throw new AAIException("AAI_6101", emsg);
+				}
 
-			ArrayList<Vertex> vertList = new ArrayList<>();
-			Iterator<Vertex> vItor3 = g.traversal().V();
-			// Gotta hold these in a List - or else the DB times out as you cycle
-			// through these
-			while (vItor3.hasNext()) {
-				Vertex v = vItor3.next();
-				vertList.add(v);
-			}
-			int counter = 0;
-			int lastShown = 0;
-			Iterator<Vertex> vItor2 = vertList.iterator();
-			LOGGER.debug(" Checking for bad edges  --- ");
+				ArrayList<Vertex> vertList = new ArrayList<>();
+				Iterator<Vertex> vItor3 = g.traversal().V();
+				// Gotta hold these in a List - or else the DB times out as you cycle
+				// through these
+				while (vItor3.hasNext()) {
+					Vertex v = vItor3.next();
+					vertList.add(v);
+				}
+				int counter = 0;
+				int lastShown = 0;
+				Iterator<Vertex> vItor2 = vertList.iterator();
+				LOGGER.debug(" Checking for bad edges  --- ");
 
-			while (vItor2.hasNext()) {
-				Vertex v = null;
-				try {
+				while (vItor2.hasNext()) {
+					Vertex v = null;
 					try {
-						v = vItor2.next();
-					} catch (Exception vex) {
-						LOGGER.warn(">>> WARNING trying to get next vertex on the vItor2 ");
-						continue;
-					}
-
-					counter++;
-					String thisVertId = "";
-					try {
-						thisVertId = v.id().toString();
-					} catch (Exception ev) {
-						LOGGER.warn("WARNING when doing getId() on a vertex from our vertex list.  ");
-						continue;
-					}
-					if (ghostNodeHash.containsKey(thisVertId)) {
-						// We already know that this is a phantom node, so don't bother checking it
-						LOGGER.debug(" >> Skipping edge check for edges from vertexId = "
-										+ thisVertId
-										+ ", since that guy is a Phantom Node");
-						continue;
-					}
-
-					if( windowStartTime > 0 ){
-						// They are using the time-window, so we only want nodes that are updated after a
-						// passed-in timestamp OR that have no last-modified-timestamp which means they are suspicious.
-						Object objModTimeStamp = v.property("aai-last-mod-ts").orElse(null);
-						if( objModTimeStamp != null ){
-							long thisNodeModTime = (long)objModTimeStamp;
-							if( thisNodeModTime < windowStartTime ){
-								// It has a last modified ts and is NOT in our window, so we can pass over it
-								continue;
-							}
-						}
-					}
-
-					if (counter == lastShown + 250) {
-						lastShown = counter;
-						LOGGER.debug("... Checking edges for vertex # "
-								+ counter);
-					}
-					Iterator<Edge> eItor = v.edges(Direction.BOTH);
-					while (eItor.hasNext()) {
-						Edge e = null;
-						Vertex vIn = null;
-						Vertex vOut = null;
 						try {
-							e = eItor.next();
-						} catch (Exception iex) {
-							LOGGER.warn(">>> WARNING trying to get next edge on the eItor ", iex);
+							v = vItor2.next();
+						} catch (Exception vex) {
+							LOGGER.warn(">>> WARNING trying to get next vertex on the vItor2 ");
 							continue;
 						}
 
+						counter++;
+						String thisVertId = "";
 						try {
-							vIn = e.inVertex();
-						} catch (Exception err) {
-							LOGGER.warn(">>> WARNING trying to get edge's In-vertex ", err);
+							thisVertId = v.id().toString();
+						} catch (Exception ev) {
+							LOGGER.warn("WARNING when doing getId() on a vertex from our vertex list.  ");
+							continue;
 						}
-						String vNtI = "";
-						String vIdI = "";
-						Vertex ghost2 = null;
+						if (ghostNodeHash.containsKey(thisVertId)) {
+							// We already know that this is a phantom node, so don't bother checking it
+							LOGGER.debug(" >> Skipping edge check for edges from vertexId = "
+									+ thisVertId
+									+ ", since that guy is a Phantom Node");
+							continue;
+						}
 
-						Boolean keysMissing = true;
-						Boolean cantGetUsingVid = false;
-						if (vIn != null) {
+						if( windowStartTime > 0 ){
+							// They are using the time-window, so we only want nodes that are updated after a
+							// passed-in timestamp OR that have no last-modified-timestamp which means they are suspicious.
+							Object objModTimeStamp = v.property("aai-last-mod-ts").orElse(null);
+							if( objModTimeStamp != null ){
+								long thisNodeModTime = (long)objModTimeStamp;
+								if( thisNodeModTime < windowStartTime ){
+									// It has a last modified ts and is NOT in our window, so we can pass over it
+									continue;
+								}
+							}
+						}
+
+						if (counter == lastShown + 250) {
+							lastShown = counter;
+							LOGGER.debug("... Checking edges for vertex # "
+									+ counter);
+						}
+						Iterator<Edge> eItor = v.edges(Direction.BOTH);
+						while (eItor.hasNext()) {
+							Edge e = null;
+							Vertex vIn = null;
+							Vertex vOut = null;
 							try {
-								Object ob = vIn.property("aai-node-type").orElse(null);
-								if (ob != null) {
-									vNtI = ob.toString();
-									keysMissing = anyKeyFieldsMissing(vNtI, vIn, loader);
-								}
-								ob = vIn.id();
-								long vIdLong = 0L;
-								if (ob != null) {
-									vIdI = ob.toString();
-									vIdLong = Long.parseLong(vIdI);
-								}
-
-								if( ! ghost2CheckOff ){
-									Vertex connectedVert = g2.traversal().V(vIdLong).next();
-									if( connectedVert == null ) {
-										LOGGER.warn( "GHOST2 -- got NULL when doing getVertex for vid = " + vIdLong);
-										cantGetUsingVid = true;
-
-										// If we can NOT get this ghost with the SECOND graph-object,
-										// it is still a ghost since even though we can get data about it using the FIRST graph
-										// object.
-
-										try {
-											 ghost2 = g.traversal().V(vIdLong).next();
-										}
-										catch( Exception ex){
-											LOGGER.warn( "GHOST2 --  Could not get the ghost info for a bad edge for vtxId = " + vIdLong, ex);
-										}
-										if( ghost2 != null ){
-											ghostNodeHash.put(vIdI, ghost2);
-										}
-									}
-								}// end of the ghost2 checking
+								e = eItor.next();
+							} catch (Exception iex) {
+								LOGGER.warn(">>> WARNING trying to get next edge on the eItor ", iex);
+								continue;
 							}
-							catch (Exception err) {
-								LOGGER.warn(">>> WARNING trying to get edge's In-vertex props ", err);
-							}
-						}
 
-						if (keysMissing || vIn == null || vNtI.equals("")
-								|| cantGetUsingVid) {
-							// this is a bad edge because it points to a vertex
-							// that isn't there anymore or is corrupted
-							String thisEid = e.id().toString();
-							if (deleteCandidateList.contains(thisEid) || deleteCandidateList.contains(vIdI)) {
-								boolean okFlag = true;
-								if (!vIdI.equals("")) {
-									// try to get rid of the corrupted vertex
-									try {
-										if( (ghost2 != null) && ghost2FixOn ){
-											ghost2.remove();
-										}
-										else {
-											vIn.remove();
-										}
-										executeFinalCommit = true;
-										deleteCount++;
-									} catch (Exception e1) {
-										okFlag = false;
-										LOGGER.warn("WARNING when trying to delete bad-edge-connected VERTEX VID = "
-												+ vIdI, e1);
-									}
-									if (okFlag) {
-										LOGGER.debug(" DELETED vertex from bad edge = "
-														+ vIdI);
-									}
-								} else {
-									// remove the edge if we couldn't get the
-									// vertex
-									try {
-										e.remove();
-										executeFinalCommit = true;
-										deleteCount++;
-									} catch (Exception ex) {
-										// NOTE - often, the exception is just
-										// that this edge has already been
-										// removed
-										okFlag = false;
-										LOGGER.warn("WARNING when trying to delete edge = "
-												+ thisEid);
-									}
-									if (okFlag) {
-										LOGGER.debug(" DELETED edge = " + thisEid);
-									}
-								}
-							} else {
-								oneArmedEdgeHash.put(thisEid, e);
-								if ((vIn != null) && (vIn.id() != null)) {
-									emptyVertexHash.put(thisEid, vIn.id()
-											.toString());
-								}
-							}
-						}
-
-						try {
-							vOut = e.outVertex();
-						} catch (Exception err) {
-							LOGGER.warn(">>> WARNING trying to get edge's Out-vertex ");
-						}
-						String vNtO = "";
-						String vIdO = "";
-						ghost2 = null;
-						keysMissing = true;
-						cantGetUsingVid = false;
-						if (vOut != null) {
 							try {
-								Object ob = vOut.property("aai-node-type").orElse(null);
-								if (ob != null) {
-									vNtO = ob.toString();
-									keysMissing = anyKeyFieldsMissing(vNtO,
-											vOut, loader);
-								}
-								ob = vOut.id();
-								long vIdLong = 0L;
-								if (ob != null) {
-									vIdO = ob.toString();
-									vIdLong = Long.parseLong(vIdO);
-								}
-
-								if( ! ghost2CheckOff ){
-									Vertex connectedVert = g2.traversal().V(vIdLong).next();
-									if( connectedVert == null ) {
-										cantGetUsingVid = true;
-										LOGGER.debug( "GHOST2 -- got NULL when doing getVertex for vid = " + vIdLong);
-										// If we can get this ghost with the other graph-object, then get it -- it's still a ghost
-										try {
-											 ghost2 = g.traversal().V(vIdLong).next();
-										}
-										catch( Exception ex){
-											LOGGER.warn( "GHOST2 -- Could not get the ghost info for a bad edge for vtxId = " + vIdLong, ex);
-										}
-										if( ghost2 != null ){
-											ghostNodeHash.put(vIdO, ghost2);
-										}
-									}
-								}
+								vIn = e.inVertex();
 							} catch (Exception err) {
-								LOGGER.warn(">>> WARNING trying to get edge's Out-vertex props ", err);
+								LOGGER.warn(">>> WARNING trying to get edge's In-vertex ", err);
 							}
-						}
-						if (keysMissing || vOut == null || vNtO.equals("")
-								|| cantGetUsingVid) {
-							// this is a bad edge because it points to a vertex
-							// that isn't there anymore
-							String thisEid = e.id().toString();
-							if (deleteCandidateList.contains(thisEid) || deleteCandidateList.contains(vIdO)) {
-								boolean okFlag = true;
-								if (!vIdO.equals("")) {
-									// try to get rid of the corrupted vertex
-									try {
-										if( (ghost2 != null) && ghost2FixOn ){
-											ghost2.remove();
-										}
-										else if (vOut != null) {
-											vOut.remove();
-										}
-										executeFinalCommit = true;
-										deleteCount++;
-									} catch (Exception e1) {
-										okFlag = false;
-										LOGGER.warn("WARNING when trying to delete bad-edge-connected VID = "
-												+ vIdO, e1);
+							String vNtI = "";
+							String vIdI = "";
+							Vertex ghost2 = null;
+
+							Boolean keysMissing = true;
+							Boolean cantGetUsingVid = false;
+							if (vIn != null) {
+								try {
+									Object ob = vIn.property("aai-node-type").orElse(null);
+									if (ob != null) {
+										vNtI = ob.toString();
+										keysMissing = anyKeyFieldsMissing(vNtI, vIn, loader);
 									}
-									if (okFlag) {
-										LOGGER.debug(" DELETED vertex from bad edge = "
-														+ vIdO);
+									ob = vIn.id();
+									long vIdLong = 0L;
+									if (ob != null) {
+										vIdI = ob.toString();
+										vIdLong = Long.parseLong(vIdI);
+									}
+
+									if( ! ghost2CheckOff ){
+										Vertex connectedVert = g2.traversal().V(vIdLong).next();
+										if( connectedVert == null ) {
+											LOGGER.warn( "GHOST2 -- got NULL when doing getVertex for vid = " + vIdLong);
+											cantGetUsingVid = true;
+
+											// If we can NOT get this ghost with the SECOND graph-object,
+											// it is still a ghost since even though we can get data about it using the FIRST graph
+											// object.
+
+											try {
+												ghost2 = g.traversal().V(vIdLong).next();
+											}
+											catch( Exception ex){
+												LOGGER.warn( "GHOST2 --  Could not get the ghost info for a bad edge for vtxId = " + vIdLong, ex);
+											}
+											if( ghost2 != null ){
+												ghostNodeHash.put(vIdI, ghost2);
+											}
+										}
+									}// end of the ghost2 checking
+								}
+								catch (Exception err) {
+									LOGGER.warn(">>> WARNING trying to get edge's In-vertex props ", err);
+								}
+							}
+
+							if (keysMissing || vIn == null || vNtI.equals("")
+									|| cantGetUsingVid) {
+								// this is a bad edge because it points to a vertex
+								// that isn't there anymore or is corrupted
+								String thisEid = e.id().toString();
+								if (deleteCandidateList.contains(thisEid) || deleteCandidateList.contains(vIdI)) {
+									boolean okFlag = true;
+									if (!vIdI.equals("")) {
+										// try to get rid of the corrupted vertex
+										try {
+											if( (ghost2 != null) && ghost2FixOn ){
+												ghost2.remove();
+											}
+											else {
+												vIn.remove();
+											}
+											executeFinalCommit = true;
+											deleteCount++;
+										} catch (Exception e1) {
+											okFlag = false;
+											LOGGER.warn("WARNING when trying to delete bad-edge-connected VERTEX VID = "
+													+ vIdI, e1);
+										}
+										if (okFlag) {
+											LOGGER.debug(" DELETED vertex from bad edge = "
+													+ vIdI);
+										}
+									} else {
+										// remove the edge if we couldn't get the
+										// vertex
+										try {
+											e.remove();
+											executeFinalCommit = true;
+											deleteCount++;
+										} catch (Exception ex) {
+											// NOTE - often, the exception is just
+											// that this edge has already been
+											// removed
+											okFlag = false;
+											LOGGER.warn("WARNING when trying to delete edge = "
+													+ thisEid);
+										}
+										if (okFlag) {
+											LOGGER.debug(" DELETED edge = " + thisEid);
+										}
 									}
 								} else {
-									// remove the edge if we couldn't get the
-									// vertex
-									try {
-										e.remove();
-										executeFinalCommit = true;
-										deleteCount++;
-									} catch (Exception ex) {
-										// NOTE - often, the exception is just
-										// that this edge has already been
-										// removed
-										okFlag = false;
-										LOGGER.warn("WARNING when trying to delete edge = "
-												+ thisEid, ex);
+									oneArmedEdgeHash.put(thisEid, e);
+									if ((vIn != null) && (vIn.id() != null)) {
+										emptyVertexHash.put(thisEid, vIn.id()
+												.toString());
 									}
-									if (okFlag) {
-										LOGGER.debug(" DELETED edge = " + thisEid);
-									}
-								}
-							} else {
-								oneArmedEdgeHash.put(thisEid, e);
-								if ((vOut != null) && (vOut.id() != null)) {
-									emptyVertexHash.put(thisEid, vOut.id()
-											.toString());
 								}
 							}
-						}
-					}// End of while-edges-loop
-				} catch (Exception exx) {
-					LOGGER.warn("WARNING from in the while-verts-loop ", exx);
-				}
-			}// End of while-vertices-loop (the edge-checking)
-			LOGGER.debug(" Done checking for bad edges  --- ");
-		  }	// end of -- if we're not skipping the edge-checking
+
+							try {
+								vOut = e.outVertex();
+							} catch (Exception err) {
+								LOGGER.warn(">>> WARNING trying to get edge's Out-vertex ");
+							}
+							String vNtO = "";
+							String vIdO = "";
+							ghost2 = null;
+							keysMissing = true;
+							cantGetUsingVid = false;
+							if (vOut != null) {
+								try {
+									Object ob = vOut.property("aai-node-type").orElse(null);
+									if (ob != null) {
+										vNtO = ob.toString();
+										keysMissing = anyKeyFieldsMissing(vNtO,
+												vOut, loader);
+									}
+									ob = vOut.id();
+									long vIdLong = 0L;
+									if (ob != null) {
+										vIdO = ob.toString();
+										vIdLong = Long.parseLong(vIdO);
+									}
+
+									if( ! ghost2CheckOff ){
+										Vertex connectedVert = g2.traversal().V(vIdLong).next();
+										if( connectedVert == null ) {
+											cantGetUsingVid = true;
+											LOGGER.debug( "GHOST2 -- got NULL when doing getVertex for vid = " + vIdLong);
+											// If we can get this ghost with the other graph-object, then get it -- it's still a ghost
+											try {
+												ghost2 = g.traversal().V(vIdLong).next();
+											}
+											catch( Exception ex){
+												LOGGER.warn( "GHOST2 -- Could not get the ghost info for a bad edge for vtxId = " + vIdLong, ex);
+											}
+											if( ghost2 != null ){
+												ghostNodeHash.put(vIdO, ghost2);
+											}
+										}
+									}
+								} catch (Exception err) {
+									LOGGER.warn(">>> WARNING trying to get edge's Out-vertex props ", err);
+								}
+							}
+							if (keysMissing || vOut == null || vNtO.equals("")
+									|| cantGetUsingVid) {
+								// this is a bad edge because it points to a vertex
+								// that isn't there anymore
+								String thisEid = e.id().toString();
+								if (deleteCandidateList.contains(thisEid) || deleteCandidateList.contains(vIdO)) {
+									boolean okFlag = true;
+									if (!vIdO.equals("")) {
+										// try to get rid of the corrupted vertex
+										try {
+											if( (ghost2 != null) && ghost2FixOn ){
+												ghost2.remove();
+											}
+											else if (vOut != null) {
+												vOut.remove();
+											}
+											executeFinalCommit = true;
+											deleteCount++;
+										} catch (Exception e1) {
+											okFlag = false;
+											LOGGER.warn("WARNING when trying to delete bad-edge-connected VID = "
+													+ vIdO, e1);
+										}
+										if (okFlag) {
+											LOGGER.debug(" DELETED vertex from bad edge = "
+													+ vIdO);
+										}
+									} else {
+										// remove the edge if we couldn't get the
+										// vertex
+										try {
+											e.remove();
+											executeFinalCommit = true;
+											deleteCount++;
+										} catch (Exception ex) {
+											// NOTE - often, the exception is just
+											// that this edge has already been
+											// removed
+											okFlag = false;
+											LOGGER.warn("WARNING when trying to delete edge = "
+													+ thisEid, ex);
+										}
+										if (okFlag) {
+											LOGGER.debug(" DELETED edge = " + thisEid);
+										}
+									}
+								} else {
+									oneArmedEdgeHash.put(thisEid, e);
+									if ((vOut != null) && (vOut.id() != null)) {
+										emptyVertexHash.put(thisEid, vOut.id()
+												.toString());
+									}
+								}
+							}
+						}// End of while-edges-loop
+					} catch (Exception exx) {
+						LOGGER.warn("WARNING from in the while-verts-loop ", exx);
+					}
+				}// End of while-vertices-loop (the edge-checking)
+				LOGGER.debug(" Done checking for bad edges  --- ");
+			}	// end of -- if we're not skipping the edge-checking
 
 
 			deleteCount = deleteCount + dupeGrpsDeleted;
@@ -1149,7 +1155,7 @@ public class DataGrooming {
 				bw.write("Ran PARTIAL data grooming just looking at data added/updated in the last " + timeWindowMinutes + " minutes. \n");
 			}
 
-			bw.write("\nRan these nodeTypes: " + ntList + "\n\n");
+			bw.write("\nRan these nodeTypes = " + ntList + "\n\n");
 			bw.write("There were this many delete candidates from previous run =  "
 					+ deleteCandidateList.size() + "\n");
 			if (dontFixOrphansFlag) {
@@ -1465,7 +1471,7 @@ public class DataGrooming {
 				else {
 					try {
 						LOGGER.debug("About to do the commit for "
-							+ deleteCount + " removes. ");
+								+ deleteCount + " removes. ");
 						g.tx().commit();
 						LOGGER.debug("Commit was successful ");
 					} catch (Exception excom) {
@@ -1538,9 +1544,9 @@ public class DataGrooming {
 
 	public void tryToReSetIndexedProps(Vertex thisVtx, String thisVidStr, List <String> indexedProps) {
 		// Note - This is for when a node looks to be a phantom (ie. an index/pointer problem)
-	    // We will only deal with properties that are indexed and have a value - and for those,
-	    // we will re-set them to the same value they already have, so that hopefully if their
-	    // index was broken, it may get re-set.
+		// We will only deal with properties that are indexed and have a value - and for those,
+		// we will re-set them to the same value they already have, so that hopefully if their
+		// index was broken, it may get re-set.
 
 		// NOTE -- as of 1902-P2, this is deprecated --------------
 
@@ -1566,14 +1572,14 @@ public class DataGrooming {
 			} catch (Exception ex ){
 				// log that we did not re-set this property
 				LOGGER.debug("DEBUG - Exception while trying to re-set the indexed properties for this node: VID = "
-				+ thisVidStr + ".  exception msg = [" + ex.getMessage() + "]" );
+						+ thisVidStr + ".  exception msg = [" + ex.getMessage() + "]" );
 			}
 		}
 	}
 
 
-	 public void updateIndexedPropsForMissingNT(Vertex thisVtx, String thisVidStr, String nType,
-			Map <String,String>propTypeHash, List <String> indexedProps) {
+	public void updateIndexedPropsForMissingNT(Vertex thisVtx, String thisVidStr, String nType,
+											   Map <String,String>propTypeHash, List <String> indexedProps) {
 		// This is for the very specific "missing-aai-node-type" scenario.
 		// That is: a node that does not have the "aai-node-type" property, but still has
 		//     an aai-node-type Index pointing to it and is an orphan node.   Nodes like this
@@ -1716,8 +1722,8 @@ public class DataGrooming {
 	 * @throws AAIException the AAI exception
 	 */
 	private Set<String> getDeleteList(String targetDir,
-			String fileName, Boolean edgesOnlyFlag, Boolean dontFixOrphans,
-			Boolean dupeFixOn) throws AAIException {
+									  String fileName, Boolean edgesOnlyFlag, Boolean dontFixOrphans,
+									  Boolean dupeFixOn) throws AAIException {
 
 		// Look in the file for lines formated like we expect - pull out any
 		// Vertex Id's to delete on this run
@@ -1765,8 +1771,8 @@ public class DataGrooming {
 	 * @throws AAIException the AAI exception
 	 */
 	public Vertex getPreferredDupe(String transId,
-			String fromAppId, GraphTraversalSource g,
-			List<Vertex> dupeVertexList, String ver, Loader loader)
+								   String fromAppId, GraphTraversalSource g,
+								   List<Vertex> dupeVertexList, String ver, Loader loader)
 			throws AAIException {
 
 		// This method assumes that it is being passed a List of
@@ -1849,8 +1855,8 @@ public class DataGrooming {
 	 * @throws AAIException the AAI exception
 	 */
 	public Vertex pickOneOfTwoDupes(String transId,
-			String fromAppId, GraphTraversalSource g, Vertex vtxA,
-			Vertex vtxB, String ver, Loader loader) throws AAIException {
+									String fromAppId, GraphTraversalSource g, Vertex vtxA,
+									Vertex vtxB, String ver, Loader loader) throws AAIException {
 
 		Vertex nullVtx = null;
 		Vertex preferredVtx = null;
@@ -2090,10 +2096,10 @@ public class DataGrooming {
 	 * @return the array list
 	 */
 	private List<String> checkAndProcessDupes(String transId,
-			String fromAppId, Graph g, GraphTraversalSource source, String version, String nType,
-			List<Vertex> passedVertList, Boolean dupeFixOn,
-			Set<String> deleteCandidateList,
-			List<String> alreadyFoundDupeGroups, Loader loader ) {
+											  String fromAppId, Graph g, GraphTraversalSource source, String version, String nType,
+											  List<Vertex> passedVertList, Boolean dupeFixOn,
+											  Set<String> deleteCandidateList,
+											  List<String> alreadyFoundDupeGroups, Loader loader ) {
 
 		ArrayList<String> returnList = new ArrayList<>();
 		ArrayList<Vertex> checkVertList = new ArrayList<>();
@@ -2329,8 +2335,8 @@ public class DataGrooming {
 	 * @return the boolean
 	 */
 	private Boolean deleteNonKeepersIfAppropriate(Graph g,
-			String dupeInfoString, String vidToKeep,
-			Set<String> deleteCandidateList ) {
+												  String dupeInfoString, String vidToKeep,
+												  Set<String> deleteCandidateList ) {
 
 		Boolean deletedSomething = false;
 		// This assumes that the dupeInfoString is in the format of
@@ -2414,10 +2420,8 @@ public class DataGrooming {
 	/**
 	 * makes sure aai-uri exists and can be used to get this node back
 	 *
-	 * @param transId the trans id
-	 * @param fromAppId the from app id
 	 * @param graph the graph
-	 * @param vtx
+	 * @param origVtx original vertex
 	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
 	 */
 	public Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx ) {
@@ -2483,7 +2487,7 @@ public class DataGrooming {
 	 * @throws AAIException the AAI exception
 	 */
 	public List <Vertex> getNodeJustUsingKeyParams( String transId, String fromAppId, GraphTraversalSource graph, String nodeType,
-			HashMap<String,Object> keyPropsHash, String apiVersion ) 	 throws AAIException{
+													HashMap<String,Object> keyPropsHash, String apiVersion ) 	 throws AAIException{
 
 		List <Vertex> retVertList = new ArrayList <> ();
 
@@ -2659,9 +2663,9 @@ public class DataGrooming {
 			return retArr;
 		}
 		else {
-			 GraphTraversal<Vertex, Vertex> modPipe = null;
-			 modPipe = g.V(startVtx).both();
-			 if( modPipe != null && modPipe.hasNext() ){
+			GraphTraversal<Vertex, Vertex> modPipe = null;
+			modPipe = g.V(startVtx).both();
+			if( modPipe != null && modPipe.hasNext() ){
 				while( modPipe.hasNext() ){
 					Vertex conVert = modPipe.next();
 					retArr.add(conVert);
@@ -2674,7 +2678,7 @@ public class DataGrooming {
 
 
 	private ArrayList <Vertex> getConnectedChildrenOfOneType( GraphTraversalSource g,
-			Vertex startVtx, String childNType ) {
+															  Vertex startVtx, String childNType ) {
 
 		ArrayList <Vertex> childList = new ArrayList <> ();
 		Iterator <Vertex> vertI =  g.V(startVtx).union(__.outE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).inV(), __.inE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.IN.toString()).outV());
@@ -2697,7 +2701,7 @@ public class DataGrooming {
 
 
 	private Vertex getConnectedParent( GraphTraversalSource g,
-			Vertex startVtx ) {
+									   Vertex startVtx ) {
 
 		Vertex parentVtx = null;
 		Iterator <Vertex> vertI = g.V(startVtx).union(__.inE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.OUT.toString()).outV(), __.outE().has(EdgeProperty.CONTAINS.toString(), AAIDirection.IN.toString()).inV());
@@ -2740,10 +2744,10 @@ public class DataGrooming {
 	 * @return the array list
 	 */
 	private ArrayList<ArrayList<Vertex>> getDupeSets4NonDepNodes( String transId,
-			String fromAppId, Graph g, String version, String nType,
-			ArrayList<Vertex> passedVertList,
-			ArrayList <String> keyPropNamesArr,
-			 Loader loader ) {
+																  String fromAppId, Graph g, String version, String nType,
+																  ArrayList<Vertex> passedVertList,
+																  ArrayList <String> keyPropNamesArr,
+																  Loader loader ) {
 
 		ArrayList<ArrayList<Vertex>> returnList = new ArrayList<ArrayList<Vertex>>();
 
@@ -2825,7 +2829,7 @@ public class DataGrooming {
 	 * @return a String of concatenated values
 	 */
 	private String getNodeKeyValString( Vertex tvx,
-			ArrayList <String> keyPropNamesArr ) {
+										ArrayList <String> keyPropNamesArr ) {
 
 		String retString = "";
 		Iterator <String> propItr = keyPropNamesArr.iterator();
@@ -2848,8 +2852,8 @@ public class DataGrooming {
 
 
 	private String findJustOneUsingIndex( String transId, String fromAppId,
-			GraphTraversalSource gts, HashMap <String,Object> keyPropValsHash,
-			String nType, Long vidAL, Long vidBL, String apiVer){
+										  GraphTraversalSource gts, HashMap <String,Object> keyPropValsHash,
+										  String nType, Long vidAL, Long vidBL, String apiVer){
 
 		// See if querying by JUST the key params (which should be indexed) brings back
 		// ONLY one of the two vertices. Ie. the db still has a pointer to one of them
@@ -2876,13 +2880,13 @@ public class DataGrooming {
 			String emsg = "Error trying to get node just by key " + ae.getMessage();
 			//System.out.println(emsg);
 			LOGGER.debug(emsg);
-	  	}
+		}
 
 		return returnVid;
 
 	}// End of findJustOneUsingIndex()
 
-class CommandLineArgs {
+	class CommandLineArgs {
 
 
 		@Parameter(names = "--help", help = true)
@@ -2928,7 +2932,7 @@ class CommandLineArgs {
 		public int sleepMinutes = GraphAdminConstants.AAI_GROOMING_DEFAULT_SLEEP_MINUTES;
 
 		// A value of 0 means that we will not have a time-window -- we will look
-				// at all nodes of the passed-in nodeType.
+		// at all nodes of the passed-in nodeType.
 		@Parameter(names = "-timeWindowMinutes", description = "timeWindowMinutes")
 		public int timeWindowMinutes = 0;
 
