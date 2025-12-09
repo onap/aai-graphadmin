@@ -118,6 +118,210 @@
       "message": "You can write lines 248 - 253 just as:\n\n```java\nList\u003cString\u003e dependentNodeTypes \u003d obj.getDependentOn().stream().toList();\n```",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d82a62b3_e20869c7",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "It doesn\u0027t make sense to differentiate here between `.size() \u003d\u003d 1` and ` \u003e 1` when you are treating them the same otherwise.\nYou can just write it as\n\n```java\n            for (String entry : nameProps) {\n                if (entry.contains(NAME)) {\n                    name \u003d entry;\n                    hasName \u003d true;\n                }\n            }\n```\n\nI think.\nAlso the question is if you should `break` the loop once you have a match.\nBecause right now, you are reassigning `name` and thus skip over a few values without actually doing something with them.\nBut of course it may be possible that you actually want the \"last matching\" name in the list...",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca1e2514_dde120c1",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Please use `For` instead of `4` here for peak professionalism :D",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0be6c56b_2c24d5d0",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "`logger` is registered on the class level, so there is no need to pass it around via method parameters",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "86f8e471_76b30ae9",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Also can you use `graph1` instead of `gt1` here? If `gt` stands for anything else than `graph` (`graphtransaction`?!) then please use that instead",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "91e4b502_1de5f749",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Same here for `verts2Check`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "704783dd_87a3808c",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Here too",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "857d3838_7b808402",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Please use the string literal here directly instead of assigning it to a `msg` variable first",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b5d0192_b1781d02",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Please use the string literal here directly instead of assigning it to a `msg` variable first",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d30cb0a4_cd56fe33",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Here too, also parameterised of course",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3d52afc1_1b2b7246",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "`logger` is registered on the class level, so there is no need to pass it around via method parameters",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0ebea4a_fa8d8e95",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Please fix the logger passing for all methods in this class",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43e9d55c_9dfb8224",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:44:50Z",
+      "side": 1,
+      "message": "Please adjust this `msg \u003d \"\"`; logger.info(msg);` pattern everywhere in this class",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
