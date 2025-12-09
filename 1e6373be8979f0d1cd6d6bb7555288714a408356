@@ -322,6 +322,346 @@
       "message": "Please adjust this `msg \u003d \"\"`; logger.info(msg);` pattern everywhere in this class",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4cff51f6_934bfd35",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeToolCommandLineArgs.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Typically we also have the year in this line",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0496ba8a_7d1579ce",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Can\u0027t we invoke `execute(args);` here instead of\n\n```java\n        ReindexingTool reindexingTool \u003d new ReindexingTool();\n        reindexingTool.execute(args);\n```\n\nBecause `new ReindexingTool()` in the constructor would kind of create some infinite recursion here, wouldn\u0027t it? 😄",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c49fa0e6_52d1eb26",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "In the other script you changed (fixed) this to use `System.exit(statusCode);`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68f79be3_eea9cff0",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Leftover comment",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "041605f2_36317184",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "It would probably make sense to refactor this in the sense that you can put lines `157 - 164` inside a `getGraphConfig()` method and call that here and in `getListOfIndexes`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "227ebc11_ec39d418",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5211f2d8_f0bf86a1",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "We can be more restful here be mapping this under `/scripts`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "510b8206_b6374e62",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Please make all `@Autowired` fields `private final` and annotate the class with lomboks `@RequiredArgsConstructor`.\nThat makes the class more immutable and would allow better testing (if we actually did that here) since the classes\u0027 deps could be passed in via the constructor",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "acb6986e_f4a23888",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "You can use `@RequestBody DupeToolRequest` here to avoid the manual String parsing via ObjectMapper and corresponding validation.",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a447fee0_76dc3d2c",
+        "filename": "src/main/java/org/onap/aai/rest/model/DataGroomingRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3cee4f8_9117dcbc",
+        "filename": "src/main/java/org/onap/aai/rest/model/DataGroomingRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "You can use lomboks `@Data` here to get rid of the boilerplate getters and setters",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a8f82bf8_16dda919",
+        "filename": "src/main/java/org/onap/aai/rest/model/DupeToolRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f09f70c2_239b13d8",
+        "filename": "src/main/java/org/onap/aai/rest/model/DupeToolRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Same lombok comment here",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed5cbb87_a3851851",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f7b40846_f1c26749",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Same comment here about private final and requiredargsconstructor",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a42335b2_1776d93c",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d38fb894_2461e178",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Can we make all of this `List\u003cMap\u003cString, String\u003e\u003e`? Or what can actually be inside `Object` here?",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7c86c0c1_7ff9482f",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "It is always a good idea to register `Pattern.compile` on the class level since it is a rather expensive operation in terms of performance.\nEspecially here, where you are invoking it for every line in a file",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0250f8f8_648547d9",
+        "filename": "src/main/java/org/onap/aai/rest/service/DupeToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "062d3942_cbd52dac",
+        "filename": "src/main/java/org/onap/aai/rest/service/DupeToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:09:15Z",
+      "side": 1,
+      "message": "Lombok comment here too",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
