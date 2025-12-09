@@ -462,6 +462,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2742c0aa_6260733f",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:18:29Z",
+      "side": 1,
+      "message": "You can use `@RequestBody DataGroomingRequest` here to avoid the manual String parsing via ObjectMapper and corresponding validation.",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "acb6986e_f4a23888",
         "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
         "patchSetId": 2
@@ -660,6 +677,57 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "Lombok comment here too",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "02f24bb7_0d92ded4",
+        "filename": "src/main/java/org/onap/aai/rest/service/ReindexingToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:18:29Z",
+      "side": 1,
+      "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d91b870d_b9e32f3a",
+        "filename": "src/main/java/org/onap/aai/rest/service/ReindexingToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:18:29Z",
+      "side": 1,
+      "message": "Lombok comment",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8f4e2ca3_b70464f1",
+        "filename": "src/main/java/org/onap/aai/rest/service/ReindexingToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T13:18:29Z",
+      "side": 1,
+      "message": "Leftover comment",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
