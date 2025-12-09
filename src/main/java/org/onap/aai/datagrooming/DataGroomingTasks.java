@@ -158,7 +158,7 @@ public class DataGroomingTasks {
             String[] paramsList = paramsArray.toArray(new String[0]);
             if (AAIConfig.get("aai.cron.enable.dataGrooming").equals("true")) {
 				dataGrooming.execute(paramsList);
-				System.out.println("returned from main method ");
+				LOGGER.info("returned from main method ");
             }
         }
 		catch (Exception e) {
