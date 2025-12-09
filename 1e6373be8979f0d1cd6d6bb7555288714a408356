@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fcbe795_319e6e4c",
+        "filename": "src/main/java/org/onap/aai/datagrooming/DataGrooming.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "We should use [parameterized logging](https://logback.qos.ch/manual/architecture.html#parametrized) here, which ensures that `getGhostNodeCount()` is lazily executed and is thus only invoked when the log level is `\u003c\u003d info`:\n\n```java\nLOGGER.info(\"Ghost Node Count: {}\", getGhostNodeCount());\n```",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "882ee1d0_fb8daee6",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "Duplicate line",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5dd00dbb_66ee5b3d",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "I don\u0027t think this comment is adding anything here. I would suggest to remove it",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "554e9214_06e7ba78",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "Why are we overwriting the global `cArgs.nodeTypes` with some individual `nodeType`?\nI don\u0027t think it is a good idea to have some class level mutable state here",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4d24ba2c_33bd7124",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "I would suggest to call this as `logger.info(\"DupeTool called with these params: [{}]\", cArgs.toString())` directly here and get rid of these meaningless `String msg \u003d \"\";` and `msg \u003d \"...\";` assignments before that",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "50a3a85b_cef45a4a",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "General comment: Such comments are always an indication that the code following may actually be better put inside a method ;)\n\n```",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d03deebf_bb62faf2",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-09T12:27:22Z",
+      "side": 1,
+      "message": "You can write lines 248 - 253 just as:\n\n```java\nList\u003cString\u003e dependentNodeTypes \u003d obj.getDependentOn().stream().toList();\n```",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
