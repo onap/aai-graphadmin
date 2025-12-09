@@ -268,17 +268,17 @@ public class DataGrooming {
 						cArgs.singleNodeType, cArgs.skipIndexUpdateFix );
 			}
 			LOGGER.info("===== Data Grooming Summary after all fixes =====");
-            LOGGER.info("Ghost Node Count: " + getGhostNodeCount());
-            LOGGER.info("Bad Index Node Count: " + getBadIndexNodeCount());
-            LOGGER.info("Bad URI Node Count: " + getBadUriNodeCount());
-            LOGGER.info("Orphan Node Count: " + getOrphanNodeCount());
-            LOGGER.info("Missing AAI NT Node Count: " + getMissingAaiNtNodeCount());
-            LOGGER.info("One-Armed Edge Hash Count: " + getOneArmedEdgeHashCount());
+            LOGGER.info(String.format("Ghost Node Count: %s" , getGhostNodeCount()));
+            LOGGER.info(String.format("Bad Index Node Count: %s", getBadIndexNodeCount()));
+            LOGGER.info(String.format("Bad URI Node Count: %s", getBadUriNodeCount()));
+            LOGGER.info(String.format("Orphan Node Count: %s", getOrphanNodeCount()));
+            LOGGER.info(String.format("Missing AAI NT Node Count: %s", getMissingAaiNtNodeCount()));
+            LOGGER.info(String.format("One-Armed Edge Hash Count: %s", getOneArmedEdgeHashCount()));
  			// Add more logging if needed for other nodes like Duplicate Groups, Delete Candidates, etc.
             LOGGER.info("===== End of Data Grooming Summary =====");
 
 		} catch (Exception ex) {
-			LOGGER.debug("Exception while grooming data " + LogFormatTools.getStackTop(ex));
+			LOGGER.debug(String.format("Exception while grooming data %s", LogFormatTools.getStackTop(ex)));
 		}
 		LOGGER.debug(" Done! ");
 		AAISystemExitUtil.systemExitCloseAAIGraph(0);
@@ -486,7 +486,10 @@ public class DataGrooming {
 					}
 
 					LOGGER.debug(" >  Look at : [" + nType + "] ...");
-					ntList = ntList + "," + nType;
+					if(ntList.isEmpty())
+						ntList = nType;
+					else
+						ntList = ntList + "," + nType;
 
 					// Get a collection of the names of the key properties for this nodeType to use later
 					// Determine what the key fields are for this nodeType - use an arrayList so they
@@ -1149,7 +1152,7 @@ public class DataGrooming {
 				bw.write("Ran PARTIAL data grooming just looking at data added/updated in the last " + timeWindowMinutes + " minutes. \n");
 			}
 
-			bw.write("\nRan these nodeTypes: " + ntList + "\n\n");
+			bw.write("\nRan these nodeTypes = " + ntList + "\n\n");
 			bw.write("There were this many delete candidates from previous run =  "
 					+ deleteCandidateList.size() + "\n");
 			if (dontFixOrphansFlag) {
@@ -2414,10 +2417,8 @@ public class DataGrooming {
 	/**
 	 * makes sure aai-uri exists and can be used to get this node back
 	 *
-	 * @param transId the trans id
-	 * @param fromAppId the from app id
 	 * @param graph the graph
-	 * @param vtx
+	 * @param origVtx original vertex
 	 * @return true if aai-uri is populated and the aai-uri-index points to this vtx
 	 */
 	public Boolean checkAaiUriOk( GraphTraversalSource graph, Vertex origVtx ) {

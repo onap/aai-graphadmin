@@ -19,6 +19,7 @@
  */
 package org.onap.aai.dbgen;
 
+import org.onap.aai.exceptions.AAIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,7 +157,7 @@ public class DupeToolTest extends AAISetup {
 
 
     @Test
-    public void testDupeToolForPInterface(){
+    public void testDupeToolForPInterface() throws AAIException {
         
         String[] args = {
                 "-userId", "testuser",
@@ -173,7 +174,7 @@ public class DupeToolTest extends AAISetup {
 
 
     @Test
-    public void testDupeToolForPInterfaceWithAutoFixOn(){
+    public void testDupeToolForPInterfaceWithAutoFixOn() throws AAIException {
         
         String[] args = {
                 "-userId", "testuser",
@@ -191,7 +192,7 @@ public class DupeToolTest extends AAISetup {
 
 
     @Test
-    public void testDupeToolForPServer(){
+    public void testDupeToolForPServer() throws AAIException {
 	    
 	String[] args = {
                 "-userId", "testuser",
