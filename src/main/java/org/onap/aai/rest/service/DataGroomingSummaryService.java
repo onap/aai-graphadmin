@@ -19,6 +19,7 @@
  */
 package org.onap.aai.rest.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class DataGroomingSummaryService {
-    
+
+    public static final Pattern PATTERN = Pattern.compile("last\\s+(\\d+)\\s+minutes");
     @Value("${aai.datagrooming.summarypath}")
     private String filePathProp;
 
@@ -43,7 +46,7 @@ public class DataGroomingSummaryService {
      * - If latest is PARTIAL -> return all PARTIAL files for that timestamp
      */
     public List<Map<String, Object>> getLatestFileSummary() throws IOException {
-        
+
         List<Path> latestFiles = findLatestRunFiles();
 
         if (latestFiles.isEmpty()) {
@@ -66,10 +69,10 @@ public class DataGroomingSummaryService {
     }
 
     private Path getFilePath(){
-        Path filePath =  Path.of(filePathProp); 
+        Path filePath =  Path.of(filePathProp);
         return filePath;
     }
-    
+
     private Map<String, Object> extractSummary(Path file) throws IOException {
         Map<String, Object> summaryMap = new LinkedHashMap<>();
 
@@ -114,7 +117,7 @@ public class DataGroomingSummaryService {
             }
 
             // Parse "last 10500 minutes"
-            Matcher m = Pattern.compile("last\\s+(\\d+)\\s+minutes").matcher(line);
+            Matcher m = PATTERN.matcher(line);
             if (m.find()) {
                 summaryMap.put("timeWindowMinutes", Integer.parseInt(m.group(1)));
             }

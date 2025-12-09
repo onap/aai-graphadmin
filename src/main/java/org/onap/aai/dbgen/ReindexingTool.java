@@ -52,7 +52,7 @@ import java.util.Set;
 public class ReindexingTool {
 
     protected TransactionalGraphEngine engine;
-    private String indexNameParam = null;
+    private static String indexNameParam = null;
     @Autowired
     protected SchemaVersions schemaVersions;
     @Autowired
@@ -83,9 +83,7 @@ public class ReindexingTool {
             ErrorLogHelper.logError(aai.getCode(), e.getMessage() + ", resolve and retry");
             throw aai;
         }
-        ReindexingTool reindexingTool = new ReindexingTool();
-
-        reindexingTool.execute(args);
+        execute(args);
         AAISystemExitUtil.systemExitCloseAAIGraph(0);
     }
 
@@ -93,21 +91,19 @@ public class ReindexingTool {
 
     public void exit(int statusCode) {
         if (this.shouldExitVm) {
-            System.exit(1);
+            System.exit(statusCode);
         }
     }
 
-    public void execute(String[] args) throws InterruptedException {
+    public static void execute(String[] args) throws InterruptedException {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equalsIgnoreCase("-indexNames")) {
                 i++;
                 if (i >= args.length) {
                     logger.error(" No value passed with -indexName option.  ");
                     throw new RuntimeException(" No value passed with -indexName option.  ");
-//                    exit(0);
                 }
                 indexNameParam = args[i];
-                System.out.println(">>>> indexNameParam:"+indexNameParam);
                 if (null == indexNameParam || indexNameParam.isEmpty()) {
                     logger.error("IndexName is empty");
                     throw new RuntimeException("IndexName is empty");
@@ -134,10 +130,7 @@ public class ReindexingTool {
         final String serviceName = System.getProperty("aai.service.name", ReindexingTool.class.getSimpleName());
         Set<String> indexSet = new HashSet<>();
         try {
-            PropertiesConfiguration graphConfig = new AAIGraphConfig.Builder(rtConfig)
-                    .forService(serviceName)
-                    .withGraphType(REALTIME_DB)
-                    .buildConfiguration();
+            PropertiesConfiguration graphConfig = getGraphConfig(rtConfig, serviceName);
             try (JanusGraph janusGraph = JanusGraphFactory.open(graphConfig)) {
                 JanusGraphManagement mgmt = janusGraph.openManagement();
 
@@ -153,15 +146,12 @@ public class ReindexingTool {
         return indexSet;
     }
 
-    private void fullReindex() throws InterruptedException {
+    private static void fullReindex() throws InterruptedException {
         final String rtConfig = AAIConstants.REALTIME_DB_CONFIG;
         final String serviceName = System.getProperty("aai.service.name", ReindexingTool.class.getSimpleName());
 
         try {
-            PropertiesConfiguration graphConfig = new AAIGraphConfig.Builder(rtConfig)
-                    .forService(serviceName)
-                    .withGraphType(REALTIME_DB)
-                    .buildConfiguration();
+            PropertiesConfiguration graphConfig = getGraphConfig(rtConfig, serviceName);
 
             try (JanusGraph janusGraph = JanusGraphFactory.open(graphConfig)) {
                 JanusGraphManagement mgmt = janusGraph.openManagement();
@@ -190,15 +180,19 @@ public class ReindexingTool {
         }
     }
 
-    public void reindexByName(String indexNameParam) throws InterruptedException {
+    private static PropertiesConfiguration getGraphConfig(String rtConfig, String serviceName) throws ConfigurationException, FileNotFoundException {
+        return new AAIGraphConfig.Builder(rtConfig)
+                .forService(serviceName)
+                .withGraphType(REALTIME_DB)
+                .buildConfiguration();
+    }
+
+    public static void reindexByName(String indexNameParam) throws InterruptedException {
         final String rtConfig = AAIConstants.REALTIME_DB_CONFIG;
         final String serviceName = System.getProperty("aai.service.name", ReindexingTool.class.getSimpleName());
 
         try {
-            PropertiesConfiguration graphConfig = new AAIGraphConfig.Builder(rtConfig)
-                    .forService(serviceName)
-                    .withGraphType(REALTIME_DB)
-                    .buildConfiguration();
+            PropertiesConfiguration graphConfig = getGraphConfig(rtConfig, serviceName);
 
             try (JanusGraph janusGraph = JanusGraphFactory.open(graphConfig)) {
                 JanusGraphManagement mgmt = janusGraph.openManagement();
@@ -232,6 +226,5 @@ public class ReindexingTool {
             logger.error("Unexpected error while reindexing '{}': {}", indexNameParam, e.getMessage(), e);
         }
     }
-
 
 }
