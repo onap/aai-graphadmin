@@ -18,6 +18,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0caa728f_f04ec5ab",
+        "filename": "src/main/java/org/onap/aai/datagrooming/DataGrooming.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2fcbe795_319e6e4c",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "882ee1d0_fb8daee6",
@@ -123,6 +141,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d93d29a8_829257e9",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe08fde0_cc295a34",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4d24ba2c_33bd7124",
@@ -193,6 +229,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "01f0c36e_8094563f",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73a77caa_40a50d70",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d03deebf_bb62faf2",
@@ -224,6 +278,24 @@
       "side": 1,
       "message": "Removed as it wasnt required",
       "parentUuid": "d03deebf_bb62faf2",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e257fcf_b32cdef9",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e6efee4_feb66210",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -364,6 +436,24 @@
       "side": 1,
       "message": "There is a JanusGraph instance \u0026 then a graph instance so I have updated there names to janusGraph, graph1 \u0026 graph2 (1 \u0026 2 because both are different GraphTransaction instances)",
       "parentUuid": "86f8e471_76b30ae9",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4185f583_5ec5a958",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ce6c2ac_553f9de0",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -665,6 +755,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d23ed33_17b449eb",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeToolCommandLineArgs.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cff51f6_934bfd35",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0496ba8a_7d1579ce",
@@ -678,6 +786,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "Can\u0027t we invoke `execute(args);` here instead of\n\n```java\n        ReindexingTool reindexingTool \u003d new ReindexingTool();\n        reindexingTool.execute(args);\n```\n\nBecause `new ReindexingTool()` in the constructor would kind of create some infinite recursion here, wouldn\u0027t it? 😄",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e52cb871_b2ed6b4b",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0496ba8a_7d1579ce",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -699,6 +825,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3f660301_1b11c135",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c49fa0e6_52d1eb26",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "68f79be3_eea9cff0",
@@ -716,6 +860,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1fc38d3_6dc19ebc",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "68f79be3_eea9cff0",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "041605f2_36317184",
@@ -729,6 +891,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "It would probably make sense to refactor this in the sense that you can put lines `157 - 164` inside a `getGraphConfig()` method and call that here and in `getListOfIndexes`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c108ed76_7f6f8c00",
+        "filename": "src/main/java/org/onap/aai/dbgen/ReindexingTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "041605f2_36317184",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -925,6 +1105,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cd34ee2_2da50897",
+        "filename": "src/main/java/org/onap/aai/rest/model/DataGroomingRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a447fee0_76dc3d2c",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a3cee4f8_9117dcbc",
@@ -938,6 +1136,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "You can use lomboks `@Data` here to get rid of the boilerplate getters and setters",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df55ccc8_ddba2bbb",
+        "filename": "src/main/java/org/onap/aai/rest/model/DataGroomingRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3cee4f8_9117dcbc",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -959,6 +1175,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5360eeec_be603a7b",
+        "filename": "src/main/java/org/onap/aai/rest/model/DupeToolRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a8f82bf8_16dda919",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f09f70c2_239b13d8",
@@ -972,6 +1206,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "Same lombok comment here",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a115cd74_27c7618f",
+        "filename": "src/main/java/org/onap/aai/rest/model/DupeToolRequest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f09f70c2_239b13d8",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -993,6 +1245,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "664243cc_6cd0f574",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed5cbb87_a3851851",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f7b40846_f1c26749",
@@ -1010,6 +1280,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fde326c_14969758",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7b40846_f1c26749",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a42335b2_1776d93c",
@@ -1023,6 +1311,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "Year",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf9bc195_d0f3ba22",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a42335b2_1776d93c",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -1046,6 +1352,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b664fb6c_d8342658",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "I have kept value of Map as Object because it can contain a String or int so to accommodate different types of Objects I have kept it",
+      "parentUuid": "d38fb894_2461e178",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7c86c0c1_7ff9482f",
         "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
         "patchSetId": 2
@@ -1057,6 +1381,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "It is always a good idea to register `Pattern.compile` on the class level since it is a rather expensive operation in terms of performance.\nEspecially here, where you are invoking it for every line in a file",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ec3a962_db57eec8",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c86c0c1_7ff9482f",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -1078,6 +1420,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c461aab_ec894ac1",
+        "filename": "src/main/java/org/onap/aai/rest/service/DupeToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0250f8f8_648547d9",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "062d3942_cbd52dac",
@@ -1091,6 +1451,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "Lombok comment here too",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "80813e13_ad7f3934",
+        "filename": "src/main/java/org/onap/aai/rest/service/DupeToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "062d3942_cbd52dac",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -1112,6 +1490,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "78e81d9f_9298e493",
+        "filename": "src/main/java/org/onap/aai/rest/service/ReindexingToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "02f24bb7_0d92ded4",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d91b870d_b9e32f3a",
@@ -1129,6 +1525,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6570a60_e1600612",
+        "filename": "src/main/java/org/onap/aai/rest/service/ReindexingToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d91b870d_b9e32f3a",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8f4e2ca3_b70464f1",
@@ -1142,6 +1556,24 @@
       "writtenOn": "2025-12-09T13:18:29Z",
       "side": 1,
       "message": "Leftover comment",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a21f3f08_fee76d91",
+        "filename": "src/main/java/org/onap/aai/rest/service/ReindexingToolService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8f4e2ca3_b70464f1",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
