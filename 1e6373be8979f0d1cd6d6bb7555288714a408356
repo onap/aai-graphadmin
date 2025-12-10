@@ -35,6 +35,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "573dc654_2071cdc3",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "882ee1d0_fb8daee6",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5dd00dbb_66ee5b3d",
@@ -48,6 +66,24 @@
       "writtenOn": "2025-12-09T12:27:22Z",
       "side": 1,
       "message": "I don\u0027t think this comment is adding anything here. I would suggest to remove it",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "495a69ee_e5921f19",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5dd00dbb_66ee5b3d",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -71,6 +107,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "fe08fde0_cc295a34",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "I was overriding to print actual node type handled in that thread but updated code to print the thread node type without altering cArgs",
+      "parentUuid": "554e9214_06e7ba78",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4d24ba2c_33bd7124",
         "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
         "patchSetId": 2
@@ -82,6 +136,24 @@
       "writtenOn": "2025-12-09T12:27:22Z",
       "side": 1,
       "message": "I would suggest to call this as `logger.info(\"DupeTool called with these params: [{}]\", cArgs.toString())` directly here and get rid of these meaningless `String msg \u003d \"\";` and `msg \u003d \"...\";` assignments before that",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fb8e6468_8d6a6441",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d24ba2c_33bd7124",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -105,6 +177,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "73a77caa_40a50d70",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Removed the section as it wasnt required",
+      "parentUuid": "50a3a85b_cef45a4a",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d03deebf_bb62faf2",
         "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
         "patchSetId": 2
@@ -122,6 +212,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8e6efee4_feb66210",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Removed as it wasnt required",
+      "parentUuid": "d03deebf_bb62faf2",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d82a62b3_e20869c7",
         "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
         "patchSetId": 2
@@ -133,6 +241,24 @@
       "writtenOn": "2025-12-09T12:44:50Z",
       "side": 1,
       "message": "It doesn\u0027t make sense to differentiate here between `.size() \u003d\u003d 1` and ` \u003e 1` when you are treating them the same otherwise.\nYou can just write it as\n\n```java\n            for (String entry : nameProps) {\n                if (entry.contains(NAME)) {\n                    name \u003d entry;\n                    hasName \u003d true;\n                }\n            }\n```\n\nI think.\nAlso the question is if you should `break` the loop once you have a match.\nBecause right now, you are reassigning `name` and thus skip over a few values without actually doing something with them.\nBut of course it may be possible that you actually want the \"last matching\" name in the list...",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "783c1869_1baa2970",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d82a62b3_e20869c7",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -188,6 +314,60 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f42145d1_dae98439",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca1e2514_dde120c1",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea6c90fc_465efe0e",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0be6c56b_2c24d5d0",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ce6c2ac_553f9de0",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "There is a JanusGraph instance \u0026 then a graph instance so I have updated there names to janusGraph, graph1 \u0026 graph2 (1 \u0026 2 because both are different GraphTransaction instances)",
+      "parentUuid": "86f8e471_76b30ae9",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91e4b502_1de5f749",
@@ -201,6 +381,24 @@
       "writtenOn": "2025-12-09T12:44:50Z",
       "side": 1,
       "message": "Same here for `verts2Check`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0f369415_d8501306",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91e4b502_1de5f749",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -222,6 +420,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1ebdd8f8_026f7113",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "704783dd_87a3808c",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "857d3838_7b808402",
@@ -235,6 +451,24 @@
       "writtenOn": "2025-12-09T12:44:50Z",
       "side": 1,
       "message": "Please use the string literal here directly instead of assigning it to a `msg` variable first",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "98408063_f98a1bdf",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "857d3838_7b808402",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -256,6 +490,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3306369_275472c2",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b5d0192_b1781d02",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d30cb0a4_cd56fe33",
@@ -269,6 +521,24 @@
       "writtenOn": "2025-12-09T12:44:50Z",
       "side": 1,
       "message": "Here too, also parameterised of course",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "faef346b_bf0b586c",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d30cb0a4_cd56fe33",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -290,6 +560,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e5f1050_151592b9",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d52afc1_1b2b7246",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a0ebea4a_fa8d8e95",
@@ -307,6 +595,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6ad11585_3a45fb8d",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0ebea4a_fa8d8e95",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "43e9d55c_9dfb8224",
@@ -320,6 +626,24 @@
       "writtenOn": "2025-12-09T12:44:50Z",
       "side": 1,
       "message": "Please adjust this `msg \u003d \"\"`; logger.info(msg);` pattern everywhere in this class",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b34de0d_08752939",
+        "filename": "src/main/java/org/onap/aai/dbgen/DupeTool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43e9d55c_9dfb8224",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -426,6 +750,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c312621_f269348b",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "227ebc11_ec39d418",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5211f2d8_f0bf86a1",
@@ -439,6 +781,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "We can be more restful here be mapping this under `/scripts`",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "02940527_716fcb55",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5211f2d8_f0bf86a1",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
@@ -460,6 +820,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "83dfe64c_139cb39d",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "510b8206_b6374e62",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2742c0aa_6260733f",
@@ -477,6 +855,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5255b44c_d8b5c451",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2742c0aa_6260733f",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "acb6986e_f4a23888",
@@ -490,6 +886,24 @@
       "writtenOn": "2025-12-09T13:09:15Z",
       "side": 1,
       "message": "You can use `@RequestBody DupeToolRequest` here to avoid the manual String parsing via ObjectMapper and corresponding validation.",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ffb38cf3_316ec3c8",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:02:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "acb6986e_f4a23888",
       "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
