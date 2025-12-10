@@ -1368,6 +1368,24 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c18304e_85aa0d2a",
+        "filename": "src/main/java/org/onap/aai/rest/service/DataGroomingSummaryService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 8430
+      },
+      "writtenOn": "2025-12-10T05:18:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b664fb6c_d8342658",
+      "revId": "1e6373be8979f0d1cd6d6bb7555288714a408356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c86c0c1_7ff9482f",
