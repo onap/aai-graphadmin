@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "436c8f25_d5fb627d",
+        "filename": "src/main/java/org/onap/aai/rest/ScriptsController.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 7849
+      },
+      "writtenOn": "2025-12-10T11:19:09Z",
+      "side": 1,
+      "message": "You can replace this constructor with the `@RequiredArgsConstructor` annotation",
+      "revId": "a48af98b081231ba99f84d58fb7f7d25c9afcb02",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
