@@ -34,10 +34,12 @@ import org.onap.aai.introspection.MoxyLoader;
 import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.rest.db.HttpEntry;
 import org.onap.aai.rest.notification.NotificationService;
+import org.onap.aai.rest.notification.DeltaEventsService;
 import org.onap.aai.serialization.db.EdgeSerializer;
 import org.onap.aai.setup.AAIConfigTranslator;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.util.delta.DeltaEventsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -65,7 +67,9 @@ import java.util.Map;
         RestBeanConfig.class,
         LoaderFactory.class,
         NotificationService.class,
-        KafkaConfig.class
+        DeltaEventsService.class,
+        KafkaConfig.class,
+        DeltaEventsConfig.class
 })
 @TestPropertySource(properties = {
         "schema.uri.base.path = /aai",

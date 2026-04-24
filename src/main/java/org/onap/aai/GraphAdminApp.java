@@ -67,7 +67,8 @@ import jakarta.annotation.PreDestroy;
     "org.onap.aai.failover",
     "org.onap.aai.audit",
     "org.onap.aai.introspection",
-    "org.onap.aai.rest.notification"
+    "org.onap.aai.rest.notification",
+    "org.onap.aai.util.delta"
 })
 @EnableAsync
 @EnableScheduling
