@@ -1,0 +1,7 @@
+distribution_type: container
+container_release_tag: 1.17.1
+project: aai/graphadmin
+ref: 540635c058acefc446f93b8458d74e9b8ffc4dae
+containers:
+    - name: aai-graphadmin
+      version: 1.17-STAGING-20260713T093824Z
