@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.17.1</version>
+        <version>1.18.0-SNAPSHOT</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
@@ -56,7 +56,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.14.0</aai.schema.service.version>
-        <aai.common.version>1.17.1</aai.common.version>
+        <aai.common.version>1.18.0-SNAPSHOT</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -419,10 +419,7 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>

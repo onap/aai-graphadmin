@@ -834,51 +834,6 @@
 	</appender>	
 	<!-- uniquePropertyCheck log ends here -->
 	
-	<!-- dynamicPayloadGenerator log starts here -->
-	<appender name="dynamicPayloadGeneratorError" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>WARN</level>
-		</filter>
-		<File>${logDirectory}/dynamicPayloadGenerator/error.log</File>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${logDirectory}/dynamicPayloadGenerator/error.log.%d{yyyy-MM-dd}</fileNamePattern>
-		</rollingPolicy>
-		<encoder>
-			<pattern>${errorPattern}</pattern>
-		</encoder>
-	</appender>
-
-	<appender name="dynamicPayloadGeneratorDebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>DEBUG</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-		<File>${logDirectory}/dynamicPayloadGenerator/debug.log</File>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${logDirectory}/dynamicPayloadGenerator/debug.log.%d{yyyy-MM-dd}</fileNamePattern>
-		</rollingPolicy>
-		<encoder>
-			<pattern>${debugPattern}</pattern>
-		</encoder>
-	</appender>
-
-	<appender name="dynamicPayloadGeneratorAudit" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>INFO</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY</onMismatch>
-		</filter>
-		<File>${logDirectory}/dataExport/audit.log</File>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${logDirectory}/dynamicPayloadGenerator/audit.log.%d{yyyy-MM-dd}</fileNamePattern>
-		</rollingPolicy>
-		<encoder>
-			<pattern>${auditPattern}</pattern>
-		</encoder>
-	</appender>
-	<!-- dynamicPayloadGenerator log ends here -->		
-	
 	<logger name="org.onap.aai" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>

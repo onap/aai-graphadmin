@@ -28,7 +28,7 @@ import org.onap.aai.service.SchemaJobStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -37,7 +37,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SchemaJobStatusControllerTest {
 
-    @MockBean
+    @MockitoBean
     private SchemaJobStatusService schemaJobStatusService;
 
     @Autowired
