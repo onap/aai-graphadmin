@@ -3,6 +3,7 @@
  * org.onap.aai
  * ================================================================================
  * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright © 2026 Deutsche Telekom. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +42,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -71,7 +71,8 @@ import jakarta.annotation.PreDestroy;
     "org.onap.aai.util.delta"
 })
 @EnableAsync
-@EnableScheduling
+// @EnableScheduling lives on ScheduledTasksConfiguration: the batch tools scan this class
+// too, and must not start the crons. See that class for why.
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties
 @EnableAutoConfiguration(exclude = {
