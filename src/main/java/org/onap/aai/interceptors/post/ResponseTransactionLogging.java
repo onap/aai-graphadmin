@@ -3,6 +3,7 @@
  * org.onap.aai
  * ================================================================================
  * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2026 Deutsche Telekom AG.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +111,7 @@ public class ResponseTransactionLogging extends AAIContainerFilter implements Co
 		response.addProperty("ID", responseContext.getHeaderString(AAIHeaderProperties.AAI_TX_ID));
 		response.addProperty("Content-Type", this.httpServletResponse.getContentType());
 		response.addProperty("Response-Code", responseContext.getStatus());
-		response.addProperty("Headers", responseContext.getHeaders().toString());
+		response.addProperty("Headers", this.headersForLog(responseContext.getHeaders()));
 		Optional<Object> entityOptional = Optional.ofNullable(responseContext.getEntity());
 		if(entityOptional.isPresent()){
 			response.addProperty("Entity", entityOptional.get().toString());
