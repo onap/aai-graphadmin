@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.onap.aai.aai-common</groupId>
         <artifactId>aai-parent</artifactId>
-        <version>1.18.0</version>
+        <version>1.19.0</version>
     </parent>
     <groupId>org.onap.aai.graphadmin</groupId>
     <artifactId>aai-graphadmin</artifactId>
@@ -56,7 +56,7 @@
         <docker.push.registry>localhost:5000</docker.push.registry>
         <aai.docker.version>1.0.0</aai.docker.version>
         <aai.schema.service.version>1.14.0</aai.schema.service.version>
-        <aai.common.version>1.18.0</aai.common.version>
+        <aai.common.version>1.19.0</aai.common.version>
         <aai.build.directory>${project.build.directory}/${project.artifactId}-${project.version}-build/
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
@@ -110,6 +110,8 @@
         <!-- see https://github.com/JanusGraph/janusgraph/blob/6105d67f412def90ed6e704fa01cbf656602e6c9/pom.xml#L112 -->
         <cassandra-driver.version>4.17.0</cassandra-driver.version>
         <datastax.native-protocol.version>1.5.1</datastax.native-protocol.version>
+        <tomcat.version>11.0.27</tomcat.version>
+        <netty.version>4.2.17.Final</netty.version>
     </properties>
 
     <profiles>
@@ -353,7 +355,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -536,9 +537,13 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.2</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -555,16 +560,6 @@
             <scope>test</scope>
         </dependency>
         <!-- End of Spring Framework Dependencies -->
-        <!-- Start of Netty Dependencies -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-handler</artifactId>
-        </dependency>
-        <!-- End of Netty Dependencies -->
         <!-- Only used for the WebTestClient -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -625,6 +620,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
           </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-micrometer-metrics-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>

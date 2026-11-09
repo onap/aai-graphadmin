@@ -34,10 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.onap.aai.config.SpringContextAware;
 import org.onap.aai.exceptions.AAIException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
+import org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalManagementPort;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -50,11 +47,10 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Test management endpoints against configuration resource.
  */
-@AutoConfigureObservability
+@AutoConfigureMetrics
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {SpringContextAware.class, GraphAdminApp.class})
 @ContextConfiguration(classes = {SpringContextAware.class})
-@EnableAutoConfiguration(exclude={CassandraDataAutoConfiguration.class, CassandraAutoConfiguration.class}) // there is no running cassandra instance for the test
 @Import(GraphAdminTestConfiguration.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class MetricsConfigurationTest {

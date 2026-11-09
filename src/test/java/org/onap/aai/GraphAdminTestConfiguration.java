@@ -27,8 +27,9 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -37,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.net.URI;
 
 @TestConfiguration
 public class GraphAdminTestConfiguration {
@@ -77,7 +79,7 @@ public class GraphAdminTestConfiguration {
                         return true;
                     }
 
-                    if(clientHttpResponse.getRawStatusCode() % 100 == 5){
+                    if(clientHttpResponse.getStatusCode().value() % 100 == 5){
                         logger.debug("Call returned a error " + clientHttpResponse.getStatusText());
                         return true;
                     }
@@ -87,7 +89,7 @@ public class GraphAdminTestConfiguration {
             }
 
             @Override
-            public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
+            public void handleError(URI url, HttpMethod method, ClientHttpResponse clientHttpResponse) throws IOException {
             }
         });
 

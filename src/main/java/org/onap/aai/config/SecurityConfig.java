@@ -20,7 +20,7 @@
 
 package org.onap.aai.config;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -41,11 +41,11 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(antMatcher("/util/echo"), antMatcher("/actuator/**"), antMatcher("/graphadmin-api-docs/**"), antMatcher("/swagger-ui/**"), antMatcher("/swagger-ui.html"), antMatcher("/swagger-ui/index.html"))
+                        .requestMatchers("/util/echo", "/actuator/**", "/graphadmin-api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
-                .httpBasic();
+                .httpBasic(withDefaults());
 
         return httpSecurity.build();
     }

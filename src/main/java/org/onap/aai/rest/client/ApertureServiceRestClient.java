@@ -59,7 +59,7 @@ public class ApertureServiceRestClient extends TwoWaySSLRestClient {
     protected HttpComponentsClientHttpRequestFactory getHttpRequestFactory() throws Exception {
         HttpComponentsClientHttpRequestFactory requestFactory = super.getHttpRequestFactory();
         requestFactory.setConnectionRequestTimeout(timeout);
-        requestFactory.setConnectTimeout(timeout);
+        requestFactory.setReadTimeout(timeout);
         return requestFactory;
     }
 
@@ -79,7 +79,7 @@ public class ApertureServiceRestClient extends TwoWaySSLRestClient {
         httpHeaders.add("X-FromAppId", appName);
         httpHeaders.add("X-TransactionId", UUID.randomUUID().toString());
         headers.forEach(httpHeaders::add);
-        return httpHeaders;
+        return httpHeaders.asMultiValueMap();
     }
 
 }

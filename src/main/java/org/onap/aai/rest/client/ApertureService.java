@@ -101,7 +101,7 @@ public class ApertureService {
             );
 
             if(isSuccess(responseEntity)){
-                LOGGER.debug("Audit returned following response status code {} and body {}", responseEntity.getStatusCodeValue(), responseEntity.getBody());
+                LOGGER.debug("Audit returned following response status code {} and body {}", responseEntity.getStatusCode().value(), responseEntity.getBody());
             }
 
         } catch(Exception e){

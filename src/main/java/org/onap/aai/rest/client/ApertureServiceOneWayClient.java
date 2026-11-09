@@ -54,7 +54,7 @@ public class ApertureServiceOneWayClient extends OneWaySSLRestClient {
     protected HttpComponentsClientHttpRequestFactory getHttpRequestFactory() throws Exception {
         HttpComponentsClientHttpRequestFactory requestFactory = super.getHttpRequestFactory();
         requestFactory.setConnectionRequestTimeout(timeout);
-        requestFactory.setConnectTimeout(timeout);
+        requestFactory.setReadTimeout(timeout);
         return requestFactory;
     }
 
@@ -75,7 +75,7 @@ public class ApertureServiceOneWayClient extends OneWaySSLRestClient {
         httpHeaders.add("X-TransactionId", UUID.randomUUID().toString());
         httpHeaders.add("X-TransactionId", appName);
         headers.forEach(httpHeaders::add);
-        return httpHeaders;
+        return httpHeaders.asMultiValueMap();
     }
 
 }
